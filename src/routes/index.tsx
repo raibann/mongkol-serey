@@ -1,0 +1,25 @@
+import Layout from 'layout';
+import { lazy, Suspense } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
+const Login = lazy(() => import('pages/Login'));
+// const ErrorPage = lazy(() => import('pages/404'));
+const Home = lazy(() => import('pages/Home'));
+export default function AllRoutes() {
+  return (
+    <Routes>
+      <Route path={ROUTE_PATH.root} element={<Layout />}>
+        <Route
+          path={ROUTE_PATH.root}
+          element={
+            <Suspense>
+              <Home />
+            </Suspense>
+          }
+        />
+        <Route path='*' element={<Home />} />
+      </Route>
+      <Route path={ROUTE_PATH.login} element={<Login />} />
+    </Routes>
+  );
+}

@@ -1,3 +1,5 @@
 export const ROUTE_PATH = {
-  root: "/",
+  root: '/',
+  login: 'login',
+  error: 'pagenotfound',
 };
