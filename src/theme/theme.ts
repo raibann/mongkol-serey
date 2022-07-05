@@ -1,9 +1,18 @@
 import { createTheme } from '@mui/material/styles';
 
 let theme = createTheme({
-  // typography: {
-  //   fontFamily: ['Roboto'].join(','),
-  // },
+  typography: {
+    fontFamily: [
+      'Roboto',
+      'Raleway',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+  },
 
   palette: {
     primary: {
@@ -17,8 +26,8 @@ let theme = createTheme({
       dark: '#0D0000',
     },
     success: {
-      main: '#70E000',
-      // light: '#a7ff50',
+      main: '#36CF87',
+      light: '#70E000',
       // dark: '#32ad00',
     },
     warning: {
@@ -40,4 +49,21 @@ let theme = createTheme({
     divider: '#7E84A3',
   },
 });
+
+theme.components = {
+  MuiTypography: {
+    defaultProps: {
+      color: 'secondary.main',
+    },
+  },
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        background: theme.palette.common.white,
+        borderRadius: 8,
+      },
+    },
+  },
+};
+
 export default theme;

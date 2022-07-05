@@ -9,6 +9,7 @@ import {
 import useRouter from 'hook/useRouter';
 import theme from 'theme/theme';
 import navigationUtil from 'utils/navigation-util';
+import THEME_UTIL from 'utils/theme-util';
 
 const DrawerContent = () => {
   const { location, navigate } = useRouter();
@@ -38,22 +39,22 @@ const DrawerContent = () => {
                 sx={{
                   borderRadius: 2,
                   '&:hover': {
-                    backgroundColor: theme.palette.primary.light,
+                    background: THEME_UTIL.goldGradientLight,
                   },
                   '&.Mui-selected': {
-                    backgroundColor: theme.palette.primary.main,
+                    background: THEME_UTIL.goldGradientMain,
                     '&:hover': {
-                      background: theme.palette.primary.main,
+                      background: THEME_UTIL.goldGradientLight,
                     },
                   },
                 }}
-                selected={location.pathname === nav.toUrl}
+                selected={location.pathname.slice(1) === nav.toUrl}
                 onClick={() => navigate(nav.toUrl)}
               >
                 <ListItemIcon
                   sx={{
                     color:
-                      location.pathname === nav.toUrl
+                      location.pathname.slice(1) === nav.toUrl
                         ? theme.palette.common.white
                         : theme.palette.secondary.main,
                   }}
@@ -65,7 +66,7 @@ const DrawerContent = () => {
                   primaryTypographyProps={{
                     fontWeight: 500,
                     color:
-                      location.pathname === nav.toUrl
+                      location.pathname.slice(1) === nav.toUrl
                         ? 'common.white'
                         : 'secondary.main',
                   }}
