@@ -16,6 +16,8 @@ export default function Home() {
           background: theme.palette.background.paper,
           ml: { sm: `${drawerWidth}` },
           height: '100vh',
+          overflow: 'auto',
+          pb: 4,
         }}
       >
         <Outlet />

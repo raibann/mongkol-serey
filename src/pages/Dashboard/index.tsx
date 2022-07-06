@@ -1,6 +1,19 @@
-import { Box, List, Paper, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Divider,
+  List,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
 import DashboardCard from 'components/DashboardCard';
-import { DollarCircle, Profile2User, WalletAdd } from 'iconsax-react';
+import {
+  ArrowRight2,
+  DollarCircle,
+  Profile2User,
+  WalletAdd,
+} from 'iconsax-react';
 import {
   Bar,
   BarChart,
@@ -14,6 +27,7 @@ import {
 import theme from 'theme/theme';
 import AnniversaryItem from './AnniversaryItem';
 import DashboardHeader from './DashboardHeader';
+import PieChartComp from './PieChartComp';
 
 const CHART1_DATA = [
   {
@@ -138,10 +152,10 @@ const Anniversary = Array(6).fill({
 const Dashboard = () => {
   return (
     <>
-      <Box py={4}>
+      <Box pt={2}>
         <DashboardHeader />
 
-        <Stack direction='row' spacing={3} mt={3} pb={2} px={2} overflow='auto'>
+        <Stack direction='row' spacing={3} pb={2} px={2} overflow='auto'>
           <DashboardCard
             title='Total Profits'
             value='$100,000'
@@ -214,7 +228,7 @@ const Dashboard = () => {
             >
               Upcoming Anniversary
             </Typography>
-            <List sx={{ width: '100%', bgcolor: 'common.white', p: 0, pb: 3 }}>
+            <List sx={{ width: '100%', bgcolor: 'common.white', p: 0 }}>
               {Anniversary.map((data, i) => {
                 return (
                   <AnniversaryItem
@@ -226,6 +240,17 @@ const Dashboard = () => {
                 );
               })}
             </List>
+            <Divider
+              sx={{
+                borderColor: theme.palette.divider,
+              }}
+            />
+            <Button
+              sx={{ color: theme.palette.primary.dark, py: 2 }}
+              endIcon={<ArrowRight2 size={16} />}
+            >
+              More Insights
+            </Button>
           </Paper>
         </Stack>
 
@@ -260,6 +285,7 @@ const Dashboard = () => {
               flexGrow: 1,
               overflow: 'auto',
               height: '100%',
+              position: 'relative',
             }}
           >
             <Typography
@@ -272,20 +298,23 @@ const Dashboard = () => {
               zIndex={theme.zIndex.appBar}
               bgcolor='common.white'
             >
-              Upcoming Anniversary
+              Type of Event
             </Typography>
-            <List sx={{ width: '100%', bgcolor: 'common.white', p: 0, pb: 3 }}>
-              {Anniversary.map((data, i) => {
-                return (
-                  <AnniversaryItem
-                    key={i}
-                    daysLeft={data.daysLeft}
-                    lastOrder={data.lastOrder}
-                    name={data.name}
-                  />
-                );
-              })}
-            </List>
+            <PieChartComp />
+            <Box position='absolute' bottom={0} left={0} width={'100%'} px={3}>
+              <Divider
+                sx={{
+                  borderBottomWidth: 0.1,
+                  borderColor: theme.palette.divider,
+                }}
+              />
+              <Button
+                sx={{ color: theme.palette.primary.dark, py: 2 }}
+                endIcon={<ArrowRight2 size={16} />}
+              >
+                More Insights
+              </Button>
+            </Box>
           </Paper>
         </Stack>
       </Box>

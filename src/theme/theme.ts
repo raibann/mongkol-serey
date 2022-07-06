@@ -46,7 +46,7 @@ let theme = createTheme({
     background: {
       paper: '#F5F6FA',
     },
-    divider: '#7E84A3',
+    divider: '#eeeeee',
   },
 });
 

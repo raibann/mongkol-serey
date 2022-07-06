@@ -30,7 +30,7 @@ const DashboardCard = ({
       }}
     >
       <Stack rowGap={1}>
-        <Typography color='divider'>{title}</Typography>
+        <Typography color='text.secondary'>{title}</Typography>
         <Typography fontSize={28} fontWeight='bold'>
           {value}
         </Typography>
@@ -60,7 +60,7 @@ const DashboardCard = ({
               }}
             />
           )}
-          <Typography color='divider' fontSize={12} pl={1}>
+          <Typography color='text.secondary' fontSize={12} pl={1}>
             than last year
           </Typography>
         </Stack>
