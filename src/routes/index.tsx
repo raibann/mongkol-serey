@@ -25,7 +25,14 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
-        <Route path='*' element={<Home />} />
+        <Route
+          path='*'
+          element={
+            <Suspense>
+              <Home />
+            </Suspense>
+          }
+        />
       </Route>
       <Route path={ROUTE_PATH.login} element={<Login />} />
     </Routes>

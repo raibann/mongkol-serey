@@ -28,7 +28,7 @@ const DashboardHeader = () => {
         mb: 1,
       }}
     >
-      <Toolbar sx={{ py: 2 }}>
+      <Toolbar sx={{ py: 2, px: { xs: 0 } }}>
         <Grid container px={2}>
           <Grid item xs='auto'>
             <Typography variant='h4' fontWeight='bolder'>
