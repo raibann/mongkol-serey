@@ -40,7 +40,7 @@ let theme = createTheme({
     },
     text: {
       primary: '#131523',
-      // secondary: '#cfd8dc',
+      secondary: '#D5D7E3',
       disabled: '#9ea7aa',
     },
     background: {

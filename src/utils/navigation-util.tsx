@@ -25,7 +25,7 @@ const navigationUtil: Navigation = [
   },
   {
     title: 'Orders',
-    toUrl: 'orders',
+    toUrl: ROUTE_PATH.orders,
     icon: <EmptyWalletAdd size='24' />,
   },
   {
