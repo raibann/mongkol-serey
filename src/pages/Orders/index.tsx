@@ -1,5 +1,6 @@
 import {
   Button,
+  Drawer,
   Paper,
   Stack,
   Table,
@@ -12,9 +13,10 @@ import PageHeader from 'components/PageHeader';
 import { Add } from 'iconsax-react';
 import React, { useState } from 'react';
 import theme from 'theme/theme';
+import OrderForm from './OrderDrawer/OrderForm';
 import { OrderTableBody, OrderTableHead } from './OrderTable';
 
-const ORDER_DATA: {
+interface IOrderData {
   id: number;
   name: string;
   social: string;
@@ -24,7 +26,8 @@ const ORDER_DATA: {
   bookingDate: string;
   deposit: number;
   paidBy: string;
-}[] = [
+}
+const ORDER_DATA: IOrderData[] = [
   {
     id: 1,
     name: 'Meas Saominea',
@@ -62,6 +65,8 @@ const ORDER_DATA: {
 
 const Orders = () => {
   const [ToggleValue, setToggleValue] = useState('pending');
+  const [orderDetail, setOrderDetail] = useState<IOrderData>();
+  const [newOrder, setNewOrder] = useState(false);
 
   return (
     <>
@@ -115,8 +120,9 @@ const Orders = () => {
 
             <Button
               variant='contained'
-              sx={{ color: theme.palette.common.white }}
               startIcon={<Add />}
+              sx={{ color: theme.palette.common.white }}
+              onClick={() => setNewOrder(true)}
             >
               Add New
             </Button>
@@ -146,6 +152,18 @@ const Orders = () => {
           </TableBody>
         </Table>
       </Paper>
+
+      <Drawer
+        open={newOrder || orderDetail !== undefined}
+        onClose={() => {
+          setOrderDetail(undefined);
+          setNewOrder(false);
+        }}
+        anchor={'right'}
+        PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
+      >
+        <OrderForm />
+      </Drawer>
     </>
   );
 };
