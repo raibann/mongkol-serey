@@ -14,22 +14,15 @@ axios.interceptors.request.use(async (config) => {
   config.headers = {
     Token: token,
     'Client-Language': 'EN',
-    'Client-Bundle': 'com.bongtk.bloc',
-    'Client-Ver': '2.0',
-    'Client-Os': 'BMWEB',
     'Content-Type': 'application/json',
-    'Client-API': 'biz',
     Accept: '*/*',
   };
-
-  // console.log('token', token);
 
   return config;
 });
 
 // Add a response interceptor
 axios.interceptors.response.use(
-  // console.log('interceptors:', err);
   async function (res) {
     if (+res?.data?.error !== 0) {
       return Promise.reject(res.data);

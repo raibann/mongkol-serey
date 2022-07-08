@@ -152,96 +152,158 @@ const Anniversary = Array(6).fill({
 const Dashboard = () => {
   return (
     <>
-      <Box pt={2}>
-        <DashboardHeader />
+      <DashboardHeader />
 
-        <Stack direction='row' spacing={3} pb={2} px={2} overflow='auto'>
-          <DashboardCard
-            title='Total Profits'
-            value='$100,000'
-            percentage='2.3%'
-            isHigher
-            icon={<DollarCircle />}
-          />
-          <DashboardCard
-            title='Total Expenses'
-            value='$50,000'
-            percentage='2%'
-            icon={<DollarCircle />}
-          />
-          <DashboardCard
-            title='Total Orders'
-            value='100 Events'
-            percentage='5%'
-            isHigher
-            icon={<WalletAdd />}
-          />
-          <DashboardCard
-            title='Total Customers'
-            value='100 Customers'
-            percentage='2.3%'
-            isHigher
-            icon={<Profile2User />}
-          />
-        </Stack>
+      <Stack direction='row' spacing={3} pb={2} px={2} overflow='auto'>
+        <DashboardCard
+          title='Total Profits'
+          value='$100,000'
+          percentage='2.3%'
+          isHigher
+          icon={<DollarCircle />}
+        />
+        <DashboardCard
+          title='Total Expenses'
+          value='$50,000'
+          percentage='2%'
+          icon={<DollarCircle />}
+        />
+        <DashboardCard
+          title='Total Orders'
+          value='100 Events'
+          percentage='5%'
+          isHigher
+          icon={<WalletAdd />}
+        />
+        <DashboardCard
+          title='Total Customers'
+          value='100 Customers'
+          percentage='2.3%'
+          isHigher
+          icon={<Profile2User />}
+        />
+      </Stack>
 
-        <Stack mt={2} px={2} direction='row' spacing={2} height={400}>
-          <Paper
-            elevation={1}
-            sx={{
-              width: '60%',
-              py: 3,
-              pr: 5,
-            }}
+      <Stack mt={2} px={2} direction='row' spacing={2} height={400}>
+        <Paper
+          elevation={1}
+          sx={{
+            width: '60%',
+            py: 3,
+            pr: 5,
+          }}
+        >
+          <Typography fontWeight={500} variant='h5' ml={5} mb={3}>
+            Events
+          </Typography>
+          <ResponsiveContainer width='100%' height='90%'>
+            <BarChart data={CHART1_DATA} barSize={25}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey='name' />
+              <YAxis domain={[0, 100]} />
+              <Tooltip />
+              <Bar dataKey='Events' fill={theme.palette.primary.main} />
+            </BarChart>
+          </ResponsiveContainer>
+        </Paper>
+
+        <Paper
+          sx={{
+            px: 3,
+            flexGrow: 1,
+            overflow: 'auto',
+            height: '100%',
+          }}
+        >
+          <Typography
+            fontWeight={600}
+            fontSize={18}
+            pt={3}
+            pb={2}
+            position='sticky'
+            top={0}
+            zIndex={theme.zIndex.appBar}
+            bgcolor='common.white'
           >
-            <Typography fontWeight={500} variant='h5' ml={5} mb={3}>
-              Events
-            </Typography>
-            <ResponsiveContainer width='100%' height='90%'>
-              <BarChart data={CHART1_DATA} barSize={25}>
-                <CartesianGrid vertical={false} />
-                <XAxis dataKey='name' />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Bar dataKey='Events' fill={theme.palette.primary.main} />
-              </BarChart>
-            </ResponsiveContainer>
-          </Paper>
-
-          <Paper
+            Upcoming Anniversary
+          </Typography>
+          <List sx={{ width: '100%', bgcolor: 'common.white', p: 0 }}>
+            {Anniversary.map((data, i) => {
+              return (
+                <AnniversaryItem
+                  key={i}
+                  daysLeft={data.daysLeft}
+                  lastOrder={data.lastOrder}
+                  name={data.name}
+                />
+              );
+            })}
+          </List>
+          <Divider
             sx={{
-              px: 3,
-              flexGrow: 1,
-              overflow: 'auto',
-              height: '100%',
+              borderColor: theme.palette.divider,
             }}
+          />
+          <Button
+            sx={{ color: theme.palette.primary.dark, py: 2 }}
+            endIcon={<ArrowRight2 size={16} />}
           >
-            <Typography
-              fontWeight={600}
-              fontSize={18}
-              pt={3}
-              pb={2}
-              position='sticky'
-              top={0}
-              zIndex={theme.zIndex.appBar}
-              bgcolor='common.white'
-            >
-              Upcoming Anniversary
-            </Typography>
-            <List sx={{ width: '100%', bgcolor: 'common.white', p: 0 }}>
-              {Anniversary.map((data, i) => {
-                return (
-                  <AnniversaryItem
-                    key={i}
-                    daysLeft={data.daysLeft}
-                    lastOrder={data.lastOrder}
-                    name={data.name}
-                  />
-                );
-              })}
-            </List>
+            More Insights
+          </Button>
+        </Paper>
+      </Stack>
+
+      <Stack mt={2} px={2} direction='row' spacing={2} height={400}>
+        <Paper
+          elevation={1}
+          sx={{
+            width: '60%',
+            py: 3,
+            pr: 5,
+          }}
+        >
+          <Typography fontWeight={500} variant='h5' ml={5} mb={3}>
+            Sales Report
+          </Typography>
+          <ResponsiveContainer width='100%' height='90%'>
+            <BarChart data={CHART2_DATA} barSize={15}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey='name' />
+              <YAxis domain={[0, 100]} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey='Sales' fill={theme.palette.success.main} />
+              <Bar dataKey='Expenses' fill={theme.palette.error.main} />
+            </BarChart>
+          </ResponsiveContainer>
+        </Paper>
+
+        <Paper
+          sx={{
+            px: 3,
+            flexGrow: 1,
+            overflow: 'auto',
+            height: '100%',
+            position: 'relative',
+          }}
+        >
+          <Typography
+            fontWeight={600}
+            fontSize={18}
+            pt={3}
+            pb={2}
+            position='sticky'
+            top={0}
+            zIndex={theme.zIndex.appBar}
+            bgcolor='common.white'
+          >
+            Type of Event
+          </Typography>
+          <PieChartComp />
+          <Box position='absolute' bottom={0} left={0} width={'100%'} px={3}>
             <Divider
               sx={{
+                borderBottomWidth: 0.1,
                 borderColor: theme.palette.divider,
               }}
             />
@@ -251,73 +313,9 @@ const Dashboard = () => {
             >
               More Insights
             </Button>
-          </Paper>
-        </Stack>
-
-        <Stack mt={2} px={2} direction='row' spacing={2} height={400}>
-          <Paper
-            elevation={1}
-            sx={{
-              width: '60%',
-              py: 3,
-              pr: 5,
-            }}
-          >
-            <Typography fontWeight={500} variant='h5' ml={5} mb={3}>
-              Sales Report
-            </Typography>
-            <ResponsiveContainer width='100%' height='90%'>
-              <BarChart data={CHART2_DATA} barSize={15}>
-                <CartesianGrid vertical={false} />
-                <XAxis dataKey='name' />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey='Sales' fill={theme.palette.success.main} />
-                <Bar dataKey='Expenses' fill={theme.palette.error.main} />
-              </BarChart>
-            </ResponsiveContainer>
-          </Paper>
-
-          <Paper
-            sx={{
-              px: 3,
-              flexGrow: 1,
-              overflow: 'auto',
-              height: '100%',
-              position: 'relative',
-            }}
-          >
-            <Typography
-              fontWeight={600}
-              fontSize={18}
-              pt={3}
-              pb={2}
-              position='sticky'
-              top={0}
-              zIndex={theme.zIndex.appBar}
-              bgcolor='common.white'
-            >
-              Type of Event
-            </Typography>
-            <PieChartComp />
-            <Box position='absolute' bottom={0} left={0} width={'100%'} px={3}>
-              <Divider
-                sx={{
-                  borderBottomWidth: 0.1,
-                  borderColor: theme.palette.divider,
-                }}
-              />
-              <Button
-                sx={{ color: theme.palette.primary.dark, py: 2 }}
-                endIcon={<ArrowRight2 size={16} />}
-              >
-                More Insights
-              </Button>
-            </Box>
-          </Paper>
-        </Stack>
-      </Box>
+          </Box>
+        </Paper>
+      </Stack>
     </>
   );
 };
