@@ -162,26 +162,30 @@ const Dashboard = () => {
             percentage='2.3%'
             isHigher
             icon={<DollarCircle />}
+            type={''}
           />
           <DashboardCard
             title='Total Expenses'
             value='$50,000'
             percentage='2%'
             icon={<DollarCircle />}
+            type={''}
           />
           <DashboardCard
             title='Total Orders'
-            value='100 Events'
+            value='100'
             percentage='5%'
             isHigher
             icon={<WalletAdd />}
+            type={'Events'}
           />
           <DashboardCard
             title='Total Customers'
-            value='100 Customers'
+            value='100'
             percentage='2.3%'
             isHigher
             icon={<Profile2User />}
+            type={'Customers'}
           />
         </Stack>
 
