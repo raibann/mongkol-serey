@@ -8,34 +8,30 @@ import theme from 'theme/theme';
 import provincesJson from 'geography/Provinces.json';
 import districtJson from 'geography/District.json';
 import communeJson from 'geography/Communes.json';
-import villageJson from 'geography/Villages.json';
 
 export type CustomerInput = {
   customerName: string;
   facebook: string;
   telegram: string;
   contact: string;
-  gender: string;
   houseNo: string;
   stNo: string;
   location: string;
   province: Province.IProvince | string;
   district: District.IDistrict | string;
   commune: Commune.ICommune | string;
-  village: Village.IVillage | string;
 };
 
 const provincesList: Province.IProvince[] = provincesJson;
 const districtList: District.IDistrict[] = districtJson;
 const communeList: Commune.ICommune[] = communeJson;
-const villageList = villageJson;
 
 const CustomerForm = () => {
   const { control, setValue, watch } = useFormContext<CustomerInput>();
 
   return (
     <>
-      <Stack spacing={2}>
+      <Stack spacing={2} px={3}>
         <Stack direction='row' spacing={2}>
           <Controller
             control={control}
@@ -133,51 +129,6 @@ const CustomerForm = () => {
         <Stack direction='row' spacing={2}>
           <Controller
             control={control}
-            name='gender'
-            defaultValue=''
-            rules={{
-              required: { value: true, message: 'Please Select Gender...' },
-            }}
-            render={({ field }) => {
-              return (
-                <LabelTextField label='Gender'>
-                  <StyledOutlinedTextField
-                    SelectProps={{ displayEmpty: true }}
-                    select
-                    placeholder='Select Gender...'
-                    {...field}
-                  >
-                    <MenuItem value='' disabled>
-                      Select Gender...
-                    </MenuItem>
-                    <MenuItem value='1'>Male</MenuItem>
-                    <MenuItem value='2'>Female</MenuItem>
-                  </StyledOutlinedTextField>
-                </LabelTextField>
-              );
-            }}
-          />
-
-          <Controller
-            control={control}
-            name='location'
-            defaultValue=''
-            render={({ field }) => {
-              return (
-                <LabelTextField label='Location'>
-                  <StyledOutlinedTextField
-                    placeholder='Enter Location'
-                    {...field}
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
-        </Stack>
-
-        <Stack direction='row' spacing={2}>
-          <Controller
-            control={control}
             name='houseNo'
             defaultValue=''
             render={({ field }) => {
@@ -220,6 +171,7 @@ const CustomerForm = () => {
                   <Autocomplete
                     freeSolo
                     disableClearable
+                    openOnFocus
                     id='province'
                     options={provincesList}
                     onChange={(e, val) => {
@@ -229,11 +181,11 @@ const CustomerForm = () => {
                       setValue('province', val);
                     }}
                     getOptionLabel={(option) =>
-                      (option as Province.IProvince).name_km || ''
+                      (option as Province.IProvince).full_name_km || ''
                     }
                     renderOption={(props, option) => (
                       <MenuItem key={option.id} {...props}>
-                        {option.name_km}
+                        {option.full_name_km}
                       </MenuItem>
                     )}
                     renderInput={(params) => (
@@ -263,6 +215,7 @@ const CustomerForm = () => {
                   <Autocomplete
                     freeSolo
                     disableClearable
+                    openOnFocus
                     id='district'
                     options={districtList.filter(
                       (option) =>
@@ -270,11 +223,11 @@ const CustomerForm = () => {
                           (watch('province') as Province.IProvince)?.id || ''
                     )}
                     getOptionLabel={(option) =>
-                      (option as District.IDistrict).name_km || ''
+                      (option as District.IDistrict).full_name_km || ''
                     }
                     renderOption={(props, option) => (
                       <MenuItem key={option.id} {...props}>
-                        {option.name_km}
+                        {option.full_name_km}
                       </MenuItem>
                     )}
                     onChange={(e, val) =>
@@ -312,6 +265,7 @@ const CustomerForm = () => {
                   <Autocomplete
                     freeSolo
                     disableClearable
+                    openOnFocus
                     id='commune'
                     options={communeList.filter(
                       (option) =>
@@ -325,11 +279,11 @@ const CustomerForm = () => {
                       setValue('commune', val);
                     }}
                     getOptionLabel={(option) =>
-                      (option as Commune.ICommune).name_km || ''
+                      (option as Commune.ICommune).full_name_km || ''
                     }
                     renderOption={(props, option) => (
                       <MenuItem key={option.id} {...props}>
-                        {option.name_km}
+                        {option.full_name_km}
                       </MenuItem>
                     )}
                     renderInput={(params) => (
@@ -348,46 +302,16 @@ const CustomerForm = () => {
               );
             }}
           />
-
           <Controller
             control={control}
-            name='village'
+            name='location'
             defaultValue=''
-            render={({ field: { onChange, value, ...rest } }) => {
+            render={({ field }) => {
               return (
-                <LabelTextField label='Village'>
-                  <Autocomplete
-                    freeSolo
-                    disableClearable
-                    id='village'
-                    options={(villageList as Village.IVillage[]).filter(
-                      (option) =>
-                        option.commune_id ===
-                          (watch('commune') as Commune.ICommune)?.id || ''
-                    )}
-                    getOptionLabel={(option) =>
-                      (option as Village.IVillage).name_km || ''
-                    }
-                    renderOption={(props, option) => (
-                      <MenuItem key={option.id} {...props}>
-                        {option.name_km}
-                      </MenuItem>
-                    )}
-                    onChange={(e, val) =>
-                      setValue('village', val as Village.IVillage)
-                    }
-                    onInputChange={(e, val) => setValue('village', val)}
-                    renderInput={(params) => (
-                      <StyledOutlinedTextField
-                        placeholder='Enter Village'
-                        {...params}
-                        InputProps={{
-                          ...params.InputProps,
-                          type: 'search',
-                        }}
-                      />
-                    )}
-                    {...rest}
+                <LabelTextField label='Location'>
+                  <StyledOutlinedTextField
+                    placeholder='Enter Location'
+                    {...field}
                   />
                 </LabelTextField>
               );

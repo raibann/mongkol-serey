@@ -13,7 +13,7 @@ import PageHeader from 'components/PageHeader';
 import { Add } from 'iconsax-react';
 import React, { useState } from 'react';
 import theme from 'theme/theme';
-import OrderForm from './OrderDrawer/OrderForm';
+import OrderDrawer from './OrderDrawer';
 import { OrderTableBody, OrderTableHead } from './OrderTable';
 
 interface IOrderData {
@@ -162,7 +162,7 @@ const Orders = () => {
         anchor={'right'}
         PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
       >
-        <OrderForm />
+        <OrderDrawer />
       </Drawer>
     </>
   );
