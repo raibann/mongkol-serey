@@ -56,7 +56,7 @@ let theme = createTheme({
     divider: '#E0E0E0',
   },
 });
-
+theme.shadows[1] = '0px 1px 4px #15223214';
 theme.components = {
   MuiTypography: {
     defaultProps: {
