@@ -3,6 +3,7 @@ import { createTheme } from '@mui/material/styles';
 let theme = createTheme({
   typography: {
     fontFamily: [
+      'Poppins',
       'Roboto',
       'Raleway',
       '-apple-system',
@@ -13,7 +14,6 @@ let theme = createTheme({
       'sans-serif',
     ].join(','),
   },
-
   palette: {
     primary: {
       main: '#F2C335',
@@ -25,28 +25,35 @@ let theme = createTheme({
       light: '#58492B',
       dark: '#0D0000',
     },
+    error: {
+      main: '#F0142F',
+      light: '#FF5C59',
+      dark: '#B50007',
+    },
     success: {
       main: '#36CF87',
-      light: '#70E000',
-      // dark: '#32ad00',
+      light: '#73FFB7',
+      dark: '#009D59',
     },
     warning: {
       main: '#F99600',
-      light: '#F2C335',
-      // dark: '#c59500',
+      light: '#FFC747',
+      dark: '#C06800',
     },
-    error: {
-      main: '#F0142F',
+    info: {
+      main: '#57B8FF',
+      light: '#91EAFF',
+      dark: '#0088CB',
     },
     text: {
-      primary: '#131523',
-      // secondary: '#cfd8dc',
-      disabled: '#9ea7aa',
+      primary: '#2E2200DE',
+      secondary: '#2E220099',
+      disabled: '#2E22001F',
     },
     background: {
       paper: '#F5F6FA',
     },
-    divider: '#eeeeee',
+    divider: '#E0E0E0',
   },
 });
 
