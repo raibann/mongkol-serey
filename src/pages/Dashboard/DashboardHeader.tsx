@@ -22,7 +22,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Notification } from 'iconsax-react';
 import CusIconButton from 'components/CusIconButton';
-import CusToggleButton from 'components/CusToggleButton';
 import React from 'react';
 
 const DashboardHeader = () => {
@@ -73,23 +72,10 @@ const DashboardHeader = () => {
               exclusive
               fullWidth
               size='small'
-              onChange={(
-                event: React.MouseEvent<HTMLElement, MouseEvent>,
-                value: any
-              ) => {
-                if (value !== null) {
-                  setToggleValue(value);
-                }
-              }}
               sx={{
-                width: '30%',
+                width: 170,
               }}
-            >
-              <CusToggleButton value='week'>Week</CusToggleButton>
-              <CusToggleButton value='month'>Month</CusToggleButton>
-              <CusToggleButton value='year'>Year</CusToggleButton>
-            </ToggleButtonGroup>
-
+            />
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 inputFormat='DD-MM-YYYY'
