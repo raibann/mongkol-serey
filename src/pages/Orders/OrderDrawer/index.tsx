@@ -1,9 +1,10 @@
-import { Divider, IconButton, Stack, Typography } from '@mui/material';
-import { CloseSquare } from 'iconsax-react';
+import { Divider, Stack, Typography } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import CustomerForm, {
   CustomerInput,
 } from 'pages/Customer/CustomerDrawer/CustomerForm';
+import { CusIconButton } from 'components/CusIconButton';
+import { MdClose } from 'react-icons/md';
 
 export interface IOrderForm {
   id: string;
@@ -37,9 +38,9 @@ const OrderDrawer = () => {
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
           New Order
         </Typography>
-        <IconButton color='error'>
-          <CloseSquare size={26} />
-        </IconButton>
+        <CusIconButton color='error'>
+          <MdClose />
+        </CusIconButton>
       </Stack>
       <FormProvider {...methods}>
         <form>
