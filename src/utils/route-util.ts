@@ -4,4 +4,5 @@ export const ROUTE_PATH = {
   orders: 'orders',
   login: 'login',
   error: 'pagenotfound',
+  reminder: 'reminder',
 };
