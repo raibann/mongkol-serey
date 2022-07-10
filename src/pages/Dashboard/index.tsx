@@ -143,7 +143,7 @@ const CHART2_DATA = [
   },
 ];
 
-const Anniversary = Array(6).fill({
+const Anniversary = Array(4).fill({
   name: 'Meas Saominea',
   lastOrder: '30-02-2002',
   daysLeft: 3,
@@ -215,7 +215,7 @@ const Dashboard = () => {
           sx={{
             px: 3,
             flexGrow: 1,
-            overflow: 'auto',
+            // overflow: 'auto',
             height: '100%',
           }}
         >

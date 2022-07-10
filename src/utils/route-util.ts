@@ -3,5 +3,6 @@ export const ROUTE_PATH = {
   dashboard: 'dashboard',
   orders: 'orders',
   login: 'login',
+  stocks: 'stocks',
   error: 'pagenotfound',
 };

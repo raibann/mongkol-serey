@@ -1,20 +1,21 @@
 import {
   Button,
   Drawer,
+  InputAdornment,
+  Pagination,
   Paper,
   Stack,
   Table,
   TableBody,
-  ToggleButtonGroup,
 } from '@mui/material';
 import CusTextField from 'components/CusTextField';
-import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
-import { Add } from 'iconsax-react';
-import React, { useState } from 'react';
+import { Add, SearchNormal1 } from 'iconsax-react';
+import { OrderTableHead, OrderTableBody } from 'pages/Orders/OrderTable';
+import { useState } from 'react';
 import theme from 'theme/theme';
-import OrderDrawer from './OrderDrawer';
-import { OrderTableBody, OrderTableHead } from './OrderTable';
+import AddStock from './AddStock';
+// import EditStock from './EditStock';
 
 interface IOrderData {
   id: number;
@@ -63,61 +64,38 @@ const ORDER_DATA: IOrderData[] = [
   },
 ];
 
-const Orders = () => {
-  const [ToggleValue, setToggleValue] = useState('pending');
-  const [orderDetail, setOrderDetail] = useState<IOrderData>();
-  const [newOrder, setNewOrder] = useState(false);
-
+const Stocks = () => {
+  const [open, setOpen] = useState(false);
+  const openDrawer = () => {
+    setOpen(true);
+  };
   return (
     <>
-      <PageHeader pageTitle='Orders' />
-
+      <PageHeader pageTitle='Stocks' />
       <Paper
-        elevation={3}
+        elevation={1}
         sx={{
           mx: 2,
-          borderRadius: 2,
-          minHeight: '90%',
+          borderRadius: 4,
+          minHeight: '92.5%',
           maxWidth: '100%',
           overflow: 'hidden',
+          px: 2,
+          position: 'relative',
         }}
       >
         <Stack
           direction='row'
           justifyContent='space-between'
           alignItems='center'
-          p={2}
+          py={2}
         >
-          <ToggleButtonGroup
-            value={ToggleValue}
-            exclusive
-            fullWidth
-            size='small'
-            onChange={(
-              event: React.MouseEvent<HTMLElement, MouseEvent>,
-              value: any
-            ) => {
-              if (value !== null) {
-                setToggleValue(value);
-              }
-            }}
-            sx={{
-              width: '30%',
-            }}
-          >
-            <CusToggleButton value='pending'>Pending</CusToggleButton>
-            <CusToggleButton value='completed'>Completed</CusToggleButton>
-            <CusToggleButton value='all'>All</CusToggleButton>
-          </ToggleButtonGroup>
-
           <Stack
             direction='row'
             justifyContent='space-between'
             alignItems='center'
-            spacing={2}
+            sx={{ width: '100%' }}
           >
-            <CusTextField placeholder='Search...' size='small' />
-
             <Button
               variant='contained'
               startIcon={<Add />}
@@ -126,13 +104,26 @@ const Orders = () => {
                 boxShadow: theme.shadows[1],
                 borderRadius: 2,
               }}
-              onClick={() => setNewOrder(true)}
+              onClick={openDrawer}
             >
               Add New
             </Button>
+            <CusTextField
+              placeholder='Search...'
+              size='small'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='start'>
+                    <SearchNormal1
+                      size='20'
+                      color={theme.palette.primary.main}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Stack>
         </Stack>
-
         <Table>
           <OrderTableHead />
 
@@ -155,21 +146,26 @@ const Orders = () => {
             })}
           </TableBody>
         </Table>
+        <Pagination
+          count={10}
+          shape='rounded'
+          sx={{ position: 'absolute', bottom: 5 }}
+        />
       </Paper>
 
       <Drawer
-        open={newOrder || orderDetail !== undefined}
+        open={open}
         onClose={() => {
-          setOrderDetail(undefined);
-          setNewOrder(false);
+          setOpen(false);
         }}
         anchor={'right'}
         PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
       >
-        <OrderDrawer />
+        <AddStock {...{ setOpen }} />
+        {/* <EditStock {...{ setOpen }} /> */}
       </Drawer>
     </>
   );
 };
 
-export default Orders;
+export default Stocks;
