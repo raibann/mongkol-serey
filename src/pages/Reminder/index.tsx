@@ -1,13 +1,13 @@
-import { Avatar, Box, Paper, Stack, Typography } from '@mui/material';
-import CusIconButton from 'components/CusIconButton';
+import { Stack, Typography } from '@mui/material';
 import PageHeader from 'components/PageHeader';
-import { MdClose } from 'react-icons/md';
+import EventToday from './EventCard/today';
+import UpcomingEvent from './EventCard/upcoming';
 
 export default function Reminder() {
   return (
     <>
       <PageHeader pageTitle='Reminder' />
-      <Box sx={{ px: 2, pb: 2 }}>
+      <Stack spacing={2} px={2}>
         <Stack direction={'row'} spacing={2}>
           <Typography variant='h5' fontWeight={'light'}>
             Anniversary:
@@ -16,31 +16,14 @@ export default function Reminder() {
             5 Cusomter
           </Typography>
         </Stack>
-        <Paper sx={{ width: 360 }}>
-          <Stack
-            direction={'row'}
-            alignItems='center'
-            justifyContent={'flex-end'}
-          >
-            <CusIconButton color='primary'>
-              <MdClose />
-            </CusIconButton>
-          </Stack>
-          <Stack alignItems='center'>
-            <Typography variant='h5' fontWeight={'blod'}>
-              Ma Raibann
-            </Typography>
-            <Typography variant='subtitle2'>Happy anniversary</Typography>
-          </Stack>
-          <Stack direction={'row'}>
-            <Avatar
-              src='/images/gift.svg'
-              variant='square'
-              sx={{ width: 126, height: 'auto' }}
-            />
-          </Stack>
-        </Paper>
-      </Box>
+        <EventToday />
+        <Stack direction={'row'} spacing={2}>
+          <Typography variant='h5' fontWeight={'light'}>
+            Upcoming Anniversary
+          </Typography>
+        </Stack>
+        <UpcomingEvent />
+      </Stack>
     </>
   );
 }
