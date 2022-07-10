@@ -5,6 +5,7 @@ import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextF
 import LabelTextField from 'components/LabelTextField';
 import { Controller, useForm } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
+import { paidByBank } from '../AddStock';
 interface IAddStockInput {
   categoryName: string;
   productName: string;
@@ -13,32 +14,7 @@ interface IAddStockInput {
   shopName: string;
   paidBy: string;
 }
-const paidByBank = [
-  'ACLEDA Bank',
-  'ABA Bank',
-  'WING Bank',
-  'BAKONG',
-  'CANADIA Bank',
-  'SATHAPANA Bank',
-  'WOORI WON Bank',
-  'TRUE MONEY ',
-  'AMK',
-  'PRASAC',
-  'PHILLIP Bank',
-  'PRINCE Bank',
-  'HATTHA Bank',
-  'CP Bank',
-  'VATTANAC Bank',
-  'JTRUST ROYAL Bank',
-  'FTB Bank',
-  'PPC Bank',
-  'CHIP MONG Bank',
-  'MOHANOKOR',
-  'SBI LY HOUR Bank',
-  'MAY Bank',
-  'eMoney Agent',
-  'Pi Pay',
-];
+
 const cateName = ['Grocery', 'Meats', 'Vegetable', 'Fruits', 'Drinks'];
 
 export default function EditStock({

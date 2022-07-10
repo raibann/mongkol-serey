@@ -13,7 +13,7 @@ interface IAddStockInput {
   shopName: string;
   paidBy: string;
 }
-const paidByBank = [
+export const paidByBank = [
   'ACLEDA Bank',
   'ABA Bank',
   'WING Bank',
@@ -38,6 +38,7 @@ const paidByBank = [
   'MAY Bank',
   'eMoney Agent',
   'Pi Pay',
+  'Cash',
 ];
 const cateName = ['Grocery', 'Meats', 'Vegetable', 'Fruits', 'Drinks'];
 
