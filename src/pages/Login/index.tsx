@@ -5,15 +5,16 @@ import {
   IconButton,
   InputAdornment,
   Stack,
-  TextField,
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import ErrorDialog from 'components/CusDialog/errorDailog';
+import CusTextField from 'components/CusTextField';
 import { Eye, EyeSlash } from 'iconsax-react';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import theme from 'theme/theme';
+import THEME_UTIL from 'utils/theme-util';
 
 interface Ilogin {
   username: string;
@@ -93,10 +94,10 @@ export default function Login() {
                         },
                       }}
                       render={({ field, fieldState: { error } }) => (
-                        <TextField
+                        <CusTextField
                           {...field}
                           error={Boolean(error)}
-                          label='Outlined'
+                          placeholder='Username'
                           variant='outlined'
                           fullWidth
                           helperText={!error ? '' : error?.message}
@@ -123,14 +124,14 @@ export default function Login() {
                         },
                       }}
                       render={({ field, fieldState: { error } }) => (
-                        <TextField
+                        <CusTextField
                           {...field}
                           error={Boolean(error)}
-                          label='Outlined'
+                          placeholder='Must be at least 6 characters'
                           variant='outlined'
                           fullWidth
-                          type={values ? 'text' : 'password'}
                           helperText={!error ? '' : error?.message}
+                          type={values ? 'text' : 'password'}
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position='start'>
@@ -159,7 +160,12 @@ export default function Login() {
                     color='primary'
                     size='large'
                     type='submit'
-                    sx={{ boxShadow: 0, py: 2, borderRadius: 3 }}
+                    sx={{
+                      boxShadow: 0,
+                      borderRadius: 3,
+                      height: 56,
+                      background: THEME_UTIL.goldGradientMain,
+                    }}
                   >
                     Login
                   </Button>

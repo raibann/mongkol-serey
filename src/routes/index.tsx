@@ -52,7 +52,14 @@ export default function AllRoutes() {
           }
         />
       </Route>
-      <Route path={ROUTE_PATH.login} element={<Login />} />
+      <Route
+        path={ROUTE_PATH.login}
+        element={
+          <Suspense>
+            <Login />
+          </Suspense>
+        }
+      />
     </Routes>
   );
 }
