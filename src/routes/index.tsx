@@ -2,6 +2,7 @@ import Layout from 'layout';
 import Dashboard from 'pages/Dashboard';
 import Orders from 'pages/Orders';
 import Stocks from 'pages/Stocks';
+import Reminder from 'pages/Reminder';
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
@@ -40,6 +41,14 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Stocks />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.reminder}
+          element={
+            <Suspense>
+              <Reminder />
             </Suspense>
           }
         />
