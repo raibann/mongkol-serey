@@ -6,4 +6,5 @@ export const ROUTE_PATH = {
   stocks: 'stocks',
   error: 'pagenotfound',
   reminder: 'reminder',
+  customers: 'customers',
 };
