@@ -113,7 +113,7 @@ const Stocks = () => {
               size='small'
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position='start'>
+                  <InputAdornment position='end'>
                     <SearchNormal1
                       size='20'
                       color={theme.palette.primary.main}
