@@ -12,6 +12,7 @@ interface IAddStockInput {
   price: string;
   shopName: string;
   paidBy: string;
+  usedStock: number;
 }
 export const paidByBank = [
   'ACLEDA Bank',
@@ -40,12 +41,14 @@ export const paidByBank = [
   'Pi Pay',
   'Cash',
 ];
-const cateName = ['Grocery', 'Meats', 'Vegetable', 'Fruits', 'Drinks'];
+const cateName = ['Grocery', 'Meat', 'Vegetable', 'Fruits', 'Drinks'];
 
-export default function AddStock({
-  setOpen,
+export default function FormStock({
+  handleOpenDrawer,
+  openDrawer,
 }: {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleOpenDrawer: (obj: 'Add' | 'Edit' | '') => void;
+  openDrawer: '' | 'Add' | 'Edit';
 }) {
   const { control, handleSubmit, setValue } = useForm<IAddStockInput>();
   const handleAddStocks = (data: IAddStockInput) => {
@@ -61,12 +64,12 @@ export default function AddStock({
           py={3}
         >
           <Typography variant='h4' color='secondary.main' fontWeight='bold'>
-            Add Stocks
+            {openDrawer} Stocks
           </Typography>
           <CusIconButton
             color='error'
             onClick={() => {
-              setOpen(false);
+              handleOpenDrawer('');
             }}
           >
             <MdClose />
@@ -199,10 +202,30 @@ export default function AddStock({
                 }}
               />
             </Stack>
+            {openDrawer === 'Edit' && (
+              <Stack direction={'row'}>
+                <Controller
+                  control={control}
+                  name='usedStock'
+                  defaultValue={0}
+                  render={({ field }) => {
+                    return (
+                      <LabelTextField label='Used Stock'>
+                        <StyledOutlinedTextField
+                          placeholder='Enter used stock'
+                          {...field}
+                        />
+                      </LabelTextField>
+                    );
+                  }}
+                />
+              </Stack>
+            )}
+
             <Stack direction={'row'} spacing={6}>
               <Button
                 onClick={() => {
-                  setOpen(false);
+                  handleOpenDrawer('');
                 }}
                 variant='contained'
                 fullWidth
