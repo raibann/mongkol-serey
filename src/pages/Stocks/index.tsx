@@ -7,68 +7,142 @@ import {
   Stack,
   Table,
   TableBody,
+  TableContainer,
 } from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import { Add, SearchNormal1 } from 'iconsax-react';
-import { OrderTableHead, OrderTableBody } from 'pages/Orders/OrderTable';
 import { useState } from 'react';
 import theme from 'theme/theme';
-import AddStock from './AddStock';
-// import EditStock from './EditStock';
+import FormStock from './FormStock';
+import { StockTableBody, StockTableHead } from './stockTable';
 
-interface IOrderData {
+export interface IStockData {
   id: number;
-  name: string;
-  social: string;
-  eventDate: string;
-  quantity: number;
-  eventLocation: string;
-  bookingDate: string;
-  deposit: number;
+  cateName: string;
+  productName: string;
+  quantity: {
+    value: number;
+    unit: string;
+  };
+  price: {
+    value: number;
+    currency: string;
+  };
+  shopName: string;
   paidBy: string;
+  totalPrice: {
+    value: number;
+    currency: string;
+  };
+  inStock: {
+    value: number;
+    unit: string;
+  };
 }
-const ORDER_DATA: IOrderData[] = [
+const stockData: IStockData[] = [
   {
     id: 1,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: 'AMK',
+    cateName: 'Groceries',
+    productName: 'Soy Sauce',
+    quantity: {
+      value: 10,
+      unit: 'packages',
+    },
+    price: {
+      value: 5,
+      currency: '$',
+    },
+    shopName: 'Psa Tmey',
+    paidBy: 'Cash',
+    totalPrice: {
+      value: 50,
+      currency: '$',
+    },
+    inStock: {
+      value: 5,
+      unit: 'packages',
+    },
   },
   {
     id: 2,
-    name: 'Ma Raibann',
-    social: '@raibann.rb',
-    eventDate: '05-10-2022',
-    quantity: 100,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '20-07-2022',
-    deposit: 2000,
-    paidBy: 'ABA',
+    cateName: 'Drinks',
+    productName: 'Singha Beer',
+    quantity: {
+      value: 10,
+      unit: 'cases',
+    },
+    price: {
+      value: 15,
+      currency: '$',
+    },
+    shopName: 'Psa Tmey',
+    paidBy: 'Cash',
+    totalPrice: {
+      value: 150,
+      currency: '$',
+    },
+    inStock: {
+      value: 5,
+      unit: 'packages',
+    },
   },
   {
     id: 3,
-    name: 'Rem Brosna',
-    social: '@rem.brosna',
-    eventDate: '25-12-2022',
-    quantity: 70,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '16-11-2022',
-    deposit: 400,
+    cateName: 'Fruit',
+    productName: 'Apple',
+    quantity: {
+      value: 10,
+      unit: 'packages',
+    },
+    price: {
+      value: 5,
+      currency: '$',
+    },
+    shopName: 'Psa Tmey',
     paidBy: 'Cash',
+    totalPrice: {
+      value: 50,
+      currency: '$',
+    },
+    inStock: {
+      value: 5,
+      unit: 'packages',
+    },
+  },
+  {
+    id: 4,
+    cateName: 'Meat',
+    productName: 'Beef',
+    quantity: {
+      value: 10,
+      unit: 'Kg',
+    },
+    price: {
+      value: 5,
+      currency: '$',
+    },
+    shopName: 'Psa Tmey',
+    paidBy: 'Cash',
+    totalPrice: {
+      value: 50,
+      currency: '$',
+    },
+    inStock: {
+      value: 5,
+      unit: 'Kg',
+    },
   },
 ];
-
 const Stocks = () => {
-  const [open, setOpen] = useState(false);
-  const openDrawer = () => {
-    setOpen(true);
+  const [openDrawer, setOpenDrawer] = useState<'Add' | 'Edit' | ''>('');
+  const [searchProduct, setSearchProduct] = useState(stockData);
+  console.log(searchProduct);
+  // handle add and edit stock
+  const handleOpenDrawer = (obj: 'Add' | 'Edit' | '') => {
+    setOpenDrawer(obj);
   };
+
   return (
     <>
       <PageHeader pageTitle='Stocks' />
@@ -104,16 +178,32 @@ const Stocks = () => {
                 boxShadow: theme.shadows[1],
                 borderRadius: 2,
               }}
-              onClick={openDrawer}
+              onClick={() => handleOpenDrawer('Add')}
             >
               Add New
             </Button>
             <CusTextField
+              onChange={(e) => {
+                if (!!e.currentTarget.value) {
+                  let tmp = searchProduct.filter(
+                    (el) =>
+                      el.productName
+                        .toLowerCase()
+                        .indexOf(e.currentTarget.value.toLowerCase()) !== -1 ||
+                      el.cateName
+                        .toLowerCase()
+                        .indexOf(e.currentTarget.value.toLowerCase()) !== -1
+                  );
+                  setSearchProduct(tmp);
+                } else {
+                  setSearchProduct(stockData);
+                }
+              }}
               placeholder='Search...'
               size='small'
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position='start'>
+                  <InputAdornment position='end'>
                     <SearchNormal1
                       size='20'
                       color={theme.palette.primary.main}
@@ -124,28 +214,32 @@ const Stocks = () => {
             />
           </Stack>
         </Stack>
-        <Table>
-          <OrderTableHead />
+        <TableContainer>
+          <Table
+            stickyHeader
+            sx={{
+              '& thead tr th': {
+                background: (theme) => theme.palette.background.paper,
+                fontWeight: '600',
+              },
+            }}
+          >
+            <StockTableHead />
+            <TableBody>
+              {searchProduct.map((stock, i) => {
+                return (
+                  <StockTableBody
+                    props={stock}
+                    index={i}
+                    key={i}
+                    onEdit={handleOpenDrawer}
+                  />
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-          <TableBody>
-            {ORDER_DATA.map((order) => {
-              return (
-                <OrderTableBody
-                  key={order.id}
-                  id={order.id}
-                  name={order.name}
-                  social={order.social}
-                  bookingDate={order.bookingDate}
-                  deposit={order.deposit}
-                  eventDate={order.eventDate}
-                  eventLocation={order.eventLocation}
-                  paidBy={order.paidBy}
-                  quantity={order.quantity}
-                />
-              );
-            })}
-          </TableBody>
-        </Table>
         <Pagination
           count={10}
           shape='rounded'
@@ -154,15 +248,14 @@ const Stocks = () => {
       </Paper>
 
       <Drawer
-        open={open}
+        open={!!openDrawer}
         onClose={() => {
-          setOpen(false);
+          setOpenDrawer('');
         }}
         anchor={'right'}
         PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
       >
-        <AddStock {...{ setOpen }} />
-        {/* <EditStock {...{ setOpen }} /> */}
+        <FormStock {...{ handleOpenDrawer, openDrawer }} />
       </Drawer>
     </>
   );
