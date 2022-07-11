@@ -1,4 +1,4 @@
-import { Button, Divider, Stack, Typography } from '@mui/material';
+import { alpha, Button, Divider, Stack, Typography } from '@mui/material';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import CustomerForm, {
   CustomerInput,
@@ -9,6 +9,9 @@ import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextF
 import LabelTextField from 'components/LabelTextField';
 import OrderItem from './OrderItem';
 import { BsPlus } from 'react-icons/bs';
+import FinalInvoiceForm, { FinalInvoiceInput } from './FinalInvoiceForm';
+import { useEffect } from 'react';
+import theme from 'theme/theme';
 
 export interface IOrderForm {
   id: string;
@@ -35,9 +38,23 @@ export interface IOrderForm {
 }
 
 const OrderDrawer = () => {
-  const methods = useForm<IOrderForm & CustomerInput>();
+  const methods = useForm<IOrderForm & CustomerInput & FinalInvoiceInput>();
   const { watch, setValue } = methods;
   const listOrder = watch('listMenu') || [];
+  const finalInvoice = watch('finalInvoice') || [];
+
+  useEffect(() => {
+    setValue('finalInvoice', [
+      {
+        id: new Date().getTime(),
+        fTitle: '',
+        fQty: '',
+        fPrice: '',
+        fUnit: '',
+      },
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addListOrderHandler = () => {
     if (listOrder && listOrder.length > 0) {
@@ -166,6 +183,39 @@ const OrderDrawer = () => {
             <Stack spacing={4} direction='row'>
               <Controller
                 control={methods.control}
+                name='deposit'
+                defaultValue=''
+                render={({ field }) => {
+                  return (
+                    <LabelTextField label='Deposit'>
+                      <StyledOutlinedTextField
+                        placeholder='Enter Deposit'
+                        {...field}
+                      />
+                    </LabelTextField>
+                  );
+                }}
+              />
+
+              <Controller
+                control={methods.control}
+                name='depositText'
+                defaultValue=''
+                render={({ field }) => {
+                  return (
+                    <LabelTextField label='Amount in Khmr'>
+                      <StyledOutlinedTextField
+                        placeholder='Enter Amount in Khmr'
+                        {...field}
+                      />
+                    </LabelTextField>
+                  );
+                }}
+              />
+            </Stack>
+            <Stack spacing={4} direction='row'>
+              <Controller
+                control={methods.control}
                 name='eventLocation'
                 defaultValue=''
                 render={({ field }) => {
@@ -180,38 +230,6 @@ const OrderDrawer = () => {
                 }}
               />
 
-              <Controller
-                control={methods.control}
-                name='deposit'
-                defaultValue=''
-                render={({ field }) => {
-                  return (
-                    <LabelTextField label='Deposit'>
-                      <StyledOutlinedTextField
-                        placeholder='Enter Deposit'
-                        {...field}
-                      />
-                    </LabelTextField>
-                  );
-                }}
-              />
-            </Stack>
-            <Stack spacing={4} direction='row'>
-              <Controller
-                control={methods.control}
-                name='depositText'
-                defaultValue=''
-                render={({ field }) => {
-                  return (
-                    <LabelTextField label='Deposit Text'>
-                      <StyledOutlinedTextField
-                        placeholder='Enter Deposit Text'
-                        {...field}
-                      />
-                    </LabelTextField>
-                  );
-                }}
-              />
               <Controller
                 control={methods.control}
                 name='paidBy'
@@ -281,6 +299,33 @@ const OrderDrawer = () => {
               </Typography>
             </Stack>
           )}
+
+          <Divider sx={{ m: 3 }}>Final Invoice</Divider>
+
+          <Stack px={3}>
+            {finalInvoice.map((invoice, i) => {
+              return (
+                <FinalInvoiceForm
+                  key={invoice.id}
+                  index={i}
+                  onRemoveFinalInvoice={() => {
+                    console.log(invoice.id);
+                  }}
+                />
+              );
+            })}
+            <Button
+              variant='outlined'
+              onClick={() => console.log('Add Invoice')}
+              sx={{
+                py: 1,
+                borderStyle: 'dashed',
+                background: alpha(theme.palette.primary.light, 0.2),
+              }}
+            >
+              Add More
+            </Button>
+          </Stack>
 
           <Stack height={200} />
         </form>
