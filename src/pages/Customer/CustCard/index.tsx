@@ -1,24 +1,17 @@
 import { Paper, Stack, Typography, Avatar, Box } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Add, Edit, InfoCircle } from 'iconsax-react';
-interface ICustCard {
-  id: number;
-  profile: string;
-  upComing: string;
-  ordered: number;
-  lastOrder: string;
-  customerName: string;
-  facebook: string;
-  telegram: string;
-  contacNumber: string;
-  gift: number;
-  address: {
-    houseNo: number;
-    streetNo: number;
-  };
-}
-const CustCardData: ICustCard[] = [];
-const CustCard = () => {
+import { ICustCard } from '..';
+
+const CustCard = ({
+  handleOpenDrawer,
+  CustCardData,
+  setSelectedData,
+}: {
+  handleOpenDrawer: (obj: 'Add' | 'Edit' | 'Details' | '') => void;
+  CustCardData: ICustCard[];
+  setSelectedData: React.Dispatch<React.SetStateAction<ICustCard[]>>;
+}) => {
   return (
     <>
       <Box
@@ -26,7 +19,7 @@ const CustCard = () => {
           display: 'flex',
           flexWrap: 'wrap',
           rowGap: 2.5,
-          columnGap: 6.5,
+          columnGap: 2.8,
         }}
       >
         {CustCardData.map((data) => (
@@ -37,10 +30,8 @@ const CustCard = () => {
                 variant='square'
                 sx={{ width: 100, height: 'auto' }}
               />
-              <Stack>
-                <Typography variant='h6' textAlign={'center'}>
-                  {data.customerName}
-                </Typography>
+              <Stack alignItems={'center'}>
+                <Typography variant='h6'>{data.customerName}</Typography>
                 <Typography
                   variant='caption'
                   sx={{ color: (theme) => theme.palette.text.secondary }}
@@ -52,10 +43,24 @@ const CustCard = () => {
                 <CusIconButton color='primary'>
                   <Add variant='Outline' />
                 </CusIconButton>
-                <CusIconButton color='info'>
+                <CusIconButton
+                  color='info'
+                  onClick={() => handleOpenDrawer('Edit')}
+                >
                   <Edit variant='Outline' />
                 </CusIconButton>
-                <CusIconButton color='success'>
+                <CusIconButton
+                  color='success'
+                  onClick={(e) => {
+                    handleOpenDrawer('Details');
+                    if (e.target) {
+                      let temp = CustCardData.filter((el) => el.id === data.id);
+                      setSelectedData(temp);
+                    } else {
+                      setSelectedData(CustCardData);
+                    }
+                  }}
+                >
                   <InfoCircle variant='Outline' />
                 </CusIconButton>
               </Stack>
