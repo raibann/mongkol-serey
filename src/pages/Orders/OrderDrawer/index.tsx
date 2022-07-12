@@ -90,6 +90,38 @@ const OrderDrawer = () => {
     setValue('listMenu', tmp);
   };
 
+  const addFinalInvoiceHandler = () => {
+    if (finalInvoice && finalInvoice.length > 0) {
+      setValue('finalInvoice', [
+        ...finalInvoice,
+        {
+          id: new Date().getTime(),
+          fTitle: '',
+          fQty: '',
+          fPrice: '',
+          fUnit: '',
+        },
+      ]);
+    } else {
+      setValue('finalInvoice', [
+        {
+          id: new Date().getTime(),
+          fTitle: '',
+          fQty: '',
+          fPrice: '',
+          fUnit: '',
+        },
+      ]);
+    }
+  };
+
+  const removeFinalInvoiceHandler = (id: number) => {
+    const tmp = finalInvoice.filter((invoice) => {
+      return invoice.id !== id;
+    });
+    setValue('finalInvoice', tmp);
+  };
+
   return (
     <>
       <Stack
@@ -309,15 +341,16 @@ const OrderDrawer = () => {
                   key={invoice.id}
                   index={i}
                   onRemoveFinalInvoice={() => {
-                    console.log(invoice.id);
+                    removeFinalInvoiceHandler(invoice.id);
                   }}
                 />
               );
             })}
             <Button
               variant='outlined'
-              onClick={() => console.log('Add Invoice')}
+              onClick={addFinalInvoiceHandler}
               sx={{
+                mt: 2,
                 py: 1,
                 borderStyle: 'dashed',
                 background: alpha(theme.palette.primary.light, 0.2),

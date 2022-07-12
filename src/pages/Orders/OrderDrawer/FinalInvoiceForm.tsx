@@ -26,7 +26,7 @@ const FinalInvoiceForm = ({
 
   return (
     <>
-      <Stack spacing={1} py={3} position='relative' direction='row'>
+      <Stack spacing={1} pt={2} position='relative' direction='row'>
         <Controller
           control={control}
           name={`finalInvoice.${index}.fTitle`}
