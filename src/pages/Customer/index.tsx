@@ -10,11 +10,12 @@ import { CusIconButton } from 'components/CusIconButton';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import { Add, SearchNormal1 } from 'iconsax-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
 import theme from 'theme/theme';
 import CustCard from './CustCard';
+import CustomerDetails from './CustomerDetails';
 import CustomerForm, { CustomerInput } from './CustomerDrawer/CustomerForm';
 export interface ICustCard extends CustomerInput {
   id: number;
@@ -247,7 +248,9 @@ export default function Customers() {
 
           {openDrawer === 'Details' &&
             selectedData.map((data) => (
-              <Typography key={data.id}>{data.id}</Typography>
+              <React.Fragment key={data.id}>
+                <CustomerDetails {...{ data }} />
+              </React.Fragment>
             ))}
         </Container>
       </Drawer>

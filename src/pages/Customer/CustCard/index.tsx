@@ -27,7 +27,6 @@ const CustCard = ({
             <Stack direction={'column'} alignItems='center' spacing={1.5}>
               <Avatar
                 src='/images/avatar.svg'
-                variant='square'
                 sx={{ width: 100, height: 'auto' }}
               />
               <Stack alignItems={'center'}>
