@@ -10,7 +10,7 @@ const LabelTextField = ({
 }) => {
   return (
     <Stack spacing={1} width='100%'>
-      <Typography>{label}</Typography>
+      <Typography fontSize={14}>{label}</Typography>
       {children}
     </Stack>
   );
