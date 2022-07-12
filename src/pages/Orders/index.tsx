@@ -1,6 +1,7 @@
 import {
   Button,
   Drawer,
+  InputAdornment,
   Paper,
   Stack,
   Table,
@@ -10,7 +11,7 @@ import {
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
-import { Add } from 'iconsax-react';
+import { Add, SearchNormal1 } from 'iconsax-react';
 import React, { useState } from 'react';
 import theme from 'theme/theme';
 import OrderDrawer from './OrderDrawer';
@@ -75,6 +76,7 @@ const Orders = () => {
       <Paper
         elevation={3}
         sx={{
+          px: 2,
           mx: 2,
           borderRadius: 2,
           minHeight: '90%',
@@ -86,7 +88,7 @@ const Orders = () => {
           direction='row'
           justifyContent='space-between'
           alignItems='center'
-          p={2}
+          py={2}
         >
           <ToggleButtonGroup
             value={ToggleValue}
@@ -116,7 +118,20 @@ const Orders = () => {
             alignItems='center'
             spacing={2}
           >
-            <CusTextField placeholder='Search...' size='small' />
+            <CusTextField
+              placeholder='Search...'
+              size='small'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <SearchNormal1
+                      size='20'
+                      color={theme.palette.primary.main}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
 
             <Button
               variant='contained'

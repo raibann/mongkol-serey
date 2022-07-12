@@ -31,8 +31,8 @@ const CustomerForm = () => {
 
   return (
     <>
-      <Stack spacing={2} px={3}>
-        <Stack direction='row' spacing={2}>
+      <Stack spacing={4} px={3}>
+        <Stack direction='row' spacing={4}>
           <Controller
             control={control}
             name='facebook'
@@ -86,7 +86,7 @@ const CustomerForm = () => {
           />
         </Stack>
 
-        <Stack direction='row' spacing={2}>
+        <Stack direction='row' spacing={4}>
           <Controller
             control={control}
             name='customerName'
@@ -126,7 +126,7 @@ const CustomerForm = () => {
           />
         </Stack>
 
-        <Stack direction='row' spacing={2}>
+        <Stack direction='row' spacing={4}>
           <Controller
             control={control}
             name='houseNo'
@@ -160,7 +160,7 @@ const CustomerForm = () => {
           />
         </Stack>
 
-        <Stack direction='row' spacing={2}>
+        <Stack direction='row' spacing={4}>
           <Controller
             control={control}
             name='province'
@@ -254,7 +254,7 @@ const CustomerForm = () => {
           />
         </Stack>
 
-        <Stack direction='row' spacing={2}>
+        <Stack direction='row' spacing={4}>
           <Controller
             control={control}
             name='commune'
