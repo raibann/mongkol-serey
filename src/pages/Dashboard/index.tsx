@@ -246,6 +246,7 @@ const Dashboard = () => {
           <Divider
             sx={{
               borderColor: theme.palette.divider,
+              mt: 2.5,
             }}
           />
           <Button
