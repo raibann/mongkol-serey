@@ -13,12 +13,26 @@ import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import { SearchNormal1 } from 'iconsax-react';
 import { ORDER_DATA } from 'pages/Orders';
-import { OrderTableHead, OrderTableBody } from 'pages/Orders/OrderTable';
 import { useState } from 'react';
 import theme from 'theme/theme';
-
+import ExpenseDialogs from './ExpenseDialogs';
+import { ExpenseTableBody, ExpenseTableHead } from './expenseTable';
+export interface IAddExpenseInput {
+  title: string;
+  totalPrice: string | number;
+  paidBy: string;
+  other: string;
+}
 export default function Expense() {
   const [ToggleValue, setToggleValue] = useState('pending');
+  const [openDialogs, setOpenDialogs] = useState(false);
+  const handleOpenDialogs = () => {
+    setOpenDialogs(true);
+  };
+
+  const handleCloseDialogs = () => {
+    setOpenDialogs(false);
+  };
   return (
     <>
       <PageHeader pageTitle={'Expense'} />
@@ -93,11 +107,11 @@ export default function Expense() {
               },
             }}
           >
-            <OrderTableHead />
+            <ExpenseTableHead />
             <TableBody>
               {ORDER_DATA.map((order) => {
                 return (
-                  <OrderTableBody
+                  <ExpenseTableBody
                     key={order.id}
                     id={order.id}
                     name={order.name}
@@ -108,6 +122,7 @@ export default function Expense() {
                     eventLocation={order.eventLocation}
                     paidBy={order.paidBy}
                     quantity={order.quantity}
+                    {...{ handleOpenDialogs }}
                   />
                 );
               })}
@@ -120,6 +135,7 @@ export default function Expense() {
           sx={{ position: 'absolute', bottom: 5 }}
         />
       </Paper>
+      <ExpenseDialogs {...{ openDialogs, handleCloseDialogs }} />
     </>
   );
 }
