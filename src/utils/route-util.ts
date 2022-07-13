@@ -5,4 +5,6 @@ export const ROUTE_PATH = {
   login: 'login',
   stocks: 'stocks',
   error: 'pagenotfound',
+  reminder: 'reminder',
+  customers: 'customers',
 };
