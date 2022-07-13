@@ -3,7 +3,7 @@ import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import { Add, Trash } from 'iconsax-react';
-import { Control, Controller, UseFormSetValue } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
 import { IAddExpenseInput } from '..';
 export const paidBy = [
@@ -70,13 +70,8 @@ const listTitle = [
   'អង្ករ',
 ];
 
-export default function FormExpense({
-  control,
-  setValue,
-}: {
-  control: Control<IAddExpenseInput, object>;
-  setValue: UseFormSetValue<IAddExpenseInput>;
-}) {
+export default function FormExpense() {
+  const { control, setValue } = useFormContext<IAddExpenseInput>();
   return (
     <>
       <Stack spacing={4}>

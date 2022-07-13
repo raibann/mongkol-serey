@@ -6,12 +6,22 @@ import {
   Typography,
   Divider,
   Button,
+  Slide,
 } from '@mui/material';
+import { TransitionProps } from '@mui/material/transitions';
+import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import theme from 'theme/theme';
 import { IAddExpenseInput } from '..';
 import FormExpense from '../FormExpense';
-
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction='up' ref={ref} {...props} />;
+});
 export default function ExpenseDialogs({
   openDialogs,
   handleCloseDialogs,
@@ -20,7 +30,7 @@ export default function ExpenseDialogs({
   handleCloseDialogs: () => void;
 }) {
   const method = useForm<IAddExpenseInput>();
-  const { control, setValue, handleSubmit } = method;
+  const { handleSubmit } = method;
   return (
     <>
       <Dialog
@@ -29,9 +39,14 @@ export default function ExpenseDialogs({
         onClose={handleCloseDialogs}
         fullWidth
         maxWidth={'md'}
+        TransitionComponent={Transition}
       >
         <FormProvider {...method}>
-          <form onSubmit={handleSubmit((data) => data)}>
+          <form
+            onSubmit={handleSubmit((data) => {
+              console.log(data);
+            })}
+          >
             <DialogTitle>
               <Stack
                 direction={'row'}
@@ -43,6 +58,7 @@ export default function ExpenseDialogs({
                   <Button
                     variant='contained'
                     fullWidth
+                    onClick={handleCloseDialogs}
                     sx={{
                       borderRadius: 2,
                       textTransform: 'capitalize',
@@ -118,7 +134,7 @@ export default function ExpenseDialogs({
                     8,000$
                   </Typography>
                 </Stack>
-                <FormExpense {...{ control, setValue }} />
+                <FormExpense />
               </Stack>
               <Divider sx={{ pt: 10 }} />
               <Stack
