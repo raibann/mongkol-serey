@@ -8,7 +8,6 @@ import {
   Button,
   Slide,
   alpha,
-  Box,
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { Add } from 'iconsax-react';
