@@ -17,12 +17,7 @@ import { useState } from 'react';
 import theme from 'theme/theme';
 import ExpenseDialogs from './ExpenseDialogs';
 import { ExpenseTableBody, ExpenseTableHead } from './expenseTable';
-export interface IAddExpenseInput {
-  title: string;
-  totalPrice: string | number;
-  paidBy: string;
-  other: string;
-}
+
 export default function Expense() {
   const [ToggleValue, setToggleValue] = useState('pending');
   const [openDialogs, setOpenDialogs] = useState(false);
@@ -30,9 +25,6 @@ export default function Expense() {
     setOpenDialogs(true);
   };
 
-  const handleCloseDialogs = () => {
-    setOpenDialogs(false);
-  };
   return (
     <>
       <PageHeader pageTitle={'Expense'} />
@@ -135,7 +127,7 @@ export default function Expense() {
           sx={{ position: 'absolute', bottom: 5 }}
         />
       </Paper>
-      <ExpenseDialogs {...{ openDialogs, handleCloseDialogs }} />
+      <ExpenseDialogs {...{ openDialogs, setOpenDialogs }} />
     </>
   );
 }

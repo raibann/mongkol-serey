@@ -1,11 +1,10 @@
-import { Stack, Button, Autocomplete, alpha } from '@mui/material';
+import { Stack, Autocomplete, alpha, InputAdornment } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
-import { Add, Trash } from 'iconsax-react';
+import { DollarCircle, Trash } from 'iconsax-react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
-import { IAddExpenseInput } from '..';
 export const paidBy = [
   'ACLEDA Bank',
   'ABA Bank',
@@ -69,132 +68,136 @@ const listTitle = [
   'ទឹកកកអនាម័យ',
   'អង្ករ',
 ];
-
-export default function FormExpense() {
+export interface IAddExpenseInput {
+  expenseRowData: {
+    id: number;
+    title: string;
+    totalPrice: string | number;
+    paidBy: string;
+    other: string;
+  }[];
+}
+export default function FormExpense({
+  index,
+  onRemove,
+}: {
+  index: number;
+  onRemove: () => void;
+}) {
   const { control, setValue } = useFormContext<IAddExpenseInput>();
   return (
     <>
-      <Stack spacing={4}>
-        <Stack direction={'row'} spacing={4} alignItems='flex-end'>
-          <Controller
-            control={control}
-            name='title'
-            defaultValue=''
-            render={({ field: { onChange, ...rest } }) => {
-              return (
-                <LabelTextField label='Tittle'>
-                  <Autocomplete
-                    freeSolo
-                    disableClearable
-                    openOnFocus
-                    onInputChange={(e, value) => {
-                      setValue('title', value);
-                    }}
-                    {...rest}
-                    renderInput={(params) => (
-                      <StyledOutlinedTextField
-                        {...params}
-                        placeholder='Tittle'
-                        size='small'
-                      />
-                    )}
-                    options={listTitle.map((data, i) => data)}
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
-          <Controller
-            control={control}
-            name='totalPrice'
-            defaultValue=''
-            render={({ field }) => {
-              return (
-                <LabelTextField label='Total Price'>
-                  <StyledOutlinedTextField
-                    placeholder='Total price'
-                    {...field}
-                    size='small'
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
-          <Controller
-            control={control}
-            name='paidBy'
-            defaultValue=''
-            render={({ field: { onChange, ...rest } }) => {
-              return (
-                <LabelTextField label='Paid By'>
-                  <Autocomplete
-                    freeSolo
-                    disableClearable
-                    openOnFocus
-                    {...rest}
-                    onInputChange={(e, value) => {
-                      setValue('paidBy', value);
-                    }}
-                    renderInput={(params) => (
-                      <StyledOutlinedTextField
-                        {...params}
-                        placeholder='Paid by'
-                        size='small'
-                      />
-                    )}
-                    options={paidBy.map((data, i) => data)}
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
-          <Controller
-            control={control}
-            name='other'
-            defaultValue=''
-            render={({ field }) => {
-              return (
-                <LabelTextField label='Other'>
-                  <StyledOutlinedTextField
-                    placeholder='Other'
-                    {...field}
-                    size='small'
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
-          <CusIconButton
-            sx={{
-              background: (theme) => theme.palette.error.main,
-              color: (theme) => theme.palette.common.white,
-              '&:hover': {
-                background: (theme) => alpha(theme.palette.error.main, 0.8),
-              },
-            }}
-          >
-            <Trash size='24' />
-          </CusIconButton>
-        </Stack>
-        <Button
-          variant='contained'
-          startIcon={<Add />}
-          fullWidth
-          size='small'
+      <Stack direction={'row'} spacing={2} alignItems='flex-end'>
+        <Controller
+          control={control}
+          name={`expenseRowData.${index}.title`}
+          defaultValue=''
+          render={({ field: { onChange, ...rest } }) => {
+            return (
+              <LabelTextField label='Tittle'>
+                <Autocomplete
+                  freeSolo
+                  disableClearable
+                  openOnFocus
+                  onInputChange={(e, value) => {
+                    setValue(`expenseRowData.${index}.title`, value);
+                  }}
+                  {...rest}
+                  renderInput={(params) => (
+                    <StyledOutlinedTextField
+                      {...params}
+                      placeholder='Tittle'
+                      size='small'
+                    />
+                  )}
+                  options={listTitle.map((data, i) => data)}
+                />
+              </LabelTextField>
+            );
+          }}
+        />
+        <Controller
+          control={control}
+          name={`expenseRowData.${index}.totalPrice`}
+          defaultValue=''
+          render={({ field }) => {
+            return (
+              <LabelTextField label='Total Price'>
+                <StyledOutlinedTextField
+                  placeholder='Total price'
+                  {...field}
+                  size='small'
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <DollarCircle
+                          size='16'
+                          color={theme.palette.primary.main}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </LabelTextField>
+            );
+          }}
+        />
+        <Controller
+          control={control}
+          name={`expenseRowData.${index}.paidBy`}
+          defaultValue=''
+          render={({ field: { onChange, ...rest } }) => {
+            return (
+              <LabelTextField label='Paid By'>
+                <Autocomplete
+                  freeSolo
+                  disableClearable
+                  openOnFocus
+                  {...rest}
+                  onInputChange={(e, value) => {
+                    setValue(`expenseRowData.${index}.paidBy`, value);
+                  }}
+                  renderInput={(params) => (
+                    <StyledOutlinedTextField
+                      {...params}
+                      placeholder='Paid by'
+                      size='small'
+                    />
+                  )}
+                  options={paidBy.map((data, i) => data)}
+                />
+              </LabelTextField>
+            );
+          }}
+        />
+        <Controller
+          control={control}
+          name={`expenseRowData.${index}.other`}
+          defaultValue=''
+          render={({ field }) => {
+            return (
+              <LabelTextField label='Other'>
+                <StyledOutlinedTextField
+                  placeholder='Other'
+                  {...field}
+                  size='small'
+                />
+              </LabelTextField>
+            );
+          }}
+        />
+        <CusIconButton
+          onClick={onRemove}
           sx={{
-            color: theme.palette.primary.main,
-            boxShadow: theme.shadows[0],
-            borderRadius: 2,
-            border: `1px dashed ${theme.palette.primary.main}`,
-            background: (theme) => alpha(theme.palette.primary.main, 0.2),
+            background: (theme) => theme.palette.error.main,
+            color: (theme) => theme.palette.common.white,
             '&:hover': {
-              background: (theme) => alpha(theme.palette.primary.main, 0.2),
-              boxShadow: theme.shadows[0],
+              background: (theme) => alpha(theme.palette.error.main, 0.8),
             },
           }}
         >
-          Add New
-        </Button>
+          <Trash size='24' />
+        </CusIconButton>
       </Stack>
     </>
   );
