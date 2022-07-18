@@ -1,4 +1,4 @@
-import { alpha, Button, Divider, Stack, Typography } from '@mui/material';
+import { alpha, Autocomplete, Button, Stack, Typography } from '@mui/material';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import CustomerForm, {
   CustomerInput,
@@ -12,6 +12,9 @@ import { BsPlus } from 'react-icons/bs';
 import FinalInvoiceForm, { FinalInvoiceInput } from './FinalInvoiceForm';
 import { useEffect } from 'react';
 import theme from 'theme/theme';
+import { paidByBank } from 'pages/Stocks/FormStock';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 export interface IOrderForm {
   id: string;
@@ -66,7 +69,12 @@ const OrderDrawer = () => {
           price: '',
           quantity: '',
           unit: '',
-          menuItem: [],
+          menuItem: [
+            {
+              id: new Date().getTime(),
+              title: '',
+            },
+          ],
         },
       ]);
     } else {
@@ -77,7 +85,12 @@ const OrderDrawer = () => {
           price: '',
           quantity: '',
           unit: '',
-          menuItem: [],
+          menuItem: [
+            {
+              id: new Date().getTime(),
+              title: '',
+            },
+          ],
         },
       ]);
     }
@@ -139,11 +152,11 @@ const OrderDrawer = () => {
       </Stack>
       <FormProvider {...methods}>
         <form>
-          <Divider sx={{ p: 3 }}>Customer Info</Divider>
+          <InputGroupTitle>Customer Info</InputGroupTitle>
 
           <CustomerForm />
 
-          <Divider sx={{ p: 3, pt: 6 }}>Order Info</Divider>
+          <InputGroupTitle marginTop>Order Info</InputGroupTitle>
 
           <Stack px={3} spacing={4}>
             <Stack spacing={4} direction='row'>
@@ -187,10 +200,25 @@ const OrderDrawer = () => {
                 render={({ field }) => {
                   return (
                     <LabelTextField label='Event Date'>
-                      <StyledOutlinedTextField
-                        placeholder='Enter Event Date'
-                        {...field}
-                      />
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                          inputFormat='DD-MM-YYYY'
+                          {...field}
+                          InputAdornmentProps={{
+                            sx: {
+                              '& .MuiIconButton-root': {
+                                color: theme.palette.primary.main,
+                              },
+                            },
+                          }}
+                          renderInput={(params) => (
+                            <StyledOutlinedTextField
+                              placeholder='Enter Event Date'
+                              {...params}
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
                     </LabelTextField>
                   );
                 }}
@@ -203,10 +231,26 @@ const OrderDrawer = () => {
                 render={({ field }) => {
                   return (
                     <LabelTextField label='Booking Date'>
-                      <StyledOutlinedTextField
-                        placeholder='Enter Booking Date'
-                        {...field}
-                      />
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                          inputFormat='DD-MM-YYYY'
+                          {...field}
+                          InputAdornmentProps={{
+                            sx: {
+                              '& .MuiIconButton-root': {
+                                color: theme.palette.primary.main,
+                              },
+                            },
+                          }}
+                          renderInput={(params) => (
+                            <StyledOutlinedTextField
+                              placeholder='Enter Booking Date'
+                              {...params}
+                              {...field}
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
                     </LabelTextField>
                   );
                 }}
@@ -235,9 +279,9 @@ const OrderDrawer = () => {
                 defaultValue=''
                 render={({ field }) => {
                   return (
-                    <LabelTextField label='Amount in Khmr'>
+                    <LabelTextField label='Amount in Khmer'>
                       <StyledOutlinedTextField
-                        placeholder='Enter Amount in Khmr'
+                        placeholder='Enter Amount in Khmer'
                         {...field}
                       />
                     </LabelTextField>
@@ -266,12 +310,25 @@ const OrderDrawer = () => {
                 control={methods.control}
                 name='paidBy'
                 defaultValue=''
-                render={({ field }) => {
+                render={({ field: { onChange, ...rest } }) => {
                   return (
                     <LabelTextField label='Paid By'>
-                      <StyledOutlinedTextField
-                        placeholder='Enter Paid By'
-                        {...field}
+                      <Autocomplete
+                        freeSolo
+                        disableClearable
+                        openOnFocus
+                        id='paidby'
+                        {...rest}
+                        onInputChange={(e, value) => {
+                          setValue('paidBy', value);
+                        }}
+                        renderInput={(params) => (
+                          <StyledOutlinedTextField
+                            {...params}
+                            placeholder='Enter paid by'
+                          />
+                        )}
+                        options={paidByBank.map((data, i) => data)}
                       />
                     </LabelTextField>
                   );
@@ -324,15 +381,15 @@ const OrderDrawer = () => {
                 sx={{
                   p: 2,
                   borderRadius: 2,
-                  bgcolor: 'background.paper',
+                  bgcolor: alpha(theme.palette.error.light, 0.25),
                 }}
               >
-                {`No List Order... (Click Add More!)`}
+                {`No Order Item...`}
               </Typography>
             </Stack>
           )}
 
-          <Divider sx={{ m: 3 }}>Final Invoice</Divider>
+          <InputGroupTitle marginTop>Final Invoice</InputGroupTitle>
 
           <Stack px={3}>
             {finalInvoice.map((invoice, i) => {
@@ -363,6 +420,35 @@ const OrderDrawer = () => {
           <Stack height={200} />
         </form>
       </FormProvider>
+    </>
+  );
+};
+
+export const InputGroupTitle = ({
+  children,
+  marginTop,
+}: {
+  children: React.ReactNode;
+  marginTop?: boolean;
+}) => {
+  return (
+    <>
+      <Typography
+        textAlign='center'
+        fontWeight='bold'
+        variant='h5'
+        sx={{
+          mb: 3,
+          mt: marginTop ? 8 : 0,
+          mx: 3,
+          p: 1.5,
+          borderRadius: 2,
+          backgroundColor: theme.palette.background.paper,
+          boxShadow: theme.shadows[2],
+        }}
+      >
+        {children}
+      </Typography>
     </>
   );
 };
