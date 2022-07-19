@@ -30,7 +30,7 @@ const ErrorDialog = (props: IErrorDialog) => {
             variant='h5'
             sx={{ fontWeight: (theme) => theme.typography.fontWeightBold }}
           >
-            {props.errorTitle || 'NOOB AGENLA!'}
+            {props.errorTitle || 'NOOB!'}
           </Typography>
           <Typography sx={{ color: (theme) => theme.palette.error.main }}>
             {props.errorMessage}
