@@ -13,18 +13,15 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import theme from 'theme/theme';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Notification } from 'iconsax-react';
 import React from 'react';
-import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import { CusIconButton } from 'components/CusIconButton';
+import { Calendar2 } from 'iconsax-react';
+import { Notification } from 'iconsax-react';
 
 const DashboardHeader = () => {
-  const [date, setDate] = useState<Date | null>(new Date());
+  // const [date, setDate] = useState<Date | null>(new Date());
   const [ToggleValue, setToggleValue] = useState('week');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -40,58 +37,70 @@ const DashboardHeader = () => {
     daysLeft: 0,
   });
   return (
-    <PageHeader pageTitle='Dashboard'>
-      <ToggleButtonGroup
-        value={ToggleValue}
-        exclusive
-        fullWidth
-        size='small'
-        onChange={(
-          event: React.MouseEvent<HTMLElement, MouseEvent>,
-          value: any
-        ) => {
-          if (value !== null) {
-            setToggleValue(value);
-          }
-        }}
-        sx={{
-          width: '30%',
-        }}
+    <>
+      <PageHeader
+        pageTitle='Dashboard'
+        endComponent={
+          <>
+            <CusIconButton
+              color='primary'
+              onClick={handleClick}
+              sx={{ height: 40 }}
+            >
+              <Notification size='24' variant='Bold' />
+            </CusIconButton>
+          </>
+        }
       >
-        <CusToggleButton value='week'>Week</CusToggleButton>
-        <CusToggleButton value='month'>Month</CusToggleButton>
-        <CusToggleButton value='year'>Year</CusToggleButton>
-      </ToggleButtonGroup>
+        <Stack
+          direction={'row'}
+          spacing={2}
+          justifyContent='flex-end'
+          sx={{ width: '100%' }}
+          alignItems='center'
+        >
+          <ToggleButtonGroup
+            value={ToggleValue}
+            exclusive
+            fullWidth
+            size='small'
+            onChange={(
+              event: React.MouseEvent<HTMLElement, MouseEvent>,
+              value: any
+            ) => {
+              if (value !== null) {
+                setToggleValue(value);
+              }
+            }}
+            sx={{
+              width: { xs: '100%', md: '30%' },
+              height: 40,
+            }}
+          >
+            <CusToggleButton value='week'>Week</CusToggleButton>
+            <CusToggleButton value='month'>Month</CusToggleButton>
+            <CusToggleButton value='year'>Year</CusToggleButton>
+          </ToggleButtonGroup>
 
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DatePicker
-          inputFormat='DD-MM-YYYY'
-          value={date}
-          onChange={(newValue) => {
-            setDate(newValue);
-          }}
-          InputAdornmentProps={{
-            sx: {
-              '& .MuiIconButton-root': {
-                color: theme.palette.primary.main,
+          <CusIconButton color='primary'>
+            <Calendar2 size='24' variant='Outline' />
+          </CusIconButton>
+
+          <CusIconButton
+            color='primary'
+            onClick={handleClick}
+            sx={{
+              display: {
+                xs: 'none',
+                md: 'block',
               },
-            },
-          }}
-          renderInput={(params) => (
-            <CusTextField
-              size='small'
-              sx={{
-                width: 170,
-              }}
-              {...params}
-            />
-          )}
-        />
-      </LocalizationProvider>
-
-      <CusIconButton color='primary' onClick={handleClick}>
-        <Notification variant='Bold' />
-      </CusIconButton>
+              height: 40,
+            }}
+          >
+            <Notification size='24' variant='Bold' />
+          </CusIconButton>
+        </Stack>
+      </PageHeader>
       <Menu
         MenuListProps={{ sx: { p: 0 } }}
         sx={{
@@ -117,7 +126,6 @@ const DashboardHeader = () => {
               Anniverysary
             </Typography>
           </ListSubheader>
-
           {Anniversary.map((data, i) => (
             <ListItemButton key={i}>
               <ListItem>
@@ -143,7 +151,7 @@ const DashboardHeader = () => {
           ))}
         </List>
       </Menu>
-    </PageHeader>
+    </>
   );
 };
 
