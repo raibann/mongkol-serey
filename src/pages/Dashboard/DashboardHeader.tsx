@@ -1,10 +1,5 @@
 import {
-  Avatar,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemText,
   ListSubheader,
   Menu,
   Stack,
@@ -19,9 +14,9 @@ import PageHeader from 'components/PageHeader';
 import { CusIconButton } from 'components/CusIconButton';
 import { Calendar2 } from 'iconsax-react';
 import { Notification } from 'iconsax-react';
+import AnniversaryItem from './AnniversaryItem';
 
 const DashboardHeader = () => {
-  // const [date, setDate] = useState<Date | null>(new Date());
   const [ToggleValue, setToggleValue] = useState('week');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -111,7 +106,14 @@ const DashboardHeader = () => {
         open={open}
         onClose={handleClose}
       >
-        <List disablePadding>
+        <List
+          disablePadding
+          sx={{
+            width: 350,
+            px: 2,
+            pb: 2,
+          }}
+        >
           <ListSubheader
             sx={{
               p: 1,
@@ -127,27 +129,12 @@ const DashboardHeader = () => {
             </Typography>
           </ListSubheader>
           {Anniversary.map((data, i) => (
-            <ListItemButton key={i}>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar />
-                </ListItemAvatar>
-                <Stack direction={'row'} alignItems='center' spacing={4}>
-                  <ListItemText
-                    primary={data.name}
-                    secondary={data.lastOrder}
-                  />
-                  <Stack direction={'row'}>
-                    <Typography
-                      color={theme.palette.success.main}
-                      fontWeight={theme.typography.fontWeightBold}
-                    >
-                      {data.daysLeft === 0 ? 'Today' : ''}
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </ListItem>
-            </ListItemButton>
+            <AnniversaryItem
+              key={i}
+              daysLeft={data.daysLeft}
+              lastOrder={data.lastOrder}
+              name={data.name}
+            />
           ))}
         </List>
       </Menu>

@@ -7,40 +7,29 @@ export const OrderTableBody = ({
   bookingDate,
   deposit,
   eventDate,
-  eventLocation,
   id,
   name,
   paidBy,
   quantity,
-  social,
 }: {
   id: number;
   name: string;
-  social: string;
   eventDate: string;
   quantity: number;
-  eventLocation: string;
   bookingDate: string;
   deposit: number;
   paidBy: string;
 }) => {
   return (
-    <TableRow
-      // sx={{
-      //   borderBottom: `solid 1.5px ${theme.palette.divider}`,
-      // }}
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-    >
+    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
       <TableCell>{id}</TableCell>
       <TableCell>{name}</TableCell>
-      <TableCell>{social}</TableCell>
       <TableCell>{eventDate}</TableCell>
       <TableCell>{quantity}</TableCell>
-      <TableCell>{eventLocation}</TableCell>
       <TableCell>{bookingDate}</TableCell>
       <TableCell>${deposit}</TableCell>
       <TableCell>{paidBy}</TableCell>
-      <TableCell>
+      <TableCell align='center'>
         <CusIconButton color='success' sx={{ p: 0.5, mx: 0.5 }}>
           <GalleryImport size={18} />
         </CusIconButton>
@@ -64,19 +53,18 @@ export const OrderTableHead = () => {
           '&> th': {
             fontWeight: '600',
             color: theme.palette.secondary.main,
+            minWidth: 'md',
           },
         }}
       >
         <TableCell>INVOICE ID</TableCell>
-        <TableCell>CUSTOMER NAME</TableCell>
-        <TableCell>SOCIAL NAME</TableCell>
-        <TableCell>EVENT DATE</TableCell>
+        <TableCell>CUSTOMER</TableCell>
+        <TableCell>DATE</TableCell>
         <TableCell>QUANTITY</TableCell>
-        <TableCell>EVENT LOCATION</TableCell>
-        <TableCell>BOOKING DATE</TableCell>
+        <TableCell>BOOKING</TableCell>
         <TableCell>DEPOSIT</TableCell>
         <TableCell>PAID BY</TableCell>
-        <TableCell>ACTIONS</TableCell>
+        <TableCell align='center'>ACTIONS</TableCell>
       </TableRow>
     </TableHead>
   );

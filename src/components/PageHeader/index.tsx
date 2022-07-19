@@ -30,7 +30,7 @@ const PageHeader = ({
         <Grid container px={2} rowSpacing={2}>
           <Grid item xs={12} md='auto'>
             <Grid container>
-              <Grid xs>
+              <Grid item xs>
                 <CusIconButton
                   color='primary'
                   sx={{
@@ -44,12 +44,16 @@ const PageHeader = ({
                   <HambergerMenu size='24' variant='Outline' />
                 </CusIconButton>
               </Grid>
-              <Grid xs>
+              <Grid item xs>
                 <Typography variant='h4' fontWeight='bolder'>
                   {pageTitle}
                 </Typography>
               </Grid>
-              <Grid xs sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Grid
+                item
+                xs
+                sx={{ display: 'flex', justifyContent: 'flex-end' }}
+              >
                 {isMdDown && endComponent}
               </Grid>
             </Grid>

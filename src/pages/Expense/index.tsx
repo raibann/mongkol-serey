@@ -16,7 +16,7 @@ import { ORDER_DATA } from 'pages/Orders';
 import { useState } from 'react';
 import theme from 'theme/theme';
 import ExpenseDialogs from './ExpenseDialogs';
-import { ExpenseTableBody, ExpenseTableHead } from './expenseTable';
+import { ExpenseTableBody, ExpenseTableHead } from './ExpenseTable';
 
 export default function Expense() {
   const [ToggleValue, setToggleValue] = useState('pending');
