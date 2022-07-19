@@ -34,8 +34,8 @@ const navigationUtil: Navigation = [
     icon: <Note size='24' />,
   },
   {
-    title: 'Groceries',
-    toUrl: 'groceries',
+    title: 'Stocks',
+    toUrl: 'stocks',
     icon: <ShopAdd size='24' />,
   },
   {

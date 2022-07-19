@@ -1,5 +1,5 @@
 import { TableRow, TableCell, TableHead } from '@mui/material';
-import CusIconButton from 'components/CusIconButton';
+import { CusIconButton } from 'components/CusIconButton';
 import { GalleryImport, Edit, Printer } from 'iconsax-react';
 import theme from 'theme/theme';
 
@@ -26,9 +26,10 @@ export const OrderTableBody = ({
 }) => {
   return (
     <TableRow
-      sx={{
-        borderBottom: `solid 1.5px ${theme.palette.divider}`,
-      }}
+      // sx={{
+      //   borderBottom: `solid 1.5px ${theme.palette.divider}`,
+      // }}
+      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
     >
       <TableCell>{id}</TableCell>
       <TableCell>{name}</TableCell>

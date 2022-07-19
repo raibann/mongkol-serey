@@ -8,12 +8,14 @@ const DashboardCard = ({
   title,
   value,
   icon,
+  type,
 }: {
   title: string;
   value: string;
   percentage: string;
   isHigher?: boolean;
   icon: React.ReactNode;
+  type: string;
 }) => {
   return (
     <Paper
@@ -31,9 +33,15 @@ const DashboardCard = ({
     >
       <Stack rowGap={1}>
         <Typography color='text.secondary'>{title}</Typography>
-        <Typography fontSize={28} fontWeight='bold'>
-          {value}
-        </Typography>
+        <Stack direction={'row'} alignItems={'baseline'} spacing={0.5}>
+          <Typography
+            fontSize={28}
+            sx={{ fontWeight: (theme) => theme.typography.fontWeightMedium }}
+          >
+            {value}
+          </Typography>
+          <Typography variant='subtitle2'>{type}</Typography>
+        </Stack>
         <Stack direction='row' alignItems='baseline'>
           <Typography
             color={isHigher ? 'success.main' : 'error.main'}

@@ -143,7 +143,7 @@ const CHART2_DATA = [
   },
 ];
 
-const Anniversary = Array(6).fill({
+const Anniversary = Array(4).fill({
   name: 'Meas Saominea',
   lastOrder: '30-02-2002',
   daysLeft: 3,
@@ -161,26 +161,30 @@ const Dashboard = () => {
           percentage='2.3%'
           isHigher
           icon={<DollarCircle />}
+          type={''}
         />
         <DashboardCard
           title='Total Expenses'
           value='$50,000'
           percentage='2%'
           icon={<DollarCircle />}
+          type={''}
         />
         <DashboardCard
           title='Total Orders'
-          value='100 Events'
+          value='100'
           percentage='5%'
           isHigher
           icon={<WalletAdd />}
+          type={'Events'}
         />
         <DashboardCard
           title='Total Customers'
-          value='100 Customers'
+          value='100'
           percentage='2.3%'
           isHigher
           icon={<Profile2User />}
+          type={'Customers'}
         />
       </Stack>
 
@@ -211,7 +215,7 @@ const Dashboard = () => {
           sx={{
             px: 3,
             flexGrow: 1,
-            overflow: 'auto',
+            // overflow: 'auto',
             height: '100%',
           }}
         >
@@ -222,7 +226,7 @@ const Dashboard = () => {
             pb={2}
             position='sticky'
             top={0}
-            zIndex={theme.zIndex.appBar}
+            zIndex={theme.zIndex.appBar - 1}
             bgcolor='common.white'
           >
             Upcoming Anniversary

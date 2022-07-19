@@ -7,4 +7,4 @@ const CusIconButton = styled(IconButton)(({ theme }) => ({
   boxShadow: theme.shadows[1],
 }));
 
-export default CusIconButton;
+export { CusIconButton };

@@ -1,9 +1,12 @@
 import Layout from 'layout';
 import Dashboard from 'pages/Dashboard';
 import Orders from 'pages/Orders';
+import Stocks from 'pages/Stocks';
+import Reminder from 'pages/Reminder';
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
+import Customer from 'pages/Customer';
 const Login = lazy(() => import('pages/Login'));
 const Home = lazy(() => import('pages/Home'));
 export default function AllRoutes() {
@@ -31,6 +34,30 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Orders />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.stocks}
+          element={
+            <Suspense>
+              <Stocks />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.reminder}
+          element={
+            <Suspense>
+              <Reminder />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.customers}
+          element={
+            <Suspense>
+              <Customer />
             </Suspense>
           }
         />

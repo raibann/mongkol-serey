@@ -1,6 +1,7 @@
 import {
   Button,
   Drawer,
+  InputAdornment,
   Paper,
   Stack,
   Table,
@@ -10,10 +11,10 @@ import {
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
-import { Add } from 'iconsax-react';
+import { Add, SearchNormal1 } from 'iconsax-react';
 import React, { useState } from 'react';
 import theme from 'theme/theme';
-import OrderForm from './OrderDrawer/OrderForm';
+import OrderDrawer from './OrderDrawer';
 import { OrderTableBody, OrderTableHead } from './OrderTable';
 
 interface IOrderData {
@@ -75,6 +76,7 @@ const Orders = () => {
       <Paper
         elevation={3}
         sx={{
+          px: 2,
           mx: 2,
           borderRadius: 2,
           minHeight: '90%',
@@ -86,7 +88,7 @@ const Orders = () => {
           direction='row'
           justifyContent='space-between'
           alignItems='center'
-          p={2}
+          py={2}
         >
           <ToggleButtonGroup
             value={ToggleValue}
@@ -116,12 +118,29 @@ const Orders = () => {
             alignItems='center'
             spacing={2}
           >
-            <CusTextField placeholder='Search...' size='small' />
+            <CusTextField
+              placeholder='Search...'
+              size='small'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <SearchNormal1
+                      size='20'
+                      color={theme.palette.primary.main}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
 
             <Button
               variant='contained'
               startIcon={<Add />}
-              sx={{ color: theme.palette.common.white }}
+              sx={{
+                color: theme.palette.common.white,
+                boxShadow: theme.shadows[1],
+                borderRadius: 2,
+              }}
               onClick={() => setNewOrder(true)}
             >
               Add New
@@ -162,7 +181,7 @@ const Orders = () => {
         anchor={'right'}
         PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
       >
-        <OrderForm />
+        <OrderDrawer />
       </Drawer>
     </>
   );
