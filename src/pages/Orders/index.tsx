@@ -28,7 +28,7 @@ interface IOrderData {
   deposit: number;
   paidBy: string;
 }
-const ORDER_DATA: IOrderData[] = [
+export const ORDER_DATA: IOrderData[] = [
   {
     id: 1,
     name: 'Meas Saominea',

@@ -7,4 +7,5 @@ export const ROUTE_PATH = {
   error: 'pagenotfound',
   reminder: 'reminder',
   customers: 'customers',
+  expense: 'expense',
 };
