@@ -93,14 +93,20 @@ const DashboardHeader = () => {
         <Notification variant='Bold' />
       </CusIconButton>
       <Menu
-        sx={{ mt: 1, height: 350 }}
+        MenuListProps={{ sx: { p: 0 } }}
+        sx={{
+          mt: 1,
+          height: 350,
+        }}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
       >
-        <List>
+        <List disablePadding>
           <ListSubheader
             sx={{
+              p: 1,
+              px: 2,
               background: (theme) => theme.palette.common.white,
             }}
           >

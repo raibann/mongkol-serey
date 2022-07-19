@@ -226,7 +226,7 @@ const Dashboard = () => {
             pb={2}
             position='sticky'
             top={0}
-            zIndex={theme.zIndex.appBar}
+            zIndex={theme.zIndex.appBar - 1}
             bgcolor='common.white'
           >
             Upcoming Anniversary
@@ -246,6 +246,7 @@ const Dashboard = () => {
           <Divider
             sx={{
               borderColor: theme.palette.divider,
+              mt: 2.5,
             }}
           />
           <Button
