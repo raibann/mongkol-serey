@@ -1,4 +1,10 @@
-import { Stack, Typography, Button, Autocomplete } from '@mui/material';
+import {
+  Stack,
+  Typography,
+  Button,
+  Autocomplete,
+  InputAdornment,
+} from '@mui/material';
 import { Container } from '@mui/system';
 import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
@@ -9,10 +15,11 @@ interface IAddStockInput {
   categoryName: string;
   productName: string;
   quantity: string;
-  price: string;
+  amountInUSD: string;
   shopName: string;
   paidBy: string;
   usedStock: number;
+  amountInKHR: string;
 }
 export const paidByBank = [
   'ACLEDA Bank',
@@ -77,7 +84,7 @@ export default function FormStock({
         </Stack>
         <form onSubmit={handleSubmit(handleAddStocks)}>
           <Stack spacing={4}>
-            <Stack direction={'row'} spacing={6}>
+            <Stack direction={'row'} spacing={4}>
               <Controller
                 control={control}
                 name='categoryName'
@@ -123,7 +130,7 @@ export default function FormStock({
                 }}
               />
             </Stack>
-            <Stack direction={'row'} spacing={6}>
+            <Stack direction={'row'} spacing={4}>
               <Controller
                 control={control}
                 name='quantity'
@@ -142,21 +149,50 @@ export default function FormStock({
 
               <Controller
                 control={control}
-                name='price'
+                name='amountInUSD'
                 defaultValue=''
                 render={({ field }) => {
                   return (
-                    <LabelTextField label='Price'>
+                    <LabelTextField label='Amount In USD'>
                       <StyledOutlinedTextField
-                        placeholder='Enter price'
+                        placeholder='Currency dollar'
                         {...field}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              USD
+                            </InputAdornment>
+                          ),
+                        }}
                       />
                     </LabelTextField>
                   );
                 }}
               />
             </Stack>
-            <Stack direction={'row'} spacing={6}>
+            <Stack direction={'row'} spacing={4}>
+              <Controller
+                control={control}
+                name='amountInKHR'
+                defaultValue=''
+                render={({ field }) => {
+                  return (
+                    <LabelTextField label='Amount In KHR'>
+                      <StyledOutlinedTextField
+                        placeholder='Currency khmer'
+                        {...field}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              KHR
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </LabelTextField>
+                  );
+                }}
+              />
               <Controller
                 control={control}
                 name='shopName'
@@ -172,7 +208,8 @@ export default function FormStock({
                   );
                 }}
               />
-
+            </Stack>
+            <Stack direction={'row'} spacing={4}>
               <Controller
                 control={control}
                 name='paidBy'
@@ -201,9 +238,7 @@ export default function FormStock({
                   );
                 }}
               />
-            </Stack>
-            {openDrawer === 'Edit' && (
-              <Stack direction={'row'}>
+              {openDrawer === 'Edit' && (
                 <Controller
                   control={control}
                   name='usedStock'
@@ -219,10 +254,10 @@ export default function FormStock({
                     );
                   }}
                 />
-              </Stack>
-            )}
+              )}
+            </Stack>
 
-            <Stack direction={'row'} spacing={6}>
+            <Stack direction={'row'} spacing={4}>
               <Button
                 onClick={() => {
                   handleOpenDrawer('');

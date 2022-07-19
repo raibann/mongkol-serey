@@ -19,7 +19,6 @@ const ErrorDialog = (props: IErrorDialog) => {
   const { open } = props;
   return (
     <Dialog open={open} fullWidth maxWidth='xs'>
-      {/* <DialogTitle>{props.errorTitle || 'Something went wrong'}</DialogTitle> */}
       <DialogContent>
         <Stack alignItems={'center'} sx={{ px: 4 }} spacing={2}>
           <EmojiSad
@@ -31,7 +30,7 @@ const ErrorDialog = (props: IErrorDialog) => {
             variant='h5'
             sx={{ fontWeight: (theme) => theme.typography.fontWeightBold }}
           >
-            OOPS
+            {props.errorTitle || 'NOOB AGENLA!'}
           </Typography>
           <Typography sx={{ color: (theme) => theme.palette.error.main }}>
             {props.errorMessage}

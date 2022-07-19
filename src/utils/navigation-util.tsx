@@ -55,7 +55,7 @@ const navigationUtil: Navigation = [
   },
   {
     title: 'Exit',
-    toUrl: 'home',
+    toUrl: 'login',
     icon: <LogoutCurve size='24' />,
   },
 ];
