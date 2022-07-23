@@ -8,14 +8,13 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import ErrorDialog from 'components/CusDialog/errorDailog';
 import CusTextField from 'components/CusTextField';
 import { Eye, EyeSlash } from 'iconsax-react';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import theme from 'theme/theme';
 import THEME_UTIL from 'utils/theme-util';
-
+import ErrorDialog from 'components/CusDialog/ErrorDailog';
 interface Ilogin {
   username: string;
   password: string;

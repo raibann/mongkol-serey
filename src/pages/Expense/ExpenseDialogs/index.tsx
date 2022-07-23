@@ -96,8 +96,11 @@ export default function ExpenseDialogs({
         keepMounted
         onClose={handleCloseDialogs}
         fullWidth
-        maxWidth={'md'}
+        maxWidth={'lg'}
         TransitionComponent={Transition}
+        PaperProps={{
+          sx: { height: '90vh' },
+        }}
       >
         <FormProvider {...method}>
           <form
