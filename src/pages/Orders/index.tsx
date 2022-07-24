@@ -70,6 +70,11 @@ const Orders = () => {
   const [orderDetail, setOrderDetail] = useState<IOrderData>();
   const [newOrder, setNewOrder] = useState(false);
 
+  const handleCloseOrderDialog = () => {
+    setNewOrder(false);
+    setOrderDetail(undefined);
+  };
+
   return (
     <>
       <PageHeader pageTitle='Orders' />
@@ -175,14 +180,10 @@ const Orders = () => {
 
       <Drawer
         open={newOrder || orderDetail !== undefined}
-        onClose={() => {
-          setOrderDetail(undefined);
-          setNewOrder(false);
-        }}
         anchor={'right'}
         PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
       >
-        <OrderDrawer />
+        <OrderDrawer {...{ handleCloseOrderDialog }} />
       </Drawer>
     </>
   );

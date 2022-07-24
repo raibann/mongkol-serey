@@ -14,16 +14,19 @@ import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextF
 import LabelTextField from 'components/LabelTextField';
 import OrderItem from './OrderItem';
 import { BsPlus } from 'react-icons/bs';
-import FinalInvoiceForm, { FinalInvoiceInput } from './FinalInvoiceForm';
-import { useEffect } from 'react';
-import theme from 'theme/theme';
+import FinalInvoiceForm, {
+  FinalInvoiceInput,
+  IFinalInvoice,
+} from './FinalInvoiceForm';
+import { useEffect, useState } from 'react';
 import { paidByBank } from 'pages/Stocks/FormStock';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import THEME_UTIL from 'utils/theme-util';
+import theme from 'theme/theme';
 
 export interface IOrderForm {
-  invoiceId: string;
+  customerId: number | '';
   eventType: string;
   eventLocation: string;
   eventDate: Date | null;
@@ -33,24 +36,32 @@ export interface IOrderForm {
   paidBy: string;
   quantity: string;
   unitPrice: string;
-  listMenu: {
-    id: number;
-    title: string;
-    quantity: number | '';
-    unit: string;
-    price: number | '';
-    menuItem: {
-      id: number;
-      title: string;
-    }[];
-  }[];
+  listMenu: IlistMenu[];
 }
 
-const OrderDrawer = () => {
+interface IlistMenu {
+  id: number;
+  title: string;
+  quantity: number | '';
+  unit: string;
+  price: number | '';
+  menuItem: {
+    id: number;
+    title: string;
+  }[];
+}
+const OrderDrawer = ({
+  handleCloseOrderDialog,
+}: {
+  handleCloseOrderDialog: () => void;
+}) => {
   const methods = useForm<IOrderForm & CustomerInput & FinalInvoiceInput>();
-  const { watch, setValue, handleSubmit } = methods;
-  const listOrder = watch('listMenu') || [];
-  const finalInvoice = watch('finalInvoice') || [];
+  const { setValue, handleSubmit } = methods;
+
+  const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
+  const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
+
+  const [newCustomer, setNewCustomer] = useState(1);
 
   const onSubmit: SubmitHandler<
     IOrderForm & CustomerInput & FinalInvoiceInput
@@ -59,7 +70,7 @@ const OrderDrawer = () => {
   };
 
   useEffect(() => {
-    setValue('finalInvoice', [
+    setFinalInvoice([
       {
         id: new Date().getTime(),
         fTitle: '',
@@ -68,7 +79,7 @@ const OrderDrawer = () => {
         fUnit: '',
       },
     ]);
-    setValue('listMenu', [
+    setListMenu([
       {
         id: new Date().getTime(),
         title: '',
@@ -87,9 +98,9 @@ const OrderDrawer = () => {
   }, []);
 
   const addListOrderHandler = () => {
-    if (listOrder && listOrder.length > 0) {
-      setValue('listMenu', [
-        ...listOrder,
+    if (listMenu && listMenu.length > 0) {
+      setListMenu([
+        ...listMenu,
         {
           id: new Date().getTime(),
           title: '',
@@ -105,7 +116,7 @@ const OrderDrawer = () => {
         },
       ]);
     } else {
-      setValue('listMenu', [
+      setListMenu([
         {
           id: new Date().getTime(),
           title: '',
@@ -124,15 +135,15 @@ const OrderDrawer = () => {
   };
 
   const deleteListOrderHandler = (id: number) => {
-    const tmp = listOrder.filter((order) => {
+    const tmp = listMenu.filter((order) => {
       return order.id !== id;
     });
-    setValue('listMenu', tmp);
+    setListMenu(tmp);
   };
 
   const addFinalInvoiceHandler = () => {
     if (finalInvoice && finalInvoice.length > 0) {
-      setValue('finalInvoice', [
+      setFinalInvoice([
         ...finalInvoice,
         {
           id: new Date().getTime(),
@@ -143,7 +154,7 @@ const OrderDrawer = () => {
         },
       ]);
     } else {
-      setValue('finalInvoice', [
+      setFinalInvoice([
         {
           id: new Date().getTime(),
           fTitle: '',
@@ -159,7 +170,7 @@ const OrderDrawer = () => {
     const tmp = finalInvoice.filter((invoice) => {
       return invoice.id !== id;
     });
-    setValue('finalInvoice', tmp);
+    setFinalInvoice(tmp);
   };
 
   return (
@@ -173,32 +184,62 @@ const OrderDrawer = () => {
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
           New Order
         </Typography>
-        <CusIconButton color='error'>
+        <CusIconButton color='error' onClick={handleCloseOrderDialog}>
           <MdClose />
         </CusIconButton>
       </Stack>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <InputGroupTitle>Customer Info</InputGroupTitle>
+          <Stack direction='row' spacing={2} px={3}>
+            <Button
+              disableElevation
+              variant={newCustomer ? 'contained' : 'outlined'}
+              onClick={() => setNewCustomer(1)}
+              sx={{
+                color: newCustomer ? '#fff' : '',
+              }}
+            >
+              New Customer
+            </Button>
+            <Button
+              disableElevation
+              variant={!newCustomer ? 'contained' : 'outlined'}
+              onClick={() => setNewCustomer(0)}
+              sx={{
+                color: !newCustomer ? '#fff' : '',
+              }}
+            >
+              Exisiting Customer
+            </Button>
+          </Stack>
 
-          <CustomerForm />
+          {newCustomer === 1 && (
+            <>
+              <InputGroupTitle marginTop={3}>Customer Info</InputGroupTitle>
 
-          <InputGroupTitle marginTop>Order Info</InputGroupTitle>
+              <CustomerForm />
+            </>
+          )}
+
+          <InputGroupTitle marginTop={!newCustomer ? 3 : 8}>
+            Order Info
+          </InputGroupTitle>
 
           <Stack px={3} spacing={4}>
             <Stack spacing={4} direction='row'>
               <Controller
                 control={methods.control}
-                name='invoiceId'
+                name='customerId'
                 defaultValue=''
-                rules={{
-                  required: { value: true, message: 'Invoice ID is Required' },
-                }}
                 render={({ field, fieldState: { error } }) => {
                   return (
-                    <LabelTextField label='Invoice ID'>
+                    <LabelTextField label='Customer'>
                       <StyledOutlinedTextField
-                        placeholder='Enter Invoice ID'
+                        placeholder='Select Customer'
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        disabled={newCustomer === 1}
                         error={Boolean(error)}
                         helperText={error?.message}
                         {...field}
@@ -454,8 +495,8 @@ const OrderDrawer = () => {
             </Button>
           </Stack>
 
-          {listOrder && listOrder.length > 0 ? (
-            listOrder?.map((order, i) => {
+          {listMenu && listMenu.length > 0 ? (
+            listMenu?.map((order, i) => {
               return (
                 <OrderItem
                   key={order.id}
@@ -486,7 +527,7 @@ const OrderDrawer = () => {
             </Stack>
           )}
 
-          <InputGroupTitle marginTop>Final Invoice</InputGroupTitle>
+          <InputGroupTitle marginTop={8}>Final Invoice</InputGroupTitle>
 
           <Stack px={3}>
             {finalInvoice && finalInvoice.length > 0 ? (
@@ -578,7 +619,7 @@ export const InputGroupTitle = ({
   marginTop,
 }: {
   children: React.ReactNode;
-  marginTop?: boolean;
+  marginTop?: number;
 }) => {
   return (
     <>
@@ -588,7 +629,7 @@ export const InputGroupTitle = ({
         variant='h5'
         sx={{
           mb: 3,
-          mt: marginTop ? 8 : 0,
+          mt: marginTop || 0,
           mx: 3,
           p: 1.5,
           borderRadius: 2,

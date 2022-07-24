@@ -57,14 +57,16 @@ export const OrderTableHead = () => {
           },
         }}
       >
-        <TableCell>INVOICE ID</TableCell>
+        <TableCell>INVOICE</TableCell>
         <TableCell>CUSTOMER</TableCell>
         <TableCell>DATE</TableCell>
         <TableCell>QUANTITY</TableCell>
         <TableCell>BOOKING</TableCell>
         <TableCell>DEPOSIT</TableCell>
         <TableCell>PAID BY</TableCell>
-        <TableCell align='center'>ACTIONS</TableCell>
+        <TableCell width={140} align='center'>
+          ACTIONS
+        </TableCell>
       </TableRow>
     </TableHead>
   );
