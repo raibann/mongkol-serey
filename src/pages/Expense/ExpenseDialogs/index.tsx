@@ -1,28 +1,25 @@
 import {
-  Dialog,
-  DialogTitle,
   DialogContent,
   Stack,
   Typography,
-  Divider,
   Button,
-  Slide,
   alpha,
+  Grid,
+  List,
+  ListItemAvatar,
+  ListItem,
+  ListItemText,
+  AppBar,
+  Toolbar,
 } from '@mui/material';
-import { TransitionProps } from '@mui/material/transitions';
-import { Add } from 'iconsax-react';
+import ResponsiveDialog from 'components/CusDialog/ResponsiveDailog';
+import { Add, Call, Note, UserSquare, Location, Calendar } from 'iconsax-react';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import theme from 'theme/theme';
+import { listTitle } from 'utils/expense-util';
 import FormExpense, { IAddExpenseInput } from '../FormExpense';
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement<any, any>;
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction='up' ref={ref} {...props} />;
-});
+
 export default function ExpenseDialogs({
   openDialogs,
   setOpenDialogs,
@@ -35,35 +32,40 @@ export default function ExpenseDialogs({
   const listExpense = watch('expenseRowData') || [];
 
   useEffect(() => {
-    setValue('expenseRowData', [
-      {
-        id: 0,
-        title: '',
+    setValue(
+      'expenseRowData',
+      listTitle.map((data, i) => ({
+        id: i,
+        title: data.title,
         totalPrice: '',
         paidBy: '',
         other: '',
-      },
-    ]);
+      }))
+    );
+
+    console.log(listTitle);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const handleCloseDialogs = () => {
     setOpenDialogs(false);
-    setValue('expenseRowData', [
-      {
-        id: 0,
-        title: '',
+    setValue(
+      'expenseRowData',
+      listTitle.map((data, i) => ({
+        id: i,
+        title: data.title,
         totalPrice: '',
         paidBy: '',
         other: '',
-      },
-    ]);
+      }))
+    );
   };
   const handleAddNewRowDataExpense = () => {
     if (listExpense && listExpense.length > 0) {
       setValue('expenseRowData', [
         ...listExpense,
         {
-          id: new Date().getSeconds(),
+          id: new Date().toDateString(),
           title: '',
           totalPrice: '',
           paidBy: '',
@@ -73,7 +75,7 @@ export default function ExpenseDialogs({
     } else {
       setValue('expenseRowData', [
         {
-          id: new Date().getSeconds(),
+          id: new Date().getTime(),
           title: '',
           totalPrice: '',
           paidBy: '',
@@ -82,7 +84,7 @@ export default function ExpenseDialogs({
       ]);
     }
   };
-  const deleteListExpense = (id: number) => {
+  const deleteListExpense = (id: number | string) => {
     const tmp = listExpense.filter((el) => {
       return el.id !== id;
     });
@@ -91,15 +93,12 @@ export default function ExpenseDialogs({
 
   return (
     <>
-      <Dialog
+      <ResponsiveDialog
+        onCloseDialog={handleCloseDialogs}
         open={openDialogs}
         keepMounted
-        onClose={handleCloseDialogs}
-        fullWidth
-        maxWidth={'lg'}
-        TransitionComponent={Transition}
         PaperProps={{
-          sx: { height: '90vh' },
+          sx: { height: '100%' },
         }}
       >
         <FormProvider {...method}>
@@ -108,148 +107,195 @@ export default function ExpenseDialogs({
               console.log(data);
             })}
           >
-            <DialogTitle sx={{ px: 0 }}>
-              <Stack
-                direction={'row'}
-                alignItems='center'
-                justifyContent={'space-between'}
-                sx={{ px: 2 }}
-              >
-                <Typography variant='h6'>Add Expense</Typography>
-                <Stack direction={'row'} spacing={4} sx={{ width: '30%' }}>
-                  <Button
-                    variant='contained'
-                    fullWidth
-                    onClick={handleCloseDialogs}
-                    sx={{
-                      borderRadius: 2,
-                      textTransform: 'capitalize',
-                      boxShadow: 1,
-                      color: (theme) => theme.palette.common.white,
-                      background: (theme) => theme.palette.error.main,
-                      '&:hover': {
+            {/* Header */}
+            <AppBar
+              sx={{
+                position: 'sticky',
+                bgcolor: (theme) => theme.palette.common.white,
+                boxShadow: 0,
+                borderRadius: 0,
+              }}
+            >
+              <Toolbar>
+                <Stack
+                  direction={'row'}
+                  alignItems='center'
+                  justifyContent={'space-between'}
+                  sx={{ width: '100%' }}
+                >
+                  <Typography variant='h6'>Add Expense</Typography>
+                  <Stack
+                    direction={'row'}
+                    spacing={4}
+                    sx={{ width: ['auto', '30%'] }}
+                  >
+                    <Button
+                      variant='contained'
+                      fullWidth
+                      onClick={handleCloseDialogs}
+                      sx={{
+                        borderRadius: 2,
+                        textTransform: 'capitalize',
+                        boxShadow: 1,
                         color: (theme) => theme.palette.common.white,
                         background: (theme) => theme.palette.error.main,
-                      },
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type='submit'
-                    variant='contained'
-                    fullWidth
-                    sx={{
-                      borderRadius: 2,
-                      textTransform: 'capitalize',
-                      boxShadow: 1,
-                      color: (theme) => theme.palette.common.white,
-                      '&:hover': {
-                        background: (theme) => theme.palette.primary.main,
-                      },
-                    }}
-                  >
-                    Save
-                  </Button>
+                        '&:hover': {
+                          color: (theme) => theme.palette.common.white,
+                          background: (theme) => theme.palette.error.main,
+                        },
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type='submit'
+                      variant='contained'
+                      fullWidth
+                      sx={{
+                        borderRadius: 2,
+                        textTransform: 'capitalize',
+                        boxShadow: 1,
+                        color: (theme) => theme.palette.common.white,
+                        '&:hover': {
+                          background: (theme) => theme.palette.primary.main,
+                        },
+                      }}
+                    >
+                      Save
+                    </Button>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </DialogTitle>
-            <DialogContent sx={{ px: 0 }}>
-              <Stack direction={'row'} spacing={3} sx={{ pb: 2, px: 2 }}>
-                <Stack spacing={1}>
-                  <Typography
-                    sx={{ color: (theme) => theme.palette.text.secondary }}
-                  >
-                    Customer Name
-                  </Typography>
-                  <Typography
-                    sx={{ color: (theme) => theme.palette.text.secondary }}
-                  >
-                    Event Name
-                  </Typography>
-                  <Typography
-                    sx={{ color: (theme) => theme.palette.text.secondary }}
-                  >
-                    Total Tables
-                  </Typography>
-                  <Typography
-                    sx={{ color: (theme) => theme.palette.text.secondary }}
-                  >
-                    Total Price
-                  </Typography>
-                </Stack>
-                <Stack spacing={1}>
-                  <Typography>Customer Name</Typography>
-                  <Typography>Event Name</Typography>
-                  <Typography>Total Tables</Typography>
-                  <Typography>Total Price</Typography>
-                </Stack>
-              </Stack>
-              <Divider />
-              <Stack spacing={4} sx={{ mb: 4 }}>
-                <Stack direction={'row'} spacing={2} sx={{ mt: 2, px: 2 }}>
-                  <Typography variant='h6'>Total Income :</Typography>
-                  <Typography
-                    variant='h5'
-                    fontWeight={theme.typography.fontWeightBold}
-                  >
-                    8,000$
-                  </Typography>
-                </Stack>
-                <Stack
-                  sx={{ overflow: 'auto', height: 300, px: 2 }}
-                  spacing={4}
-                >
-                  {listExpense.map((data, i) => (
-                    <FormExpense
-                      index={i}
-                      key={data.id}
-                      onRemove={() => deleteListExpense(data.id)}
-                    />
-                  ))}
-                  <Button
-                    variant='contained'
-                    startIcon={<Add />}
-                    fullWidth
-                    onClick={handleAddNewRowDataExpense}
-                    size='small'
-                    sx={{
-                      color: theme.palette.primary.main,
-                      boxShadow: theme.shadows[0],
-                      borderRadius: 2,
-                      border: `1px dashed ${theme.palette.primary.main}`,
-                      background: (theme) =>
-                        alpha(theme.palette.primary.main, 0.2),
-                      '&:hover': {
-                        background: (theme) =>
-                          alpha(theme.palette.primary.main, 0.2),
-                        boxShadow: theme.shadows[0],
-                      },
-                    }}
-                  >
-                    Add New
-                  </Button>
-                </Stack>
-              </Stack>
-              <Divider />
-              <Stack
-                direction={'row'}
-                spacing={2}
-                justifyContent='flex-end'
-                sx={{ mt: 2, px: 2 }}
-              >
-                <Typography variant='h6'>Total Income :</Typography>
-                <Typography
-                  variant='h6'
-                  fontWeight={theme.typography.fontWeightBold}
-                >
-                  8,000$
-                </Typography>
-              </Stack>
+              </Toolbar>
+            </AppBar>
+            {/* dailog content */}
+            <DialogContent sx={{ p: 0 }}>
+              <Grid container>
+                <Grid item xs={12} md={4}>
+                  <List disablePadding>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Note size='24' color={theme.palette.primary.main} />
+                      </ListItemAvatar>
+                      <ListItemText primary='0018' secondary='Invoice ID' />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <UserSquare
+                          size='24'
+                          color={theme.palette.primary.main}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText primary='Team Test' secondary='Customer' />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Call size='24' color={theme.palette.primary.main} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary='0123456789'
+                        secondary='Phone Number'
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Calendar
+                          size='24'
+                          color={theme.palette.primary.main}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary='22.01.2022'
+                        secondary='Event Party'
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Location
+                          size='24'
+                          color={theme.palette.primary.main}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText primary='Phnom Penh' secondary='Location' />
+                    </ListItem>
+                  </List>
+                  <List disablePadding>
+                    <ListItem
+                      sx={{
+                        bgcolor: (theme) => theme.palette.primary.main,
+                      }}
+                    >
+                      <ListItemText
+                        primary='$ 10,000'
+                        secondary='Total income'
+                        primaryTypographyProps={{
+                          fontSize: 24,
+                          fontWeight: 'medium',
+                          letterSpacing: 0,
+                          color: 'white',
+                        }}
+                      />
+                    </ListItem>
+                    <ListItem
+                      sx={{
+                        bgcolor: (theme) => theme.palette.error.main,
+                      }}
+                    >
+                      <ListItemText
+                        primary='$9,000'
+                        secondary='Total Expense'
+                        primaryTypographyProps={{
+                          fontSize: 24,
+                          fontWeight: 'medium',
+                          letterSpacing: 0,
+                          color: 'white',
+                        }}
+                      />
+                    </ListItem>
+                  </List>
+                </Grid>
+                <Grid item xs={12} md={8} sx={{ mt: [2, 2, 0] }}>
+                  <Stack spacing={4} sx={{ mb: 4 }}>
+                    <Stack
+                      sx={{ overflow: 'auto', px: 2, height: '80vh' }}
+                      spacing={4}
+                    >
+                      {listExpense.map((data, i) => (
+                        <FormExpense
+                          index={i}
+                          key={data.id}
+                          onRemove={() => deleteListExpense(data.id)}
+                        />
+                      ))}
+                      <Button
+                        variant='contained'
+                        startIcon={<Add />}
+                        fullWidth
+                        onClick={handleAddNewRowDataExpense}
+                        size='small'
+                        sx={{
+                          color: theme.palette.primary.main,
+                          boxShadow: theme.shadows[0],
+                          borderRadius: 2,
+                          border: `1px dashed ${theme.palette.primary.main}`,
+                          background: (theme) =>
+                            alpha(theme.palette.primary.main, 0.2),
+                          '&:hover': {
+                            background: (theme) =>
+                              alpha(theme.palette.primary.main, 0.2),
+                            boxShadow: theme.shadows[0],
+                          },
+                        }}
+                      >
+                        Add New
+                      </Button>
+                    </Stack>
+                  </Stack>
+                </Grid>
+              </Grid>
             </DialogContent>
           </form>
         </FormProvider>
-      </Dialog>
+      </ResponsiveDialog>
     </>
   );
 }
