@@ -1,7 +1,7 @@
 import { TableRow, TableCell, TableHead } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit } from 'iconsax-react';
-import { IStockData } from '.';
+import { IStockData } from 'utils/stock-util';
 
 export const StockTableBody = ({
   props,
