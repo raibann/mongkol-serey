@@ -10,6 +10,7 @@ import districtJson from 'geography/District.json';
 import communeJson from 'geography/Communes.json';
 
 export type CustomerInput = {
+  id: number;
   customerName: string;
   facebook: string;
   telegram: string;
