@@ -1,5 +1,10 @@
-import { alpha, Button, Divider, Stack, Typography } from '@mui/material';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { alpha, Autocomplete, Button, Stack, Typography } from '@mui/material';
+import {
+  Controller,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
 import CustomerForm, {
   CustomerInput,
 } from 'pages/Customer/CustomerDrawer/CustomerForm';
@@ -9,12 +14,19 @@ import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextF
 import LabelTextField from 'components/LabelTextField';
 import OrderItem from './OrderItem';
 import { BsPlus } from 'react-icons/bs';
-import FinalInvoiceForm, { FinalInvoiceInput } from './FinalInvoiceForm';
-import { useEffect } from 'react';
+import FinalInvoiceForm, {
+  FinalInvoiceInput,
+  IFinalInvoice,
+} from './FinalInvoiceForm';
+import { useEffect, useState } from 'react';
+import { paidByBank } from 'pages/Stocks/FormStock';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import THEME_UTIL from 'utils/theme-util';
 import theme from 'theme/theme';
 
 export interface IOrderForm {
-  id: string;
+  customerId: number | '';
   eventType: string;
   eventLocation: string;
   eventDate: Date | null;
@@ -24,27 +36,41 @@ export interface IOrderForm {
   paidBy: string;
   quantity: string;
   unitPrice: string;
-  listMenu: {
-    id: number;
-    title: string;
-    quantity: number | '';
-    unit: string;
-    price: number | '';
-    menuItem: {
-      id: number;
-      title: string;
-    }[];
-  }[];
+  listMenu: IlistMenu[];
 }
 
-const OrderDrawer = () => {
+interface IlistMenu {
+  id: number;
+  title: string;
+  quantity: number | '';
+  unit: string;
+  price: number | '';
+  menuItem: {
+    id: number;
+    title: string;
+  }[];
+}
+const OrderDrawer = ({
+  handleCloseOrderDialog,
+}: {
+  handleCloseOrderDialog: () => void;
+}) => {
   const methods = useForm<IOrderForm & CustomerInput & FinalInvoiceInput>();
-  const { watch, setValue } = methods;
-  const listOrder = watch('listMenu') || [];
-  const finalInvoice = watch('finalInvoice') || [];
+  const { setValue, handleSubmit } = methods;
+
+  const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
+  const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
+
+  const [newCustomer, setNewCustomer] = useState(1);
+
+  const onSubmit: SubmitHandler<
+    IOrderForm & CustomerInput & FinalInvoiceInput
+  > = (data) => {
+    console.log(data);
+  };
 
   useEffect(() => {
-    setValue('finalInvoice', [
+    setFinalInvoice([
       {
         id: new Date().getTime(),
         fTitle: '',
@@ -53,41 +79,98 @@ const OrderDrawer = () => {
         fUnit: '',
       },
     ]);
+    setListMenu([
+      {
+        id: new Date().getTime(),
+        title: '',
+        price: '',
+        quantity: '',
+        unit: '',
+        menuItem: [
+          {
+            id: new Date().getTime(),
+            title: '',
+          },
+        ],
+      },
+    ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addListOrderHandler = () => {
-    if (listOrder && listOrder.length > 0) {
-      setValue('listMenu', [
-        ...listOrder,
+    if (listMenu && listMenu.length > 0) {
+      setListMenu([
+        ...listMenu,
         {
           id: new Date().getTime(),
           title: '',
           price: '',
           quantity: '',
           unit: '',
-          menuItem: [],
+          menuItem: [
+            {
+              id: new Date().getTime(),
+              title: '',
+            },
+          ],
         },
       ]);
     } else {
-      setValue('listMenu', [
+      setListMenu([
         {
           id: new Date().getTime(),
           title: '',
           price: '',
           quantity: '',
           unit: '',
-          menuItem: [],
+          menuItem: [
+            {
+              id: new Date().getTime(),
+              title: '',
+            },
+          ],
         },
       ]);
     }
   };
 
   const deleteListOrderHandler = (id: number) => {
-    const tmp = listOrder.filter((order) => {
+    const tmp = listMenu.filter((order) => {
       return order.id !== id;
     });
-    setValue('listMenu', tmp);
+    setListMenu(tmp);
+  };
+
+  const addFinalInvoiceHandler = () => {
+    if (finalInvoice && finalInvoice.length > 0) {
+      setFinalInvoice([
+        ...finalInvoice,
+        {
+          id: new Date().getTime(),
+          fTitle: '',
+          fQty: '',
+          fPrice: '',
+          fUnit: '',
+        },
+      ]);
+    } else {
+      setFinalInvoice([
+        {
+          id: new Date().getTime(),
+          fTitle: '',
+          fQty: '',
+          fPrice: '',
+          fUnit: '',
+        },
+      ]);
+    }
+  };
+
+  const removeFinalInvoiceHandler = (id: number) => {
+    const tmp = finalInvoice.filter((invoice) => {
+      return invoice.id !== id;
+    });
+    setFinalInvoice(tmp);
   };
 
   return (
@@ -101,29 +184,64 @@ const OrderDrawer = () => {
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
           New Order
         </Typography>
-        <CusIconButton color='error'>
+        <CusIconButton color='error' onClick={handleCloseOrderDialog}>
           <MdClose />
         </CusIconButton>
       </Stack>
       <FormProvider {...methods}>
-        <form>
-          <Divider sx={{ p: 3 }}>Customer Info</Divider>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack direction='row' spacing={2} px={3}>
+            <Button
+              disableElevation
+              variant={newCustomer ? 'contained' : 'outlined'}
+              onClick={() => setNewCustomer(1)}
+              sx={{
+                color: newCustomer ? '#fff' : '',
+              }}
+            >
+              New Customer
+            </Button>
+            <Button
+              disableElevation
+              variant={!newCustomer ? 'contained' : 'outlined'}
+              onClick={() => setNewCustomer(0)}
+              sx={{
+                color: !newCustomer ? '#fff' : '',
+              }}
+            >
+              Exisiting Customer
+            </Button>
+          </Stack>
 
-          <CustomerForm />
+          {newCustomer === 1 && (
+            <>
+              <InputGroupTitle marginTop={3}>Customer Info</InputGroupTitle>
 
-          <Divider sx={{ p: 3, pt: 6 }}>Order Info</Divider>
+              <CustomerForm />
+            </>
+          )}
+
+          <InputGroupTitle marginTop={!newCustomer ? 3 : 8}>
+            Order Info
+          </InputGroupTitle>
 
           <Stack px={3} spacing={4}>
             <Stack spacing={4} direction='row'>
               <Controller
                 control={methods.control}
-                name='id'
+                name='customerId'
                 defaultValue=''
-                render={({ field }) => {
+                render={({ field, fieldState: { error } }) => {
                   return (
-                    <LabelTextField label='Invoice ID'>
+                    <LabelTextField label='Customer'>
                       <StyledOutlinedTextField
-                        placeholder='Enter Invoice ID'
+                        placeholder='Select Customer'
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                        disabled={newCustomer === 1}
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...field}
                       />
                     </LabelTextField>
@@ -135,11 +253,16 @@ const OrderDrawer = () => {
                 control={methods.control}
                 name='eventType'
                 defaultValue=''
-                render={({ field }) => {
+                rules={{
+                  required: { value: true, message: 'Event type is Required' },
+                }}
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Event Type'>
                       <StyledOutlinedTextField
                         placeholder='Enter Event Type'
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...field}
                       />
                     </LabelTextField>
@@ -152,13 +275,48 @@ const OrderDrawer = () => {
                 control={methods.control}
                 name='eventDate'
                 defaultValue={null}
-                render={({ field }) => {
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Event date is Required',
+                  },
+                }}
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Event Date'>
-                      <StyledOutlinedTextField
-                        placeholder='Enter Event Date'
-                        {...field}
-                      />
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                          inputFormat='DD-MM-YYYY'
+                          {...field}
+                          InputAdornmentProps={{
+                            sx: {
+                              '& .MuiIconButton-root': {
+                                color: theme.palette.primary.main,
+                              },
+                            },
+                          }}
+                          renderInput={(params) => (
+                            <StyledOutlinedTextField
+                              placeholder='Enter Event Date'
+                              error={Boolean(error)}
+                              helperText={error?.message}
+                              sx={{
+                                '& fieldset': {
+                                  border: error
+                                    ? `solid 0.5px ${theme.palette.error.main}`
+                                    : {},
+                                },
+                              }}
+                              FormHelperTextProps={{
+                                sx: {
+                                  color: theme.palette.error.main,
+                                },
+                              }}
+                              {...params}
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
                     </LabelTextField>
                   );
                 }}
@@ -168,13 +326,48 @@ const OrderDrawer = () => {
                 control={methods.control}
                 name='bookingDate'
                 defaultValue={null}
-                render={({ field }) => {
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Booking date is Required',
+                  },
+                }}
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Booking Date'>
-                      <StyledOutlinedTextField
-                        placeholder='Enter Booking Date'
-                        {...field}
-                      />
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                          inputFormat='DD-MM-YYYY'
+                          {...field}
+                          InputAdornmentProps={{
+                            sx: {
+                              '& .MuiIconButton-root': {
+                                color: theme.palette.primary.main,
+                              },
+                            },
+                          }}
+                          renderInput={(params) => (
+                            <StyledOutlinedTextField
+                              placeholder='Enter Booking Date'
+                              error={Boolean(error)}
+                              helperText={error?.message}
+                              sx={{
+                                '& fieldset': {
+                                  border: error
+                                    ? `solid 0.5px ${theme.palette.error.main}`
+                                    : {},
+                                },
+                              }}
+                              FormHelperTextProps={{
+                                sx: {
+                                  color: theme.palette.error.main,
+                                },
+                              }}
+                              {...params}
+                            />
+                          )}
+                        />
+                      </LocalizationProvider>
                     </LabelTextField>
                   );
                 }}
@@ -185,11 +378,16 @@ const OrderDrawer = () => {
                 control={methods.control}
                 name='deposit'
                 defaultValue=''
-                render={({ field }) => {
+                rules={{
+                  required: { value: true, message: 'Deposit is Required' },
+                }}
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Deposit'>
                       <StyledOutlinedTextField
                         placeholder='Enter Deposit'
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...field}
                       />
                     </LabelTextField>
@@ -203,9 +401,9 @@ const OrderDrawer = () => {
                 defaultValue=''
                 render={({ field }) => {
                   return (
-                    <LabelTextField label='Amount in Khmr'>
+                    <LabelTextField label='Amount in Khmer'>
                       <StyledOutlinedTextField
-                        placeholder='Enter Amount in Khmr'
+                        placeholder='Enter Amount in Khmer'
                         {...field}
                       />
                     </LabelTextField>
@@ -218,11 +416,19 @@ const OrderDrawer = () => {
                 control={methods.control}
                 name='eventLocation'
                 defaultValue=''
-                render={({ field }) => {
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Event location is Required',
+                  },
+                }}
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Event Location'>
                       <StyledOutlinedTextField
                         placeholder='Enter Event Location'
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...field}
                       />
                     </LabelTextField>
@@ -234,12 +440,33 @@ const OrderDrawer = () => {
                 control={methods.control}
                 name='paidBy'
                 defaultValue=''
-                render={({ field }) => {
+                rules={{
+                  required: { value: true, message: 'Paid by is Required' },
+                }}
+                render={({
+                  field: { onChange, ...rest },
+                  fieldState: { error },
+                }) => {
                   return (
                     <LabelTextField label='Paid By'>
-                      <StyledOutlinedTextField
-                        placeholder='Enter Paid By'
-                        {...field}
+                      <Autocomplete
+                        freeSolo
+                        disableClearable
+                        openOnFocus
+                        id='paidby'
+                        {...rest}
+                        onInputChange={(e, value) => {
+                          setValue('paidBy', value);
+                        }}
+                        renderInput={(params) => (
+                          <StyledOutlinedTextField
+                            placeholder='Enter paid by'
+                            error={Boolean(error)}
+                            helperText={error?.message}
+                            {...params}
+                          />
+                        )}
+                        options={paidByBank.map((data, i) => data)}
                       />
                     </LabelTextField>
                   );
@@ -268,8 +495,8 @@ const OrderDrawer = () => {
             </Button>
           </Stack>
 
-          {listOrder && listOrder.length > 0 ? (
-            listOrder?.map((order, i) => {
+          {listMenu && listMenu.length > 0 ? (
+            listMenu?.map((order, i) => {
               return (
                 <OrderItem
                   key={order.id}
@@ -292,44 +519,126 @@ const OrderDrawer = () => {
                 sx={{
                   p: 2,
                   borderRadius: 2,
-                  bgcolor: 'background.paper',
+                  bgcolor: alpha(theme.palette.error.light, 0.1),
                 }}
               >
-                {`No List Order... (Click Add More!)`}
+                {`No Order Item...`}
               </Typography>
             </Stack>
           )}
 
-          <Divider sx={{ m: 3 }}>Final Invoice</Divider>
+          <InputGroupTitle marginTop={8}>Final Invoice</InputGroupTitle>
 
           <Stack px={3}>
-            {finalInvoice.map((invoice, i) => {
-              return (
-                <FinalInvoiceForm
-                  key={invoice.id}
-                  index={i}
-                  onRemoveFinalInvoice={() => {
-                    console.log(invoice.id);
+            {finalInvoice && finalInvoice.length > 0 ? (
+              finalInvoice.map((invoice, i) => {
+                return (
+                  <FinalInvoiceForm
+                    key={invoice.id}
+                    index={i}
+                    onRemoveFinalInvoice={() => {
+                      removeFinalInvoiceHandler(invoice.id);
+                    }}
+                  />
+                );
+              })
+            ) : (
+              <Stack
+                sx={{
+                  py: 1.5,
+                  borderRadius: 2,
+                  bgcolor: alpha(theme.palette.error.light, 0.1),
+                }}
+              >
+                <Typography
+                  color='error'
+                  width='100%'
+                  textAlign='center'
+                  mt={1}
+                >
+                  {`Final Invoice is Empty...`}
+                </Typography>
+                <Button
+                  variant='text'
+                  color='info'
+                  onClick={addFinalInvoiceHandler}
+                  sx={{
+                    mx: 2,
+                    mt: 1,
                   }}
-                />
-              );
-            })}
-            <Button
-              variant='outlined'
-              onClick={() => console.log('Add Invoice')}
-              sx={{
-                py: 1,
-                borderStyle: 'dashed',
-                background: alpha(theme.palette.primary.light, 0.2),
-              }}
-            >
-              Add More
-            </Button>
+                >
+                  Add More
+                </Button>
+              </Stack>
+            )}
+            {finalInvoice && finalInvoice.length > 0 && (
+              <Button
+                variant='outlined'
+                onClick={addFinalInvoiceHandler}
+                sx={{
+                  mt: 2,
+                  py: 1,
+                  borderStyle: 'dashed',
+                  background: alpha(theme.palette.primary.light, 0.2),
+                }}
+              >
+                Add More
+              </Button>
+            )}
           </Stack>
 
-          <Stack height={200} />
+          <Stack height={200} p={3} pt={10} position='relative'>
+            <Button
+              type='submit'
+              variant='contained'
+              disableElevation
+              sx={{
+                background: THEME_UTIL.goldGradientMain,
+                color: '#fff',
+                fontSize: 18,
+                fontWeight: 'bold',
+                p: 1.5,
+                position: 'absolute',
+                bottom: theme.spacing(3),
+                right: theme.spacing(3),
+                left: theme.spacing(3),
+                borderRadius: '50vh',
+              }}
+            >
+              Save
+            </Button>
+          </Stack>
         </form>
       </FormProvider>
+    </>
+  );
+};
+
+export const InputGroupTitle = ({
+  children,
+  marginTop,
+}: {
+  children: React.ReactNode;
+  marginTop?: number;
+}) => {
+  return (
+    <>
+      <Typography
+        textAlign='center'
+        fontWeight='bold'
+        variant='h5'
+        sx={{
+          mb: 3,
+          mt: marginTop || 0,
+          mx: 3,
+          p: 1.5,
+          borderRadius: 2,
+          backgroundColor: theme.palette.background.paper,
+          boxShadow: theme.shadows[2],
+        }}
+      >
+        {children}
+      </Typography>
     </>
   );
 };

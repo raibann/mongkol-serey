@@ -6,6 +6,7 @@ import {
   Stack,
   Table,
   TableBody,
+  TableContainer,
   ToggleButtonGroup,
 } from '@mui/material';
 import CusTextField from 'components/CusTextField';
@@ -68,6 +69,11 @@ const Orders = () => {
   const [ToggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrderData>();
   const [newOrder, setNewOrder] = useState(false);
+
+  const handleCloseOrderDialog = () => {
+    setNewOrder(false);
+    setOrderDetail(undefined);
+  };
 
   return (
     <>
@@ -148,40 +154,36 @@ const Orders = () => {
           </Stack>
         </Stack>
 
-        <Table>
-          <OrderTableHead />
+        <TableContainer>
+          <Table sx={{ minWidth: 935 }}>
+            <OrderTableHead />
 
-          <TableBody>
-            {ORDER_DATA.map((order) => {
-              return (
-                <OrderTableBody
-                  key={order.id}
-                  id={order.id}
-                  name={order.name}
-                  social={order.social}
-                  bookingDate={order.bookingDate}
-                  deposit={order.deposit}
-                  eventDate={order.eventDate}
-                  eventLocation={order.eventLocation}
-                  paidBy={order.paidBy}
-                  quantity={order.quantity}
-                />
-              );
-            })}
-          </TableBody>
-        </Table>
+            <TableBody>
+              {ORDER_DATA.map((order) => {
+                return (
+                  <OrderTableBody
+                    key={order.id}
+                    id={order.id}
+                    name={order.name}
+                    bookingDate={order.bookingDate}
+                    deposit={order.deposit}
+                    eventDate={order.eventDate}
+                    paidBy={order.paidBy}
+                    quantity={order.quantity}
+                  />
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Paper>
 
       <Drawer
         open={newOrder || orderDetail !== undefined}
-        onClose={() => {
-          setOrderDetail(undefined);
-          setNewOrder(false);
-        }}
         anchor={'right'}
         PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
       >
-        <OrderDrawer />
+        <OrderDrawer {...{ handleCloseOrderDialog }} />
       </Drawer>
     </>
   );

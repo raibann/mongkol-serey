@@ -8,6 +8,7 @@ import {
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import { Trash } from 'iconsax-react';
+import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
 import { IOrderForm } from '.';
@@ -19,12 +20,17 @@ const OrderItem = ({
   index: number;
   onRemoveOrder: () => void;
 }) => {
-  const { control, setValue, watch } = useFormContext<IOrderForm>();
-  const menuItems = watch(`listMenu.${index}.menuItem`) || [];
+  const { control } = useFormContext<IOrderForm>();
+  const [menuItems, setMenuItems] = useState<
+    {
+      id: number;
+      title: string;
+    }[]
+  >([]);
 
   const addMenuItemHandler = () => {
     if (menuItems.length > 0) {
-      setValue(`listMenu.${index}.menuItem`, [
+      setMenuItems([
         ...menuItems,
         {
           id: new Date().getTime(),
@@ -32,7 +38,7 @@ const OrderItem = ({
         },
       ]);
     } else {
-      setValue(`listMenu.${index}.menuItem`, [
+      setMenuItems([
         {
           id: new Date().getTime(),
           title: '',
@@ -45,7 +51,7 @@ const OrderItem = ({
     const tmp = menuItems.filter((item) => {
       return item.id !== id;
     });
-    setValue(`listMenu.${index}.menuItem`, tmp);
+    setMenuItems(tmp);
   };
 
   return (
@@ -76,12 +82,17 @@ const OrderItem = ({
             control={control}
             name={`listMenu.${index}.title`}
             defaultValue=''
-            render={({ field }) => {
+            rules={{
+              required: { value: true, message: 'Title is Required' },
+            }}
+            render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Category'>
                   <StyledOutlinedTextField
                     size='small'
                     placeholder='Title'
+                    error={Boolean(error)}
+                    helperText={error?.message}
                     {...field}
                   />
                 </LabelTextField>
@@ -92,12 +103,17 @@ const OrderItem = ({
             control={control}
             name={`listMenu.${index}.quantity`}
             defaultValue=''
-            render={({ field }) => {
+            rules={{
+              required: { value: true, message: 'Quantity is Required' },
+            }}
+            render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Quantity'>
                   <StyledOutlinedTextField
                     size='small'
                     placeholder='Quantity'
+                    error={Boolean(error)}
+                    helperText={error?.message}
                     {...field}
                   />
                 </LabelTextField>
@@ -108,12 +124,17 @@ const OrderItem = ({
             control={control}
             name={`listMenu.${index}.unit`}
             defaultValue=''
-            render={({ field }) => {
+            rules={{
+              required: { value: true, message: 'Unit is Required' },
+            }}
+            render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Unit'>
                   <StyledOutlinedTextField
                     size='small'
                     placeholder='Unit'
+                    error={Boolean(error)}
+                    helperText={error?.message}
                     {...field}
                   />
                 </LabelTextField>
@@ -124,12 +145,17 @@ const OrderItem = ({
             control={control}
             name={`listMenu.${index}.price`}
             defaultValue=''
-            render={({ field }) => {
+            rules={{
+              required: { value: true, message: 'Price is Required' },
+            }}
+            render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Price'>
                   <StyledOutlinedTextField
                     size='small'
                     placeholder='Price'
+                    error={Boolean(error)}
+                    helperText={error?.message}
                     {...field}
                   />
                 </LabelTextField>
@@ -142,24 +168,47 @@ const OrderItem = ({
           menuItems.length > 0 &&
           menuItems?.map((item, i) => {
             return (
-              <Stack key={item.id} direction='row' spacing={1} px={2} mb={3}>
+              <Stack
+                key={item.id}
+                direction='row'
+                alignItems='flex-start'
+                spacing={1}
+                px={2}
+                mb={3}
+              >
                 <Typography width={20} ml={1}>
                   {i + 1}.
                 </Typography>
-                <TextField
-                  variant='standard'
-                  size='small'
-                  inputProps={{
-                    style: {
-                      padding: 0,
-                    },
+                <Controller
+                  control={control}
+                  name={`listMenu.${index}.menuItem.${i}.title`}
+                  defaultValue=''
+                  rules={{
+                    required: { value: true, message: 'Item is Required' },
                   }}
-                  sx={{
-                    flexGrow: 1,
-                    outline: 'none',
-                    p: 0,
+                  render={({ field, fieldState: { error } }) => {
+                    return (
+                      <TextField
+                        variant='standard'
+                        size='small'
+                        inputProps={{
+                          style: {
+                            padding: 0,
+                          },
+                        }}
+                        sx={{
+                          flexGrow: 1,
+                          outline: 'none',
+                          p: 0,
+                        }}
+                        error={Boolean(error)}
+                        helperText={error?.message}
+                        {...field}
+                      />
+                    );
                   }}
                 />
+
                 <IconButton
                   color='error'
                   onClick={() => removeMenuItemHandler(item.id)}

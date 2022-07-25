@@ -1,11 +1,13 @@
 import {
   Avatar,
+  Box,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import { motion } from 'framer-motion';
 import useRouter from 'hook/useRouter';
 import theme from 'theme/theme';
 import navigationUtil from 'utils/navigation-util';
@@ -37,24 +39,32 @@ const DrawerContent = () => {
             <ListItem key={nav.title} sx={{ py: 0.5 }}>
               <ListItemButton
                 sx={{
+                  position: 'relative',
                   borderRadius: 2,
-                  '&:hover': {
-                    background: THEME_UTIL.goldGradientLight,
-                  },
-                  '&.Mui-selected': {
-                    background: THEME_UTIL.goldGradientMain,
-                    '&:hover': {
-                      background: THEME_UTIL.goldGradientLight,
-                    },
-                  },
                 }}
-                selected={location.pathname.slice(1) === nav.toUrl}
-                onClick={() => navigate(nav.toUrl)}
+                onClick={() => navigate(`/${nav.toUrl}`)}
               >
+                {location.pathname === `/${nav.toUrl}` && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: THEME_UTIL.goldGradientMain,
+                      zIndex: 0,
+                      borderRadius: 2,
+                    }}
+                    component={motion.div}
+                    layoutId='selectedNav'
+                  />
+                )}
                 <ListItemIcon
                   sx={{
+                    zIndex: 2,
                     color:
-                      location.pathname.slice(1) === nav.toUrl
+                      location.pathname === `/${nav.toUrl}`
                         ? theme.palette.common.white
                         : theme.palette.secondary.main,
                   }}
@@ -66,9 +76,12 @@ const DrawerContent = () => {
                   primaryTypographyProps={{
                     fontWeight: 500,
                     color:
-                      location.pathname.slice(1) === nav.toUrl
+                      location.pathname === `/${nav.toUrl}`
                         ? 'common.white'
                         : 'secondary.main',
+                  }}
+                  sx={{
+                    zIndex: 1,
                   }}
                 />
               </ListItemButton>
