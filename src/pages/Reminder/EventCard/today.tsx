@@ -1,17 +1,8 @@
-import {
-  Paper,
-  Stack,
-  Typography,
-  Avatar,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Box,
-} from '@mui/material';
+import { Paper, Stack, Typography, Avatar, Box } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Facebook, Gift, Call } from 'iconsax-react';
 import { MdClose } from 'react-icons/md';
+import theme from 'theme/theme';
 interface IEventToday {
   id: number;
   customerName: string;
@@ -77,12 +68,12 @@ const EventToday = () => {
         sx={{
           display: 'flex',
           flexWrap: 'wrap',
-          rowGap: 2.5,
-          columnGap: 2.5,
+          rowGap: 4.5,
+          columnGap: 4.5,
         }}
       >
         {EventTodayData.map((data) => (
-          <Paper sx={{ width: 350, py: 1 }} key={data.id}>
+          <Paper sx={{ width: 300, py: 1, px: 2 }} key={data.id}>
             <Stack
               direction={'row'}
               alignItems='center'
@@ -96,39 +87,40 @@ const EventToday = () => {
               <Typography variant='h5' fontWeight={'blod'}>
                 {data.customerName}
               </Typography>
-              <Typography variant='subtitle2'>Happy anniversary</Typography>
+              <Typography variant='subtitle2' gutterBottom>
+                Happy anniversary
+              </Typography>
             </Stack>
             <Stack
               direction={'row'}
               alignItems='center'
-              justifyContent={'space-between'}
-              px={2}
+              justifyContent={'space-evenly'}
             >
               <Avatar
                 src='/images/gift.svg'
                 variant='square'
                 sx={{ width: 126, height: 'auto' }}
               />
-              <List dense={true}>
-                <ListItem disablePadding>
-                  <ListItemIcon>
-                    <Facebook size='24' color='#FF8A65' />
-                  </ListItemIcon>
-                  <ListItemText>{data.facebook}</ListItemText>
-                </ListItem>
-                <ListItem disablePadding>
-                  <ListItemIcon>
-                    <Call size='24' color='#FF8A65' />
-                  </ListItemIcon>
-                  <ListItemText>{data.contacNumber}</ListItemText>
-                </ListItem>
-                <ListItem disablePadding>
-                  <ListItemIcon>
-                    <Gift size='24' color='#FF8A65' />
-                  </ListItemIcon>
-                  <ListItemText> {data.gift}</ListItemText>
-                </ListItem>
-              </List>
+              <Stack justifyContent={'center'} direction='column'>
+                <Stack direction={'row'} spacing={1}>
+                  <Typography>
+                    <Facebook size='20' color={theme.palette.primary.main} />
+                  </Typography>
+                  <Typography variant='caption'>{data.facebook}</Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={1}>
+                  <Typography>
+                    <Call size='20' color={theme.palette.primary.main} />
+                  </Typography>
+                  <Typography variant='caption'>{data.contacNumber}</Typography>
+                </Stack>
+                <Stack direction={'row'} spacing={1}>
+                  <Typography>
+                    <Gift size='20' color={theme.palette.primary.main} />
+                  </Typography>
+                  <Typography variant='caption'>{data.gift}</Typography>
+                </Stack>
+              </Stack>
             </Stack>
           </Paper>
         ))}
