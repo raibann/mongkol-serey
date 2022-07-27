@@ -221,7 +221,7 @@ export default function ExpenseDialogs({
                   <List disablePadding>
                     <ListItem
                       sx={{
-                        bgcolor: (theme) => theme.palette.primary.main,
+                        bgcolor: (theme) => theme.palette.success.main,
                       }}
                     >
                       <ListItemText
@@ -237,7 +237,7 @@ export default function ExpenseDialogs({
                     </ListItem>
                     <ListItem
                       sx={{
-                        bgcolor: (theme) => theme.palette.error.main,
+                        bgcolor: (theme) => theme.palette.primary.main,
                       }}
                     >
                       <ListItemText
