@@ -44,7 +44,8 @@ export default function Login() {
     <Grid container>
       <Grid
         item
-        xs={6}
+        xs={0}
+        md={6}
         sx={{
           backgroundImage: `url('/images/login_banner.jpg')`,
           backgroundPosition: 'center',
@@ -53,7 +54,7 @@ export default function Login() {
           height: '100vh',
         }}
       ></Grid>
-      <Grid item xs={6} sx={{ height: '100vh' }}>
+      <Grid item xs={12} md={6} sx={{ height: '100vh' }}>
         <ErrorDialog
           open={errAlert}
           errorMessage={'Incorrect username or password!'}
