@@ -7,7 +7,7 @@ import {
 } from 'react-hook-form';
 import CustomerForm, {
   CustomerInput,
-} from 'pages/Customer/CustomerDrawer/CustomerForm';
+} from 'pages/Customer/CustForm/CustomerForm';
 import { CusIconButton } from 'components/CusIconButton';
 import { MdClose } from 'react-icons/md';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
