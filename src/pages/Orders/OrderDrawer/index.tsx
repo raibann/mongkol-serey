@@ -19,11 +19,11 @@ import FinalInvoiceForm, {
   IFinalInvoice,
 } from './FinalInvoiceForm';
 import { useEffect, useState } from 'react';
-import { paidByBank } from 'pages/Stocks/FormStock';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import THEME_UTIL from 'utils/theme-util';
 import theme from 'theme/theme';
+import { paidByBank } from 'utils/stock-util';
 
 export interface IOrderForm {
   customerId: number | '';
