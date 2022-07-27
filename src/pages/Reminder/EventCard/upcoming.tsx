@@ -16,7 +16,7 @@ const UpcomingEvent = () => {
                     <Avatar
                       src='/images/avatar.svg'
                       variant='square'
-                      sx={{ width: 100, height: 'auto' }}
+                      sx={{ width: 80, height: 'auto' }}
                     />
                     <Typography variant='h6'>{data.customerName}</Typography>
                     <Stack direction={'column'}>
@@ -37,11 +37,11 @@ const UpcomingEvent = () => {
                 </Grid>
                 <Grid item xs={6}>
                   <Stack direction={'row'} spacing={1}>
-                    <Typography variant='body1' fontWeight={'medium'}>
+                    <Typography variant='subtitle2' fontWeight={'bold'}>
                       Upcoming
                     </Typography>
                     <Typography
-                      variant='body1'
+                      variant='subtitle2'
                       fontWeight={'medium'}
                       color={'error'}
                     >
