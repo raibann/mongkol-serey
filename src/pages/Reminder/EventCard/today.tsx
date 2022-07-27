@@ -1,130 +1,62 @@
-import { Paper, Stack, Typography, Avatar, Box } from '@mui/material';
-import { CusIconButton } from 'components/CusIconButton';
+import { Paper, Stack, Typography, Avatar, Grid } from '@mui/material';
 import { Facebook, Gift, Call } from 'iconsax-react';
-import { MdClose } from 'react-icons/md';
 import theme from 'theme/theme';
-interface IEventToday {
-  id: number;
-  customerName: string;
-  facebook: string;
-  contacNumber: string;
-  gift: number;
-}
-const EventTodayData: IEventToday[] = [
-  {
-    id: 1,
-    customerName: 'Ma Raibann',
-    facebook: 'Raibann Ma',
-    contacNumber: '092123305',
-    gift: 2,
-  },
-  {
-    id: 2,
-    customerName: 'Meas Soaminea',
-    facebook: 'Meas Soaminea',
-    contacNumber: '012914314',
-    gift: 2,
-  },
-  {
-    id: 3,
-    customerName: 'Rem Brosna',
-    facebook: 'Rem Brosna',
-    contacNumber: '016919081',
-    gift: 2,
-  },
-  {
-    id: 4,
-    customerName: 'Heom Ponlork',
-    facebook: 'Dara Pl',
-    contacNumber: '0967848534',
-    gift: 2,
-  },
-  {
-    id: 5,
-    customerName: 'Unknow',
-    facebook: 'Unknow',
-    contacNumber: '012345678',
-    gift: 2,
-  },
-  {
-    id: 6,
-    customerName: 'Unknow',
-    facebook: 'Unknow',
-    contacNumber: '012345678',
-    gift: 7,
-  },
-  {
-    id: 7,
-    customerName: 'Unknow',
-    facebook: 'Unknow',
-    contacNumber: '012345678',
-    gift: 2,
-  },
-];
+import { eventToday } from 'utils/reminder-util';
+
 const EventToday = () => {
   return (
     <>
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          rowGap: 4.5,
-          columnGap: 4.5,
-        }}
-      >
-        {EventTodayData.map((data) => (
-          <Paper sx={{ width: 300, py: 1, px: 2 }} key={data.id}>
-            <Stack
-              direction={'row'}
-              alignItems='center'
-              justifyContent={'flex-end'}
-            >
-              <CusIconButton color='primary' sx={{ boxShadow: 0 }}>
-                <MdClose />
-              </CusIconButton>
-            </Stack>
-            <Stack alignItems='center'>
-              <Typography variant='h5' fontWeight={'blod'}>
-                {data.customerName}
-              </Typography>
-              <Typography variant='subtitle2' gutterBottom>
-                Happy anniversary
-              </Typography>
-            </Stack>
-            <Stack
-              direction={'row'}
-              alignItems='center'
-              justifyContent={'space-evenly'}
-            >
-              <Avatar
-                src='/images/gift.svg'
-                variant='square'
-                sx={{ width: 126, height: 'auto' }}
-              />
-              <Stack justifyContent={'center'} direction='column'>
-                <Stack direction={'row'} spacing={1}>
-                  <Typography>
-                    <Facebook size='20' color={theme.palette.primary.main} />
-                  </Typography>
-                  <Typography variant='caption'>{data.facebook}</Typography>
-                </Stack>
-                <Stack direction={'row'} spacing={1}>
-                  <Typography>
-                    <Call size='20' color={theme.palette.primary.main} />
-                  </Typography>
-                  <Typography variant='caption'>{data.contacNumber}</Typography>
-                </Stack>
-                <Stack direction={'row'} spacing={1}>
-                  <Typography>
-                    <Gift size='20' color={theme.palette.primary.main} />
-                  </Typography>
-                  <Typography variant='caption'>{data.gift}</Typography>
-                </Stack>
+      <Grid container rowSpacing={2} columnSpacing={2}>
+        {eventToday.map((data, i) => (
+          <Grid item xs={12} sm={6} md={3} key={i}>
+            <Paper sx={{ p: 2 }}>
+              <Stack alignItems='center'>
+                <Typography variant='h5' fontWeight={'blod'} noWrap>
+                  {data.customerName}
+                </Typography>
+                <Typography variant='subtitle2' gutterBottom>
+                  Happy anniversary
+                </Typography>
               </Stack>
-            </Stack>
-          </Paper>
+              <Grid container columnSpacing={2} rowSpacing={0}>
+                <Grid item xs={6}>
+                  <Avatar
+                    src='/images/gift.svg'
+                    variant='square'
+                    sx={{ height: 'auto', width: 'auto' }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Stack
+                    sx={{ height: '100%' }}
+                    justifyContent='flex-end'
+                    spacing={1}
+                  >
+                    <Stack direction={'row'} spacing={1}>
+                      <Facebook size='16' color={theme.palette.primary.main} />
+                      <Typography variant='subtitle2' noWrap>
+                        {data.facebook}
+                      </Typography>
+                    </Stack>
+                    <Stack direction={'row'} spacing={1}>
+                      <Call size='16' color={theme.palette.primary.main} />
+                      <Typography variant='subtitle2' noWrap>
+                        {data.contacNumber}
+                      </Typography>
+                    </Stack>
+                    <Stack direction={'row'} spacing={1}>
+                      <Gift size='16' color={theme.palette.primary.main} />
+                      <Typography variant='subtitle2' noWrap>
+                        {data.gift}
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid>
         ))}
-      </Box>
+      </Grid>
     </>
   );
 };
