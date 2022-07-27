@@ -7,7 +7,6 @@ import {
   Typography,
 } from '@mui/material';
 import { EmojiSad } from 'iconsax-react';
-import React from 'react';
 import theme from 'theme/theme';
 
 interface IErrorDialog extends DialogProps {

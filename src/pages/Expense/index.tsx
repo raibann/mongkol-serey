@@ -11,12 +11,13 @@ import {
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
+import useResponsive from 'hook/useResponsive';
 import { SearchNormal1 } from 'iconsax-react';
 import { ORDER_DATA } from 'pages/Orders';
 import { useState } from 'react';
 import theme from 'theme/theme';
 import ExpenseDialogs from './ExpenseDialogs';
-import { ExpenseTableBody, ExpenseTableHead } from './expenseTable';
+import { ExpenseTableHead, ExpenseTableBody } from './expenseTable';
 
 export default function Expense() {
   const [ToggleValue, setToggleValue] = useState('pending');
@@ -24,7 +25,7 @@ export default function Expense() {
   const handleOpenDialogs = () => {
     setOpenDialogs(true);
   };
-
+  const { isSmDown } = useResponsive();
   return (
     <>
       <PageHeader pageTitle={'Expense'} />
@@ -41,53 +42,45 @@ export default function Expense() {
         }}
       >
         <Stack
-          direction='row'
-          justifyContent='space-between'
-          alignItems='center'
-          py={2}
+          direction={isSmDown ? 'column' : 'row'}
+          alignItems='flex-start'
+          justifyContent={'space-between'}
+          spacing={2}
+          sx={{ width: '100%', py: 2 }}
         >
-          <Stack
-            direction='row'
-            justifyContent='space-between'
-            alignItems='center'
-            sx={{ width: '100%' }}
+          <ToggleButtonGroup
+            value={ToggleValue}
+            exclusive
+            fullWidth
+            size='small'
+            onChange={(
+              event: React.MouseEvent<HTMLElement, MouseEvent>,
+              value: any
+            ) => {
+              if (value !== null) {
+                setToggleValue(value);
+              }
+            }}
+            sx={{
+              width: ['100%', '50%', '30%'],
+            }}
           >
-            <ToggleButtonGroup
-              value={ToggleValue}
-              exclusive
-              fullWidth
-              size='small'
-              onChange={(
-                event: React.MouseEvent<HTMLElement, MouseEvent>,
-                value: any
-              ) => {
-                if (value !== null) {
-                  setToggleValue(value);
-                }
-              }}
-              sx={{
-                width: '30%',
-              }}
-            >
-              <CusToggleButton value='pending'>Pending</CusToggleButton>
-              <CusToggleButton value='completed'>Completed</CusToggleButton>
-              <CusToggleButton value='all'>All</CusToggleButton>
-            </ToggleButtonGroup>
-            <CusTextField
-              placeholder='Search...'
-              size='small'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <SearchNormal1
-                      size='20'
-                      color={theme.palette.primary.main}
-                    />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Stack>
+            <CusToggleButton value='pending'>Pending</CusToggleButton>
+            <CusToggleButton value='completed'>Completed</CusToggleButton>
+            <CusToggleButton value='all'>All</CusToggleButton>
+          </ToggleButtonGroup>
+          <CusTextField
+            placeholder='Search...'
+            size='small'
+            fullWidth={isSmDown}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <SearchNormal1 size='20' color={theme.palette.primary.main} />
+                </InputAdornment>
+              ),
+            }}
+          />
         </Stack>
         <TableContainer>
           <Table
@@ -96,6 +89,7 @@ export default function Expense() {
               '& thead tr th': {
                 background: (theme) => theme.palette.background.paper,
                 fontWeight: '600',
+                whiteSpace: 'nowrap',
               },
             }}
           >

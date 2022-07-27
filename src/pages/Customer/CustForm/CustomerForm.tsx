@@ -10,6 +10,7 @@ import districtJson from 'geography/District.json';
 import communeJson from 'geography/Communes.json';
 
 export type CustomerInput = {
+  id: number;
   customerName: string;
   facebook: string;
   telegram: string;
@@ -94,11 +95,13 @@ const CustomerForm = () => {
             rules={{
               required: { value: true, message: 'Customer Name is Required' },
             }}
-            render={({ field }) => {
+            render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Customer Name'>
                   <StyledOutlinedTextField
                     placeholder='Enter Customer Name'
+                    error={Boolean(error)}
+                    helperText={error?.message}
                     {...field}
                   />
                 </LabelTextField>
@@ -113,11 +116,13 @@ const CustomerForm = () => {
             rules={{
               required: { value: true, message: 'Contact Number is Required' },
             }}
-            render={({ field }) => {
+            render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Contact Number'>
                   <StyledOutlinedTextField
                     placeholder='Enter Contact Number'
+                    error={Boolean(error)}
+                    helperText={error?.message}
                     {...field}
                   />
                 </LabelTextField>
@@ -165,7 +170,13 @@ const CustomerForm = () => {
             control={control}
             name='province'
             defaultValue=''
-            render={({ field: { onChange, value, ...rest } }) => {
+            rules={{
+              required: { value: true, message: 'Province is Required' },
+            }}
+            render={({
+              field: { onChange, value, ...rest },
+              fieldState: { error },
+            }) => {
               return (
                 <LabelTextField label='Province'>
                   <Autocomplete
@@ -191,6 +202,8 @@ const CustomerForm = () => {
                     renderInput={(params) => (
                       <StyledOutlinedTextField
                         placeholder='Enter Province'
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...params}
                         InputProps={{
                           ...params.InputProps,
@@ -209,7 +222,13 @@ const CustomerForm = () => {
             control={control}
             name='district'
             defaultValue=''
-            render={({ field: { onChange, value, ...rest } }) => {
+            rules={{
+              required: { value: true, message: 'District is Required' },
+            }}
+            render={({
+              field: { onChange, value, ...rest },
+              fieldState: { error },
+            }) => {
               return (
                 <LabelTextField label='District'>
                   <Autocomplete
@@ -239,6 +258,8 @@ const CustomerForm = () => {
                     renderInput={(params) => (
                       <StyledOutlinedTextField
                         placeholder='Enter District'
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...params}
                         InputProps={{
                           ...params.InputProps,
@@ -259,7 +280,13 @@ const CustomerForm = () => {
             control={control}
             name='commune'
             defaultValue=''
-            render={({ field: { onChange, value, ...rest } }) => {
+            rules={{
+              required: { value: true, message: 'Commune is Required' },
+            }}
+            render={({
+              field: { onChange, value, ...rest },
+              fieldState: { error },
+            }) => {
               return (
                 <LabelTextField label='Commune'>
                   <Autocomplete
@@ -289,6 +316,8 @@ const CustomerForm = () => {
                     renderInput={(params) => (
                       <StyledOutlinedTextField
                         placeholder='Enter Commune'
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...params}
                         InputProps={{
                           ...params.InputProps,

@@ -11,6 +11,8 @@ import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextF
 import LabelTextField from 'components/LabelTextField';
 import { Controller, useForm } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
+import { cateName, paidByBank } from 'utils/stock-util';
+import { validatePatterns } from 'utils/validate-util';
 interface IAddStockInput {
   categoryName: string;
   productName: string;
@@ -21,34 +23,6 @@ interface IAddStockInput {
   usedStock: number;
   amountInKHR: string;
 }
-export const paidByBank = [
-  'ACLEDA Bank',
-  'ABA Bank',
-  'WING Bank',
-  'BAKONG',
-  'CANADIA Bank',
-  'SATHAPANA Bank',
-  'WOORI WON Bank',
-  'TRUE MONEY ',
-  'AMK',
-  'PRASAC',
-  'PHILLIP Bank',
-  'PRINCE Bank',
-  'HATTHA Bank',
-  'CP Bank',
-  'VATTANAC Bank',
-  'JTRUST ROYAL Bank',
-  'FTB Bank',
-  'PPC Bank',
-  'CHIP MONG Bank',
-  'MOHANOKOR',
-  'SBI LY HOUR Bank',
-  'MAY Bank',
-  'eMoney Agent',
-  'Pi Pay',
-  'Cash',
-];
-const cateName = ['Grocery', 'Meat', 'Vegetable', 'Fruits', 'Drinks'];
 
 export default function FormStock({
   handleOpenDrawer,
@@ -61,6 +35,7 @@ export default function FormStock({
   const handleAddStocks = (data: IAddStockInput) => {
     console.log('add new stocks:', data);
   };
+
   return (
     <>
       <Container>
@@ -89,7 +64,13 @@ export default function FormStock({
                 control={control}
                 name='categoryName'
                 defaultValue=''
-                render={({ field: { onChange, ...rest } }) => {
+                rules={{
+                  required: { value: true, message: 'Category is required' },
+                }}
+                render={({
+                  field: { onChange, ...rest },
+                  fieldState: { error },
+                }) => {
                   return (
                     <LabelTextField label='Category Name'>
                       <Autocomplete
@@ -104,6 +85,8 @@ export default function FormStock({
                         renderInput={(params) => (
                           <StyledOutlinedTextField
                             {...params}
+                            error={Boolean(error)}
+                            helperText={error?.message}
                             placeholder='Enter category name'
                           />
                         )}
@@ -118,11 +101,16 @@ export default function FormStock({
                 control={control}
                 name='productName'
                 defaultValue=''
-                render={({ field }) => {
+                rules={{
+                  required: { value: true, message: 'Product is required' },
+                }}
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Product Name'>
                       <StyledOutlinedTextField
                         placeholder='Enter product name'
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...field}
                       />
                     </LabelTextField>
@@ -135,28 +123,44 @@ export default function FormStock({
                 control={control}
                 name='quantity'
                 defaultValue=''
-                render={({ field }) => {
+                rules={{
+                  required: { value: true, message: 'Quantity is required' },
+                  pattern: {
+                    value: validatePatterns.numberOnly,
+                    message: 'Required only number',
+                  },
+                }}
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Quantity'>
                       <StyledOutlinedTextField
                         placeholder='Enter quantity'
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...field}
                       />
                     </LabelTextField>
                   );
                 }}
               />
-
               <Controller
                 control={control}
                 name='amountInUSD'
                 defaultValue=''
-                render={({ field }) => {
+                rules={{
+                  pattern: {
+                    value: validatePatterns.numberOnly,
+                    message: 'Require number only',
+                  },
+                }}
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Amount In USD'>
                       <StyledOutlinedTextField
                         placeholder='Currency dollar'
                         {...field}
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position='start'>
@@ -174,13 +178,21 @@ export default function FormStock({
               <Controller
                 control={control}
                 name='amountInKHR'
+                rules={{
+                  pattern: {
+                    value: validatePatterns.numberOnly,
+                    message: 'Require number only',
+                  },
+                }}
                 defaultValue=''
-                render={({ field }) => {
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Amount In KHR'>
                       <StyledOutlinedTextField
                         placeholder='Currency khmer'
                         {...field}
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position='start'>
@@ -196,12 +208,17 @@ export default function FormStock({
               <Controller
                 control={control}
                 name='shopName'
+                rules={{
+                  required: { value: true, message: 'Shop is required' },
+                }}
                 defaultValue=''
-                render={({ field }) => {
+                render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Shop Name'>
                       <StyledOutlinedTextField
                         placeholder='Enter shop name'
+                        error={Boolean(error)}
+                        helperText={error?.message}
                         {...field}
                       />
                     </LabelTextField>
@@ -214,7 +231,13 @@ export default function FormStock({
                 control={control}
                 name='paidBy'
                 defaultValue=''
-                render={({ field: { onChange, ...rest } }) => {
+                rules={{
+                  required: { value: true, message: 'Paid By is required' },
+                }}
+                render={({
+                  field: { onChange, ...rest },
+                  fieldState: { error },
+                }) => {
                   return (
                     <LabelTextField label='Paid By'>
                       <Autocomplete
@@ -229,6 +252,8 @@ export default function FormStock({
                         renderInput={(params) => (
                           <StyledOutlinedTextField
                             {...params}
+                            error={Boolean(error)}
+                            helperText={error?.message}
                             placeholder='Enter paid by'
                           />
                         )}
@@ -238,23 +263,6 @@ export default function FormStock({
                   );
                 }}
               />
-              {openDrawer === 'Edit' && (
-                <Controller
-                  control={control}
-                  name='usedStock'
-                  defaultValue={0}
-                  render={({ field }) => {
-                    return (
-                      <LabelTextField label='Used Stock'>
-                        <StyledOutlinedTextField
-                          placeholder='Enter used stock'
-                          {...field}
-                        />
-                      </LabelTextField>
-                    );
-                  }}
-                />
-              )}
             </Stack>
 
             <Stack direction={'row'} spacing={4}>
@@ -269,8 +277,8 @@ export default function FormStock({
                   p: 2,
                   textTransform: 'capitalize',
                   boxShadow: 1,
-                  color: (theme) => theme.palette.primary.main,
-                  background: (theme) => theme.palette.secondary.main,
+                  color: (theme) => theme.palette.common.white,
+                  background: (theme) => theme.palette.error.main,
                 }}
               >
                 Cancel

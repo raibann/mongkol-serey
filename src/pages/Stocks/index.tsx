@@ -14,126 +14,10 @@ import PageHeader from 'components/PageHeader';
 import { Add, SearchNormal1 } from 'iconsax-react';
 import { useState } from 'react';
 import theme from 'theme/theme';
+import { stockData } from 'utils/stock-util';
 import FormStock from './FormStock';
 import { StockTableBody, StockTableHead } from './stockTable';
 
-export interface IStockData {
-  id: number;
-  cateName: string;
-  productName: string;
-  quantity: {
-    value: number;
-    unit: string;
-  };
-  price: {
-    value: number;
-    currency: string;
-  };
-  shopName: string;
-  paidBy: string;
-  totalPrice: {
-    value: number;
-    currency: string;
-  };
-  inStock: {
-    value: number;
-    unit: string;
-  };
-}
-const stockData: IStockData[] = [
-  {
-    id: 1,
-    cateName: 'Groceries',
-    productName: 'Soy Sauce',
-    quantity: {
-      value: 10,
-      unit: 'packages',
-    },
-    price: {
-      value: 5,
-      currency: '$',
-    },
-    shopName: 'Psa Tmey',
-    paidBy: 'Cash',
-    totalPrice: {
-      value: 50,
-      currency: '$',
-    },
-    inStock: {
-      value: 5,
-      unit: 'packages',
-    },
-  },
-  {
-    id: 2,
-    cateName: 'Drinks',
-    productName: 'Singha Beer',
-    quantity: {
-      value: 10,
-      unit: 'cases',
-    },
-    price: {
-      value: 15,
-      currency: '$',
-    },
-    shopName: 'Psa Tmey',
-    paidBy: 'Cash',
-    totalPrice: {
-      value: 150,
-      currency: '$',
-    },
-    inStock: {
-      value: 5,
-      unit: 'packages',
-    },
-  },
-  {
-    id: 3,
-    cateName: 'Fruit',
-    productName: 'Apple',
-    quantity: {
-      value: 10,
-      unit: 'packages',
-    },
-    price: {
-      value: 5,
-      currency: '$',
-    },
-    shopName: 'Psa Tmey',
-    paidBy: 'Cash',
-    totalPrice: {
-      value: 50,
-      currency: '$',
-    },
-    inStock: {
-      value: 5,
-      unit: 'packages',
-    },
-  },
-  {
-    id: 4,
-    cateName: 'Meat',
-    productName: 'Beef',
-    quantity: {
-      value: 10,
-      unit: 'Kg',
-    },
-    price: {
-      value: 5,
-      currency: '$',
-    },
-    shopName: 'Psa Tmey',
-    paidBy: 'Cash',
-    totalPrice: {
-      value: 50,
-      currency: '$',
-    },
-    inStock: {
-      value: 5,
-      unit: 'Kg',
-    },
-  },
-];
 const Stocks = () => {
   const [openDrawer, setOpenDrawer] = useState<'Add' | 'Edit' | ''>('');
   const [searchProduct, setSearchProduct] = useState(stockData);
@@ -162,57 +46,50 @@ const Stocks = () => {
           direction='row'
           justifyContent='space-between'
           alignItems='center'
-          py={2}
+          sx={{ width: '100%', py: 2 }}
+          spacing={2}
         >
-          <Stack
-            direction='row'
-            justifyContent='space-between'
-            alignItems='center'
-            sx={{ width: '100%' }}
+          <Button
+            variant='contained'
+            startIcon={<Add />}
+            sx={{
+              color: theme.palette.common.white,
+              boxShadow: theme.shadows[1],
+              borderRadius: 2,
+              whiteSpace: 'nowrap',
+              height: 40,
+            }}
+            onClick={() => handleOpenDrawer('Add')}
           >
-            <Button
-              variant='contained'
-              startIcon={<Add />}
-              sx={{
-                color: theme.palette.common.white,
-                boxShadow: theme.shadows[1],
-                borderRadius: 2,
-              }}
-              onClick={() => handleOpenDrawer('Add')}
-            >
-              Add New
-            </Button>
-            <CusTextField
-              onChange={(e) => {
-                if (!!e.currentTarget.value) {
-                  let tmp = searchProduct.filter(
-                    (el) =>
-                      el.productName
-                        .toLowerCase()
-                        .indexOf(e.currentTarget.value.toLowerCase()) !== -1 ||
-                      el.cateName
-                        .toLowerCase()
-                        .indexOf(e.currentTarget.value.toLowerCase()) !== -1
-                  );
-                  setSearchProduct(tmp);
-                } else {
-                  setSearchProduct(stockData);
-                }
-              }}
-              placeholder='Search...'
-              size='small'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <SearchNormal1
-                      size='20'
-                      color={theme.palette.primary.main}
-                    />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Stack>
+            Add New
+          </Button>
+          <CusTextField
+            onChange={(e) => {
+              if (!!e.currentTarget.value) {
+                let tmp = searchProduct.filter(
+                  (el) =>
+                    el.productName
+                      .toLowerCase()
+                      .indexOf(e.currentTarget.value.toLowerCase()) !== -1 ||
+                    el.cateName
+                      .toLowerCase()
+                      .indexOf(e.currentTarget.value.toLowerCase()) !== -1
+                );
+                setSearchProduct(tmp);
+              } else {
+                setSearchProduct(stockData);
+              }
+            }}
+            placeholder='Search...'
+            size='small'
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <SearchNormal1 size='20' color={theme.palette.primary.main} />
+                </InputAdornment>
+              ),
+            }}
+          />
         </Stack>
         <TableContainer>
           <Table
@@ -221,6 +98,7 @@ const Stocks = () => {
               '& thead tr th': {
                 background: (theme) => theme.palette.background.paper,
                 fontWeight: '600',
+                whiteSpace: 'nowrap',
               },
             }}
           >
@@ -239,7 +117,6 @@ const Stocks = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
         <Pagination
           count={10}
           shape='rounded'
