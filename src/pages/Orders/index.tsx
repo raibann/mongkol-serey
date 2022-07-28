@@ -2,6 +2,7 @@ import {
   Button,
   Drawer,
   InputAdornment,
+  Pagination,
   Paper,
   Stack,
   Table,
@@ -12,6 +13,7 @@ import {
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
+import useResponsive from 'hook/useResponsive';
 import { Add, SearchNormal1 } from 'iconsax-react';
 import React, { useState } from 'react';
 import theme from 'theme/theme';
@@ -63,12 +65,146 @@ export const ORDER_DATA: IOrderData[] = [
     deposit: 400,
     paidBy: 'Cash',
   },
+  {
+    id: 1,
+    name: 'Meas Saominea',
+    social: '@meassaominea',
+    eventDate: '30-07-2022',
+    quantity: 50,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '06-07-2022',
+    deposit: 300,
+    paidBy: 'AMK',
+  },
+  {
+    id: 2,
+    name: 'Ma Raibann',
+    social: '@raibann.rb',
+    eventDate: '05-10-2022',
+    quantity: 100,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '20-07-2022',
+    deposit: 2000,
+    paidBy: 'ABA',
+  },
+  {
+    id: 3,
+    name: 'Rem Brosna',
+    social: '@rem.brosna',
+    eventDate: '25-12-2022',
+    quantity: 70,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '16-11-2022',
+    deposit: 400,
+    paidBy: 'Cash',
+  },
+  {
+    id: 1,
+    name: 'Meas Saominea',
+    social: '@meassaominea',
+    eventDate: '30-07-2022',
+    quantity: 50,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '06-07-2022',
+    deposit: 300,
+    paidBy: 'AMK',
+  },
+  {
+    id: 2,
+    name: 'Ma Raibann',
+    social: '@raibann.rb',
+    eventDate: '05-10-2022',
+    quantity: 100,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '20-07-2022',
+    deposit: 2000,
+    paidBy: 'ABA',
+  },
+  {
+    id: 3,
+    name: 'Rem Brosna',
+    social: '@rem.brosna',
+    eventDate: '25-12-2022',
+    quantity: 70,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '16-11-2022',
+    deposit: 400,
+    paidBy: 'Cash',
+  },
+  {
+    id: 1,
+    name: 'Meas Saominea',
+    social: '@meassaominea',
+    eventDate: '30-07-2022',
+    quantity: 50,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '06-07-2022',
+    deposit: 300,
+    paidBy: 'AMK',
+  },
+  {
+    id: 2,
+    name: 'Ma Raibann',
+    social: '@raibann.rb',
+    eventDate: '05-10-2022',
+    quantity: 100,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '20-07-2022',
+    deposit: 2000,
+    paidBy: 'ABA',
+  },
+  {
+    id: 3,
+    name: 'Rem Brosna',
+    social: '@rem.brosna',
+    eventDate: '25-12-2022',
+    quantity: 70,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '16-11-2022',
+    deposit: 400,
+    paidBy: 'Cash',
+  },
+  {
+    id: 1,
+    name: 'Meas Saominea',
+    social: '@meassaominea',
+    eventDate: '30-07-2022',
+    quantity: 50,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '06-07-2022',
+    deposit: 300,
+    paidBy: 'AMK',
+  },
+  {
+    id: 2,
+    name: 'Ma Raibann',
+    social: '@raibann.rb',
+    eventDate: '05-10-2022',
+    quantity: 100,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '20-07-2022',
+    deposit: 2000,
+    paidBy: 'ABA',
+  },
+  {
+    id: 3,
+    name: 'Rem Brosna',
+    social: '@rem.brosna',
+    eventDate: '25-12-2022',
+    quantity: 70,
+    eventLocation: 'Phnom Penh',
+    bookingDate: '16-11-2022',
+    deposit: 400,
+    paidBy: 'Cash',
+  },
 ];
 
 const Orders = () => {
   const [ToggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrderData>();
   const [newOrder, setNewOrder] = useState(false);
+
+  const { isMdDown } = useResponsive();
 
   const handleCloseOrderDialog = () => {
     setNewOrder(false);
@@ -82,19 +218,20 @@ const Orders = () => {
       <Paper
         elevation={3}
         sx={{
-          px: 2,
+          position: 'relative',
           mx: 2,
           borderRadius: 2,
-          minHeight: '90%',
+          height: 'calc(100vh - 100px)',
           maxWidth: '100%',
           overflow: 'hidden',
         }}
       >
         <Stack
-          direction='row'
-          justifyContent='space-between'
+          direction={{ xs: 'column', md: 'row' }}
+          justifyContent={{ xs: 'center', md: 'space-between' }}
           alignItems='center'
-          py={2}
+          p={2}
+          rowGap={2}
         >
           <ToggleButtonGroup
             value={ToggleValue}
@@ -110,7 +247,7 @@ const Orders = () => {
               }
             }}
             sx={{
-              width: '30%',
+              width: { xs: '100%', md: '30%' },
             }}
           >
             <CusToggleButton value='pending'>Pending</CusToggleButton>
@@ -149,21 +286,28 @@ const Orders = () => {
               }}
               onClick={() => setNewOrder(true)}
             >
-              Add New
+              {isMdDown ? 'New' : 'Add New'}
             </Button>
           </Stack>
         </Stack>
 
-        <TableContainer>
+        <TableContainer
+          sx={{
+            height: '100%',
+            overflow: 'auto',
+            px: 2,
+            pb: 30,
+          }}
+        >
           <Table sx={{ minWidth: 935 }}>
             <OrderTableHead />
 
             <TableBody>
-              {ORDER_DATA.map((order) => {
+              {ORDER_DATA.map((order, i) => {
                 return (
                   <OrderTableBody
-                    key={order.id}
-                    id={order.id}
+                    key={i + 1}
+                    id={i + 1}
                     name={order.name}
                     bookingDate={order.bookingDate}
                     deposit={order.deposit}
@@ -176,12 +320,27 @@ const Orders = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Stack
+          alignItems='center'
+          width='100%'
+          p={1}
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            bgcolor: '#fff',
+          }}
+        >
+          <Pagination count={10} />
+        </Stack>
       </Paper>
 
       <Drawer
         open={newOrder || orderDetail !== undefined}
         anchor={'right'}
-        PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
+        PaperProps={{
+          sx: { borderRadius: 0, width: { xs: '100vw', md: '50vw' } },
+        }}
       >
         <OrderDrawer {...{ handleCloseOrderDialog }} />
       </Drawer>

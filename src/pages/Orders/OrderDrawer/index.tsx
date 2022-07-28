@@ -540,6 +540,22 @@ const OrderDrawer = ({
 
           <InputGroupTitle marginTop={8}>Final Invoice</InputGroupTitle>
 
+          <Stack
+            width='100%'
+            spacing={1}
+            pt={2}
+            px={3}
+            position='relative'
+            direction='row'
+            alignItems='center'
+          >
+            <Typography sx={{ flex: 1 }}>Title</Typography>
+            <Typography sx={{ flex: 1 }}>Quanity</Typography>
+            <Typography sx={{ flex: 1 }}>Unit</Typography>
+            <Typography sx={{ flex: 1 }}>Price</Typography>
+            <div style={{ width: 40 }} />
+          </Stack>
+
           <Stack px={3}>
             {finalInvoice && finalInvoice.length > 0 ? (
               finalInvoice.map((invoice, i) => {

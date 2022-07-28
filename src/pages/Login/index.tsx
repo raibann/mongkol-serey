@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import ErrorDialog from 'components/CusDialog/errorDailog';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
 import { Eye, EyeSlash } from 'iconsax-react';
 import React from 'react';

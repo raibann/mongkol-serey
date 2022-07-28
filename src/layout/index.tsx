@@ -17,7 +17,6 @@ export default function Home() {
           ml: { xs: 0, md: `${drawerWidth}` },
           height: '100vh',
           overflow: 'auto',
-          pb: 4,
         }}
       >
         <Outlet />

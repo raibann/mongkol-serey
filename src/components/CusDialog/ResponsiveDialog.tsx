@@ -6,7 +6,7 @@ import React from 'react';
 interface IErrorDialog extends DialogProps {
   onCloseDialog: () => void;
   children: React.ReactNode;
-  size?: string;
+  size?: 'sm' | 'lg';
 }
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -24,7 +24,7 @@ const ResponsiveDialog = (props: IErrorDialog) => {
     <Dialog
       open={open}
       onClose={onCloseDialog}
-      maxWidth={size ? 'sm' : 'lg'}
+      maxWidth={size || 'sm'}
       fullWidth
       TransitionComponent={Transition}
       PaperProps={{

@@ -46,7 +46,7 @@ export const OrderTableBody = ({
 
 export const OrderTableHead = () => {
   return (
-    <TableHead>
+    <TableHead sx={{ position: 'sticky', top: 0, zIndex: theme.zIndex.appBar }}>
       <TableRow
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -58,10 +58,10 @@ export const OrderTableHead = () => {
         }}
       >
         <TableCell>INVOICE</TableCell>
-        <TableCell>CUSTOMER</TableCell>
-        <TableCell>DATE</TableCell>
+        <TableCell>CUSTOMER NAME</TableCell>
+        <TableCell>EVENT DATE</TableCell>
         <TableCell>QUANTITY</TableCell>
-        <TableCell>BOOKING</TableCell>
+        <TableCell>BOOKING DATE</TableCell>
         <TableCell>DEPOSIT</TableCell>
         <TableCell>PAID BY</TableCell>
         <TableCell width={140} align='center'>

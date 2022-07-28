@@ -3,6 +3,7 @@ import { CusIconButton } from 'components/CusIconButton';
 import React from 'react';
 import { HambergerMenu } from 'iconsax-react';
 import useResponsive from 'hook/useResponsive';
+import { useDrawerContext } from 'context/DrawerContext';
 
 const PageHeader = ({
   children,
@@ -14,6 +15,8 @@ const PageHeader = ({
   pageTitle: string;
 }) => {
   const { isMdDown } = useResponsive();
+  const { openDrawer, setOpenDrawer } = useDrawerContext();
+
   return (
     <AppBar
       position='sticky'
@@ -27,11 +30,12 @@ const PageHeader = ({
       }}
     >
       <Toolbar sx={{ py: 2, px: { sm: 0 } }}>
-        <Grid container px={2} rowSpacing={2}>
+        <Grid container px={2}>
           <Grid item xs={12} md='auto'>
             <Grid container>
               <Grid item xs>
                 <CusIconButton
+                  onClick={() => setOpenDrawer(!openDrawer)}
                   color='primary'
                   sx={{
                     height: 40,

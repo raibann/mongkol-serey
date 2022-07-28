@@ -1,6 +1,5 @@
 import { Button, Stack } from '@mui/material';
-import ResponsiveDialog from 'components/CusDialog/ResponsiveDailog';
-// import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
+import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import CusInput from 'components/CusInput';
 import { useState } from 'react';
 
@@ -19,7 +18,7 @@ export default function Home() {
       <ResponsiveDialog
         onCloseDialog={() => setState(false)}
         open={state}
-        size='small'
+        size='sm'
       >
         <CusInput setFile={() => {}} id={'abc'} aspect={1 / 1}>
           <Button variant='contained' component='span'>
