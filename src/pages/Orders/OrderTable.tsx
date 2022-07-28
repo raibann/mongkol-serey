@@ -11,6 +11,7 @@ export const OrderTableBody = ({
   name,
   paidBy,
   quantity,
+  onPhotoClick,
 }: {
   id: number;
   name: string;
@@ -19,6 +20,7 @@ export const OrderTableBody = ({
   bookingDate: string;
   deposit: number;
   paidBy: string;
+  onPhotoClick: () => void;
 }) => {
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -30,7 +32,11 @@ export const OrderTableBody = ({
       <TableCell>${deposit}</TableCell>
       <TableCell>{paidBy}</TableCell>
       <TableCell align='center'>
-        <CusIconButton color='success' sx={{ p: 0.5, mx: 0.5 }}>
+        <CusIconButton
+          color='success'
+          sx={{ p: 0.5, mx: 0.5 }}
+          onClick={onPhotoClick}
+        >
           <GalleryImport size={18} />
         </CusIconButton>
         <CusIconButton color='warning' sx={{ p: 0.5, mx: 0.5 }}>

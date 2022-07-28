@@ -10,6 +10,7 @@ import {
   TableContainer,
   ToggleButtonGroup,
 } from '@mui/material';
+import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
@@ -142,67 +143,13 @@ export const ORDER_DATA: IOrderData[] = [
     deposit: 300,
     paidBy: 'AMK',
   },
-  {
-    id: 2,
-    name: 'Ma Raibann',
-    social: '@raibann.rb',
-    eventDate: '05-10-2022',
-    quantity: 100,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '20-07-2022',
-    deposit: 2000,
-    paidBy: 'ABA',
-  },
-  {
-    id: 3,
-    name: 'Rem Brosna',
-    social: '@rem.brosna',
-    eventDate: '25-12-2022',
-    quantity: 70,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '16-11-2022',
-    deposit: 400,
-    paidBy: 'Cash',
-  },
-  {
-    id: 1,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: 'AMK',
-  },
-  {
-    id: 2,
-    name: 'Ma Raibann',
-    social: '@raibann.rb',
-    eventDate: '05-10-2022',
-    quantity: 100,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '20-07-2022',
-    deposit: 2000,
-    paidBy: 'ABA',
-  },
-  {
-    id: 3,
-    name: 'Rem Brosna',
-    social: '@rem.brosna',
-    eventDate: '25-12-2022',
-    quantity: 70,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '16-11-2022',
-    deposit: 400,
-    paidBy: 'Cash',
-  },
 ];
 
 const Orders = () => {
   const [ToggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrderData>();
   const [newOrder, setNewOrder] = useState(false);
+  const [openPhotoDialog, setOpenPhotoDialog] = useState(false);
 
   const { isMdDown } = useResponsive();
 
@@ -314,6 +261,7 @@ const Orders = () => {
                     eventDate={order.eventDate}
                     paidBy={order.paidBy}
                     quantity={order.quantity}
+                    onPhotoClick={() => setOpenPhotoDialog(true)}
                   />
                 );
               })}
@@ -344,6 +292,14 @@ const Orders = () => {
       >
         <OrderDrawer {...{ handleCloseOrderDialog }} />
       </Drawer>
+
+      <ResponsiveDialog
+        open={openPhotoDialog}
+        onCloseDialog={() => setOpenPhotoDialog(false)}
+        size='sm'
+      >
+        OK
+      </ResponsiveDialog>
     </>
   );
 };

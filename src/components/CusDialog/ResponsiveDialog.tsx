@@ -24,11 +24,11 @@ const ResponsiveDialog = (props: IErrorDialog) => {
     <Dialog
       open={open}
       onClose={onCloseDialog}
-      maxWidth={size || 'sm'}
+      maxWidth={size || 'md'}
       fullWidth
       TransitionComponent={Transition}
       PaperProps={{
-        sx: { height: ['100%', '100%', size ? '50vh' : '90vh'] },
+        sx: { height: ['100%', '100%', size === 'sm' ? '50vh' : '90vh'] },
       }}
       fullScreen={isMdDown}
     >
