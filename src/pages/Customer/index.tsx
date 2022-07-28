@@ -105,6 +105,39 @@ export default function Customers() {
           <FormProvider {...methods}>
             <form>
               <CustomerForm />
+              <Stack direction={'row'} spacing={4} sx={{ px: 3, py: 4 }}>
+                <Button
+                  onClick={() => {
+                    handleOpenDrawer('');
+                  }}
+                  variant='contained'
+                  fullWidth
+                  sx={{
+                    borderRadius: 3,
+                    p: 2,
+                    textTransform: 'capitalize',
+                    boxShadow: 1,
+                    color: (theme) => theme.palette.common.white,
+                    background: (theme) => theme.palette.error.main,
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type='submit'
+                  variant='contained'
+                  fullWidth
+                  sx={{
+                    borderRadius: 3,
+                    p: 2,
+                    textTransform: 'capitalize',
+                    boxShadow: 1,
+                    color: (theme) => theme.palette.common.white,
+                  }}
+                >
+                  Save
+                </Button>
+              </Stack>
             </form>
           </FormProvider>
         )}
