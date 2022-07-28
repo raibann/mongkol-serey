@@ -20,6 +20,7 @@ import React, { useState } from 'react';
 import theme from 'theme/theme';
 import OrderDrawer from './OrderDrawer';
 import { OrderTableBody, OrderTableHead } from './OrderTable';
+import PhotoDialogContent from './PhotoDialogContent';
 
 interface IOrderData {
   id: number;
@@ -298,7 +299,7 @@ const Orders = () => {
         onCloseDialog={() => setOpenPhotoDialog(false)}
         size='sm'
       >
-        OK
+        <PhotoDialogContent />
       </ResponsiveDialog>
     </>
   );
