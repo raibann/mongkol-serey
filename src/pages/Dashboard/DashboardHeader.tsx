@@ -51,7 +51,7 @@ const DashboardHeader = () => {
           direction={'row'}
           spacing={2}
           justifyContent='flex-end'
-          sx={{ width: '100%' }}
+          sx={{ width: '100%', mt: { xs: 2, md: 0 } }}
           alignItems='center'
         >
           <ToggleButtonGroup

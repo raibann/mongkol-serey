@@ -1,6 +1,5 @@
 import { Box, IconButton, Stack } from '@mui/material';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
-import LabelTextField from 'components/LabelTextField';
 import { Trash } from 'iconsax-react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
@@ -49,15 +48,13 @@ const FinalInvoiceForm = ({
           }}
           render={({ field, fieldState: { error } }) => {
             return (
-              <LabelTextField label='Title'>
-                <StyledOutlinedTextField
-                  size='small'
-                  placeholder='Title'
-                  error={Boolean(error)}
-                  helperText={error?.message}
-                  {...field}
-                />
-              </LabelTextField>
+              <StyledOutlinedTextField
+                size='small'
+                placeholder='Title'
+                error={Boolean(error)}
+                helperText={error?.message}
+                {...field}
+              />
             );
           }}
         />
@@ -70,15 +67,13 @@ const FinalInvoiceForm = ({
           }}
           render={({ field, fieldState: { error } }) => {
             return (
-              <LabelTextField label='Quantity'>
-                <StyledOutlinedTextField
-                  size='small'
-                  placeholder='Quantity'
-                  error={Boolean(error)}
-                  helperText={error?.message}
-                  {...field}
-                />
-              </LabelTextField>
+              <StyledOutlinedTextField
+                size='small'
+                placeholder='Quantity'
+                error={Boolean(error)}
+                helperText={error?.message}
+                {...field}
+              />
             );
           }}
         />
@@ -91,15 +86,13 @@ const FinalInvoiceForm = ({
           }}
           render={({ field, fieldState: { error } }) => {
             return (
-              <LabelTextField label='Unit'>
-                <StyledOutlinedTextField
-                  size='small'
-                  placeholder='Unit'
-                  error={Boolean(error)}
-                  helperText={error?.message}
-                  {...field}
-                />
-              </LabelTextField>
+              <StyledOutlinedTextField
+                size='small'
+                placeholder='Unit'
+                error={Boolean(error)}
+                helperText={error?.message}
+                {...field}
+              />
             );
           }}
         />
@@ -112,15 +105,13 @@ const FinalInvoiceForm = ({
           }}
           render={({ field, fieldState: { error } }) => {
             return (
-              <LabelTextField label='Price'>
-                <StyledOutlinedTextField
-                  size='small'
-                  placeholder='Price'
-                  error={Boolean(error)}
-                  helperText={error?.message}
-                  {...field}
-                />
-              </LabelTextField>
+              <StyledOutlinedTextField
+                size='small'
+                placeholder='Price'
+                error={Boolean(error)}
+                helperText={error?.message}
+                {...field}
+              />
             );
           }}
         />

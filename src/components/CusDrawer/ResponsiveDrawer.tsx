@@ -5,7 +5,7 @@ interface IDrawer extends DrawerProps {
   children: React.ReactNode;
 }
 export default function ResponsiveDrawer(props: IDrawer) {
-  const { open, onCloseDrawer, children } = props;
+  const { open, onCloseDrawer, children, ...rest } = props;
   return (
     <Drawer
       anchor={'right'}
@@ -14,6 +14,7 @@ export default function ResponsiveDrawer(props: IDrawer) {
       PaperProps={{
         sx: { borderRadius: 0, width: ['100vw', '50vw'] },
       }}
+      {...rest}
     >
       {children}
     </Drawer>

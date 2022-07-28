@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { AppWrapper } from 'context/AppContext';
 import AllRoutes from 'routes';
 import theme from 'theme/theme';
+import { DrawerWrapper } from 'context/DrawerContext';
 
 function App() {
   return (
@@ -12,7 +13,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AppWrapper>
-          <AllRoutes />
+          <DrawerWrapper>
+            <AllRoutes />
+          </DrawerWrapper>
         </AppWrapper>
       </ThemeProvider>
     </Router>

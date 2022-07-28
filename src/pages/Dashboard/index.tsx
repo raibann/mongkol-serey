@@ -258,7 +258,7 @@ const Dashboard = () => {
         </Paper>
       </Stack>
 
-      <Stack mt={2} px={2} direction='row' spacing={2} height={400}>
+      <Stack mt={2} px={2} direction='row' spacing={2} height={400} mb={4}>
         <Paper
           elevation={1}
           sx={{

@@ -7,6 +7,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import { useDrawerContext } from 'context/DrawerContext';
 import { motion } from 'framer-motion';
 import useRouter from 'hook/useRouter';
 import theme from 'theme/theme';
@@ -15,6 +16,7 @@ import THEME_UTIL from 'utils/theme-util';
 
 const DrawerContent = () => {
   const { location, navigate } = useRouter();
+  const { openDrawer, setOpenDrawer } = useDrawerContext();
 
   return (
     <>
@@ -42,7 +44,10 @@ const DrawerContent = () => {
                   position: 'relative',
                   borderRadius: 2,
                 }}
-                onClick={() => navigate(`/${nav.toUrl}`)}
+                onClick={() => {
+                  navigate(`/${nav.toUrl}`);
+                  openDrawer && setOpenDrawer(false);
+                }}
               >
                 {location.pathname === `/${nav.toUrl}` && (
                   <Box

@@ -13,7 +13,7 @@ import { MdClose } from 'react-icons/md';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import OrderItem from './OrderItem';
-import { BsPlus } from 'react-icons/bs';
+import { BsPlus, BsCheckCircleFill, BsCircle } from 'react-icons/bs';
 import FinalInvoiceForm, {
   FinalInvoiceInput,
   IFinalInvoice,
@@ -24,6 +24,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import THEME_UTIL from 'utils/theme-util';
 import theme from 'theme/theme';
 import { paidByBank } from 'utils/stock-util';
+import { BoxRemove } from 'iconsax-react';
 
 export interface IOrderForm {
   customerId: number | '';
@@ -193,6 +194,13 @@ const OrderDrawer = ({
           <Stack direction='row' spacing={2} px={3}>
             <Button
               disableElevation
+              startIcon={
+                newCustomer ? (
+                  <BsCheckCircleFill size={16} />
+                ) : (
+                  <BsCircle size={16} />
+                )
+              }
               variant={newCustomer ? 'contained' : 'outlined'}
               onClick={() => setNewCustomer(1)}
               sx={{
@@ -203,6 +211,13 @@ const OrderDrawer = ({
             </Button>
             <Button
               disableElevation
+              startIcon={
+                !newCustomer ? (
+                  <BsCheckCircleFill size={16} />
+                ) : (
+                  <BsCircle size={16} />
+                )
+              }
               variant={!newCustomer ? 'contained' : 'outlined'}
               onClick={() => setNewCustomer(0)}
               sx={{
@@ -507,27 +522,39 @@ const OrderDrawer = ({
             })
           ) : (
             <Stack
+              alignItems='center'
+              spacing={2}
               sx={{
                 mx: 3,
+                p: 2,
+                borderRadius: 2,
+                bgcolor: alpha(theme.palette.error.light, 0.1),
               }}
             >
-              <Typography
-                color='error'
-                width='100%'
-                textAlign='center'
-                mb={3}
-                sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  bgcolor: alpha(theme.palette.error.light, 0.1),
-                }}
-              >
+              <BoxRemove size='48' color={theme.palette.error.main} />
+              <Typography color='error' width='100%' textAlign='center' mb={3}>
                 {`No Order Item...`}
               </Typography>
             </Stack>
           )}
 
           <InputGroupTitle marginTop={8}>Final Invoice</InputGroupTitle>
+
+          <Stack
+            width='100%'
+            spacing={1}
+            pt={2}
+            px={3}
+            position='relative'
+            direction='row'
+            alignItems='center'
+          >
+            <Typography sx={{ flex: 1 }}>Title</Typography>
+            <Typography sx={{ flex: 1 }}>Quanity</Typography>
+            <Typography sx={{ flex: 1 }}>Unit</Typography>
+            <Typography sx={{ flex: 1 }}>Price</Typography>
+            <div style={{ width: 40 }} />
+          </Stack>
 
           <Stack px={3}>
             {finalInvoice && finalInvoice.length > 0 ? (
@@ -544,12 +571,15 @@ const OrderDrawer = ({
               })
             ) : (
               <Stack
+                alignItems='center'
+                spacing={2}
                 sx={{
                   py: 1.5,
                   borderRadius: 2,
                   bgcolor: alpha(theme.palette.error.light, 0.1),
                 }}
               >
+                <BoxRemove size='48' color={theme.palette.error.main} />
                 <Typography
                   color='error'
                   width='100%'

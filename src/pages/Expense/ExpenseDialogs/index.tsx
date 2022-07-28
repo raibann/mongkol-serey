@@ -12,7 +12,7 @@ import {
   AppBar,
   Toolbar,
 } from '@mui/material';
-import ResponsiveDialog from 'components/CusDialog/ResponsiveDailog';
+import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import { Add, Call, Note, UserSquare, Location, Calendar } from 'iconsax-react';
 import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
