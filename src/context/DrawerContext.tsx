@@ -6,7 +6,7 @@ interface IDrawerContext {
 }
 
 export const DrawerContext = createContext<IDrawerContext>({
-  openDrawer: true,
+  openDrawer: false,
   setOpenDrawer: () => {},
 });
 
@@ -15,7 +15,7 @@ interface IAppWrapper {
 }
 
 export function DrawerWrapper({ children }: IAppWrapper) {
-  const [openDrawer, setOpenDrawer] = useState(true);
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   return (
     <DrawerContext.Provider value={{ openDrawer, setOpenDrawer }}>

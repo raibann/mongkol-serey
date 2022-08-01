@@ -5,9 +5,11 @@ import {
   List,
   Paper,
   Stack,
+  Tabs,
   Typography,
 } from '@mui/material';
 import DashboardCard from 'components/DashboardCard';
+import useResponsive from 'hook/useResponsive';
 import {
   ArrowRight2,
   DollarCircle,
@@ -83,7 +85,7 @@ const CHART1_DATA = [
 const CHART2_DATA = [
   {
     name: 'Jan',
-    Sales: 150,
+    Sales: 27,
     Expenses: 10,
   },
   {
@@ -150,49 +152,59 @@ const Anniversary = Array(4).fill({
 });
 
 const Dashboard = () => {
+  const { isMdDown } = useResponsive();
+
   return (
     <>
       <DashboardHeader />
 
-      <Stack direction='row' spacing={3} pb={2} px={2} overflow='auto'>
-        <DashboardCard
-          title='Total Profits'
-          value='$100,000'
-          percentage='2.3%'
-          isHigher
-          icon={<DollarCircle />}
-          type={''}
-        />
-        <DashboardCard
-          title='Total Expenses'
-          value='$50,000'
-          percentage='2%'
-          icon={<DollarCircle />}
-          type={''}
-        />
-        <DashboardCard
-          title='Total Orders'
-          value='100'
-          percentage='5%'
-          isHigher
-          icon={<WalletAdd />}
-          type={'Events'}
-        />
-        <DashboardCard
-          title='Total Customers'
-          value='100'
-          percentage='2.3%'
-          isHigher
-          icon={<Profile2User />}
-          type={'Customers'}
-        />
+      <Stack direction='row' px={2}>
+        <Tabs value={false} variant='scrollable' scrollButtons={false}>
+          <DashboardCard
+            title='Total Profits'
+            value='$100,000'
+            percentage='2.3%'
+            isHigher
+            icon={<DollarCircle />}
+            type={''}
+          />
+          <DashboardCard
+            title='Total Expenses'
+            value='$50,000'
+            percentage='2%'
+            icon={<DollarCircle />}
+            type={''}
+          />
+          <DashboardCard
+            title='Total Orders'
+            value='100'
+            percentage='5%'
+            isHigher
+            icon={<WalletAdd />}
+            type={'Events'}
+          />
+          <DashboardCard
+            title='Total Customers'
+            value='100'
+            percentage='2.3%'
+            isHigher
+            icon={<Profile2User />}
+            type={'Customers'}
+          />
+        </Tabs>
       </Stack>
 
-      <Stack mt={2} px={2} direction='row' spacing={2} height={400}>
+      <Stack
+        mt={2}
+        px={2}
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={2}
+        height={{ xs: 1020, md: 400 }}
+      >
         <Paper
           elevation={1}
           sx={{
-            width: '60%',
+            width: { xs: '100%', md: '60%' },
             py: 3,
             pr: 5,
           }}
@@ -200,13 +212,33 @@ const Dashboard = () => {
           <Typography fontWeight={500} variant='h5' ml={5} mb={3}>
             Events
           </Typography>
+
           <ResponsiveContainer width='100%' height='90%'>
-            <BarChart data={CHART1_DATA} barSize={25}>
+            <BarChart
+              data={CHART1_DATA}
+              barSize={25}
+              layout={isMdDown ? 'vertical' : 'horizontal'}
+            >
               <CartesianGrid vertical={false} />
-              <XAxis dataKey='name' />
-              <YAxis domain={[0, 100]} />
+
+              {isMdDown ? (
+                <>
+                  <XAxis type='number' domain={[0, 100]} />
+                  <YAxis dataKey='name' type='category' />
+                </>
+              ) : (
+                <>
+                  <XAxis dataKey='name' />
+                  <YAxis domain={[0, 100]} />
+                </>
+              )}
+
               <Tooltip />
-              <Bar dataKey='Events' fill={theme.palette.primary.main} />
+              <Bar
+                dataKey='Events'
+                fill={theme.palette.primary.main}
+                orientation='top'
+              />
             </BarChart>
           </ResponsiveContainer>
         </Paper>
@@ -215,7 +247,6 @@ const Dashboard = () => {
           sx={{
             px: 3,
             flexGrow: 1,
-            // overflow: 'auto',
             height: '100%',
           }}
         >
@@ -258,11 +289,19 @@ const Dashboard = () => {
         </Paper>
       </Stack>
 
-      <Stack mt={2} px={2} direction='row' spacing={2} height={400} mb={4}>
+      <Stack
+        mt={2}
+        px={2}
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={2}
+        height={{ xs: 1300, md: 400 }}
+        mb={4}
+      >
         <Paper
           elevation={1}
           sx={{
-            width: '60%',
+            width: { xs: '100%', md: '60%' },
+            height: 800,
             py: 3,
             pr: 5,
           }}
@@ -271,10 +310,23 @@ const Dashboard = () => {
             Sales Report
           </Typography>
           <ResponsiveContainer width='100%' height='90%'>
-            <BarChart data={CHART2_DATA} barSize={15}>
+            <BarChart
+              data={CHART2_DATA}
+              barSize={15}
+              layout={isMdDown ? 'vertical' : 'horizontal'}
+            >
               <CartesianGrid vertical={false} />
-              <XAxis dataKey='name' />
-              <YAxis domain={[0, 100]} />
+              {isMdDown ? (
+                <>
+                  <XAxis type='number' domain={[0, 100]} />
+                  <YAxis dataKey='name' type='category' />
+                </>
+              ) : (
+                <>
+                  <XAxis dataKey='name' />
+                  <YAxis type='number' domain={[0, 100]} />
+                </>
+              )}
               <Tooltip />
               <Legend />
               <Bar dataKey='Sales' fill={theme.palette.success.main} />
@@ -288,7 +340,7 @@ const Dashboard = () => {
             px: 3,
             flexGrow: 1,
             overflow: 'auto',
-            height: '100%',
+            height: { xs: 'auto', md: '100%' },
             position: 'relative',
           }}
         >
