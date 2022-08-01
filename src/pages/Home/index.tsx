@@ -1,11 +1,13 @@
-import { Button, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
+import ComponentToPrint from 'components/ComToPrint';
 import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import CusInput from 'components/CusInput';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import ReactToPrint from 'react-to-print';
 
 export default function Home() {
   const [state, setState] = useState(false);
-
+  const componentRef = useRef(null);
   return (
     <>
       <Stack direction={'row'}>
@@ -29,6 +31,13 @@ export default function Home() {
       {/* <ResponsiveDrawer onCloseDrawer={() => setState(false)} open={state}>
         <Typography>it is responsive</Typography>
       </ResponsiveDrawer> */}
+      <ReactToPrint
+        trigger={() => <Button>Print</Button>}
+        content={() => componentRef.current}
+      />
+      <Box sx={{ display: 'none' }}>
+        <ComponentToPrint ref={componentRef} />
+      </Box>
     </>
   );
 }
