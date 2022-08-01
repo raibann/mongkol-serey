@@ -68,7 +68,7 @@ export const ORDER_DATA: IOrderData[] = [
     paidBy: 'Cash',
   },
   {
-    id: 1,
+    id: 4,
     name: 'Meas Saominea',
     social: '@meassaominea',
     eventDate: '30-07-2022',
@@ -79,7 +79,7 @@ export const ORDER_DATA: IOrderData[] = [
     paidBy: 'AMK',
   },
   {
-    id: 2,
+    id: 5,
     name: 'Ma Raibann',
     social: '@raibann.rb',
     eventDate: '05-10-2022',
@@ -90,7 +90,7 @@ export const ORDER_DATA: IOrderData[] = [
     paidBy: 'ABA',
   },
   {
-    id: 3,
+    id: 6,
     name: 'Rem Brosna',
     social: '@rem.brosna',
     eventDate: '25-12-2022',
@@ -101,7 +101,7 @@ export const ORDER_DATA: IOrderData[] = [
     paidBy: 'Cash',
   },
   {
-    id: 1,
+    id: 7,
     name: 'Meas Saominea',
     social: '@meassaominea',
     eventDate: '30-07-2022',
@@ -112,7 +112,7 @@ export const ORDER_DATA: IOrderData[] = [
     paidBy: 'AMK',
   },
   {
-    id: 2,
+    id: 8,
     name: 'Ma Raibann',
     social: '@raibann.rb',
     eventDate: '05-10-2022',
@@ -123,7 +123,7 @@ export const ORDER_DATA: IOrderData[] = [
     paidBy: 'ABA',
   },
   {
-    id: 3,
+    id: 9,
     name: 'Rem Brosna',
     social: '@rem.brosna',
     eventDate: '25-12-2022',
@@ -134,7 +134,7 @@ export const ORDER_DATA: IOrderData[] = [
     paidBy: 'Cash',
   },
   {
-    id: 1,
+    id: 10,
     name: 'Meas Saominea',
     social: '@meassaominea',
     eventDate: '30-07-2022',
