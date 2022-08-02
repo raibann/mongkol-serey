@@ -38,13 +38,13 @@ export default function Customers() {
         >
           <Button
             variant='contained'
-            fullWidth={isSmDown}
             startIcon={<Add />}
             sx={{
               color: theme.palette.common.white,
               boxShadow: theme.shadows[1],
               borderRadius: 2,
               height: 40,
+              width: ['70%', 'auto', 'auto'],
             }}
             onClick={() => handleOpenDrawer('Add')}
           >

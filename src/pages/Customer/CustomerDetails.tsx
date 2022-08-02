@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Divider,
   Grid,
   List,
   ListItem,
@@ -9,6 +8,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { Container } from '@mui/system';
 import {
   BagTick2,
   BagTimer,
@@ -25,133 +25,166 @@ import { ICustCard } from 'utils/cutomer-util';
 export default function CustomerDetails({ data }: { data: ICustCard }) {
   return (
     <>
-      <Grid container>
-        <Grid item xs={12}>
-          <Stack alignItems={'center'}>
-            <Avatar
-              src='/images/avatar.svg'
-              sx={{ width: 100, height: 'auto' }}
-            />
-            <Typography variant='h6'>Customer Name</Typography>
-          </Stack>
+      <Container sx={{ mb: 4 }}>
+        <Grid container>
+          <Grid item xs={12}>
+            <Stack alignItems={'center'}>
+              <Avatar
+                src='/images/avatar.svg'
+                sx={{ width: 100, height: 'auto' }}
+              />
+              <Typography variant='h6'>Customer Name</Typography>
+            </Stack>
+          </Grid>
         </Grid>
-      </Grid>
-      <Divider />
-      <Grid container>
-        <Grid item xs={12} md={6}>
-          <List>
-            <ListItem>
-              <ListItemIcon>
-                <Avatar
-                  sx={{
-                    background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[1],
-                  }}
-                >
-                  <Facebook size='24' color={'#4267B2'} variant='Bold' />
-                </Avatar>
-              </ListItemIcon>
-              <ListItemText primary={data.facebook} secondary={'Facebook'} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Avatar
-                  sx={{
-                    background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[1],
-                  }}
-                >
-                  <Send2 size='24' color={'#229ED9'} variant='Bold' />
-                </Avatar>
-              </ListItemIcon>
-              <ListItemText primary={data.telegram} secondary={'Telegram'} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Avatar
-                  sx={{
-                    background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[1],
-                  }}
-                >
-                  <Call
-                    size='24'
-                    color={theme.palette.success.main}
-                    variant='Bold'
-                  />
-                </Avatar>
-              </ListItemIcon>
-              <ListItemText primary={data.contact} secondary={'Phone number'} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Avatar
-                  sx={{
-                    background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[1],
-                  }}
-                >
-                  <House
-                    size='24'
-                    color={theme.palette.primary.main}
-                    variant='Bold'
-                  />
-                </Avatar>
-              </ListItemIcon>
-              <ListItemText
-                primary={`House No : ${data.houseNo}, street : ${data.stNo}, ${data.location}
+        <Grid
+          container
+          sx={{
+            background: (theme) => theme.palette.background.paper,
+            mt: 2,
+            borderRadius: 4,
+            boxShadow: (theme) => theme.shadows[2],
+          }}
+        >
+          <Grid item xs={12} md={6}>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      background: (theme) => theme.palette.common.white,
+                      boxShadow: theme.shadows[3],
+                    }}
+                  >
+                    <Facebook size='24' color={'#4267B2'} variant='Bold' />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText primary={data.facebook} secondary={'Facebook'} />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      background: (theme) => theme.palette.common.white,
+                      boxShadow: theme.shadows[3],
+                    }}
+                  >
+                    <Send2 size='24' color={'#229ED9'} variant='Bold' />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText primary={data.telegram} secondary={'Telegram'} />
+              </ListItem>
+            </List>
+          </Grid>
+          {/* right */}
+          <Grid item xs={12} md={6}>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      background: (theme) => theme.palette.common.white,
+                      boxShadow: theme.shadows[3],
+                    }}
+                  >
+                    <Call
+                      size='24'
+                      color={theme.palette.success.main}
+                      variant='Bold'
+                    />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText
+                  primary={data.contact}
+                  secondary={'Phone number'}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      background: (theme) => theme.palette.common.white,
+                      boxShadow: theme.shadows[3],
+                      position: 'relative',
+                      top: -20,
+                    }}
+                  >
+                    <House
+                      size='24'
+                      color={theme.palette.primary.main}
+                      variant='Bold'
+                    />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText
+                  primary={`House No : ${data.houseNo}, street : ${data.stNo}, ${data.location}
                ${data.province}, ${data.district}, ${data.commune}`}
-                secondary={'Address'}
-              />
-            </ListItem>
-          </List>
+                  secondary={'Address'}
+                />
+              </ListItem>
+            </List>
+          </Grid>
         </Grid>
-        {/* right */}
-        <Grid item xs={12} md={6}>
-          <List>
+        <Grid
+          container
+          sx={{
+            background: (theme) => theme.palette.background.paper,
+            mt: 2,
+            borderRadius: 4,
+            boxShadow: (theme) => theme.shadows[2],
+          }}
+        >
+          <Grid item xs={12} md={6}>
+            <List>
+              <ListItem>
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      background: (theme) => theme.palette.common.white,
+                      boxShadow: theme.shadows[3],
+                    }}
+                  >
+                    <BagTick2
+                      size='24'
+                      color={theme.palette.success.main}
+                      variant='Bold'
+                    />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText
+                  primary='Ordered'
+                  secondary={`${data.ordered}times`}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon>
+                  <Avatar
+                    sx={{
+                      background: (theme) => theme.palette.common.white,
+                      boxShadow: theme.shadows[3],
+                    }}
+                  >
+                    <BagTimer
+                      size='24'
+                      color={theme.palette.info.main}
+                      variant='Bold'
+                    />
+                  </Avatar>
+                </ListItemIcon>
+                <ListItemText
+                  primary='Last Ordered'
+                  secondary={data.lastOrder}
+                />
+              </ListItem>
+            </List>
+          </Grid>
+          <Grid item xs={12} md={6}>
             <ListItem>
               <ListItemIcon>
                 <Avatar
                   sx={{
                     background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[1],
-                  }}
-                >
-                  <BagTick2
-                    size='24'
-                    color={theme.palette.success.main}
-                    variant='Bold'
-                  />
-                </Avatar>
-              </ListItemIcon>
-              <ListItemText
-                primary='Ordered'
-                secondary={`${data.ordered}times`}
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Avatar
-                  sx={{
-                    background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[1],
-                  }}
-                >
-                  <BagTimer
-                    size='24'
-                    color={theme.palette.info.main}
-                    variant='Bold'
-                  />
-                </Avatar>
-              </ListItemIcon>
-              <ListItemText primary='Last Ordered' secondary={data.lastOrder} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Avatar
-                  sx={{
-                    background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[1],
+                    boxShadow: theme.shadows[3],
                   }}
                 >
                   <NotificationFavorite
@@ -168,7 +201,7 @@ export default function CustomerDetails({ data }: { data: ICustCard }) {
                 <Avatar
                   sx={{
                     background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[1],
+                    boxShadow: theme.shadows[3],
                   }}
                 >
                   <Gift
@@ -180,9 +213,9 @@ export default function CustomerDetails({ data }: { data: ICustCard }) {
               </ListItemIcon>
               <ListItemText primary='Gifts' secondary={data.gift} />
             </ListItem>
-          </List>
+          </Grid>
         </Grid>
-      </Grid>
+      </Container>
     </>
   );
 }
