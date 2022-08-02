@@ -1,7 +1,8 @@
-import { Box, Button, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import ComponentToPrint from 'components/ComToPrint';
-import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
-import CusInput from 'components/CusInput';
+import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
+// import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
+// import CusInput from 'components/CusInput';
 import { useRef, useState } from 'react';
 import ReactToPrint from 'react-to-print';
 
@@ -14,10 +15,9 @@ export default function Home() {
         <Button variant='contained' onClick={() => setState(true)}>
           test drawer or dailog
         </Button>
-        <Button variant='contained'>print</Button>
       </Stack>
 
-      <ResponsiveDialog
+      {/* <ResponsiveDialog
         onCloseDialog={() => setState(false)}
         open={state}
         size='sm'
@@ -27,17 +27,16 @@ export default function Home() {
             file
           </Button>
         </CusInput>
-      </ResponsiveDialog>
-      {/* <ResponsiveDrawer onCloseDrawer={() => setState(false)} open={state}>
-        <Typography>it is responsive</Typography>
-      </ResponsiveDrawer> */}
-      <ReactToPrint
-        trigger={() => <Button>Print</Button>}
-        content={() => componentRef.current}
-      />
-      <Box sx={{ display: 'none' }}>
+      </ResponsiveDialog> */}
+      <ResponsiveDrawer onCloseDrawer={() => setState(false)} open={state}>
+        <ReactToPrint
+          trigger={() => <Button variant='contained'>Print</Button>}
+          content={() => componentRef.current}
+        />
+      </ResponsiveDrawer>
+      <Stack alignItems={'center'} sx={{ mb: 4 }}>
         <ComponentToPrint ref={componentRef} />
-      </Box>
+      </Stack>
     </>
   );
 }

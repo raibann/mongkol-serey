@@ -1,263 +1,175 @@
-import { InputProps, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Grid,
+  InputProps,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import React from 'react';
+import theme from 'theme/theme';
 
 const ComponentToPrint = React.forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
     // eslint-disable-line max-len
     return (
-      <div ref={ref}>
-        <Typography>
-          Paragraph Writing Topics A paragraph can be written on various topics.
-          For example, a student of Class 1–3 would write a paragraph on topics
-          like ‘A Cow’, ‘My School’, ‘My Mother’, etc. With classes, the topics
-          may vary, and when writing for yourself, the topics can be anything
-          that comes to your mind. Check the various paragraph writing topics
-          provided below and refer to the paragraph writing samples for a better
-          understanding of the writing style. Paragraph On Online Classes An
-          Ideal Student Paragraph Paragraph On Noise Pollution Mother Teresa
-          Paragraph Newspaper Paragraph A Visit To A Zoo Paragraph Paragraph
-          About Doctor Paragraph About Technology My Best Friend Paragraph
-          Paragraph on Diwali A Rainy Day Paragraph Health is Wealth Paragraph
-          Paragraph on Holi Paragraph on Trees Friendship Paragraph Paragraph on
-          Mahatma Gandhi Paragraph on Discipline Paragraph on Christmas
-          Paragraph on Save Water A paragraph can be written on various topics
-          depending on the type of topic you wish to write on. You can refer to
-          the topics here or write on topics as per your wish. English Paragraph
-          Writing Format There is no specific format of writing a paragraph as
-          it is a narration of your own thoughts, ideas, and vision. Also, there
-          are no restrictions to your writing. But a paragraph is called a
-          well-written paragraph when this sequence is maintained — a topic
-          sentence, then the description, and then the concluding statement.
-          Following the English paragraph writing format shall be helpful to the
-          readers to understand your point of view. Frequently Asked Questions
-          on Paragraph Writing What is meant by paragraph writing? Paragraph
-          writing is a process of writing a self-contained unit on a particular
-          idea or topic. A paragraph is a group of sentences making absolute
-          sense which has a topic sentence, supporting sentences, and a
-          conclusion statement. How can I write a good paragraph? A good
-          paragraph can be written if it is well researched and has sufficient
-          data related to the topic. The paragraph should have a good
-          introduction sentence and a well researched or well-explained
-          description regarding the topic, and must end with a good concluding
-          sentence that summarises the whole paragraph. Is there any word limit
-          for paragraph writing? At times there can be word limits or word
-          restrictions, especially in schools or assignments. But, there is
-          always a freedom to write as per your skills. Paragraph Writing Topics
-          A paragraph can be written on various topics. For example, a student
-          of Class 1–3 would write a paragraph on topics like ‘A Cow’, ‘My
-          School’, ‘My Mother’, etc. With classes, the topics may vary, and when
-          writing for yourself, the topics can be anything that comes to your
-          mind. Check the various paragraph writing topics provided below and
-          refer to the paragraph writing samples for a better understanding of
-          the writing style. Paragraph On Online Classes An Ideal Student
-          Paragraph Paragraph On Noise Pollution Mother Teresa Paragraph
-          Newspaper Paragraph A Visit To A Zoo Paragraph Paragraph About Doctor
-          Paragraph About Technology My Best Friend Paragraph Paragraph on
-          Diwali A Rainy Day Paragraph Health is Wealth Paragraph Paragraph on
-          Holi Paragraph on Trees Friendship Paragraph Paragraph on Mahatma
-          Gandhi Paragraph on Discipline Paragraph on Christmas Paragraph on
-          Save Water A paragraph can be written on various topics depending on
-          the type of topic you wish to write on. You can refer to the topics
-          here or write on topics as per your wish. English Paragraph Writing
-          Format There is no specific format of writing a paragraph as it is a
-          narration of your own thoughts, ideas, and vision. Also, there are no
-          restrictions to your writing. But a paragraph is called a well-written
-          paragraph when this sequence is maintained — a topic sentence, then
-          the description, and then the concluding statement. Following the
-          English paragraph writing format shall be helpful to the readers to
-          understand your point of view. Frequently Asked Questions on Paragraph
-          Writing What is meant by paragraph writing? Paragraph writing is a
-          process of writing a self-contained unit on a particular idea or
-          topic. A paragraph is a group of sentences making absolute sense which
-          has a topic sentence, supporting sentences, and a conclusion
-          statement. How can I write a good paragraph? A good paragraph can be
-          written if it is well researched and has sufficient data related to
-          the topic. The paragraph should have a good introduction sentence and
-          a well researched or well-explained description regarding the topic,
-          and must end with a good concluding sentence that summarises the whole
-          paragraph. Is there any word limit for paragraph writing? At times
-          there can be word limits or word restrictions, especially in schools
-          or assignments. But, there is always a freedom to write as per your
-          skills. Paragraph Writing Topics A paragraph can be written on various
-          topics. For example, a student of Class 1–3 would write a paragraph on
-          topics like ‘A Cow’, ‘My School’, ‘My Mother’, etc. With classes, the
-          topics may vary, and when writing for yourself, the topics can be
-          anything that comes to your mind. Check the various paragraph writing
-          topics provided below and refer to the paragraph writing samples for a
-          better understanding of the writing style. Paragraph On Online Classes
-          An Ideal Student Paragraph Paragraph On Noise Pollution Mother Teresa
-          Paragraph Newspaper Paragraph A Visit To A Zoo Paragraph Paragraph
-          About Doctor Paragraph About Technology My Best Friend Paragraph
-          Paragraph on Diwali A Rainy Day Paragraph Health is Wealth Paragraph
-          Paragraph on Holi Paragraph on Trees Friendship Paragraph Paragraph on
-          Mahatma Gandhi Paragraph on Discipline Paragraph on Christmas
-          Paragraph on Save Water A paragraph can be written on various topics
-          depending on the type of topic you wish to write on. You can refer to
-          the topics here or write on topics as per your wish. English Paragraph
-          Writing Format There is no specific format of writing a paragraph as
-          it is a narration of your own thoughts, ideas, and vision. Also, there
-          are no restrictions to your writing. But a paragraph is called a
-          well-written paragraph when this sequence is maintained — a topic
-          sentence, then the description, and then the concluding statement.
-          Following the English paragraph writing format shall be helpful to the
-          readers to understand your point of view. Frequently Asked Questions
-          on Paragraph Writing What is meant by paragraph writing? Paragraph
-          writing is a process of writing a self-contained unit on a particular
-          idea or topic. A paragraph is a group of sentences making absolute
-          sense which has a topic sentence, supporting sentences, and a
-          conclusion statement. How can I write a good paragraph? A good
-          paragraph can be written if it is well researched and has sufficient
-          data related to the topic. The paragraph should have a good
-          introduction sentence and a well researched or well-explained
-          description regarding the topic, and must end with a good concluding
-          sentence that summarises the whole paragraph. Is there any word limit
-          for paragraph writing? At times there can be word limits or word
-          restrictions, especially in schools or assignments. But, there is
-          always a freedom to write as per your skills. Paragraph Writing Topics
-          A paragraph can be written on various topics. For example, a student
-          of Class 1–3 would write a paragraph on topics like ‘A Cow’, ‘My
-          School’, ‘My Mother’, etc. With classes, the topics may vary, and when
-          writing for yourself, the topics can be anything that comes to your
-          mind. Check the various paragraph writing topics provided below and
-          refer to the paragraph writing samples for a better understanding of
-          the writing style. Paragraph On Online Classes An Ideal Student
-          Paragraph Paragraph On Noise Pollution Mother Teresa Paragraph
-          Newspaper Paragraph A Visit To A Zoo Paragraph Paragraph About Doctor
-          Paragraph About Technology My Best Friend Paragraph Paragraph on
-          Diwali A Rainy Day Paragraph Health is Wealth Paragraph Paragraph on
-          Holi Paragraph on Trees Friendship Paragraph Paragraph on Mahatma
-          Gandhi Paragraph on Discipline Paragraph on Christmas Paragraph on
-          Save Water A paragraph can be written on various topics depending on
-          the type of topic you wish to write on. You can refer to the topics
-          here or write on topics as per your wish. English Paragraph Writing
-          Format There is no specific format of writing a paragraph as it is a
-          narration of your own thoughts, ideas, and vision. Also, there are no
-          restrictions to your writing. But a paragraph is called a well-written
-          paragraph when this sequence is maintained — a topic sentence, then
-          the description, and then the concluding statement. Following the
-          English paragraph writing format shall be helpful to the readers to
-          understand your point of view. Frequently Asked Questions on Paragraph
-          Writing What is meant by paragraph writing? Paragraph writing is a
-          process of writing a self-contained unit on a particular idea or
-          topic. A paragraph is a group of sentences making absolute sense which
-          has a topic sentence, supporting sentences, and a conclusion
-          statement. How can I write a good paragraph? A good paragraph can be
-          written if it is well researched and has sufficient data related to
-          the topic. The paragraph should have a good introduction sentence and
-          a well researched or well-explained description regarding the topic,
-          and must end with a good concluding sentence that summarises the whole
-          paragraph. Is there any word limit for paragraph writing? At times
-          there can be word limits or word restrictions, especially in schools
-          or assignments. But, there is always a freedom to write as per your
-          skills. Paragraph Writing Topics A paragraph can be written on various
-          topics. For example, a student of Class 1–3 would write a paragraph on
-          topics like ‘A Cow’, ‘My School’, ‘My Mother’, etc. With classes, the
-          topics may vary, and when writing for yourself, the topics can be
-          anything that comes to your mind. Check the various paragraph writing
-          topics provided below and refer to the paragraph writing samples for a
-          better understanding of the writing style. Paragraph On Online Classes
-          An Ideal Student Paragraph Paragraph On Noise Pollution Mother Teresa
-          Paragraph Newspaper Paragraph A Visit To A Zoo Paragraph Paragraph
-          About Doctor Paragraph About Technology My Best Friend Paragraph
-          Paragraph on Diwali A Rainy Day Paragraph Health is Wealth Paragraph
-          Paragraph on Holi Paragraph on Trees Friendship Paragraph Paragraph on
-          Mahatma Gandhi Paragraph on Discipline Paragraph on Christmas
-          Paragraph on Save Water A paragraph can be written on various topics
-          depending on the type of topic you wish to write on. You can refer to
-          the topics here or write on topics as per your wish. English Paragraph
-          Writing Format There is no specific format of writing a paragraph as
-          it is a narration of your own thoughts, ideas, and vision. Also, there
-          are no restrictions to your writing. But a paragraph is called a
-          well-written paragraph when this sequence is maintained — a topic
-          sentence, then the description, and then the concluding statement.
-          Following the English paragraph writing format shall be helpful to the
-          readers to understand your point of view. Frequently Asked Questions
-          on Paragraph Writing What is meant by paragraph writing? Paragraph
-          writing is a process of writing a self-contained unit on a particular
-          idea or topic. A paragraph is a group of sentences making absolute
-          sense which has a topic sentence, supporting sentences, and a
-          conclusion statement. How can I write a good paragraph? A good
-          paragraph can be written if it is well researched and has sufficient
-          data related to the topic. The paragraph should have a good
-          introduction sentence and a well researched or well-explained
-          description regarding the topic, and must end with a good concluding
-          sentence that summarises the whole paragraph. Is there any word limit
-          for paragraph writing? At times there can be word limits or word
-          restrictions, especially in schools or assignments. But, there is
-          always a freedom to write as per your skills. Paragraph Writing Topics
-          A paragraph can be written on various topics. For example, a student
-          of Class 1–3 would write a paragraph on topics like ‘A Cow’, ‘My
-          School’, ‘My Mother’, etc. With classes, the topics may vary, and when
-          writing for yourself, the topics can be anything that comes to your
-          mind. Check the various paragraph writing topics provided below and
-          refer to the paragraph writing samples for a better understanding of
-          the writing style. Paragraph On Online Classes An Ideal Student
-          Paragraph Paragraph On Noise Pollution Mother Teresa Paragraph
-          Newspaper Paragraph A Visit To A Zoo Paragraph Paragraph About Doctor
-          Paragraph About Technology My Best Friend Paragraph Paragraph on
-          Diwali A Rainy Day Paragraph Health is Wealth Paragraph Paragraph on
-          Holi Paragraph on Trees Friendship Paragraph Paragraph on Mahatma
-          Gandhi Paragraph on Discipline Paragraph on Christmas Paragraph on
-          Save Water A paragraph can be written on various topics depending on
-          the type of topic you wish to write on. You can refer to the topics
-          here or write on topics as per your wish. English Paragraph Writing
-          Format There is no specific format of writing a paragraph as it is a
-          narration of your own thoughts, ideas, and vision. Also, there are no
-          restrictions to your writing. But a paragraph is called a well-written
-          paragraph when this sequence is maintained — a topic sentence, then
-          the description, and then the concluding statement. Following the
-          English paragraph writing format shall be helpful to the readers to
-          understand your point of view. Frequently Asked Questions on Paragraph
-          Writing What is meant by paragraph writing? Paragraph writing is a
-          process of writing a self-contained unit on a particular idea or
-          topic. A paragraph is a group of sentences making absolute sense which
-          has a topic sentence, supporting sentences, and a conclusion
-          statement. How can I write a good paragraph? A good paragraph can be
-          written if it is well researched and has sufficient data related to
-          the topic. The paragraph should have a good introduction sentence and
-          a well researched or well-explained description regarding the topic,
-          and must end with a good concluding sentence that summarises the whole
-          paragraph. Is there any word limit for paragraph writing? At times
-          there can be word limits or word restrictions, especially in schools
-          or assignments. But, there is always a freedom to write as per your
-          skills. Paragraph Writing Topics A paragraph can be written on various
-          topics. For example, a student of Class 1–3 would write a paragraph on
-          topics like ‘A Cow’, ‘My School’, ‘My Mother’, etc. With classes, the
-          topics may vary, and when writing for yourself, the topics can be
-          anything that comes to your mind. Check the various paragraph writing
-          topics provided below and refer to the paragraph writing samples for a
-          better understanding of the writing style. Paragraph On Online Classes
-          An Ideal Student Paragraph Paragraph On Noise Pollution Mother Teresa
-          Paragraph Newspaper Paragraph A Visit To A Zoo Paragraph Paragraph
-          About Doctor Paragraph About Technology My Best Friend Paragraph
-          Paragraph on Diwali A Rainy Day Paragraph Health is Wealth Paragraph
-          Paragraph on Holi Paragraph on Trees Friendship Paragraph Paragraph on
-          Mahatma Gandhi Paragraph on Discipline Paragraph on Christmas
-          Paragraph on Save Water A paragraph can be written on various topics
-          depending on the type of topic you wish to write on. You can refer to
-          the topics here or write on topics as per your wish. English Paragraph
-          Writing Format There is no specific format of writing a paragraph as
-          it is a narration of your own thoughts, ideas, and vision. Also, there
-          are no restrictions to your writing. But a paragraph is called a
-          well-written paragraph when this sequence is maintained — a topic
-          sentence, then the description, and then the concluding statement.
-          Following the English paragraph writing format shall be helpful to the
-          readers to understand your point of view. Frequently Asked Questions
-          on Paragraph Writing What is meant by paragraph writing? Paragraph
-          writing is a process of writing a self-contained unit on a particular
-          idea or topic. A paragraph is a group of sentences making absolute
-          sense which has a topic sentence, supporting sentences, and a
-          conclusion statement. How can I write a good paragraph? A good
-          paragraph can be written if it is well researched and has sufficient
-          data related to the topic. The paragraph should have a good
-          introduction sentence and a well researched or well-explained
-          description regarding the topic, and must end with a good concluding
-          sentence that summarises the whole paragraph. Is there any word limit
-          for paragraph writing? At times there can be word limits or word
-          restrictions, especially in schools or assignments. But, there is
-          always a freedom to write as per your skills.
+      <Box ref={ref} sx={{ width: '21cm', height: '29.7cm', bgcolor: 'white' }}>
+        <Grid container>
+          <Grid item xs={8}>
+            <Stack
+              sx={{ height: '100%' }}
+              alignItems='flex-start'
+              justifyContent='center'
+            >
+              <Typography fontWeight={'bold'}>មង្គលសិរីម្ហូប&តុការ</Typography>
+              <Stack direction={'row'} spacing={1.5}>
+                <Typography fontWeight={'bold'}>អាស័យដ្ឋាន​ ៖</Typography>
+                <Typography fontWeight={'bold'}>
+                  បុរីឈូកវា ០៣ ផ្លូវលេខ ០៣ ផ្ទះលេខ ៨២
+                </Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={1.5}>
+                <Typography fontWeight={'bold'}>ទូរស័ព្ទលេខ​ ៖</Typography>
+                <Typography fontWeight={'bold'}>+85581951133 </Typography>
+              </Stack>
+            </Stack>
+          </Grid>
+          <Grid item xs={4}>
+            <Avatar
+              variant='square'
+              src={'images/mongkol_serey_logo_1000.png'}
+              alt='logo'
+              imgProps={{
+                sx: {
+                  objectFit: 'contain',
+                },
+              }}
+              sx={{
+                mx: 'auto',
+                width: 200,
+                height: 200,
+              }}
+            />
+            <Stack>
+              <Stack direction={'row'} spacing={1.5}>
+                <Typography fontWeight={'bold'}>លេខវិក័យបត្រ ៖</Typography>
+                <Typography>០០០០១</Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={1.5}>
+                <Typography>អតិថិជន​ ៖</Typography>
+                <Typography>អ្នកស្រី រដ្ឋា ម៉េងអ៉ី </Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={1.5}>
+                <Typography>ទូរស័ព្ទលេខ​ ៖</Typography>
+                <Typography>0966116714</Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={1.5}>
+                <Typography>កម្មវិធី​ ៖</Typography>
+                <Typography>២ៗ មករា ២០២២</Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={1.5}>
+                <Typography>ទីតាំង​ ៖</Typography>
+                <Typography>បុរីពិភពថ្មីចំការដូង</Typography>
+              </Stack>
+            </Stack>
+          </Grid>
+        </Grid>
+        <Typography textAlign={'center'} padding={2} fontWeight={'bold'}>
+          វិក័យបត្រកម្មវិធីរៀបអាពាហ៍ពិពាហ៍
         </Typography>
-      </div>
+        <Table
+          sx={{
+            '& thead th, tbody td': {
+              border: '1px solid black',
+              borderCollapse: 'collapse',
+              py: 1,
+              fontWeight: theme.typography.fontWeightBold,
+              textAlign: 'center',
+            },
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell width={'10%'}>ល.រ</TableCell>
+              <TableCell width={'40%'}>រាយឈ្មោះមុខម្ហូប</TableCell>
+              <TableCell width={'15%'}>ចំនួន</TableCell>
+              <TableCell width={'20%'}>តម្លៃរាយ</TableCell>
+              <TableCell width={'15%'}>សរុបរង</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>1</TableCell>
+              <TableCell>item</TableCell>
+              <TableCell>item</TableCell>
+              <TableCell>item</TableCell>
+              <TableCell>item</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>1</TableCell>
+              <TableCell>item</TableCell>
+              <TableCell>item</TableCell>
+              <TableCell>item</TableCell>
+              <TableCell>item</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={5}>តម្លៃសរុប</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={5}>បានកក់</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={5}>ប្រាក់នៅសល់</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+        <Typography
+          sx={{
+            '&>b': {
+              mx: 1.5,
+            },
+          }}
+        >
+          អតិថិជន​ត្រូវទូទាត់ប្រាក់សេវាកម្មទាំអស់យូរបំផុតព្រឹកម៉ោង
+          <b>១២ថ្ងៃត្រង់</b>
+          បន្ទាប់ពីកម្មវិធីរួចកាលពីយប់ក្នុងករនីអតិថិជនទូទាត់ប្រាក់យឺតត្រូវបង់ប្រាក់ពិន័យ
+          <b>យឺត១ថ្ងៃ ១០០ដុល្លា</b> ឬ <b>៣ថ្ងៃ ៥០០ដុល្លា</b> ។
+        </Typography>
+        <Typography>
+          អតិថិជន​អាចទូទាត់ប្រាក់តាមគណនេយ្យធនាគារដូចខាងក្រោម ៖
+        </Typography>
+        <Grid container columnSpacing={2} rowSpacing={2}>
+          <Grid item xs={6}>
+            <Stack direction={'row'} justifyContent='space-between'>
+              <Typography>គណនេយ្យ ABA</Typography>
+              <Typography>៖</Typography>
+            </Stack>
+          </Grid>
+          <Grid item xs>
+            <Stack direction={'row'} spacing={2}>
+              <Typography fontWeight={'bold'}>000348435</Typography>
+              <Typography>(Ratha Mengey)</Typography>
+            </Stack>
+          </Grid>
+          <Grid item xs={6}>
+            <Stack direction={'row'} justifyContent='space-between'>
+              <Typography>គណនេយ្យ Acleda Toanchet</Typography>
+              <Typography>៖</Typography>
+            </Stack>
+          </Grid>
+          <Grid item xs>
+            <Stack direction={'row'} spacing={2}>
+              <Typography fontWeight={'bold'}>081951133</Typography>
+              <Typography>(Ratha Mengey)</Typography>
+            </Stack>
+          </Grid>
+        </Grid>
+      </Box>
     );
   }
 );
