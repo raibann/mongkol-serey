@@ -96,7 +96,8 @@ export default function FormStock({
                   );
                 }}
               />
-
+            </Stack>
+            <Stack direction={'row'} spacing={4}>
               <Controller
                 control={control}
                 name='productName'
@@ -117,8 +118,6 @@ export default function FormStock({
                   );
                 }}
               />
-            </Stack>
-            <Stack direction={'row'} spacing={4}>
               <Controller
                 control={control}
                 name='quantity'
@@ -143,6 +142,8 @@ export default function FormStock({
                   );
                 }}
               />
+            </Stack>
+            <Stack direction={'row'} spacing={4}>
               <Controller
                 control={control}
                 name='amountInUSD'
@@ -173,8 +174,6 @@ export default function FormStock({
                   );
                 }}
               />
-            </Stack>
-            <Stack direction={'row'} spacing={4}>
               <Controller
                 control={control}
                 name='amountInKHR'
@@ -205,6 +204,8 @@ export default function FormStock({
                   );
                 }}
               />
+            </Stack>
+            <Stack direction={'row'} spacing={4}>
               <Controller
                 control={control}
                 name='shopName'
@@ -225,8 +226,6 @@ export default function FormStock({
                   );
                 }}
               />
-            </Stack>
-            <Stack direction={'row'} spacing={4}>
               <Controller
                 control={control}
                 name='paidBy'
@@ -264,8 +263,7 @@ export default function FormStock({
                 }}
               />
             </Stack>
-
-            <Stack direction={'row'} spacing={4}>
+            <Stack direction={'row'} spacing={4} sx={{ pt: 3 }}>
               <Button
                 onClick={() => {
                   handleOpenDrawer('');
