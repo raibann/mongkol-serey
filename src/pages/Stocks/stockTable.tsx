@@ -51,7 +51,7 @@ export const StockTableHead = () => {
         <TableCell>PAID BY</TableCell>
         <TableCell>TOTAL PRICE</TableCell>
         <TableCell>IN STOCKS</TableCell>
-        <TableCell>ACTIONS</TableCell>
+        <TableCell></TableCell>
       </TableRow>
     </TableHead>
   );

@@ -35,7 +35,7 @@ const Stocks = () => {
         sx={{
           mx: 2,
           borderRadius: 4,
-          minHeight: '92.5%',
+          height: 'calc(100vh - 100px)',
           maxWidth: '100%',
           overflow: 'hidden',
           px: 2,
@@ -91,7 +91,13 @@ const Stocks = () => {
             }}
           />
         </Stack>
-        <TableContainer>
+        <TableContainer
+          sx={{
+            height: '100%',
+            overflow: 'auto',
+            pb: 30,
+          }}
+        >
           <Table
             stickyHeader
             sx={{
@@ -117,11 +123,19 @@ const Stocks = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Pagination
-          count={10}
-          shape='rounded'
-          sx={{ position: 'absolute', bottom: 5 }}
-        />
+        <Stack
+          alignItems='center'
+          width='100%'
+          p={1}
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            bgcolor: '#fff',
+          }}
+        >
+          <Pagination count={10} />
+        </Stack>
       </Paper>
 
       <Drawer
