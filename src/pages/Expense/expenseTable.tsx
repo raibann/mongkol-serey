@@ -2,7 +2,7 @@ import { TableHead, TableRow, TableCell } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit } from 'iconsax-react';
 
-export const ExpenseTableHead = () => {
+const ExpenseTableHead = () => {
   return (
     <TableHead>
       <TableRow>
@@ -20,7 +20,7 @@ export const ExpenseTableHead = () => {
     </TableHead>
   );
 };
-export const ExpenseTableBody = ({
+const ExpenseTableBody = ({
   bookingDate,
   deposit,
   eventDate,
@@ -66,3 +66,5 @@ export const ExpenseTableBody = ({
     </TableRow>
   );
 };
+
+export { ExpenseTableBody, ExpenseTableHead };

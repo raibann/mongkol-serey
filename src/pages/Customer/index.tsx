@@ -35,6 +35,7 @@ export default function Customers() {
           alignItems={'center'}
           justifyContent={isSmDown ? 'flex-start' : 'flex-end'}
           spacing={2}
+          sx={{ mt: [2, 2, 0] }}
         >
           <Button
             variant='contained'
@@ -53,7 +54,8 @@ export default function Customers() {
           <CusTextField
             placeholder='Search...'
             size='small'
-            fullWidth={isSmDown}
+            // fullWidth={isSmDown}
+            sx={{ width: ['100%', '80%', 'auto'] }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position='end'>

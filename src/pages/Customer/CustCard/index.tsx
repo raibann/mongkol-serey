@@ -19,7 +19,7 @@ const CustCard = ({
     <>
       <Grid container rowSpacing={2} columnSpacing={2}>
         {customerCard.map((data, i) => (
-          <Grid item xs={6} md={2} key={i}>
+          <Grid item xs={6} md={3} key={i}>
             <Paper sx={{ py: 2 }}>
               <Stack direction={'column'} alignItems='center' spacing={1.5}>
                 <Avatar

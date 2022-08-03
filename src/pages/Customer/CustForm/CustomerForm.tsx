@@ -8,6 +8,7 @@ import theme from 'theme/theme';
 import provincesJson from 'geography/Provinces.json';
 import districtJson from 'geography/District.json';
 import communeJson from 'geography/Communes.json';
+import useResponsive from 'hook/useResponsive';
 
 export type CustomerInput = {
   id: number;
@@ -29,11 +30,11 @@ const communeList: Commune.ICommune[] = communeJson;
 
 const CustomerForm = () => {
   const { control, setValue, watch } = useFormContext<CustomerInput>();
-
+  const { isSmDown } = useResponsive();
   return (
     <>
       <Stack spacing={4} px={3}>
-        <Stack direction='row' spacing={4}>
+        <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
           <Controller
             control={control}
             name='facebook'
@@ -42,7 +43,7 @@ const CustomerForm = () => {
               return (
                 <LabelTextField label='Facebook'>
                   <StyledOutlinedTextField
-                    placeholder='Enter Facebook'
+                    placeholder='Facebook'
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position='start'>
@@ -68,7 +69,7 @@ const CustomerForm = () => {
               return (
                 <LabelTextField label='Telegram'>
                   <StyledOutlinedTextField
-                    placeholder='Enter Telegram'
+                    placeholder='Telegram'
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position='start'>
@@ -87,7 +88,7 @@ const CustomerForm = () => {
           />
         </Stack>
 
-        <Stack direction='row' spacing={4}>
+        <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
           <Controller
             control={control}
             name='customerName'
@@ -131,7 +132,7 @@ const CustomerForm = () => {
           />
         </Stack>
 
-        <Stack direction='row' spacing={4}>
+        <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
           <Controller
             control={control}
             name='houseNo'
@@ -165,7 +166,7 @@ const CustomerForm = () => {
           />
         </Stack>
 
-        <Stack direction='row' spacing={4}>
+        <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
           <Controller
             control={control}
             name='province'
@@ -275,7 +276,7 @@ const CustomerForm = () => {
           />
         </Stack>
 
-        <Stack direction='row' spacing={4}>
+        <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
           <Controller
             control={control}
             name='commune'

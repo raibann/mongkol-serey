@@ -12,7 +12,7 @@ export default function ResponsiveDrawer(props: IDrawer) {
       open={open}
       onClose={onCloseDrawer}
       PaperProps={{
-        sx: { borderRadius: 0, width: ['100vw', '50vw'] },
+        sx: { borderRadius: 0, width: ['100vw', '100vw', '50vw'] },
       }}
       {...rest}
     >
