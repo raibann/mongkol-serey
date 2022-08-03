@@ -15,7 +15,7 @@ const ExpenseTableHead = () => {
         <TableCell>BOOKING DATE</TableCell>
         <TableCell>DEPOSIT</TableCell>
         <TableCell>PAID BY</TableCell>
-        <TableCell>ACTIONS</TableCell>
+        <TableCell></TableCell>
       </TableRow>
     </TableHead>
   );

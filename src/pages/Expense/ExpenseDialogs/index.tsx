@@ -160,7 +160,7 @@ export default function ExpenseDialogs({
               <Grid
                 item
                 xs={12}
-                md={4}
+                md={3}
                 sx={{
                   position: 'relative',
                   height: ['auto', 'auto', 'calc(90vh - 64px)'],
@@ -253,7 +253,7 @@ export default function ExpenseDialogs({
               <Grid
                 item
                 xs={12}
-                md={8}
+                md={9}
                 sx={{
                   height: ['auto', 'auto', 'calc(90vh - 64px)'],
                   px: 2,
