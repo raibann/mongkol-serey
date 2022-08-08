@@ -4,6 +4,7 @@ let theme = createTheme({
   typography: {
     fontFamily: [
       'Poppins',
+      'Khmer Busra high',
       'Roboto',
       'Raleway',
       '-apple-system',
