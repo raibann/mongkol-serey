@@ -25,14 +25,16 @@ export default function Login() {
   const [errAlert, setErrAlert] = React.useState(false);
   const { control, handleSubmit } = useForm<Ilogin>();
   const user: Ilogin = {
-    username: 'raibann.rb@gmail.com',
-    password: 'Raibann21',
+    username: 'mengey',
+    password: 'mengey1234',
   };
   // console.log('userLogin:', user);
   // handle login
   const handleLogin = (data: Ilogin) => {
     if (JSON.stringify(data) !== JSON.stringify(user)) {
       setErrAlert(true);
+    } else {
+      alert('login success');
     }
     console.log(data);
   };
