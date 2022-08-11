@@ -8,4 +8,5 @@ export const ROUTE_PATH = {
   reminder: 'reminder',
   customers: 'customers',
   expense: 'expense',
+  manageusers: 'manage-users',
 };

@@ -8,6 +8,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import Customer from 'pages/Customer';
 import Expense from 'pages/Expense';
+import Users from 'pages/Users';
 const Login = lazy(() => import('pages/Login'));
 const Home = lazy(() => import('pages/Home'));
 export default function AllRoutes() {
@@ -67,6 +68,14 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Expense />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.manageusers}
+          element={
+            <Suspense>
+              <Users />
             </Suspense>
           }
         />

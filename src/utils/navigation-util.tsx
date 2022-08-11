@@ -1,12 +1,12 @@
 import {
   Diagram,
-  EmptyWalletAdd,
+  MenuBoard,
   LogoutCurve,
-  MessageFavorite,
-  MessageQuestion,
-  Note,
+  Notification,
+  SecurityUser,
+  MoneySend,
   Profile2User,
-  ShopAdd,
+  Box,
 } from 'iconsax-react';
 import React from 'react';
 import { ROUTE_PATH } from './route-util';
@@ -26,17 +26,17 @@ const navigationUtil: Navigation = [
   {
     title: 'Orders',
     toUrl: ROUTE_PATH.orders,
-    icon: <EmptyWalletAdd size='24' />,
+    icon: <MenuBoard size='24' />,
   },
   {
     title: 'Expense',
     toUrl: 'expense',
-    icon: <Note size='24' />,
+    icon: <MoneySend size='24' />,
   },
   {
     title: 'Stocks',
     toUrl: 'stocks',
-    icon: <ShopAdd size='24' />,
+    icon: <Box size='24' />,
   },
   {
     title: 'Customers',
@@ -46,12 +46,12 @@ const navigationUtil: Navigation = [
   {
     title: 'Reminder',
     toUrl: 'reminder',
-    icon: <MessageFavorite size='24' />,
+    icon: <Notification size='24' />,
   },
   {
-    title: 'Help Center',
-    toUrl: 'help-center',
-    icon: <MessageQuestion size='24' />,
+    title: 'Manage Users',
+    toUrl: 'manage-users',
+    icon: <SecurityUser size='24' />,
   },
   {
     title: 'Exit',
