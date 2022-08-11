@@ -24,7 +24,7 @@ const ResponsiveDialog = (props: IErrorDialog) => {
     <Dialog
       open={open}
       onClose={onCloseDialog}
-      maxWidth={size || 'md'}
+      maxWidth={size || 'lg'}
       fullWidth
       TransitionComponent={Transition}
       PaperProps={{
