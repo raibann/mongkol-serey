@@ -11,3 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+@font-face {
+  font-family: 'Khmer Busra high';
+  src: url('/public/fonts/Khmer\ Busra\ high\ Regular.ttf');
+}
