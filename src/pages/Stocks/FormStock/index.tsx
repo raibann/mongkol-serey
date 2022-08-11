@@ -9,6 +9,7 @@ import { Container } from '@mui/system';
 import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
+import useResponsive from 'hook/useResponsive';
 import { Controller, useForm } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
 import { cateName, paidByBank } from 'utils/stock-util';
@@ -35,7 +36,7 @@ export default function FormStock({
   const handleAddStocks = (data: IAddStockInput) => {
     console.log('add new stocks:', data);
   };
-
+  const { isSmDown } = useResponsive();
   return (
     <>
       <Container>
@@ -97,7 +98,7 @@ export default function FormStock({
                 }}
               />
             </Stack>
-            <Stack direction={'row'} spacing={4}>
+            <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
               <Controller
                 control={control}
                 name='productName'
@@ -143,7 +144,7 @@ export default function FormStock({
                 }}
               />
             </Stack>
-            <Stack direction={'row'} spacing={4}>
+            <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
               <Controller
                 control={control}
                 name='amountInUSD'
@@ -205,7 +206,7 @@ export default function FormStock({
                 }}
               />
             </Stack>
-            <Stack direction={'row'} spacing={4}>
+            <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
               <Controller
                 control={control}
                 name='shopName'
@@ -263,7 +264,7 @@ export default function FormStock({
                 }}
               />
             </Stack>
-            <Stack direction={'row'} spacing={4} sx={{ pt: 3 }}>
+            <Stack direction={'row'} spacing={4} sx={{ py: 3 }}>
               <Button
                 onClick={() => {
                   handleOpenDrawer('');

@@ -1,6 +1,5 @@
 import {
   Button,
-  Drawer,
   InputAdornment,
   Pagination,
   Paper,
@@ -9,6 +8,7 @@ import {
   TableBody,
   TableContainer,
 } from '@mui/material';
+import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import { Add, SearchNormal1 } from 'iconsax-react';
@@ -138,16 +138,9 @@ const Stocks = () => {
         </Stack>
       </Paper>
 
-      <Drawer
-        open={!!openDrawer}
-        onClose={() => {
-          setOpenDrawer('');
-        }}
-        anchor={'right'}
-        PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
-      >
+      <ResponsiveDrawer open={!!openDrawer} onCloseDrawer={() => {}}>
         <FormStock {...{ handleOpenDrawer, openDrawer }} />
-      </Drawer>
+      </ResponsiveDrawer>
     </>
   );
 };
