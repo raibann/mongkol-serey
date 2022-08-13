@@ -30,10 +30,9 @@ export default function Home() {
     <>
       <Stack direction={'row'}>
         <Button variant='contained' onClick={() => setState(true)}>
-          test drawer or dailog
+          click
         </Button>
       </Stack>
-
       {/* <ResponsiveDialog
         onCloseDialog={() => setState(false)}
         open={state}

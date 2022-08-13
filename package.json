@@ -1,8 +1,9 @@
 {
-  "name": "frontend",
+  "name": "mongkol-serey-cms",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ahooksjs/use-request": "^2.8.15",
     "@date-io/moment": "^2.14.0",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
@@ -33,7 +34,8 @@
     "react-to-print": "^2.14.7",
     "recharts": "^2.1.12",
     "typescript": "^4.7.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",

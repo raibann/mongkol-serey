@@ -10,6 +10,8 @@ import {
 import { Box } from '@mui/system';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
+import { useAuthContext } from 'context/AuthContext';
+// import useRouter from 'hook/useRouter';
 import { Eye, EyeSlash } from 'iconsax-react';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -24,19 +26,24 @@ export default function Login() {
   const [values, setValues] = React.useState(false);
   const [errAlert, setErrAlert] = React.useState(false);
   const { control, handleSubmit } = useForm<Ilogin>();
-  const user: Ilogin = {
-    username: 'mengey',
-    password: 'mengey1234',
-  };
+  const { login } = useAuthContext();
+  // const router = useRouter();
+  // const user: Ilogin = {
+  //   username: 'mengey',
+  //   password: 'mengey1234',
+  // };
   // console.log('userLogin:', user);
   // handle login
   const handleLogin = (data: Ilogin) => {
-    if (JSON.stringify(data) !== JSON.stringify(user)) {
-      setErrAlert(true);
-    } else {
-      alert('login success');
-    }
-    console.log(data);
+    const fd = new FormData();
+    fd.append('username', data.username);
+    fd.append('password', data.password);
+    // if (JSON.stringify(data) !== JSON.stringify(user)) {
+    //   setErrAlert(true);
+    // } else {
+    //   router.navigate('/dashboard');
+    // }
+    login(fd);
   };
   // console.log('errors', errors);
   const showPwd = () => {

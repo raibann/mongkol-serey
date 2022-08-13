@@ -17,10 +17,8 @@ axios.interceptors.request.use(async (config) => {
     'Content-Type': 'application/json',
     Accept: '*/*',
   };
-
   return config;
 });
-
 // Add a response interceptor
 axios.interceptors.response.use(
   async function (res) {

@@ -10,3 +10,6 @@ export const ROUTE_PATH = {
   expense: 'expense',
   manageusers: 'manage-users',
 };
+export const ROUTE_API = {
+  login: '/api/login',
+};

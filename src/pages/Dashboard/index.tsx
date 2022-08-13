@@ -153,7 +153,7 @@ const Anniversary = Array(4).fill({
 
 const Dashboard = () => {
   const { isMdDown } = useResponsive();
-
+  console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`);
   return (
     <>
       <DashboardHeader />

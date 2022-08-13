@@ -8,7 +8,7 @@ import { DrawerWrapper } from 'context/DrawerContext';
 
 function App() {
   return (
-    <Router basename={process.env.REACT_APP_BASE_PATH}>
+    <Router>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AppWrapper>
