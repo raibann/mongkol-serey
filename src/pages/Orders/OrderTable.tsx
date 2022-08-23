@@ -1,7 +1,9 @@
 import { TableRow, TableCell, TableHead } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { GalleryImport, Edit, Printer } from 'iconsax-react';
+import ReactToPrint from 'react-to-print';
 import theme from 'theme/theme';
+import { pageStyle } from 'utils/print-util';
 
 export const OrderTableBody = ({
   bookingDate,
@@ -12,6 +14,7 @@ export const OrderTableBody = ({
   paidBy,
   quantity,
   onPhotoClick,
+  componentRef,
 }: {
   id: number;
   name: string;
@@ -21,6 +24,7 @@ export const OrderTableBody = ({
   deposit: number;
   paidBy: string;
   onPhotoClick: () => void;
+  componentRef: React.MutableRefObject<null>;
 }) => {
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
@@ -42,9 +46,16 @@ export const OrderTableBody = ({
         <CusIconButton color='warning' sx={{ p: 0.5, mx: 0.5 }}>
           <Edit size={18} />
         </CusIconButton>
-        <CusIconButton color='primary' sx={{ p: 0.5, mx: 0.5 }}>
-          <Printer size={18} />
-        </CusIconButton>
+        <ReactToPrint
+          pageStyle={pageStyle}
+          documentTitle='final invoice'
+          trigger={() => (
+            <CusIconButton color='primary' sx={{ p: 0.5, mx: 0.5 }}>
+              <Printer size={18} />
+            </CusIconButton>
+          )}
+          content={() => componentRef.current}
+        />
       </TableCell>
     </TableRow>
   );

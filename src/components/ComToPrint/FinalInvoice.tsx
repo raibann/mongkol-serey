@@ -2,7 +2,6 @@ import {
   Avatar,
   Box,
   Grid,
-  InputProps,
   Stack,
   Table,
   TableBody,
@@ -13,10 +12,10 @@ import {
 } from '@mui/material';
 import React from 'react';
 import theme from 'theme/theme';
+import { IFinalInvoice } from 'utils/print-util';
 
-const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
+const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
   (props, ref) => {
-    // eslint-disable-line max-len
     return (
       <Box
         ref={ref}
@@ -27,7 +26,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
         }}
       >
         <Grid container>
-          <Grid item xs={7}>
+          <Grid item xs={8}>
             <Stack
               sx={{ height: '100%' }}
               alignItems='flex-start'
@@ -73,7 +72,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
               </Stack>
             </Stack>
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={4}>
             <Avatar
               variant='square'
               src={'images/mongkol_serey_logo_1000.png'}
@@ -101,7 +100,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   លេខវិក័យបត្រ៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle2'>
-                  00260
+                  {props.orderInfo.invoiceId}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -113,7 +112,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   អតិថិជន​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle2'>
-                  អ្នកស្រី រដ្ឋា ម៉េងអ៉ី
+                  {props.customerInfo.name}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -125,7 +124,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   ទូរស័ព្ទលេខ​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle2'>
-                  081951133
+                  {props.customerInfo?.phone}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -137,7 +136,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   កម្មវិធី​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle2'>
-                  07-08.07.2022
+                  {props.orderInfo?.eventDate}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -149,7 +148,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   ទីតាំង​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
-                  BoreyChaktomuk City
+                  {props.orderInfo?.eventLocation}
                 </Typography>
               </Stack>
             </Stack>
@@ -162,7 +161,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
           fontFamily='Khmer Busra high'
           variant='subtitle1'
         >
-          វិក័យបត្រកម្មវិធីរៀបអាពាហ៍ពិពាហ៍
+          វិក័យបត្រ{props.orderInfo?.eventType}
         </Typography>
         <Table
           sx={{
@@ -192,33 +191,34 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, InputProps>(
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell sx={{ textAlign: 'center' }}>1.</TableCell>
-              <TableCell>អាហារពេលល្ងាច៖ Full</TableCell>
-              <TableCell sx={{ textAlign: 'center' }}>48តុ</TableCell>
-              <TableCell sx={{ textAlign: 'center' }}>160$</TableCell>
-              <TableCell sx={{ textAlign: 'center' }}>7680$</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{ textAlign: 'center' }}>2.</TableCell>
-              <TableCell>បបរពេលព្រឹក Free 1ខ្ទះ</TableCell>
-              <TableCell sx={{ textAlign: 'center' }}>1ខ្ទះ</TableCell>
-              <TableCell sx={{ textAlign: 'center' }}>250$</TableCell>
-              <TableCell sx={{ textAlign: 'center' }}>250$</TableCell>
-            </TableRow>
+            {props.orderInfo.listOrdered?.map((ls, i) => (
+              <TableRow key={ls.id}>
+                <TableCell sx={{ textAlign: 'center' }}>{ls.id}</TableCell>
+                <TableCell>អាហារពេលល្ងាច៖ Full</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>
+                  {ls.quantity.value}
+                  {ls.quantity.units}
+                </TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>{ls.price}$</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>
+                  {ls.subTotal}$
+                </TableCell>
+              </TableRow>
+            ))}
+
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                តម្លៃសរុប 10,050$
+                តម្លៃសរុប {props.orderInfo.totalPrice}$
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                បានកក់ 300${' '}
+                បានកក់ {props.orderInfo.deposit}$
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                ប្រាក់នៅសល់ 9750$
+                ប្រាក់នៅសល់ {props.orderInfo.remainMoney}$
               </TableCell>
             </TableRow>
           </TableBody>

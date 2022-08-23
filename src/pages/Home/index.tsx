@@ -1,31 +1,17 @@
 import { Button, Stack } from '@mui/material';
 import BookingInvoice from 'components/ComToPrint/BookingInvoice';
-import FinalInvoice from 'components/ComToPrint/FinalInvoice';
+// import FinalInvoice from 'components/ComToPrint/FinalInvoice';
 import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
 // import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 // import CusInput from 'components/CusInput';
 import { useRef, useState } from 'react';
 import ReactToPrint from 'react-to-print';
+import { bookingInvoice, pageStyle } from 'utils/print-util';
 
 export default function Home() {
   const [state, setState] = useState(false);
   const componentRef = useRef(null);
-  const pageStyle = ` @page {
-    size: A4;
-    margin:2.54cm;
-  }
 
-  @media all {
-    .pagebreak {
-      display: none;
-    }
-  }
-
-  @media print {
-    .pagebreak {
-      page-break-before: always;
-    }
-  }`;
   return (
     <>
       <Stack direction={'row'}>
@@ -54,8 +40,12 @@ export default function Home() {
         />
       </ResponsiveDrawer>
       <Stack alignItems={'center'} sx={{ mb: 4 }}>
-        <FinalInvoice ref={componentRef} />
-        <BookingInvoice ref={componentRef} />
+        {/* <FinalInvoice ref={componentRef} /> */}
+        <BookingInvoice
+          ref={componentRef}
+          customerInfo={bookingInvoice.customerInfo}
+          orderInfo={bookingInvoice.orderInfo}
+        />
       </Stack>
     </>
   );
