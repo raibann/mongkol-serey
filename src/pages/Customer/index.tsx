@@ -26,7 +26,7 @@ export default function Customers() {
   const handleOpenDrawer = (obj: 'Add' | 'Edit' | 'Details' | '') => {
     setOpenDrawer(obj);
   };
-
+  const { isMdDown } = useResponsive();
   return (
     <>
       <PageHeader pageTitle={'Customers'}>
@@ -49,7 +49,7 @@ export default function Customers() {
             }}
             onClick={() => handleOpenDrawer('Add')}
           >
-            Add New
+            {isMdDown ? 'New' : 'Add New'}
           </Button>
           <CusTextField
             placeholder='Search...'

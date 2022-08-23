@@ -11,6 +11,7 @@ import {
 import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
+import useResponsive from 'hook/useResponsive';
 import { Add, SearchNormal1 } from 'iconsax-react';
 import { useState } from 'react';
 import theme from 'theme/theme';
@@ -26,6 +27,7 @@ const Stocks = () => {
   const handleOpenDrawer = (obj: 'Add' | 'Edit' | '') => {
     setOpenDrawer(obj);
   };
+  const { isMdDown } = useResponsive();
 
   return (
     <>
@@ -61,7 +63,7 @@ const Stocks = () => {
             }}
             onClick={() => handleOpenDrawer('Add')}
           >
-            Add New
+            {isMdDown ? 'New' : 'Add New'}
           </Button>
           <CusTextField
             onChange={(e) => {
@@ -95,7 +97,7 @@ const Stocks = () => {
           sx={{
             height: '100%',
             overflow: 'auto',
-            pb: 30,
+            pb: { xs: 22, md: 15, lg: 0 },
           }}
         >
           <Table

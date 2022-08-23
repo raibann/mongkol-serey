@@ -157,8 +157,7 @@ const Dashboard = () => {
   return (
     <>
       <DashboardHeader />
-
-      <Stack direction='row' px={2}>
+      <Stack direction={'row'} pl={2}>
         <Tabs value={false} variant='scrollable' scrollButtons={false}>
           <DashboardCard
             title='Total Profits'
@@ -193,6 +192,8 @@ const Dashboard = () => {
           />
         </Tabs>
       </Stack>
+
+      {/* <Stack direction='row' px={2}></Stack> */}
 
       <Stack
         mt={2}
@@ -301,7 +302,7 @@ const Dashboard = () => {
           elevation={1}
           sx={{
             width: { xs: '100%', md: '60%' },
-            height: 800,
+            height: { xs: 800, md: 'auto' },
             py: 3,
             pr: 5,
           }}
@@ -364,12 +365,6 @@ const Dashboard = () => {
                 borderColor: theme.palette.divider,
               }}
             />
-            <Button
-              sx={{ color: theme.palette.primary.dark, py: 2 }}
-              endIcon={<ArrowRight2 size={16} />}
-            >
-              More Insights
-            </Button>
           </Box>
         </Paper>
       </Stack>

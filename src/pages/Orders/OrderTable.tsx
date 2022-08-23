@@ -26,9 +26,9 @@ export const OrderTableBody = ({
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
       <TableCell>{id}</TableCell>
       <TableCell>{name}</TableCell>
+      <TableCell>{bookingDate}</TableCell>
       <TableCell>{eventDate}</TableCell>
       <TableCell>{quantity}</TableCell>
-      <TableCell>{bookingDate}</TableCell>
       <TableCell>${deposit}</TableCell>
       <TableCell>{paidBy}</TableCell>
       <TableCell align='center'>
@@ -66,8 +66,8 @@ export const OrderTableHead = () => {
         <TableCell>INVOICE</TableCell>
         <TableCell>CUSTOMER NAME</TableCell>
         <TableCell>EVENT DATE</TableCell>
-        <TableCell>QUANTITY</TableCell>
         <TableCell>BOOKING DATE</TableCell>
+        <TableCell>QUANTITY</TableCell>
         <TableCell>DEPOSIT</TableCell>
         <TableCell>PAID BY</TableCell>
         <TableCell width={140} align='center'>

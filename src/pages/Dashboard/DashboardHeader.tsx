@@ -248,6 +248,8 @@ const DashboardHeader = () => {
               onClick={() => handleClose('datepicker')}
               sx={{
                 width: '100%',
+                color: (theme) => theme.palette.common.white,
+                borderRadius: 3,
               }}
             >
               Confirm

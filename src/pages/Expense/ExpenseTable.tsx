@@ -6,9 +6,8 @@ const ExpenseTableHead = () => {
   return (
     <TableHead>
       <TableRow>
-        <TableCell>INVOICE ID</TableCell>
+        <TableCell>INVOICE</TableCell>
         <TableCell>CUSTOMER NAME</TableCell>
-        <TableCell>SOCIAL NAME</TableCell>
         <TableCell>EVENT DATE</TableCell>
         <TableCell>QUANTITY</TableCell>
         <TableCell>EVENT LOCATION</TableCell>
@@ -47,7 +46,6 @@ const ExpenseTableBody = ({
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
       <TableCell>{id}</TableCell>
       <TableCell>{name}</TableCell>
-      <TableCell>{social}</TableCell>
       <TableCell>{eventDate}</TableCell>
       <TableCell>{quantity}</TableCell>
       <TableCell>{eventLocation}</TableCell>

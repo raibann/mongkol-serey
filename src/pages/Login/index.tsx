@@ -71,7 +71,7 @@ export default function Login() {
             <Stack alignItems={'center'}>
               <Avatar
                 variant='square'
-                src='/images/mongkul_serey_logo-01.svg'
+                src='/images/mongkol_serey_logo_1000.png'
                 sx={{ width: 300, height: 'auto' }}
               />
               <form

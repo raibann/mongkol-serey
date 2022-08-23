@@ -22,7 +22,7 @@ const DashboardCard = ({
       elevation={1}
       sx={{
         p: 2,
-        mr: 3,
+        mr: 2,
         minWidth: 300,
         width: 325,
         borderRadius: 2,

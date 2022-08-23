@@ -164,11 +164,11 @@ const Orders = () => {
       <PageHeader pageTitle='Orders' />
 
       <Paper
-        elevation={3}
+        elevation={1}
         sx={{
           position: 'relative',
           mx: 2,
-          borderRadius: 2,
+          borderRadius: 4,
           height: 'calc(100vh - 100px)',
           maxWidth: '100%',
           overflow: 'hidden',
@@ -244,7 +244,7 @@ const Orders = () => {
             height: '100%',
             overflow: 'auto',
             px: 2,
-            pb: 30,
+            pb: { xs: 22, md: 15, lg: 0 },
           }}
         >
           <Table sx={{ minWidth: 935 }}>

@@ -17,6 +17,7 @@ import theme from 'theme/theme';
 import { UserTableBody, UserTableHead } from './UserTable';
 import { UserData } from 'utils/users-util';
 import FormUser from './FormUser';
+import useResponsive from 'hook/useResponsive';
 
 export default function Users() {
   const [openDrawer, setOpenDrawer] = useState<'Add' | 'Edit' | ''>('');
@@ -26,6 +27,7 @@ export default function Users() {
   const handleOpenDrawer = (obj: 'Add' | 'Edit' | '') => {
     setOpenDrawer(obj);
   };
+  const { isMdDown } = useResponsive();
   return (
     <>
       <PageHeader pageTitle='Users' />
@@ -60,7 +62,7 @@ export default function Users() {
             }}
             onClick={() => handleOpenDrawer('Add')}
           >
-            Add New
+            {isMdDown ? 'New' : 'Add New'}
           </Button>
           <CusTextField
             onChange={(e) => {
@@ -91,7 +93,7 @@ export default function Users() {
           sx={{
             height: '100%',
             overflow: 'auto',
-            pb: 30,
+            pb: { xs: 22, md: 15, lg: 0 },
           }}
         >
           <Table
