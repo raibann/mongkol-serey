@@ -5,6 +5,7 @@ import { AppWrapper } from 'context/AppContext';
 import AllRoutes from 'routes';
 import theme from 'theme/theme';
 import { DrawerWrapper } from 'context/DrawerContext';
+import { AuthWrapper } from 'context/AuthContext';
 
 function App() {
   return (
@@ -12,9 +13,11 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AppWrapper>
-          <DrawerWrapper>
-            <AllRoutes />
-          </DrawerWrapper>
+          <AuthWrapper>
+            <DrawerWrapper>
+              <AllRoutes />
+            </DrawerWrapper>
+          </AuthWrapper>
         </AppWrapper>
       </ThemeProvider>
     </Router>

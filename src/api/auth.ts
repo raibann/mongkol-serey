@@ -1,10 +1,17 @@
-import { ROUTE_API } from 'utils/route-util';
 import HttpUtil from 'utils/http-util';
+import { ROUTE_API } from 'utils/route-util';
 const AUTH_API = {
-  login: async (data: FormData) => {
-    const res: IAuth.IAuthRespone = await HttpUtil.post('', data, {
-      params: { API: ROUTE_API.login },
-    });
+  postLogin: async (data: IAuth.IAuthBody) => {
+    const res: IAuth.IAuthResponse = await HttpUtil.post(
+      ROUTE_API.login,
+      data,
+      {
+        headers: {
+          'content-type': 'application/json',
+          accept: '*/*',
+        },
+      }
+    );
     return res;
   },
 };

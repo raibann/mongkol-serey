@@ -11,7 +11,7 @@ import Expense from 'pages/Expense';
 import Users from 'pages/Users';
 import { useAuthContext } from 'context/AuthContext';
 const Login = lazy(() => import('pages/Login'));
-const Home = lazy(() => import('pages/Home'));
+// const Home = lazy(() => import('pages/Home'));
 export default function AllRoutes() {
   const { authState } = useAuthContext();
   return (
@@ -22,14 +22,6 @@ export default function AllRoutes() {
           authState.authed ? <Layout /> : <Navigate to={ROUTE_PATH.login} />
         }
       >
-        {/* <Route
-          path={ROUTE_PATH.root}
-          element={
-            <Suspense>
-              <Home />
-            </Suspense>
-          }
-        /> */}
         <Route
           path={ROUTE_PATH.dashboard}
           element={
@@ -87,20 +79,21 @@ export default function AllRoutes() {
           }
         />
         <Route
-          path='*'
-          element={
-            <Suspense>
-              <Home />
-            </Suspense>
-          }
+          path={ROUTE_PATH.root}
+          element={<Navigate to={ROUTE_PATH.dashboard} />}
         />
+        <Route path='*' element={<Navigate to={ROUTE_PATH.dashboard} />} />
       </Route>
       <Route
         path={ROUTE_PATH.login}
         element={
-          <Suspense>
-            <Login />
-          </Suspense>
+          authState.authed ? (
+            <Navigate to={ROUTE_PATH.root} />
+          ) : (
+            <Suspense>
+              <Login />
+            </Suspense>
+          )
         }
       />
     </Routes>

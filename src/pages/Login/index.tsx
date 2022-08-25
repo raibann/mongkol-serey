@@ -18,14 +18,15 @@ import { Controller, useForm } from 'react-hook-form';
 import theme from 'theme/theme';
 import THEME_UTIL from 'utils/theme-util';
 
-interface Ilogin {
-  username: string;
+interface ILogin {
+  // username: string;
+  phone: string;
   password: string;
 }
 export default function Login() {
   const [values, setValues] = React.useState(false);
   const [errAlert, setErrAlert] = React.useState(false);
-  const { control, handleSubmit } = useForm<Ilogin>();
+  const { control, handleSubmit } = useForm<ILogin>();
   const { login } = useAuthContext();
   // const router = useRouter();
   // const user: Ilogin = {
@@ -34,18 +35,19 @@ export default function Login() {
   // };
   // console.log('userLogin:', user);
   // handle login
-  const handleLogin = (data: Ilogin) => {
-    const fd = new FormData();
-    fd.append('username', data.username);
-    fd.append('password', data.password);
+  const handleLogin = (data: ILogin) => {
+    // const formData = new FormData();
+    // formData.append('username', data.username);
+    // formData.append('password', data.password);
+
     // if (JSON.stringify(data) !== JSON.stringify(user)) {
     //   setErrAlert(true);
     // } else {
     //   router.navigate('/dashboard');
     // }
-    login(fd);
+    login(data);
+    // login(formData);
   };
-  // console.log('errors', errors);
   const showPwd = () => {
     setValues((prevValue) => !prevValue);
   };
@@ -94,7 +96,7 @@ export default function Login() {
                       Username
                     </Typography>
                     <Controller
-                      name='username'
+                      name='phone'
                       control={control}
                       defaultValue=''
                       rules={{
@@ -127,7 +129,7 @@ export default function Login() {
                       control={control}
                       defaultValue=''
                       rules={{
-                        minLength: 6,
+                        minLength: 4,
                         required: {
                           message: 'Password is required!',
                           value: true,

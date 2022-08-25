@@ -36,10 +36,6 @@ export function AuthWrapper({ children }: IAuthWrapper) {
   useEffect(() => {
     const vers = getPersistedState('version');
     if (vers && vers !== process.env.REACT_APP_PERSIST_VER) {
-      // const auth = getPersistedState(process.env.REACT_APP_PERSIST_AUTH);
-      // if (auth) {
-      //   setAuthState(auth);
-      // }
       localStorage.clear();
       persistState('version', process.env.REACT_APP_PERSIST_AUTH || '');
     }
@@ -62,7 +58,7 @@ export function useAuthContext() {
   const { authState, setAuthState } = useContext(AuthContext);
 
   // login useRequest
-  const { run: runPostLogin } = useRequest(AUTH_API.login, {
+  const { run: runPostLogin } = useRequest(AUTH_API.postLogin, {
     manual: true,
     throwOnError: true,
     onSuccess: (loginData) => setAuthState({ ...loginData, authed: true }),
