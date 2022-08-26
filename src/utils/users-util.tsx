@@ -28,4 +28,5 @@ export const UserData: IUser[] = [
     status: 0,
   },
 ];
+
 export const role = ['Admin', 'Manager', 'Staff'];
