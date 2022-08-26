@@ -86,7 +86,7 @@ export default function Expense() {
           sx={{
             height: '100%',
             overflow: 'auto',
-            pb: 30,
+            pb: { xs: 22, md: 15, lg: 0 },
           }}
         >
           <Table

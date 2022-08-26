@@ -248,7 +248,7 @@ const Orders = () => {
             height: '100%',
             overflow: 'auto',
             px: 2,
-            pb: 30,
+            pb: { xs: 22, md: 15, lg: 0 },
           }}
         >
           <Table sx={{ minWidth: 935 }}>
