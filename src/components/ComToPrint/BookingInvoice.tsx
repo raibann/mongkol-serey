@@ -2,7 +2,6 @@ import {
   Avatar,
   Box,
   Grid,
-  InputProps,
   Stack,
   Table,
   TableBody,
@@ -11,12 +10,53 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
+import { IBookingInvoice } from 'utils/print-util';
 
-const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
+const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
   (props, ref) => {
     // eslint-disable-line max-len
+
+    const getMonth = moment(props.orderInfo.eventDate, 'DD/MM/YYYY').format(
+      'MMMM'
+    );
+    const getDay = moment(props.orderInfo.eventDate, 'DD/MM/YYYY').format('DD');
+    const getYear = moment(props.orderInfo.eventDate, 'DD/MM/YYYY').format(
+      'YYYY'
+    );
+    const generateMonth = (month: string) => {
+      switch (month) {
+        case 'January':
+          return 'មករា';
+        case 'February':
+          return 'កុម្ភៈ';
+        case 'March':
+          return 'មិនា';
+        case 'April':
+          return 'មេសា';
+        case 'May':
+          return 'ឧសភា';
+        case 'June':
+          return 'មិថុនា';
+        case 'July':
+          return 'កក្កដា';
+        case 'August':
+          return 'សីហា';
+        case 'September':
+          return 'កញ្ញា';
+        case 'October':
+          return 'តុលា';
+        case 'November':
+          return 'វិច្ឆិកា';
+        case 'December':
+          return 'ធ្នូរ';
+        default:
+          return;
+      }
+    };
+
     return (
       <Box
         ref={ref}
@@ -27,7 +67,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
         }}
       >
         <Grid container>
-          <Grid item xs={7}>
+          <Grid item xs={8}>
             <Stack
               sx={{ height: '100%' }}
               alignItems='flex-start'
@@ -73,7 +113,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
               </Stack>
             </Stack>
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={4}>
             <Avatar
               variant='square'
               src={'images/mongkol_serey_logo_1000.png'}
@@ -101,7 +141,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   លេខវិក័យបត្រ៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
-                  00260
+                  {props.orderInfo.invoiceId}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -113,7 +153,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   អតិថិជន​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
-                  អ្នកស្រី រដ្ឋា ម៉េងអ៊ី
+                  {props.customerInfo.name}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -125,7 +165,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   ទូរស័ព្ទលេខ​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
-                  081951133
+                  {props.customerInfo.phone}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -137,7 +177,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   កម្មវិធី​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
-                  07-08.07.2022
+                  {props.orderInfo.eventDate}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -149,7 +189,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
                   ទីតាំង​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
-                  BoreyChaktomuk City
+                  {props.orderInfo.eventLocation}
                 </Typography>
               </Stack>
             </Stack>
@@ -162,7 +202,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
           fontFamily='Khmer Busra high'
           variant='subtitle1'
         >
-          វិក័យបត្រកក់ប្រាក់ កម្មវិធីភ្ជាប់ពាក្យ
+          វិក័យបត្រកក់ប្រាក់ {props.orderInfo.eventType}
         </Typography>
         <Typography
           textAlign='justify'
@@ -175,7 +215,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
           ជាអ្នកតំណាងក្រុមហ៊ុន{' '}
           <b>មង្គលសេរីតុរោង&ម្ហូបការ Mungkul Serey Catering Services</b>{' '}
           បានទទួលការកក់ប្រាក់ សេវាកម្មចុងភៅ តុការ កម្មវិធីភ្ជាប់ពាក្យ{' '}
-          <b>ចំនួន 15តុ។</b>
+          <b>ចំនួន {props.orderInfo.tables}។</b>
         </Typography>
         <Typography
           textAlign={'center'}
@@ -194,9 +234,10 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
           variant='subtitle1'
         >
           អតិថិជនឈ្មោះ <b>ច័ន្ទ ណុបវីរក្យា</b> មានទីលំនៅនៅ បុរីប៉េងហ៊ួតច្បារអំពៅ
-          ចំនួនទឹកប្រាក់ 200$ <b>(ពីររយដុល្លារអាមេរិកគត់)</b>{' '}
-          តាមរយះគណនេយ្យធនាគារ <b>ABA</b> នៅថ្ងៃទី <b>19</b> ខែ <b>កក្កដា</b>{' '}
-          ឆ្នាំ <b>2022</b>។
+          ចំនួនទឹកប្រាក់ {props.orderInfo.deposit}
+          <b>({props.orderInfo.amountInKhmer})</b> តាមរយះគណនេយ្យធនាគារ
+          <b>ABA</b> នៅថ្ងៃទី <b>{getDay}</b> ខែ{' '}
+          <b>{generateMonth(getMonth)}</b> ឆ្នាំ <b>{getYear}</b>។
         </Typography>
         <Table
           sx={{
@@ -225,37 +266,59 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, InputProps>(
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell>
-                <Typography
-                  textAlign={'center'}
-                  fontFamily='Khmer Busra high'
-                  variant='subtitle1'
-                  fontWeight={'bold'}
-                >
-                  បាយថ្ងៃត្រង់
-                </Typography>
-                <Typography
-                  whiteSpace={'pre-line'}
-                  fontFamily='Khmer Busra high'
-                  variant='subtitle1'
-                  lineHeight={1.8}
-                >{`1. (ត្រីជប៉ុន ប្រហិតត្រី សាច់គោបំពង មាន់ស្ពៃខ្មៅ គ្រាប់ស្វាយចាន់ទី)
-                2. ញាំជើងទាក្រឿងសមុទ្រ
-                3. ស្តេកសាច់គោ
-                4. ត្រីតុកែចំហុយ
-                5. តុងយាំ បង្កង
-                6. បាយ បាយឆា
-                7. សុភមង្គល`}</Typography>
-              </TableCell>
-              <TableCell sx={{ verticalAlign: 'top', textAlign: 'center' }}>
-                15តុ
-              </TableCell>
-              <TableCell sx={{ verticalAlign: 'top', textAlign: 'center' }}>
-                90$/តុ
-              </TableCell>
-            </TableRow>
+            {props.orderInfo.listFoodOrder?.map((data) => (
+              <TableRow key={data.id}>
+                <TableCell></TableCell>
+                <TableCell>
+                  <Typography
+                    textAlign={'center'}
+                    fontFamily='Khmer Busra high'
+                    variant='subtitle1'
+                    fontWeight={'bold'}
+                  >
+                    {data.category}
+                  </Typography>
+                  <Typography
+                    whiteSpace={'pre-line'}
+                    fontFamily='Khmer Busra high'
+                    variant='subtitle1'
+                    lineHeight={1.8}
+                  >
+                    {data.list.map((ls) => (
+                      <ol key={ls.id}>
+                        <li>{ls.title}</li>
+                        <li>{ls.title}</li>
+                        <li>{ls.title}</li>
+                        <li>{ls.title}</li>
+                      </ol>
+                    ))}
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ verticalAlign: 'top', textAlign: 'center' }}>
+                  <Typography
+                    textAlign={'center'}
+                    fontFamily='Khmer Busra high'
+                    variant='subtitle1'
+                    fontWeight={'bold'}
+                  >
+                    {data.quantity}
+                    {data.units}
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ verticalAlign: 'top', textAlign: 'center' }}>
+                  <Typography
+                    textAlign={'center'}
+                    fontFamily='Khmer Busra high'
+                    variant='subtitle1'
+                    fontWeight={'bold'}
+                  >
+                    {data.price}
+                    {data.price && '$/'}
+                    {data.units}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
         <Stack spacing={0.5} sx={{ mt: 4 }}>

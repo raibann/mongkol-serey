@@ -10,14 +10,18 @@ import {
   TableContainer,
   ToggleButtonGroup,
 } from '@mui/material';
+import { Box } from '@mui/system';
+import BookingInvoice from 'components/ComToPrint/BookingInvoice';
+import FinalInvoice from 'components/ComToPrint/FinalInvoice';
 import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import { Add, SearchNormal1 } from 'iconsax-react';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import theme from 'theme/theme';
+import { bookingInvoice, finalInvoice } from 'utils/print-util';
 import OrderDrawer from './OrderDrawer';
 import { OrderTableBody, OrderTableHead } from './OrderTable';
 import PhotoDialogContent from './PhotoDialogContent';
@@ -158,17 +162,17 @@ const Orders = () => {
     setNewOrder(false);
     setOrderDetail(undefined);
   };
-
+  const bookingInvoiceRef = useRef(null);
+  const finalInvoiceRef = useRef(null);
   return (
     <>
       <PageHeader pageTitle='Orders' />
-
       <Paper
-        elevation={3}
+        elevation={1}
         sx={{
           position: 'relative',
           mx: 2,
-          borderRadius: 2,
+          borderRadius: 4,
           height: 'calc(100vh - 100px)',
           maxWidth: '100%',
           overflow: 'hidden',
@@ -263,12 +267,28 @@ const Orders = () => {
                     paidBy={order.paidBy}
                     quantity={order.quantity}
                     onPhotoClick={() => setOpenPhotoDialog(true)}
+                    // componentRef={finalInvoiceRef}
+                    componentRef={bookingInvoiceRef}
                   />
                 );
               })}
             </TableBody>
           </Table>
         </TableContainer>
+        {/* print invoice */}
+        <Box sx={{ display: 'none' }}>
+          <BookingInvoice
+            ref={bookingInvoiceRef}
+            customerInfo={bookingInvoice.customerInfo}
+            orderInfo={bookingInvoice.orderInfo}
+          />
+          <FinalInvoice
+            ref={finalInvoiceRef}
+            customerInfo={finalInvoice.customerInfo}
+            orderInfo={finalInvoice.orderInfo}
+          />
+        </Box>
+
         <Stack
           alignItems='center'
           width='100%'
