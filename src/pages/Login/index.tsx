@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
-import CusTextField from 'components/CusTextField';
+import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import { Eye, EyeSlash } from 'iconsax-react';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -97,7 +97,7 @@ export default function Login() {
                         },
                       }}
                       render={({ field, fieldState: { error } }) => (
-                        <CusTextField
+                        <StyledOutlinedTextField
                           {...field}
                           error={Boolean(error)}
                           placeholder='Username'
@@ -127,7 +127,7 @@ export default function Login() {
                         },
                       }}
                       render={({ field, fieldState: { error } }) => (
-                        <CusTextField
+                        <StyledOutlinedTextField
                           {...field}
                           error={Boolean(error)}
                           placeholder='Must be at least 6 characters'

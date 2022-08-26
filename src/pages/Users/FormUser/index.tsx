@@ -1,18 +1,13 @@
-import {
-  Container,
-  Stack,
-  Typography,
-  Autocomplete,
-  Button,
-} from '@mui/material';
+import { Container, Stack, Typography, Button, MenuItem } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
-import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
-import { role } from 'utils/users-util';
-import { IUser } from 'utils/users-util';
+import { IUser, role } from 'utils/users-util';
+interface IRegister extends IUser {
+  confirmPassowrd: string;
+}
 
 export default function FormUser({
   handleOpenDrawer,
@@ -21,8 +16,8 @@ export default function FormUser({
   handleOpenDrawer: (obj: 'Add' | 'Edit' | '') => void;
   openDrawer: '' | 'Add' | 'Edit';
 }) {
-  const { control, handleSubmit, setValue } = useForm<IUser>();
-  const handleAddUser = (data: IUser) => {
+  const { control, handleSubmit, watch } = useForm<IRegister>();
+  const handleAddUser = (data: IRegister) => {
     console.log('add new stocks:', data);
   };
   return (
@@ -34,7 +29,7 @@ export default function FormUser({
         py={3}
       >
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
-          {openDrawer} Stocks
+          {openDrawer} New user
         </Typography>
         <CusIconButton
           color='error'
@@ -89,36 +84,55 @@ export default function FormUser({
           />
           <Controller
             control={control}
+            name='confirmPassowrd'
+            rules={{
+              required: {
+                value: true,
+                message: 'Confirm password is required',
+              },
+              validate: (val: string) => {
+                if (watch('password') !== val) {
+                  return 'Passwords do not match';
+                }
+              },
+            }}
+            defaultValue=''
+            render={({ field, fieldState: { error } }) => {
+              return (
+                <LabelTextField label='Confirm password'>
+                  <StyledOutlinedTextField
+                    placeholder='Enter confirm password'
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    {...field}
+                  />
+                </LabelTextField>
+              );
+            }}
+          />
+          <Controller
+            control={control}
             name='role'
             defaultValue=''
             rules={{
-              required: { value: true, message: 'Category is required' },
+              required: { value: true, message: 'Role is required' },
             }}
-            render={({
-              field: { onChange, ...rest },
-              fieldState: { error },
-            }) => {
+            render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Role'>
-                  <Autocomplete
-                    freeSolo
-                    disableClearable
-                    openOnFocus
-                    id='role'
-                    onInputChange={(e, value) => {
-                      setValue('role', value);
-                    }}
-                    {...rest}
-                    renderInput={(params) => (
-                      <StyledOutlinedTextField
-                        {...params}
-                        error={Boolean(error)}
-                        helperText={error?.message}
-                        placeholder='Enter role user'
-                      />
-                    )}
-                    options={role.map((data, i) => data)}
-                  />
+                  <StyledOutlinedTextField
+                    {...field}
+                    select
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    label='Select a role'
+                  >
+                    {role.map((data, i) => (
+                      <MenuItem key={i} value={data}>
+                        {data}
+                      </MenuItem>
+                    ))}
+                  </StyledOutlinedTextField>
                 </LabelTextField>
               );
             }}
