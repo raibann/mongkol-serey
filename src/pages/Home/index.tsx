@@ -39,7 +39,11 @@ export default function Home() {
         />
       </ResponsiveDrawer>
       <Stack alignItems={'center'} sx={{ mb: 4 }}>
-        {/* <FinalInvoice ref={componentRef} /> */}
+        {/* <FinalInvoice
+          ref={componentRef}
+          customerInfo={finalInvoice.customerInfo}
+          orderInfo={finalInvoice.orderInfo}
+        /> */}
         <BookingInvoice
           ref={componentRef}
           customerInfo={bookingInvoice.customerInfo}
