@@ -3,6 +3,7 @@ import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import useResponsive from 'hook/useResponsive';
 import { DollarCircle, Trash } from 'iconsax-react';
+import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
 import { paidBy } from 'utils/expense-util';
@@ -17,22 +18,25 @@ export interface IExpenseRow {
   paidBy: string;
   other: string;
 }
-export default function FormExpense({
+function FormExpense({
   index,
   onRemove,
+  defaultTitle,
 }: {
   index: number;
   onRemove: () => void;
+  defaultTitle: string;
 }) {
   const { control, setValue } = useFormContext<IAddExpenseInput>();
   const { isSmDown } = useResponsive();
+  console.log('index', index);
   return (
     <>
       <Stack direction={isSmDown ? 'column' : 'row'} spacing={2}>
         <Controller
           control={control}
           name={`expenseRowData.${index}.title`}
-          defaultValue={''}
+          defaultValue={defaultTitle}
           render={({ field }) => {
             return (
               <StyledOutlinedTextField
@@ -89,7 +93,7 @@ export default function FormExpense({
                     size='small'
                   />
                 )}
-                options={paidBy.map((data, i) => data)}
+                options={paidBy.map((data) => data)}
               />
             );
           }}
@@ -124,3 +128,4 @@ export default function FormExpense({
     </>
   );
 }
+export default React.memo(FormExpense);

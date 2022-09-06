@@ -14,10 +14,13 @@ import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import { SearchNormal1 } from 'iconsax-react';
 import { ORDER_DATA } from 'pages/Orders';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import theme from 'theme/theme';
 import ExpenseDialogs from './ExpenseDialogs';
-import { ExpenseTableHead, ExpenseTableBody } from './ExpenseTable';
+import { ExpenseTableHead } from './ExpenseTable';
+import ExpenseTableBody from './ExpenseTable';
+import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
+import axios from 'utils/http-util';
 
 export default function Expense() {
   const [ToggleValue, setToggleValue] = useState('pending');
@@ -26,6 +29,15 @@ export default function Expense() {
     setOpenDialogs(true);
   };
   const { isSmDown } = useResponsive();
+
+  useEffect(() => {
+    axios
+      .get(
+        'https://mongkol-serey-backend.herokuapp.com/api/expense/v1/orders?status=all'
+      )
+      .then((res) => console.log(res));
+  }, []);
+
   return (
     <>
       <PageHeader pageTitle={'Expense'} />
@@ -135,7 +147,15 @@ export default function Expense() {
           <Pagination count={10} />
         </Stack>
       </Paper>
-      <ExpenseDialogs {...{ openDialogs, setOpenDialogs }} />
+      <ResponsiveDialog
+        onCloseDialog={() => {}}
+        open={openDialogs}
+        PaperProps={{
+          sx: { height: '100%' },
+        }}
+      >
+        <ExpenseDialogs {...{ setOpenDialogs }} />
+      </ResponsiveDialog>
     </>
   );
 }
