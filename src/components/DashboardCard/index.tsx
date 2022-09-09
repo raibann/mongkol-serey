@@ -22,9 +22,7 @@ const DashboardCard = ({
       elevation={1}
       sx={{
         p: 2,
-        mr: 2,
-        minWidth: 300,
-        width: 325,
+        width: '100%',
         borderRadius: 2,
         background: theme.palette.common.white,
         display: 'flex',
@@ -69,9 +67,9 @@ const DashboardCard = ({
               }}
             />
           )}
-          <Typography color='text.secondary' fontSize={12} pl={1}>
+          {/* <Typography color='text.secondary' fontSize={12} pl={1}>
             than last year
-          </Typography>
+          </Typography> */}
         </Stack>
       </Stack>
       <Stack

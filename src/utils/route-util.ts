@@ -11,6 +11,18 @@ export const ROUTE_PATH = {
   manageusers: 'manage-users',
 };
 export const ROUTE_API = {
-  // login: '/api/login',
-  login: '/api/oauth/token',
+  login: '/api/login',
+
+  ordersList: '/api/orders/v1/list',
+  addOrder: '/api/orders/v1/action',
+
+  customersList: '/api/customer/v1/list',
+  customerDetails: '/api/customer/v1/:id',
+
+  expensesList: '/api/expense/v1/orders',
+
+  remindersList: '/api/reminder/v1/orders',
+
+  charts: '/api/dashboard/v1/charts',
+  totals: '/api/dashboard/v1/orders',
 };

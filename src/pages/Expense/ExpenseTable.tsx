@@ -39,7 +39,7 @@ const ExpenseTableBody = ({
   eventLocation: string;
   bookingDate: string;
   deposit: number;
-  paidBy: string;
+  paidBy?: string;
   handleOpenDialogs: () => void;
 }) => {
   return (

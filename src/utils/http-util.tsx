@@ -1,7 +1,7 @@
 import Axios from 'axios';
 // import { getPersistedState } from './persist-util';
 
-const axios = Axios.create({
+const HttpUtil = Axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
@@ -19,20 +19,20 @@ const axios = Axios.create({
 //   return config;
 // });
 // Add a response interceptor
-// axios.interceptors.response.use(
-//   async function (res) {
-//     if (+res?.data?.error !== 0) {
-//       return Promise.reject(res.data);
-//     }
-//     return res.data;
-//   },
-//   function (err) {
-//     const res = err.response?.data;
-//     if (!res) {
-//       return Promise.reject(err);
-//     }
-//     return Promise.reject(res);
-//   }
-// );
+HttpUtil.interceptors.response.use(
+  async function (res) {
+    if (+res?.data?.error !== 0) {
+      return Promise.resolve(res.data);
+    }
+    return res.data;
+  },
+  function (err) {
+    const res = err.response?.data;
+    if (!res) {
+      return Promise.reject(err);
+    }
+    return Promise.reject(res);
+  }
+);
 
-export default axios;
+export default HttpUtil;

@@ -1,63 +1,112 @@
-import { TableRow, TableCell, TableHead } from '@mui/material';
+import {
+  TableRow,
+  TableCell,
+  TableHead,
+  Avatar,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { GalleryImport, Edit, Printer } from 'iconsax-react';
+import moment from 'moment';
 import ReactToPrint from 'react-to-print';
 import theme from 'theme/theme';
+import { paidBy } from 'utils/expense-util';
 import { pageStyle } from 'utils/print-util';
-
+import { FaFacebookSquare, FaTelegram } from 'react-icons/fa';
 export const OrderTableBody = ({
-  bookingDate,
-  deposit,
-  eventDate,
-  id,
-  name,
-  paidBy,
-  quantity,
+  data,
   onPhotoClick,
   componentRef,
 }: {
-  id: number;
-  name: string;
-  eventDate: string;
-  quantity: number;
-  bookingDate: string;
-  deposit: number;
-  paidBy: string;
+  data: IOrder.Data[] | undefined;
   onPhotoClick: () => void;
   componentRef: React.MutableRefObject<null>;
 }) => {
+  const handlePaidby = (value: string) => {
+    let temp = [...paidBy];
+    temp = temp.filter((el) => el.name === value);
+    return temp[0].imageUrl;
+  };
   return (
-    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-      <TableCell>{id}</TableCell>
-      <TableCell>{name}</TableCell>
-      <TableCell>{bookingDate}</TableCell>
-      <TableCell>{eventDate}</TableCell>
-      <TableCell>{quantity}</TableCell>
-      <TableCell>${deposit}</TableCell>
-      <TableCell>{paidBy}</TableCell>
-      <TableCell align='center'>
-        <CusIconButton
-          color='success'
-          sx={{ p: 0.5, mx: 0.5 }}
-          onClick={onPhotoClick}
+    <>
+      {data?.map((item) => (
+        <TableRow
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          key={item.id}
         >
-          <GalleryImport size={18} />
-        </CusIconButton>
-        <CusIconButton color='warning' sx={{ p: 0.5, mx: 0.5 }}>
-          <Edit size={18} />
-        </CusIconButton>
-        <ReactToPrint
-          pageStyle={pageStyle}
-          documentTitle='final invoice'
-          trigger={() => (
-            <CusIconButton color='primary' sx={{ p: 0.5, mx: 0.5 }}>
-              <Printer size={18} />
+          <TableCell>{item.id}</TableCell>
+          <TableCell>
+            <Stack direction={'column'}>
+              <Typography variant='subtitle2' fontWeight={'light'}>
+                {item.customer.customer_name}
+              </Typography>
+              {!!item.customer.facebook_name && (
+                <Stack direction={'row'} alignItems='center' spacing={1}>
+                  <FaFacebookSquare style={{ color: '#4267B2' }} />
+                  <Typography variant='subtitle2' fontWeight={'light'}>
+                    {item.customer.facebook_name}
+                  </Typography>
+                </Stack>
+              )}
+              {!!item.customer.telegram_name && (
+                <Stack direction={'row'} alignItems='center' spacing={1}>
+                  <FaTelegram style={{ color: '#229ED9' }} />
+                  <Typography variant='subtitle2' fontWeight={'light'}>
+                    {item.customer.telegram_name}
+                  </Typography>
+                </Stack>
+              )}
+            </Stack>
+          </TableCell>
+          <TableCell>
+            <Stack direction={'column'}>
+              <Typography variant='subtitle2' fontWeight={'light'}>
+                <b>Event:</b> {moment(item.date).format('DD-MM-YYYY')}
+              </Typography>
+              <Typography variant='subtitle2' fontWeight={'light'}>
+                <b>Booked:</b> {moment(item.bookingDate).format('DD-MM-YYYY')}
+              </Typography>
+            </Stack>
+          </TableCell>
+          <TableCell>{item.quantity.toLocaleString()} តុ</TableCell>
+          <TableCell>
+            <Stack direction={'row'} spacing={2} alignItems='center'>
+              <Avatar
+                variant='rounded'
+                src={handlePaidby('Cash')}
+                sx={{ width: 24, height: 24, background: 'transparent' }}
+              />
+              <Typography variant='subtitle2' fontWeight={'light'}>
+                $ {item.deposit.toLocaleString()}
+              </Typography>
+            </Stack>
+          </TableCell>
+          <TableCell align='center'>
+            <CusIconButton
+              color='success'
+              sx={{ p: 0.5, mx: 0.5 }}
+              onClick={onPhotoClick}
+            >
+              <GalleryImport size={18} />
             </CusIconButton>
-          )}
-          content={() => componentRef.current}
-        />
-      </TableCell>
-    </TableRow>
+            <CusIconButton color='info' sx={{ p: 0.5, mx: 0.5 }}>
+              <Edit size={18} />
+            </CusIconButton>
+            <ReactToPrint
+              pageStyle={pageStyle}
+              documentTitle='final invoice'
+              trigger={() => (
+                <CusIconButton color='primary' sx={{ p: 0.5, mx: 0.5 }}>
+                  <Printer size={18} />
+                </CusIconButton>
+              )}
+              content={() => componentRef.current}
+            />
+          </TableCell>
+        </TableRow>
+      ))}
+    </>
   );
 };
 
@@ -75,12 +124,10 @@ export const OrderTableHead = () => {
         }}
       >
         <TableCell>INVOICE</TableCell>
-        <TableCell>CUSTOMER NAME</TableCell>
-        <TableCell>EVENT DATE</TableCell>
-        <TableCell>BOOKING DATE</TableCell>
+        <TableCell>CUSTOMER</TableCell>
+        <TableCell>DATE</TableCell>
         <TableCell>QUANTITY</TableCell>
         <TableCell>DEPOSIT</TableCell>
-        <TableCell>PAID BY</TableCell>
         <TableCell width={140} align='center'>
           ACTIONS
         </TableCell>

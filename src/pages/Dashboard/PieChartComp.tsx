@@ -9,12 +9,6 @@ import {
 } from 'recharts';
 import theme from 'theme/theme';
 
-const data = [
-  { name: 'Wedding', value: 400 },
-  { name: 'Birthday', value: 300 },
-  { name: 'House Warming', value: 300 },
-  { name: 'Other', value: 200 },
-];
 const COLORS = [
   theme.palette.primary.main,
   theme.palette.success.main,
@@ -22,7 +16,18 @@ const COLORS = [
   theme.palette.error.main,
 ];
 
-const PieChartComp = () => {
+const PieChartComp = ({
+  dashTotal,
+}: {
+  dashTotal: IDashboard.IDashboardData | undefined;
+}) => {
+  const data = [
+    { name: 'Wedding', value: dashTotal?.eventType.Wedding },
+    { name: 'Birthday', value: dashTotal?.eventType.Birthday },
+    { name: 'Party', value: dashTotal?.eventType.Party },
+    { name: 'Other', value: dashTotal?.eventType.Other },
+  ];
+
   return (
     <ResponsiveContainer width='100%' height='65%'>
       <PieChart margin={{ bottom: 24, left: 56, right: 56 }}>

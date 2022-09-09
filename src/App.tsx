@@ -6,7 +6,7 @@ import AllRoutes from 'routes';
 import theme from 'theme/theme';
 import { DrawerWrapper } from 'context/DrawerContext';
 import { AuthWrapper } from 'context/AuthContext';
-
+import './App.css';
 function App() {
   return (
     <Router>

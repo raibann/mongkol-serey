@@ -9,6 +9,7 @@ import {
   TableBody,
   TableContainer,
   ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import BookingInvoice from 'components/ComToPrint/BookingInvoice';
@@ -18,14 +19,18 @@ import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import { Add, SearchNormal1 } from 'iconsax-react';
-import React, { useRef, useState } from 'react';
+import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
+import React, { useEffect, useRef, useState } from 'react';
 import theme from 'theme/theme';
 import { bookingInvoice, finalInvoice } from 'utils/print-util';
 import OrderDrawer from './OrderDrawer';
 import { OrderTableBody, OrderTableHead } from './OrderTable';
 import PhotoDialogContent from './PhotoDialogContent';
-
+// import { paidBy } from 'utils/expense-util';
+import useRequest from '@ahooksjs/use-request';
+import ORDER_API from 'api/order';
+import { CusLoading } from 'components/CusLoading';
+import { paidBy } from 'utils/expense-util';
 interface IOrderData {
   id: number;
   name: string;
@@ -35,7 +40,7 @@ interface IOrderData {
   eventLocation: string;
   bookingDate: string;
   deposit: number;
-  paidBy: string;
+  paidBy?: string;
 }
 export const ORDER_DATA: IOrderData[] = [
   {
@@ -47,7 +52,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '06-07-2022',
     deposit: 300,
-    paidBy: 'AMK',
+    paidBy: paidBy[0].imageUrl,
   },
   {
     id: 2,
@@ -57,8 +62,8 @@ export const ORDER_DATA: IOrderData[] = [
     quantity: 100,
     eventLocation: 'Phnom Penh',
     bookingDate: '20-07-2022',
-    deposit: 2000,
-    paidBy: 'ABA',
+    deposit: 2899999,
+    paidBy: paidBy[1].imageUrl,
   },
   {
     id: 3,
@@ -69,7 +74,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '16-11-2022',
     deposit: 400,
-    paidBy: 'Cash',
+    paidBy: paidBy[2].imageUrl,
   },
   {
     id: 4,
@@ -80,7 +85,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '06-07-2022',
     deposit: 300,
-    paidBy: 'AMK',
+    paidBy: paidBy[3].imageUrl,
   },
   {
     id: 5,
@@ -91,7 +96,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '20-07-2022',
     deposit: 2000,
-    paidBy: 'ABA',
+    paidBy: paidBy[4].imageUrl,
   },
   {
     id: 6,
@@ -102,7 +107,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '16-11-2022',
     deposit: 400,
-    paidBy: 'Cash',
+    paidBy: paidBy[5].imageUrl,
   },
   {
     id: 7,
@@ -113,7 +118,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '06-07-2022',
     deposit: 300,
-    paidBy: 'AMK',
+    paidBy: paidBy[6].imageUrl,
   },
   {
     id: 8,
@@ -124,7 +129,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '20-07-2022',
     deposit: 2000,
-    paidBy: 'ABA',
+    paidBy: paidBy[7].imageUrl,
   },
   {
     id: 9,
@@ -135,7 +140,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '16-11-2022',
     deposit: 400,
-    paidBy: 'Cash',
+    paidBy: paidBy[8].imageUrl,
   },
   {
     id: 10,
@@ -146,7 +151,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '06-07-2022',
     deposit: 300,
-    paidBy: 'AMK',
+    paidBy: paidBy[9].imageUrl,
   },
 ];
 
@@ -155,15 +160,57 @@ const Orders = () => {
   const [orderDetail, setOrderDetail] = useState<IOrderData>();
   const [newOrder, setNewOrder] = useState(false);
   const [openPhotoDialog, setOpenPhotoDialog] = useState(false);
+  const [page, setPage] = React.useState(1);
+  const [searchData, setSearchData] = useState('');
 
   const { isMdDown } = useResponsive();
 
+  // fetch data
+  const {
+    data: orderList,
+    run: fetchOrderList,
+    loading: isLoadingOrderList,
+  } = useRequest(ORDER_API.getOrdersList, {
+    manual: true,
+    debounceInterval: searchData !== '' ? 500 : 0,
+  });
+
+  useEffect(() => {
+    fetchOrderList({
+      page: `${page - 1}`,
+      status: ToggleValue,
+      search: searchData,
+    });
+    console.log(searchData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ToggleValue, page, searchData]);
+  console.log('orders', orderList?.data);
   const handleCloseOrderDialog = () => {
     setNewOrder(false);
     setOrderDetail(undefined);
   };
+  const handleChangePage = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+  };
   const bookingInvoiceRef = useRef(null);
   const finalInvoiceRef = useRef(null);
+
+  // if (isLoadingOrderList) {
+  //   return (
+  //     <>
+  //       <Stack
+  //         sx={{ height: '100vh' }}
+  //         justifyContent='center'
+  //         alignItems={'center'}
+  //       >
+  //         <CusLoading />
+  //       </Stack>
+  //     </>
+  //   );
+  // }
   return (
     <>
       <PageHeader pageTitle='Orders' />
@@ -216,6 +263,7 @@ const Orders = () => {
             <CusTextField
               placeholder='Search...'
               size='small'
+              onChange={(e) => setSearchData(e.currentTarget.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
@@ -251,29 +299,38 @@ const Orders = () => {
             pb: { xs: 22, md: 15, lg: 0 },
           }}
         >
-          <Table sx={{ minWidth: 935 }}>
-            <OrderTableHead />
-
-            <TableBody>
-              {ORDER_DATA.map((order, i) => {
-                return (
-                  <OrderTableBody
-                    key={i + 1}
-                    id={i + 1}
-                    name={order.name}
-                    bookingDate={order.bookingDate}
-                    deposit={order.deposit}
-                    eventDate={order.eventDate}
-                    paidBy={order.paidBy}
-                    quantity={order.quantity}
-                    onPhotoClick={() => setOpenPhotoDialog(true)}
-                    // componentRef={finalInvoiceRef}
-                    componentRef={bookingInvoiceRef}
-                  />
-                );
-              })}
-            </TableBody>
-          </Table>
+          {isLoadingOrderList ? (
+            <Stack
+              direction={'column'}
+              alignItems={'center'}
+              justifyContent='center'
+              sx={{ height: '100%' }}
+            >
+              <CusLoading />
+            </Stack>
+          ) : orderList?.data && orderList?.data.length > 0 ? (
+            <Table sx={{ minWidth: 935 }}>
+              <OrderTableHead />
+              <TableBody>
+                <OrderTableBody
+                  data={orderList?.data}
+                  onPhotoClick={() => setOpenPhotoDialog(true)}
+                  // componentRef={finalInvoiceRef}
+                  componentRef={bookingInvoiceRef}
+                />
+              </TableBody>
+            </Table>
+          ) : (
+            <Stack
+              direction={'column'}
+              alignItems={'center'}
+              justifyContent='center'
+              sx={{ height: '100%' }}
+            >
+              <BoxRemove size='80' color={theme.palette.primary.main} />
+              <Typography variant='h6'>No data</Typography>
+            </Stack>
+          )}
         </TableContainer>
         {/* print invoice */}
         <Box sx={{ display: 'none' }}>
@@ -300,7 +357,7 @@ const Orders = () => {
             bgcolor: '#fff',
           }}
         >
-          <Pagination count={10} />
+          <Pagination count={10} page={page} onChange={handleChangePage} />
         </Stack>
       </Paper>
 

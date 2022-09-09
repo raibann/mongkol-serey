@@ -1,13 +1,16 @@
+import useRequest from '@ahooksjs/use-request';
 import {
   Box,
   Button,
   Divider,
+  Grid,
   List,
   Paper,
   Stack,
-  Tabs,
   Typography,
 } from '@mui/material';
+import DASHBOARD_API from 'api/dashboard';
+import { CusLoading } from 'components/CusLoading';
 import DashboardCard from 'components/DashboardCard';
 import useResponsive from 'hook/useResponsive';
 import {
@@ -16,6 +19,8 @@ import {
   Profile2User,
   WalletAdd,
 } from 'iconsax-react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -152,45 +157,81 @@ const Anniversary = Array(4).fill({
 });
 
 const Dashboard = () => {
+  const [dateRange, setDateRange] = useState({
+    startDate: moment('2022-01-01').format('YYYY-MM-DD'),
+    endDate: moment('2022-09-10').format('YYYY-MM-DD'),
+  });
   const { isMdDown } = useResponsive();
-  console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`);
+  const {
+    data: dashTotal,
+    run: fetchDashTotal,
+    loading: isDashLoading,
+  } = useRequest(DASHBOARD_API.getTotals, {
+    manual: true,
+  });
+  console.log(dateRange);
+  useEffect(() => {
+    fetchDashTotal({
+      startDate: dateRange.startDate,
+      endDate: dateRange.endDate,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  console.log('test', dashTotal);
+  if (isDashLoading) {
+    return (
+      <>
+      <Stack sx={{height:'100vh'}} justifyContent='center' alignItems={'center'}>
+      <CusLoading /> 
+      </Stack>
+      </>
+    )
+  }
   return (
     <>
-      <DashboardHeader />
-      <Stack direction={'row'} pl={2}>
-        <Tabs value={false} variant='scrollable' scrollButtons={false}>
-          <DashboardCard
-            title='Total Profits'
-            value='$100,000'
-            percentage='2.3%'
-            isHigher
-            icon={<DollarCircle />}
-            type={''}
-          />
-          <DashboardCard
-            title='Total Expenses'
-            value='$50,000'
-            percentage='2%'
-            icon={<DollarCircle />}
-            type={''}
-          />
-          <DashboardCard
-            title='Total Orders'
-            value='100'
-            percentage='5%'
-            isHigher
-            icon={<WalletAdd />}
-            type={'Events'}
-          />
-          <DashboardCard
-            title='Total Customers'
-            value='100'
-            percentage='2.3%'
-            isHigher
-            icon={<Profile2User />}
-            type={'Customers'}
-          />
-        </Tabs>
+      <DashboardHeader {...{ setDateRange }} />
+      <Stack direction={'row'}>
+        <Grid container spacing={2} px={2}>
+          <Grid item xs={12} sm={6} md={6} lg>
+            <DashboardCard
+              title='Total Profits'
+              value={`${dashTotal?.totalProfits}`}
+              percentage='2.3%'
+              isHigher
+              icon={<DollarCircle />}
+              type={''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={6} lg>
+            <DashboardCard
+              title='Total Expenses'
+              value={`${dashTotal?.totalExpenses}`}
+              percentage='2%'
+              icon={<DollarCircle />}
+              type={''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={6} lg>
+            <DashboardCard
+              title='Total Orders'
+              value={`${dashTotal?.totalOrders}`}
+              percentage='5%'
+              isHigher
+              icon={<WalletAdd />}
+              type={'Events'}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={6} lg>
+            <DashboardCard
+              title='Total Customers'
+              value={`${dashTotal?.totalCustomer}`}
+              percentage='2.3%'
+              isHigher
+              icon={<Profile2User />}
+              type={'Customers'}
+            />
+          </Grid>
+        </Grid>
       </Stack>
 
       {/* <Stack direction='row' px={2}></Stack> */}
@@ -261,7 +302,7 @@ const Dashboard = () => {
             zIndex={theme.zIndex.appBar - 1}
             bgcolor='common.white'
           >
-            Upcoming Anniversary
+            Upcoming Event
           </Typography>
           <List sx={{ width: '100%', bgcolor: 'common.white', p: 0 }}>
             {Anniversary.map((data, i) => {
@@ -357,7 +398,7 @@ const Dashboard = () => {
           >
             Type of Event
           </Typography>
-          <PieChartComp />
+          <PieChartComp {...{ dashTotal }} />
           <Box position='absolute' bottom={0} left={0} width={'100%'} px={3}>
             <Divider
               sx={{

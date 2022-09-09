@@ -33,7 +33,16 @@ interface IDateRange {
   endDate: string;
 }
 
-const DashboardHeader = () => {
+const DashboardHeader = ({
+  setDateRange,
+}: {
+  setDateRange: React.Dispatch<
+    React.SetStateAction<{
+      startDate: string;
+      endDate: string;
+    }>
+  >;
+}) => {
   const [ToggleValue, setToggleValue] = useState('week');
   // ancher notification
   const [anchorElNotification, setAnchorElNotification] =
@@ -45,8 +54,12 @@ const DashboardHeader = () => {
   // Validate date range
   const { handleSubmit, control } = useForm<IDateRange>();
   const handleSubmitDate = (data: IDateRange) => {
-    console.log('start date', moment(data.startDate).format('DD-MM-YYYY'));
-    console.log('end date', moment(data.endDate).format('DD-MM-YYYY'));
+    setDateRange({
+      startDate: moment(data.startDate).format('YYYY-MM-DD'),
+      endDate: moment(data.endDate).format('YYYY-MM-DD'),
+    });
+    console.log('start date', moment(data.startDate).format('YYYY-MM-DD'));
+    console.log('end date', moment(data.endDate).format('YYYY-MM-DD'));
   };
   // notification
   const handleClickNoti = (event: React.MouseEvent<HTMLButtonElement>) => {
