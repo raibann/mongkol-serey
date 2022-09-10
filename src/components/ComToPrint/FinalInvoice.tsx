@@ -30,26 +30,28 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
             <Stack
               sx={{ height: '100%' }}
               alignItems='flex-start'
-              justifyContent='center'
+              // justifyContent='center'
               spacing={0.5}
             >
               <Typography
                 fontWeight={'bold'}
                 fontFamily='Khmer Busra high'
-                variant='subtitle1'
-              >{`មង្គលសិរីម្ហូប&តុរោងការ`}</Typography>
+                fontSize={18}
+              >
+                មង្គលសិរីម្ហូប&តុរោងការ
+              </Typography>
               <Stack direction={'row'} spacing={1.5}>
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   អាស័យដ្ឋាន​៖
                 </Typography>
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   បុរីឈូកវា០៣ ផ្លូវលេខ០៣ ផ្ទះលេខ៨២
                 </Typography>
@@ -58,14 +60,14 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle2'
+                  fontSize={18}
                 >
                   ទូរស័ព្ទលេខ​៖
                 </Typography>
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle2'
+                  fontSize={18}
                 >
                   +85581951133 | 011951133
                 </Typography>
@@ -84,7 +86,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
               }}
               sx={{
                 mx: 'auto',
-                width: 152,
+                width: 167,
                 height: 'auto',
                 my: 2,
               }}
@@ -95,11 +97,11 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   fontWeight={'bold'}
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle2'
+                  fontSize={18}
                 >
                   លេខវិក័យបត្រ៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle2'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.orderInfo.invoiceId}
                 </Typography>
               </Stack>
@@ -107,11 +109,11 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                 <Typography
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle2'
+                  fontSize={18}
                 >
                   អតិថិជន​៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle2'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.customerInfo.name}
                 </Typography>
               </Stack>
@@ -119,11 +121,11 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                 <Typography
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle2'
+                  fontSize={18}
                 >
                   ទូរស័ព្ទលេខ​៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle2'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.customerInfo?.phone}
                 </Typography>
               </Stack>
@@ -131,11 +133,11 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                 <Typography
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle2'
+                  fontSize={18}
                 >
                   កម្មវិធី​៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle2'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.orderInfo?.eventDate}
                 </Typography>
               </Stack>
@@ -143,11 +145,11 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                 <Typography
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   ទីតាំង​៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.orderInfo?.eventLocation}
                 </Typography>
               </Stack>
@@ -159,7 +161,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
           padding={2}
           fontWeight={'bold'}
           fontFamily='Khmer Busra high'
-          variant='subtitle1'
+          fontSize={20}
         >
           វិក័យបត្រ{props.orderInfo?.eventType}
         </Typography>
@@ -172,6 +174,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
               fontWeight: theme.typography.fontWeightBold,
               py: 1,
               color: 'black',
+              fontSize: 18,
             },
             '& thead th': {
               textAlign: 'center',
@@ -226,7 +229,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
         <Box sx={{ mt: 4 }}>
           <Typography
             fontFamily='Khmer Busra high'
-            variant='subtitle1'
+            fontSize={18}
             lineHeight={1.8}
           >
             អតិថិជន​អាចទូទាត់ប្រាក់តាមគណនេយ្យធនាគារដូចខាងក្រោម ៖
@@ -234,10 +237,10 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
           <Grid container columnSpacing={2} rowSpacing={1} sx={{ px: 4 }}>
             <Grid item xs={6}>
               <Stack direction={'row'} justifyContent='space-between'>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   គណនេយ្យ ABA
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   ៖
                 </Typography>
               </Stack>
@@ -247,21 +250,21 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   000348435
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   (Ratha Mengey)
                 </Typography>
               </Stack>
             </Grid>
             <Grid item xs={6}>
               <Stack direction={'row'} justifyContent='space-between'>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   គណនេយ្យ Acleda Toanchet
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   ៖
                 </Typography>
               </Stack>
@@ -271,7 +274,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   081951133
                 </Typography>
@@ -279,10 +282,10 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
             </Grid>
             <Grid item xs={6}>
               <Stack direction={'row'} justifyContent='space-between'>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   គណនេយ្យ True Money
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   ៖
                 </Typography>
               </Stack>
@@ -292,7 +295,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   081951133
                 </Typography>

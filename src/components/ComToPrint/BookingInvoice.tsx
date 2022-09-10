@@ -71,26 +71,28 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
             <Stack
               sx={{ height: '100%' }}
               alignItems='flex-start'
-              justifyContent='center'
+              // justifyContent='center'
               spacing={0.5}
             >
               <Typography
                 fontWeight={'bold'}
                 fontFamily='Khmer Busra high'
-                variant='subtitle1'
-              >{`មង្គលសិរីម្ហូប&តុរោងការ`}</Typography>
+                fontSize={18}
+              >
+                មង្គលសិរីម្ហូប&តុរោងការ
+              </Typography>
               <Stack direction={'row'} spacing={1.5}>
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   អាស័យដ្ឋាន​៖
                 </Typography>
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   បុរីឈូកវា០៣ ផ្លូវលេខ០៣ ផ្ទះលេខ៨២
                 </Typography>
@@ -99,14 +101,14 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   ទូរស័ព្ទលេខ​៖
                 </Typography>
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   +85581951133 | 011951133
                 </Typography>
@@ -125,7 +127,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
               }}
               sx={{
                 mx: 'auto',
-                width: 152,
+                width: 200,
                 height: 'auto',
                 my: 2,
               }}
@@ -136,11 +138,11 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   fontWeight={'bold'}
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   លេខវិក័យបត្រ៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.orderInfo.invoiceId}
                 </Typography>
               </Stack>
@@ -148,11 +150,11 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                 <Typography
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   អតិថិជន​៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.customerInfo.name}
                 </Typography>
               </Stack>
@@ -160,11 +162,11 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                 <Typography
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   ទូរស័ព្ទលេខ​៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.customerInfo.phone}
                 </Typography>
               </Stack>
@@ -172,11 +174,11 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                 <Typography
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   កម្មវិធី​៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.orderInfo.eventDate}
                 </Typography>
               </Stack>
@@ -184,11 +186,11 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                 <Typography
                   whiteSpace={'nowrap'}
                   fontFamily='Khmer Busra high'
-                  variant='subtitle1'
+                  fontSize={18}
                 >
                   ទីតាំង​៖
                 </Typography>
-                <Typography fontFamily='Khmer Busra high' variant='subtitle1'>
+                <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   {props.orderInfo.eventLocation}
                 </Typography>
               </Stack>
@@ -200,14 +202,14 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           padding={2}
           fontWeight={'bold'}
           fontFamily='Khmer Busra high'
-          variant='subtitle1'
+          fontSize={20}
         >
           វិក័យបត្រកក់ប្រាក់ {props.orderInfo.eventType}
         </Typography>
         <Typography
           textAlign='justify'
           fontFamily='Khmer Busra high'
-          variant='subtitle1'
+          fontSize={18}
           lineHeight={2}
         >
           កញ្ញា <b>រដ្ឋា ម៉េងអ៊ី</b> ភេទ ស្រី កាន់អត្តសញ្ញាណប័ណ្ណលេខ ០៥១៥៦៧៤៣៩
@@ -221,7 +223,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           textAlign={'center'}
           lineHeight={2}
           fontFamily='Khmer Busra high'
-          variant='subtitle1'
+          fontSize={18}
           fontWeight={'bold'}
         >
           ពី
@@ -231,7 +233,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           textAlign='justify'
           lineHeight={2}
           fontFamily='Khmer Busra high'
-          variant='subtitle1'
+          fontSize={18}
         >
           អតិថិជនឈ្មោះ <b>ច័ន្ទ ណុបវីរក្យា</b> មានទីលំនៅនៅ បុរីប៉េងហ៊ួតច្បារអំពៅ
           ចំនួនទឹកប្រាក់ {props.orderInfo.deposit}
@@ -248,6 +250,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
               fontWeight: theme.typography.fontWeightBold,
               fontFamily: 'Khmer Busra high',
               color: 'black',
+              fontSize: 18,
             },
             '& thead th': {
               textAlign: 'center',
@@ -273,7 +276,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   <Typography
                     textAlign={'center'}
                     fontFamily='Khmer Busra high'
-                    variant='subtitle1'
+                    fontSize={18}
                     fontWeight={'bold'}
                   >
                     {data.category}
@@ -281,11 +284,18 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   <Typography
                     whiteSpace={'pre-line'}
                     fontFamily='Khmer Busra high'
-                    variant='subtitle1'
+                    fontSize={18}
                     lineHeight={1.8}
                   >
                     {data.list.map((ls) => (
-                      <ol key={ls.id}>
+                      <ol
+                        key={ls.id}
+                        style={{
+                          listStyleType: 'khmer',
+                          fontFamily: 'Khmer Busra high',
+                          fontSize: 18,
+                        }}
+                      >
                         <li>{ls.title}</li>
                         <li>{ls.title}</li>
                         <li>{ls.title}</li>
@@ -298,7 +308,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   <Typography
                     textAlign={'center'}
                     fontFamily='Khmer Busra high'
-                    variant='subtitle1'
+                    fontSize={18}
                     fontWeight={'bold'}
                   >
                     {data.quantity}
@@ -309,7 +319,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   <Typography
                     textAlign={'center'}
                     fontFamily='Khmer Busra high'
-                    variant='subtitle1'
+                    fontSize={18}
                     fontWeight={'bold'}
                   >
                     {data.price}
@@ -323,7 +333,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
         </Table>
         <Stack spacing={0.5} sx={{ mt: 4 }}>
           <Typography
-            variant='subtitle1'
+            fontSize={20}
             textAlign='justify'
             fontWeight={'bold'}
             fontFamily='Khmer Busra high'
@@ -336,7 +346,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
             style={{
               listStyleType: 'khmer',
               fontFamily: 'Khmer Busra high',
-              fontSize: 14,
+              fontSize: 18,
             }}
           >
             <li style={{ lineHeight: 2, textAlign: 'justify' }}>
@@ -370,16 +380,10 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
               <Grid container columnSpacing={2} rowSpacing={1} sx={{ px: 4 }}>
                 <Grid item xs={6}>
                   <Stack direction={'row'} justifyContent='space-between'>
-                    <Typography
-                      fontFamily='Khmer Busra high'
-                      variant='subtitle1'
-                    >
+                    <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       គណនេយ្យ ABA
                     </Typography>
-                    <Typography
-                      fontFamily='Khmer Busra high'
-                      variant='subtitle1'
-                    >
+                    <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       ៖
                     </Typography>
                   </Stack>
@@ -389,30 +393,21 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     <Typography
                       fontWeight={'bold'}
                       fontFamily='Khmer Busra high'
-                      variant='subtitle1'
+                      fontSize={18}
                     >
                       000348435
                     </Typography>
-                    <Typography
-                      fontFamily='Khmer Busra high'
-                      variant='subtitle1'
-                    >
+                    <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       (Ratha Mengey)
                     </Typography>
                   </Stack>
                 </Grid>
                 <Grid item xs={6}>
                   <Stack direction={'row'} justifyContent='space-between'>
-                    <Typography
-                      fontFamily='Khmer Busra high'
-                      variant='subtitle1'
-                    >
+                    <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       គណនេយ្យ Acleda Toanchet
                     </Typography>
-                    <Typography
-                      fontFamily='Khmer Busra high'
-                      variant='subtitle1'
-                    >
+                    <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       ៖
                     </Typography>
                   </Stack>
@@ -422,7 +417,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     <Typography
                       fontWeight={'bold'}
                       fontFamily='Khmer Busra high'
-                      variant='subtitle1'
+                      fontSize={18}
                     >
                       081951133
                     </Typography>
@@ -430,16 +425,10 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                 </Grid>
                 <Grid item xs={6}>
                   <Stack direction={'row'} justifyContent='space-between'>
-                    <Typography
-                      fontFamily='Khmer Busra high'
-                      variant='subtitle1'
-                    >
+                    <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       គណនេយ្យ True Money
                     </Typography>
-                    <Typography
-                      fontFamily='Khmer Busra high'
-                      variant='subtitle1'
-                    >
+                    <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       ៖
                     </Typography>
                   </Stack>
@@ -449,7 +438,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     <Typography
                       fontWeight={'bold'}
                       fontFamily='Khmer Busra high'
-                      variant='subtitle1'
+                      fontSize={18}
                     >
                       081951133
                     </Typography>
