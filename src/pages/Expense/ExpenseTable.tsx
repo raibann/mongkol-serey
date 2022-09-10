@@ -1,8 +1,9 @@
 import { TableHead, TableRow, TableCell } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit } from 'iconsax-react';
+import React from 'react';
 
-const ExpenseTableHead = () => {
+export const ExpenseTableHead = () => {
   return (
     <TableHead>
       <TableRow>
@@ -65,4 +66,4 @@ const ExpenseTableBody = ({
   );
 };
 
-export { ExpenseTableBody, ExpenseTableHead };
+export default React.memo(ExpenseTableBody);
