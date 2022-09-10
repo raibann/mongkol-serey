@@ -8,7 +8,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import theme from 'theme/theme';
 import React from 'react';
 import CusToggleButton from 'components/CusToggleButton';
@@ -51,6 +51,24 @@ const DashboardHeader = ({
   const [anchorElDatePicker, setAnchorElDatePicker] =
     React.useState<null | HTMLElement>(null);
 
+  useEffect(() => {
+    switch (ToggleValue) {
+      case 'month':
+        return setDateRange({
+          startDate: moment().startOf('month').format('YYYY-MM-DD'),
+          endDate: moment().endOf('month').format('YYYY-MM-DD'),
+        });
+      case 'year':
+        return setDateRange({
+          startDate: moment().startOf('year').format('YYYY-MM-DD'),
+          endDate: moment().endOf('year').format('YYYY-MM-DD'),
+        });
+      default:
+        return;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ToggleValue]);
+
   // Validate date range
   const { handleSubmit, control } = useForm<IDateRange>();
   const handleSubmitDate = (data: IDateRange) => {
@@ -58,8 +76,8 @@ const DashboardHeader = ({
       startDate: moment(data.startDate).format('YYYY-MM-DD'),
       endDate: moment(data.endDate).format('YYYY-MM-DD'),
     });
-    console.log('start date', moment(data.startDate).format('YYYY-MM-DD'));
-    console.log('end date', moment(data.endDate).format('YYYY-MM-DD'));
+    // console.log('start date', moment(data.startDate).format('YYYY-MM-DD'));
+    // console.log('end date', moment(data.endDate).format('YYYY-MM-DD'));
   };
   // notification
   const handleClickNoti = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -170,8 +188,8 @@ const DashboardHeader = ({
         >
           <ListSubheader
             sx={{
-              p: 1,
-              px: 2,
+              p: 2,
+              pl: 0,
               background: (theme) => theme.palette.common.white,
             }}
           >
