@@ -288,19 +288,20 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     lineHeight={1.8}
                   >
                     {data.list.map((ls) => (
-                      <ol
-                        key={ls.id}
-                        style={{
-                          listStyleType: 'khmer',
-                          fontFamily: 'Khmer Busra high',
-                          fontSize: 18,
-                        }}
-                      >
-                        <li>{ls.title}</li>
-                        <li>{ls.title}</li>
-                        <li>{ls.title}</li>
-                        <li>{ls.title}</li>
-                      </ol>
+                      <React.Fragment key={ls.id}>
+                        <ol
+                          style={{
+                            listStyleType: 'khmer',
+                            fontFamily: 'Khmer Busra high',
+                            fontSize: 18,
+                          }}
+                        >
+                          <li>{ls.title}</li>
+                          <li>{ls.title}</li>
+                          <li>{ls.title}</li>
+                          <li>{ls.title}</li>
+                        </ol>
+                      </React.Fragment>
                     ))}
                   </Typography>
                 </TableCell>
