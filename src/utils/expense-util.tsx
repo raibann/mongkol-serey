@@ -269,4 +269,5 @@ const paidBy = [
   { name: 'Pi Pay', imageUrl: 'images/bank-logo/pipay.jpg' },
   { name: 'Cash', imageUrl: 'images/bank-logo/cash.png' },
 ];
+
 export { paidBy, listTitle };

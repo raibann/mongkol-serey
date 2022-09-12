@@ -8,26 +8,30 @@ import {
 import CustomerForm, {
   CustomerInput,
 } from 'pages/Customer/CustForm/CustomerForm';
+import { BsPlus, BsCheckCircleFill, BsCircle } from 'react-icons/bs';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { useEffect, useState } from 'react';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { CusIconButton } from 'components/CusIconButton';
 import { MdClose } from 'react-icons/md';
+import { paidByBank } from 'utils/stock-util';
+import { BoxRemove } from 'iconsax-react';
+import { validatePatterns } from 'utils/validate-util';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import OrderItem from './OrderItem';
-import { BsPlus, BsCheckCircleFill, BsCircle } from 'react-icons/bs';
+import THEME_UTIL from 'utils/theme-util';
+import theme from 'theme/theme';
+import useRequest from '@ahooksjs/use-request';
+import ORDER_API from 'api/order';
+import moment from 'moment';
 import FinalInvoiceForm, {
   FinalInvoiceInput,
   IFinalInvoice,
 } from './FinalInvoiceForm';
-import { useEffect, useState } from 'react';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import THEME_UTIL from 'utils/theme-util';
-import theme from 'theme/theme';
-import { paidByBank } from 'utils/stock-util';
-import { BoxRemove } from 'iconsax-react';
 
 export interface IOrderForm {
-  customerId: number | '';
+  orderId?: number;
   eventType: string;
   eventLocation: string;
   eventDate: Date | null;
@@ -35,45 +39,115 @@ export interface IOrderForm {
   deposit: number | '';
   depositText: string;
   paidBy: string;
-  quantity: string;
+  quantity: number | '';
   unitPrice: string;
   listMenu: IlistMenu[];
 }
 
 interface IlistMenu {
-  id: number;
+  id: number | undefined;
   title: string;
   quantity: number | '';
   unit: string;
   price: number | '';
   menuItem: {
-    id: number;
+    id: number | undefined;
     title: string;
   }[];
 }
 const OrderDrawer = ({
   handleCloseOrderDialog,
+  orderDetail,
 }: {
   handleCloseOrderDialog: () => void;
+  orderDetail: IOrder.Order | undefined;
 }) => {
+  // useRequests
+  const orderActionReq = useRequest(ORDER_API.orderAction, {
+    manual: true,
+    onSuccess: (data) => console.log('success', data),
+  });
+
+  // react-hooks-form
   const methods = useForm<IOrderForm & CustomerInput & FinalInvoiceInput>();
   const { setValue, handleSubmit } = methods;
 
-  const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
+  // states
   const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
-
-  const [newCustomer, setNewCustomer] = useState(1);
+  const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
+  const [newCustomer, setNewCustomer] = useState(0);
 
   const onSubmit: SubmitHandler<
     IOrderForm & CustomerInput & FinalInvoiceInput
   > = (data) => {
-    console.log(data);
+    orderActionReq.run(
+      {
+        id: data.orderId,
+        amountInKhmer: data.depositText,
+        bookingDate: moment(data.bookingDate).format('yyyy-MM-DD'),
+        date: moment(data.eventDate).format('yyyy-MM-DD'),
+        deposit: +data.deposit,
+        location: data.eventLocation,
+        quantity: +data.quantity,
+        type: data.eventType,
+        eventPackages: data.listMenu.map((menu) => {
+          return {
+            id: menu.id,
+            category: menu.title,
+            price: +menu.price,
+            quantity: +menu.quantity,
+            unit: menu.unit,
+            packageItems: menu.menuItem.map((item) => {
+              return {
+                id: item.id,
+                title: item.title,
+              };
+            }),
+          };
+        }),
+      },
+      1
+    );
+    console.log(data.listMenu);
   };
 
+  // useEffect
   useEffect(() => {
+    if (orderDetail) {
+      setValue('orderId', orderDetail.id);
+      setValue('eventLocation', orderDetail.location);
+      setValue('paidBy', 'ABA Bank');
+      setValue('bookingDate', new Date(orderDetail.bookingDate));
+      setValue('eventDate', new Date(orderDetail.date));
+      setValue('deposit', orderDetail.deposit);
+      setValue('depositText', orderDetail.amountInKhmer);
+      setValue('eventType', orderDetail.type);
+      setValue('quantity', orderDetail.quantity);
+
+      const tmpListMenu: IlistMenu[] = orderDetail.eventPackages.map((item) => {
+        return {
+          id: item.id,
+          title: item.category,
+          price: +item.price,
+          unit: item.unit,
+          quantity: item.quantity,
+          menuItem: item.packageItems.map((e) => {
+            return {
+              id: e.id,
+              title: e.title,
+            };
+          }),
+        };
+      });
+
+      setValue('listMenu', tmpListMenu);
+      setListMenu(tmpListMenu);
+      return;
+    }
+
     setFinalInvoice([
       {
-        id: new Date().getTime(),
+        id: undefined,
         fTitle: '',
         fQty: '',
         fPrice: '',
@@ -81,6 +155,27 @@ const OrderDrawer = ({
       },
     ]);
     setListMenu([
+      {
+        id: undefined,
+        title: '',
+        price: '',
+        quantity: '',
+        unit: '',
+        menuItem: [
+          {
+            id: undefined,
+            title: '',
+          },
+        ],
+      },
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Methods
+  const addListOrderHandler = () => {
+    setListMenu([
+      ...listMenu,
       {
         id: new Date().getTime(),
         title: '',
@@ -95,83 +190,35 @@ const OrderDrawer = ({
         ],
       },
     ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const addListOrderHandler = () => {
-    if (listMenu && listMenu.length > 0) {
-      setListMenu([
-        ...listMenu,
-        {
-          id: new Date().getTime(),
-          title: '',
-          price: '',
-          quantity: '',
-          unit: '',
-          menuItem: [
-            {
-              id: new Date().getTime(),
-              title: '',
-            },
-          ],
-        },
-      ]);
-    } else {
-      setListMenu([
-        {
-          id: new Date().getTime(),
-          title: '',
-          price: '',
-          quantity: '',
-          unit: '',
-          menuItem: [
-            {
-              id: new Date().getTime(),
-              title: '',
-            },
-          ],
-        },
-      ]);
-    }
   };
 
-  const deleteListOrderHandler = (id: number) => {
-    const tmp = listMenu.filter((order) => {
-      return order.id !== id;
+  const deleteListOrderHandler = (i: number) => {
+    const tmp = methods.watch('listMenu').filter((_, idx) => {
+      return idx !== i;
     });
     setListMenu(tmp);
+    setValue('listMenu', tmp);
   };
 
   const addFinalInvoiceHandler = () => {
-    if (finalInvoice && finalInvoice.length > 0) {
-      setFinalInvoice([
-        ...finalInvoice,
-        {
-          id: new Date().getTime(),
-          fTitle: '',
-          fQty: '',
-          fPrice: '',
-          fUnit: '',
-        },
-      ]);
-    } else {
-      setFinalInvoice([
-        {
-          id: new Date().getTime(),
-          fTitle: '',
-          fQty: '',
-          fPrice: '',
-          fUnit: '',
-        },
-      ]);
-    }
+    setFinalInvoice([
+      ...finalInvoice,
+      {
+        id: new Date().getTime(),
+        fTitle: '',
+        fQty: '',
+        fPrice: '',
+        fUnit: '',
+      },
+    ]);
   };
 
-  const removeFinalInvoiceHandler = (id: number) => {
-    const tmp = finalInvoice.filter((invoice) => {
-      return invoice.id !== id;
+  const removeFinalInvoiceHandler = (i: number) => {
+    const tmp = methods.watch('finalInvoice').filter((_, idx) => {
+      return i !== idx;
     });
     setFinalInvoice(tmp);
+    setValue('finalInvoice', tmp);
   };
 
   return (
@@ -183,7 +230,7 @@ const OrderDrawer = ({
         alignItems='center'
       >
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
-          New Order
+          {orderDetail ? 'Update Order' : 'New Order'}
         </Typography>
         <CusIconButton color='error' onClick={handleCloseOrderDialog}>
           <MdClose />
@@ -191,42 +238,40 @@ const OrderDrawer = ({
       </Stack>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack direction='row' spacing={2} px={3}>
-            <Button
-              disableElevation
-              startIcon={
-                newCustomer ? (
-                  <BsCheckCircleFill size={16} />
-                ) : (
-                  <BsCircle size={16} />
-                )
-              }
-              variant={newCustomer ? 'contained' : 'outlined'}
-              onClick={() => setNewCustomer(1)}
-              sx={{
-                color: newCustomer ? '#fff' : '',
-              }}
-            >
-              New Customer
-            </Button>
-            <Button
-              disableElevation
-              startIcon={
-                !newCustomer ? (
-                  <BsCheckCircleFill size={16} />
-                ) : (
-                  <BsCircle size={16} />
-                )
-              }
-              variant={!newCustomer ? 'contained' : 'outlined'}
-              onClick={() => setNewCustomer(0)}
-              sx={{
-                color: !newCustomer ? '#fff' : '',
-              }}
-            >
-              Exisiting Customer
-            </Button>
-          </Stack>
+          {!orderDetail && (
+            <Stack direction='row' spacing={2} px={3}>
+              <Button
+                disableElevation
+                startIcon={
+                  !newCustomer ? (
+                    <BsCheckCircleFill size={16} />
+                  ) : (
+                    <BsCircle size={16} />
+                  )
+                }
+                color='secondary'
+                variant={!newCustomer ? 'contained' : 'outlined'}
+                onClick={() => setNewCustomer(0)}
+              >
+                Exisiting Customer
+              </Button>
+              <Button
+                disableElevation
+                startIcon={
+                  newCustomer ? (
+                    <BsCheckCircleFill size={16} />
+                  ) : (
+                    <BsCircle size={16} />
+                  )
+                }
+                color='secondary'
+                variant={newCustomer ? 'contained' : 'outlined'}
+                onClick={() => setNewCustomer(1)}
+              >
+                New Customer
+              </Button>
+            </Stack>
+          )}
 
           {newCustomer === 1 && (
             <>
@@ -251,10 +296,9 @@ const OrderDrawer = ({
                     <LabelTextField label='Customer'>
                       <StyledOutlinedTextField
                         placeholder='Select Customer'
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                        disabled={newCustomer === 1}
+                        disabled={
+                          newCustomer === 1 || orderDetail !== undefined
+                        }
                         error={Boolean(error)}
                         helperText={error?.message}
                         {...field}
@@ -263,7 +307,9 @@ const OrderDrawer = ({
                   );
                 }}
               />
+            </Stack>
 
+            <Stack spacing={4} direction='row'>
               <Controller
                 control={methods.control}
                 name='eventType'
@@ -284,7 +330,36 @@ const OrderDrawer = ({
                   );
                 }}
               />
+
+              <Controller
+                control={methods.control}
+                name='quantity'
+                defaultValue=''
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Quantity is required',
+                  },
+                  pattern: {
+                    value: validatePatterns.numberOnly,
+                    message: 'Quantity is number only',
+                  },
+                }}
+                render={({ field, fieldState: { error } }) => {
+                  return (
+                    <LabelTextField label='Quantity'>
+                      <StyledOutlinedTextField
+                        placeholder='Quantity'
+                        error={Boolean(error)}
+                        helperText={error?.message}
+                        {...field}
+                      />
+                    </LabelTextField>
+                  );
+                }}
+              />
             </Stack>
+
             <Stack spacing={4} direction='row'>
               <Controller
                 control={methods.control}
@@ -511,12 +586,13 @@ const OrderDrawer = ({
           </Stack>
 
           {listMenu && listMenu.length > 0 ? (
-            listMenu?.map((order, i) => {
+            listMenu?.map((menu, i) => {
               return (
                 <OrderItem
-                  key={order.id}
+                  key={i}
                   index={i}
-                  onRemoveOrder={() => deleteListOrderHandler(order.id)}
+                  menuItemsP={menu.menuItem}
+                  onRemoveOrder={() => deleteListOrderHandler(i)}
                 />
               );
             })
@@ -538,84 +614,88 @@ const OrderDrawer = ({
             </Stack>
           )}
 
-          <InputGroupTitle marginTop={8}>Final Invoice</InputGroupTitle>
+          {orderDetail && (
+            <>
+              <InputGroupTitle marginTop={8}>Final Invoice</InputGroupTitle>
 
-          <Stack
-            width='100%'
-            spacing={1}
-            pt={2}
-            px={3}
-            position='relative'
-            direction='row'
-            alignItems='center'
-          >
-            <Typography sx={{ flex: 1 }}>Title</Typography>
-            <Typography sx={{ flex: 1 }}>Quanity</Typography>
-            <Typography sx={{ flex: 1 }}>Unit</Typography>
-            <Typography sx={{ flex: 1 }}>Price</Typography>
-            <div style={{ width: 40 }} />
-          </Stack>
-
-          <Stack px={3}>
-            {finalInvoice && finalInvoice.length > 0 ? (
-              finalInvoice.map((invoice, i) => {
-                return (
-                  <FinalInvoiceForm
-                    key={invoice.id}
-                    index={i}
-                    onRemoveFinalInvoice={() => {
-                      removeFinalInvoiceHandler(invoice.id);
-                    }}
-                  />
-                );
-              })
-            ) : (
               <Stack
+                width='100%'
+                spacing={1}
+                pt={2}
+                px={3}
+                position='relative'
+                direction='row'
                 alignItems='center'
-                spacing={2}
-                sx={{
-                  py: 1.5,
-                  borderRadius: 2,
-                  bgcolor: alpha(theme.palette.error.light, 0.1),
-                }}
               >
-                <BoxRemove size='48' color={theme.palette.error.main} />
-                <Typography
-                  color='error'
-                  width='100%'
-                  textAlign='center'
-                  mt={1}
-                >
-                  {`Final Invoice is Empty...`}
-                </Typography>
-                <Button
-                  variant='text'
-                  color='info'
-                  onClick={addFinalInvoiceHandler}
-                  sx={{
-                    mx: 2,
-                    mt: 1,
-                  }}
-                >
-                  Add More
-                </Button>
+                <Typography sx={{ flex: 1 }}>Title</Typography>
+                <Typography sx={{ flex: 1 }}>Quanity</Typography>
+                <Typography sx={{ flex: 1 }}>Unit</Typography>
+                <Typography sx={{ flex: 1 }}>Price</Typography>
+                <div style={{ width: 40 }} />
               </Stack>
-            )}
-            {finalInvoice && finalInvoice.length > 0 && (
-              <Button
-                variant='outlined'
-                onClick={addFinalInvoiceHandler}
-                sx={{
-                  mt: 2,
-                  py: 1,
-                  borderStyle: 'dashed',
-                  background: alpha(theme.palette.primary.light, 0.2),
-                }}
-              >
-                Add More
-              </Button>
-            )}
-          </Stack>
+
+              <Stack px={3}>
+                {finalInvoice && finalInvoice.length > 0 ? (
+                  finalInvoice.map((_, i) => {
+                    return (
+                      <FinalInvoiceForm
+                        key={i}
+                        index={i}
+                        onRemoveFinalInvoice={() =>
+                          removeFinalInvoiceHandler(i)
+                        }
+                      />
+                    );
+                  })
+                ) : (
+                  <Stack
+                    alignItems='center'
+                    spacing={2}
+                    sx={{
+                      py: 1.5,
+                      borderRadius: 2,
+                      bgcolor: alpha(theme.palette.error.light, 0.1),
+                    }}
+                  >
+                    <BoxRemove size='48' color={theme.palette.error.main} />
+                    <Typography
+                      color='error'
+                      width='100%'
+                      textAlign='center'
+                      mt={1}
+                    >
+                      {`Final Invoice is Empty...`}
+                    </Typography>
+                    <Button
+                      variant='text'
+                      color='info'
+                      onClick={addFinalInvoiceHandler}
+                      sx={{
+                        mx: 2,
+                        mt: 1,
+                      }}
+                    >
+                      Add More
+                    </Button>
+                  </Stack>
+                )}
+                {finalInvoice && finalInvoice.length > 0 && (
+                  <Button
+                    variant='outlined'
+                    onClick={addFinalInvoiceHandler}
+                    sx={{
+                      mt: 2,
+                      py: 1,
+                      borderStyle: 'dashed',
+                      background: alpha(theme.palette.primary.light, 0.2),
+                    }}
+                  >
+                    Add More
+                  </Button>
+                )}
+              </Stack>
+            </>
+          )}
 
           <Stack height={200} p={3} pt={10} position='relative'>
             <Button

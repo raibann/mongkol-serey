@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   Drawer,
@@ -10,25 +11,21 @@ import {
   TableContainer,
   ToggleButtonGroup,
   Typography,
+  Box,
 } from '@mui/material';
-import { Box } from '@mui/system';
+import theme from 'theme/theme';
 import BookingInvoice from 'components/ComToPrint/BookingInvoice';
 import FinalInvoice from 'components/ComToPrint/FinalInvoice';
-import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
-import React, { useEffect, useRef, useState } from 'react';
-import theme from 'theme/theme';
-import { bookingInvoice, finalInvoice } from 'utils/print-util';
 import OrderDrawer from './OrderDrawer';
-import { OrderTableBody, OrderTableHead } from './OrderTable';
-import PhotoDialogContent from './PhotoDialogContent';
-// import { paidBy } from 'utils/expense-util';
 import useRequest from '@ahooksjs/use-request';
 import ORDER_API from 'api/order';
+import { OrderTableBody, OrderTableHead } from './OrderTable';
+import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
+import { bookingInvoice, finalInvoice } from 'utils/print-util';
 import { CusLoading } from 'components/CusLoading';
 import { paidBy } from 'utils/expense-util';
 interface IOrderData {
@@ -157,9 +154,8 @@ export const ORDER_DATA: IOrderData[] = [
 
 const Orders = () => {
   const [ToggleValue, setToggleValue] = useState('pending');
-  const [orderDetail, setOrderDetail] = useState<IOrderData>();
+  const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
-  const [openPhotoDialog, setOpenPhotoDialog] = useState(false);
   const [page, setPage] = React.useState(1);
   const [searchData, setSearchData] = useState('');
 
@@ -181,36 +177,19 @@ const Orders = () => {
       status: ToggleValue,
       search: searchData,
     });
-    console.log(searchData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ToggleValue, page, searchData]);
-  console.log('orders', orderList?.data);
+
   const handleCloseOrderDialog = () => {
     setNewOrder(false);
     setOrderDetail(undefined);
   };
-  const handleChangePage = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
   const bookingInvoiceRef = useRef(null);
   const finalInvoiceRef = useRef(null);
 
-  // if (isLoadingOrderList) {
-  //   return (
-  //     <>
-  //       <Stack
-  //         sx={{ height: '100vh' }}
-  //         justifyContent='center'
-  //         alignItems={'center'}
-  //       >
-  //         <CusLoading />
-  //       </Stack>
-  //     </>
-  //   );
-  // }
   return (
     <>
       <PageHeader pageTitle='Orders' />
@@ -250,7 +229,7 @@ const Orders = () => {
             }}
           >
             <CusToggleButton value='pending'>Pending</CusToggleButton>
-            <CusToggleButton value='completed'>Completed</CusToggleButton>
+            <CusToggleButton value='complete'>Completed</CusToggleButton>
             <CusToggleButton value='all'>All</CusToggleButton>
           </ToggleButtonGroup>
 
@@ -293,10 +272,10 @@ const Orders = () => {
 
         <TableContainer
           sx={{
-            height: '100%',
+            height: 'calc(100% - 48px - 56px)',
             overflow: 'auto',
             px: 2,
-            pb: { xs: 22, md: 15, lg: 0 },
+            pb: { xs: 22, md: 15, lg: 20 },
           }}
         >
           {isLoadingOrderList ? (
@@ -308,18 +287,20 @@ const Orders = () => {
             >
               <CusLoading />
             </Stack>
-          ) : orderList?.data && orderList?.data.length > 0 ? (
-            <Table sx={{ minWidth: 935 }}>
-              <OrderTableHead />
-              <TableBody>
-                <OrderTableBody
-                  data={orderList?.data}
-                  onPhotoClick={() => setOpenPhotoDialog(true)}
-                  // componentRef={finalInvoiceRef}
-                  componentRef={bookingInvoiceRef}
-                />
-              </TableBody>
-            </Table>
+          ) : orderList && orderList.data && orderList.data.length > 0 ? (
+            <>
+              <Table sx={{ minWidth: 935 }}>
+                <OrderTableHead />
+                <TableBody>
+                  <OrderTableBody
+                    data={orderList.data}
+                    componentRef={bookingInvoiceRef}
+                    enablePrint
+                    onEditClick={(i) => setOrderDetail(orderList.data[i])}
+                  />
+                </TableBody>
+              </Table>
+            </>
           ) : (
             <Stack
               direction={'column'}
@@ -368,16 +349,16 @@ const Orders = () => {
           sx: { borderRadius: 0, width: { xs: '100vw', md: '50vw' } },
         }}
       >
-        <OrderDrawer {...{ handleCloseOrderDialog }} />
+        <OrderDrawer {...{ handleCloseOrderDialog, orderDetail }} />
       </Drawer>
 
-      <ResponsiveDialog
+      {/* <ResponsiveDialog
         open={openPhotoDialog}
         onCloseDialog={() => setOpenPhotoDialog(false)}
         size='sm'
       >
         <PhotoDialogContent />
-      </ResponsiveDialog>
+      </ResponsiveDialog> */}
     </>
   );
 };

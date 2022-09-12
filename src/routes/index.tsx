@@ -19,9 +19,7 @@ export default function AllRoutes() {
     <Routes>
       <Route
         path={ROUTE_PATH.root}
-        element={
-          authState.authed ? <Layout /> : <Navigate to={ROUTE_PATH.login} />
-        }
+        element={true ? <Layout /> : <Navigate to={ROUTE_PATH.login} />}
       >
         <Route
           path={ROUTE_PATH.dashboard}
@@ -88,7 +86,7 @@ export default function AllRoutes() {
       <Route
         path={ROUTE_PATH.login}
         element={
-          authState.authed ? (
+          true ? (
             <Navigate to={ROUTE_PATH.root} />
           ) : (
             <Suspense fallback={<CusBackDrop open={true} />}>

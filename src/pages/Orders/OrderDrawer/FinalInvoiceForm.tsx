@@ -9,7 +9,7 @@ export type FinalInvoiceInput = {
 };
 
 export interface IFinalInvoice {
-  id: number;
+  id?: number;
   fTitle: string;
   fQty: number | '';
   fUnit: string;

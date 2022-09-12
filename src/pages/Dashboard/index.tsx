@@ -151,7 +151,7 @@ const CHART2_DATA = [
 ];
 
 const Anniversary = Array(4).fill({
-  name: 'Meas Saominea',
+  name: 'មាស សៅមិនា',
   lastOrder: '30-02-2002',
   daysLeft: 3,
 });
@@ -181,11 +181,15 @@ const Dashboard = () => {
   if (isDashLoading) {
     return (
       <>
-      <Stack sx={{height:'100vh'}} justifyContent='center' alignItems={'center'}>
-      <CusLoading /> 
-      </Stack>
+        <Stack
+          sx={{ height: '100vh' }}
+          justifyContent='center'
+          alignItems={'center'}
+        >
+          <CusLoading />
+        </Stack>
       </>
-    )
+    );
   }
   return (
     <>

@@ -1,5 +1,5 @@
 declare namespace ICustomer {
-  interface ICustomerData {
+  interface ICustomerRes {
     data: Data[];
     totalItem: number;
     totalPage: number;
@@ -92,5 +92,19 @@ declare namespace ICustomer {
     createdAt: string;
     updatedAt: string;
     deletedAt?: any;
+  }
+
+  interface ICustomerActionReq {
+    id?: number;
+    customer_name: string;
+    facebook_name: string;
+    telegram_name: string;
+    contact_number: string;
+    house: string;
+    street: string;
+    commune: string;
+    district: string;
+    province: string;
+    location: string;
   }
 }
