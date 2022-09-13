@@ -7,215 +7,179 @@ import {
   ListItemText,
   Stack,
   Typography,
+  alpha,
+  Paper,
 } from '@mui/material';
 import { Container } from '@mui/system';
+import { CusLoading } from 'components/CusLoading';
+import React from 'react';
 import {
-  BagTick2,
-  BagTimer,
-  Call,
-  Facebook,
-  Gift,
-  House,
-  NotificationFavorite,
-  Send2,
-} from 'iconsax-react';
+  FaFacebookSquare,
+  FaTelegram,
+  FaPhoneSquareAlt,
+  FaHouseUser,
+} from 'react-icons/fa';
 import theme from 'theme/theme';
-import { ICustCard } from 'utils/cutomer-util';
+import { Location } from 'iconsax-react';
 
-export default function CustomerDetails({ data }: { data: ICustCard }) {
+export default function CustomerDetails({
+  custDetails,
+  isLoadingCustDetails,
+}: {
+  custDetails: ICustomer.ICustomerDetails | undefined;
+  isLoadingCustDetails: boolean;
+}) {
+  const formatInvoiceId = (value: string) => {
+    const pad = '00000';
+    return pad.substring(0, pad.length - value.length) + value;
+  };
+
   return (
     <>
-      <Container sx={{ mb: 4 }}>
-        <Grid container>
-          <Grid item xs={12}>
-            <Stack alignItems={'center'}>
-              <Avatar
-                src='/images/avatar.svg'
-                sx={{ width: 100, height: 'auto' }}
-              />
-              <Typography variant='h6'>Customer Name</Typography>
+      {isLoadingCustDetails ? (
+        <Stack
+          alignItems={'center'}
+          sx={{ height: 'calc(100vh - 88px)' }}
+          justifyContent='center'
+        >
+          <CusLoading />
+        </Stack>
+      ) : (
+        <Container sx={{ mb: 4 }}>
+          <Grid container>
+            <Grid item xs={12} sx={{}}>
+              <Stack alignItems={'center'} spacing={2}>
+                <Avatar
+                  src='/images/girlavatar.png'
+                  sx={{
+                    width: 150,
+                    height: 'auto',
+                    boxShadow: (theme) => theme.shadows[1],
+                  }}
+                />
+                <Typography variant='h6'>
+                  {custDetails?.customer.customer_name}
+                </Typography>
+              </Stack>
+            </Grid>
+          </Grid>
+          <Stack direction={'column'} spacing={2}>
+            <Typography variant='h6'>Information</Typography>
+            <List
+              sx={{ boxShadow: (theme) => theme.shadows[1], borderRadius: 2 }}
+            >
+              {!!custDetails?.customer.facebook_name && (
+                <ListItem>
+                  <ListItemIcon>
+                    <FaFacebookSquare
+                      style={{ height: 32, color: theme.palette.info.dark }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {custDetails?.customer.facebook_name}
+                  </ListItemText>
+                </ListItem>
+              )}
+              {!!custDetails?.customer.telegram_name && (
+                <ListItem>
+                  <ListItemIcon>
+                    <FaTelegram
+                      style={{ height: 32, color: theme.palette.info.main }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {custDetails?.customer.telegram_name}
+                  </ListItemText>
+                </ListItem>
+              )}
+              {!!custDetails?.customer.contact_number && (
+                <ListItem>
+                  <ListItemIcon>
+                    <FaPhoneSquareAlt
+                      style={{ height: 32, color: theme.palette.success.main }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {custDetails?.customer.contact_number}
+                  </ListItemText>
+                </ListItem>
+              )}
+              <ListItem>
+                <ListItemIcon>
+                  <FaHouseUser
+                    style={{ height: 32, color: theme.palette.primary.main }}
+                  />
+                </ListItemIcon>
+                <ListItemText>
+                  {`${custDetails?.customer.house}  ${custDetails?.customer.street}  ${custDetails?.customer.location}
+                ${custDetails?.customer.commune}   ${custDetails?.customer.district}  ${custDetails?.customer.province}`}
+                </ListItemText>
+              </ListItem>
+            </List>
+            <Stack direction={'row'} spacing={2}>
+              <Typography variant='h6'>Ordered</Typography>
+              <Typography
+                variant='h6'
+                sx={{
+                  background: (theme) => alpha(theme.palette.primary.main, 0.3),
+                  color: (theme) => theme.palette.primary.main,
+                  px: 2,
+                  borderRadius: 2,
+                }}
+              >
+                {custDetails?.orders.length}
+              </Typography>
             </Stack>
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          sx={{
-            background: (theme) => theme.palette.background.paper,
-            mt: 2,
-            borderRadius: 4,
-            boxShadow: (theme) => theme.shadows[2],
-          }}
-        >
-          <Grid item xs={12} md={6}>
-            <List>
-              <ListItem>
-                <ListItemIcon>
-                  <Avatar
+            {custDetails?.orders.map((data) => (
+              <Paper key={data.id} elevation={1} sx={{ overflow: 'hidden' }}>
+                <Grid container columnSpacing={2}>
+                  <Grid
+                    item
+                    xs={4}
                     sx={{
-                      background: (theme) => theme.palette.common.white,
-                      boxShadow: theme.shadows[3],
+                      background: (theme) => theme.palette.primary.main,
                     }}
                   >
-                    <Facebook size='24' color={'#4267B2'} variant='Bold' />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText primary={data.facebook} secondary={'Facebook'} />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      background: (theme) => theme.palette.common.white,
-                      boxShadow: theme.shadows[3],
-                    }}
-                  >
-                    <Send2 size='24' color={'#229ED9'} variant='Bold' />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText primary={data.telegram} secondary={'Telegram'} />
-              </ListItem>
-            </List>
-          </Grid>
-          {/* right */}
-          <Grid item xs={12} md={6}>
-            <List>
-              <ListItem>
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      background: (theme) => theme.palette.common.white,
-                      boxShadow: theme.shadows[3],
-                    }}
-                  >
-                    <Call
-                      size='24'
-                      color={theme.palette.success.main}
-                      variant='Bold'
-                    />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText
-                  primary={data.contact}
-                  secondary={'Phone number'}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      background: (theme) => theme.palette.common.white,
-                      boxShadow: theme.shadows[3],
-                      position: 'relative',
-                      top: -20,
-                    }}
-                  >
-                    <House
-                      size='24'
-                      color={theme.palette.primary.main}
-                      variant='Bold'
-                    />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText
-                  primary={`House No : ${data.houseNo}, street : ${data.stNo}, ${data.location}
-               ${data.province}, ${data.district}, ${data.commune}`}
-                  secondary={'Address'}
-                />
-              </ListItem>
-            </List>
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          sx={{
-            background: (theme) => theme.palette.background.paper,
-            mt: 2,
-            borderRadius: 4,
-            boxShadow: (theme) => theme.shadows[2],
-          }}
-        >
-          <Grid item xs={12} md={6}>
-            <List>
-              <ListItem>
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      background: (theme) => theme.palette.common.white,
-                      boxShadow: theme.shadows[3],
-                    }}
-                  >
-                    <BagTick2
-                      size='24'
-                      color={theme.palette.success.main}
-                      variant='Bold'
-                    />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText
-                  primary='Ordered'
-                  secondary={`${data.ordered}times`}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemIcon>
-                  <Avatar
-                    sx={{
-                      background: (theme) => theme.palette.common.white,
-                      boxShadow: theme.shadows[3],
-                    }}
-                  >
-                    <BagTimer
-                      size='24'
-                      color={theme.palette.info.main}
-                      variant='Bold'
-                    />
-                  </Avatar>
-                </ListItemIcon>
-                <ListItemText
-                  primary='Last Ordered'
-                  secondary={data.lastOrder}
-                />
-              </ListItem>
-            </List>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ListItem>
-              <ListItemIcon>
-                <Avatar
-                  sx={{
-                    background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[3],
-                  }}
-                >
-                  <NotificationFavorite
-                    size='24'
-                    color={theme.palette.warning.main}
-                    variant='Bold'
-                  />
-                </Avatar>
-              </ListItemIcon>
-              <ListItemText primary='Upcoming' secondary={data.upComing} />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Avatar
-                  sx={{
-                    background: (theme) => theme.palette.common.white,
-                    boxShadow: theme.shadows[3],
-                  }}
-                >
-                  <Gift
-                    size='24'
-                    color={theme.palette.primary.main}
-                    variant='Bold'
-                  />
-                </Avatar>
-              </ListItemIcon>
-              <ListItemText primary='Gifts' secondary={data.gift} />
-            </ListItem>
-          </Grid>
-        </Grid>
-      </Container>
+                    <Stack
+                      direction={'row'}
+                      alignItems='center'
+                      justifyContent={'center'}
+                      sx={{ height: '100%', width: '100%' }}
+                    >
+                      <Typography variant='h6'>
+                        {formatInvoiceId(data.id.toString())}
+                      </Typography>
+                    </Stack>
+                  </Grid>
+                  <Grid item xs={4} sx={{ py: 1 }}>
+                    <Stack direction={'column'} spacing={1}>
+                      <Typography variant='h6'>{data.type}</Typography>
+                      <Stack direction={'row'} alignItems='center' spacing={1}>
+                        <Location
+                          size='24'
+                          color={theme.palette.info.main}
+                          variant='Bold'
+                        />
+                        <Typography variant='subtitle1'>
+                          {data.location}
+                        </Typography>
+                      </Stack>
+                    </Stack>
+                  </Grid>
+                  <Grid item xs={4} sx={{ py: 1 }}>
+                    <Stack direction={'column'} spacing={1}>
+                      <Typography variant='subtitle1'>{data.date}</Typography>
+                      <Typography variant='subtitle1'>
+                        {data.quantity} តុ
+                      </Typography>
+                    </Stack>
+                  </Grid>
+                </Grid>
+              </Paper>
+            ))}
+          </Stack>
+        </Container>
+      )}
     </>
   );
 }

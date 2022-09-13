@@ -16,16 +16,27 @@ const CUSTOMER_API = {
       {
         params: {
           page: page,
-          size: size,
+          size: 10,
           search: search,
         },
       }
     );
     return res;
   },
-  getCustomerDetails: async (id: number) => {
+  getCustomerDetails: async ({ id }: { id: number }) => {
     const res: ICustomer.ICustomerDetails = await HttpUtil.get(
       ROUTE_API.customerDetails.replace(':id', `${id}`)
+    );
+    return res;
+  },
+  postNewCustomer: async ({
+    cusRequest,
+  }: {
+    cusRequest: ICustomer.ICustomerRequest;
+  }) => {
+    const res: ICustomer.ICustomerRequest = await HttpUtil.post(
+      ROUTE_API.addCustomer,
+      cusRequest
     );
     return res;
   },
