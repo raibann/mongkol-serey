@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   Drawer,
@@ -10,27 +11,22 @@ import {
   TableContainer,
   ToggleButtonGroup,
   Typography,
+  Box,
 } from '@mui/material';
-import { Box } from '@mui/system';
+import theme from 'theme/theme';
 import BookingInvoice from 'components/ComToPrint/BookingInvoice';
 import FinalInvoice from 'components/ComToPrint/FinalInvoice';
-import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
-import React, { useEffect, useRef, useState } from 'react';
-import theme from 'theme/theme';
-import { bookingInvoice, finalInvoice } from 'utils/print-util';
 import OrderDrawer from './OrderDrawer';
-import { OrderTableBody, OrderTableHead } from './OrderTable';
-import PhotoDialogContent from './PhotoDialogContent';
-// import { paidBy } from 'utils/expense-util';
 import useRequest from '@ahooksjs/use-request';
 import ORDER_API from 'api/order';
+import OrderTableBody, { OrderTableHead } from './OrderTable';
+import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
+import { bookingInvoice, finalInvoice } from 'utils/print-util';
 import { CusLoading } from 'components/CusLoading';
-import { paidBy } from 'utils/expense-util';
 interface IOrderData {
   id: number;
   name: string;
@@ -52,7 +48,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '06-07-2022',
     deposit: 300,
-    paidBy: paidBy[0].imageUrl,
+    paidBy: '',
   },
   {
     id: 2,
@@ -63,7 +59,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '20-07-2022',
     deposit: 2899999,
-    paidBy: paidBy[1].imageUrl,
+    paidBy: '',
   },
   {
     id: 3,
@@ -74,7 +70,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '16-11-2022',
     deposit: 400,
-    paidBy: paidBy[2].imageUrl,
+    paidBy: '',
   },
   {
     id: 4,
@@ -85,7 +81,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '06-07-2022',
     deposit: 300,
-    paidBy: paidBy[3].imageUrl,
+    paidBy: '',
   },
   {
     id: 5,
@@ -96,7 +92,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '20-07-2022',
     deposit: 2000,
-    paidBy: paidBy[4].imageUrl,
+    paidBy: '',
   },
   {
     id: 6,
@@ -107,7 +103,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '16-11-2022',
     deposit: 400,
-    paidBy: paidBy[5].imageUrl,
+    paidBy: '',
   },
   {
     id: 7,
@@ -118,7 +114,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '06-07-2022',
     deposit: 300,
-    paidBy: paidBy[6].imageUrl,
+    paidBy: '',
   },
   {
     id: 8,
@@ -129,7 +125,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '20-07-2022',
     deposit: 2000,
-    paidBy: paidBy[7].imageUrl,
+    paidBy: '',
   },
   {
     id: 9,
@@ -140,7 +136,7 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '16-11-2022',
     deposit: 400,
-    paidBy: paidBy[8].imageUrl,
+    paidBy: '',
   },
   {
     id: 10,
@@ -151,57 +147,61 @@ export const ORDER_DATA: IOrderData[] = [
     eventLocation: 'Phnom Penh',
     bookingDate: '06-07-2022',
     deposit: 300,
-    paidBy: paidBy[9].imageUrl,
+    paidBy: '',
   },
 ];
 
 const Orders = () => {
   const [ToggleValue, setToggleValue] = useState('pending');
-  const [orderDetail, setOrderDetail] = useState<IOrderData>();
+  const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
-  const [openPhotoDialog, setOpenPhotoDialog] = useState(false);
   const [page, setPage] = React.useState(1);
   const [searchData, setSearchData] = useState('');
 
   const { isMdDown } = useResponsive();
 
-  // fetch data
+  // useRequests
   const {
     data: orderList,
     run: fetchOrderList,
     loading: isLoadingOrderList,
+    refresh: refreshGetOrderList,
   } = useRequest(ORDER_API.getOrdersList, {
     manual: true,
-    debounceInterval: searchData !== '' ? 500 : 0,
+  });
+  const { run: searchOrderList } = useRequest(fetchOrderList, {
+    manual: true,
+    debounceInterval: 300,
   });
 
+  // useEffects
   useEffect(() => {
+    if (searchData !== '') {
+      searchOrderList({
+        page: `${page - 1}`,
+        status: ToggleValue,
+        search: searchData,
+      });
+      return;
+    }
+
     fetchOrderList({
       page: `${page - 1}`,
       status: ToggleValue,
       search: searchData,
     });
-    console.log(searchData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ToggleValue, page, searchData]);
-  // console.log('orders', orderList?.data);
 
-  // show order dialog
+  // Methods
   const handleCloseOrderDialog = () => {
     setNewOrder(false);
     setOrderDetail(undefined);
   };
-
-  // handleChange Page
-  const handleChangePage = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
-  // handle view order detail
-  // ref for print
   const bookingInvoiceRef = useRef(null);
   const finalInvoiceRef = useRef(null);
 
@@ -237,6 +237,7 @@ const Orders = () => {
             ) => {
               if (value !== null) {
                 setToggleValue(value);
+                setPage(1);
               }
             }}
             sx={{
@@ -286,10 +287,10 @@ const Orders = () => {
         </Stack>
         <TableContainer
           sx={{
-            height: '100%',
+            height: 'calc(100% - 48px - 56px)',
             overflow: 'auto',
             px: 2,
-            pb: { xs: 22, md: 15, lg: 0 },
+            pb: { xs: 15, md: 10, lg: 5 },
           }}
         >
           {isLoadingOrderList ? (
@@ -301,18 +302,20 @@ const Orders = () => {
             >
               <CusLoading />
             </Stack>
-          ) : orderList?.data && orderList?.data.length > 0 ? (
-            <Table sx={{ minWidth: 935 }}>
-              <OrderTableHead />
-              <TableBody>
-                <OrderTableBody
-                  data={orderList?.data}
-                  onPhotoClick={() => setOpenPhotoDialog(true)}
-                  // componentRef={finalInvoiceRef}
-                  componentRef={bookingInvoiceRef}
-                />
-              </TableBody>
-            </Table>
+          ) : orderList && orderList.data && orderList.data.length > 0 ? (
+            <>
+              <Table sx={{ minWidth: 935 }}>
+                <OrderTableHead />
+                <TableBody>
+                  <OrderTableBody
+                    data={orderList.data}
+                    componentRef={bookingInvoiceRef}
+                    enablePrint
+                    onEditClick={(i) => setOrderDetail(orderList.data[i])}
+                  />
+                </TableBody>
+              </Table>
+            </>
           ) : (
             <Stack
               direction={'column'}
@@ -350,7 +353,11 @@ const Orders = () => {
             bgcolor: '#fff',
           }}
         >
-          <Pagination count={10} page={page} onChange={handleChangePage} />
+          <Pagination
+            count={orderList?.totalPage}
+            page={page}
+            onChange={handleChangePage}
+          />
         </Stack>
       </Paper>
 
@@ -361,16 +368,22 @@ const Orders = () => {
           sx: { borderRadius: 0, width: { xs: '100vw', md: '50vw' } },
         }}
       >
-        <OrderDrawer {...{ handleCloseOrderDialog }} />
+        <OrderDrawer
+          {...{ handleCloseOrderDialog, orderDetail }}
+          onActionSuccess={() => {
+            refreshGetOrderList();
+            handleCloseOrderDialog();
+          }}
+        />
       </Drawer>
 
-      <ResponsiveDialog
+      {/* <ResponsiveDialog
         open={openPhotoDialog}
         onCloseDialog={() => setOpenPhotoDialog(false)}
         size='sm'
       >
         <PhotoDialogContent />
-      </ResponsiveDialog>
+      </ResponsiveDialog> */}
     </>
   );
 };

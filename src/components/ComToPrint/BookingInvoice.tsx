@@ -286,6 +286,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     fontFamily='Khmer Busra high'
                     fontSize={18}
                     lineHeight={1.8}
+                    component='div'
                   >
                     {data.list.map((ls) => (
                       <React.Fragment key={ls.id}>

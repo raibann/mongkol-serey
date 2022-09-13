@@ -11,7 +11,7 @@ import communeJson from 'geography/Communes.json';
 import useResponsive from 'hook/useResponsive';
 
 export type CustomerInput = {
-  id: number;
+  customerId?: number | '';
   customerName: string;
   facebook: string;
   telegram: string;

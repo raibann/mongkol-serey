@@ -1,13 +1,13 @@
 declare namespace IOrder {
-  interface IOrderData {
+  interface IOrderRes {
     data: Data[];
     totalItem: number;
     totalPage: number;
     message: string;
     status: number;
   }
-  interface Data {
-    id: number;
+  interface Order {
+    id?: number;
     date: string;
     bookingDate: string;
     location: string;
@@ -15,8 +15,8 @@ declare namespace IOrder {
     quantity: number;
     deposit: number;
     amountInKhmer: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
     finalInvoices: FinalInvoice[];
     eventPackages: EventPackage[];
@@ -25,7 +25,7 @@ declare namespace IOrder {
   }
 
   interface Customer {
-    id: number;
+    id?: number;
     customer_name: string;
     facebook_name: string;
     telegram_name: string;
@@ -36,8 +36,8 @@ declare namespace IOrder {
     district: string;
     province: string;
     location: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
   }
 
@@ -48,39 +48,52 @@ declare namespace IOrder {
     price: number;
     paidBy: string;
     note: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
   }
 
   interface EventPackage {
-    id: number;
+    id?: number;
     category: string;
     quantity: number;
     unit: string;
-    price: string;
-    createdAt: string;
-    updatedAt: string;
+    price: number;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
     packageItems: PackageItem[];
   }
 
   interface PackageItem {
-    id: number;
+    id?: number;
     title: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
   }
 
   interface FinalInvoice {
-    id: number;
+    id?: number;
     category: string;
     quantity: number;
     unit: string;
     price: number;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
+  }
+
+  interface IOrderActionReq {
+    id?: number;
+    bookingDate: string;
+    type: string;
+    quantity: number;
+    deposit: number;
+    amountInKhmer: string;
+    location: string;
+    date: string;
+    finalInvoices?: FinalInvoice[];
+    eventPackages?: EventPackage[];
   }
 }

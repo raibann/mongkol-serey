@@ -8,50 +8,58 @@ import {
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import { Trash } from 'iconsax-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
 import { IOrderForm } from '.';
 
+interface IMenuItems {
+  id?: number;
+  title: string;
+}
+
 const OrderItem = ({
+  menuItemsP,
   onRemoveOrder,
   index,
 }: {
+  menuItemsP: IMenuItems[];
   index: number;
   onRemoveOrder: () => void;
 }) => {
-  const { control } = useFormContext<IOrderForm>();
-  const [menuItems, setMenuItems] = useState<
-    {
-      id: number;
-      title: string;
-    }[]
-  >([]);
+  const { control, setValue, watch } = useFormContext<IOrderForm>();
+  const [menuItems, setMenuItems] = useState<IMenuItems[]>([]);
+
+  useEffect(() => {
+    if (menuItemsP) {
+      return setMenuItems(menuItemsP);
+    }
+
+    setMenuItems([
+      {
+        id: undefined,
+        title: '',
+      },
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addMenuItemHandler = () => {
-    if (menuItems.length > 0) {
-      setMenuItems([
-        ...menuItems,
-        {
-          id: new Date().getTime(),
-          title: '',
-        },
-      ]);
-    } else {
-      setMenuItems([
-        {
-          id: new Date().getTime(),
-          title: '',
-        },
-      ]);
-    }
+    setMenuItems([
+      ...menuItems,
+      {
+        id: undefined,
+        title: '',
+      },
+    ]);
   };
 
-  const removeMenuItemHandler = (id: number) => {
-    const tmp = menuItems.filter((item) => {
-      return item.id !== id;
+  const removeMenuItemHandler = (i: number) => {
+    const tmp = watch(`listMenu.${index}.menuItem`).filter((_, idx) => {
+      return idx !== i;
     });
     setMenuItems(tmp);
+    setValue(`listMenu.${index}.menuItem`, tmp);
   };
 
   return (
@@ -166,10 +174,10 @@ const OrderItem = ({
 
         {menuItems &&
           menuItems.length > 0 &&
-          menuItems?.map((item, i) => {
+          menuItems?.map((_, i) => {
             return (
               <Stack
-                key={item.id}
+                key={i}
                 direction='row'
                 alignItems='flex-start'
                 spacing={1}
@@ -211,7 +219,7 @@ const OrderItem = ({
 
                 <IconButton
                   color='error'
-                  onClick={() => removeMenuItemHandler(item.id)}
+                  onClick={() => removeMenuItemHandler(i)}
                   sx={{ p: 0 }}
                 >
                   <Trash />

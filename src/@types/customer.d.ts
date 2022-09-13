@@ -1,6 +1,6 @@
 declare namespace ICustomer {
-  interface ICustomerData {
-    data: Data[];
+  interface ICustomerRespone {
+    data: Customer[];
     totalItem: number;
     totalPage: number;
     message: string;
@@ -20,8 +20,8 @@ declare namespace ICustomer {
     quantity: number;
     deposit: number;
     amountInKhmer: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
     finalInvoices: FinalInvoice[];
     eventPackages: EventPackage[];
@@ -30,7 +30,7 @@ declare namespace ICustomer {
   }
 
   interface Customer {
-    id: number;
+    id?: number;
     customer_name: string;
     facebook_name: string;
     telegram_name: string;
@@ -41,8 +41,8 @@ declare namespace ICustomer {
     district: string;
     province: string;
     location: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
   }
 

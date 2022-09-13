@@ -8,7 +8,7 @@ const CustCard = ({
   fetchCustDetails,
 }: {
   handleOpenDrawer: (obj: 'Add' | 'Edit' | 'Details' | '') => void;
-  custList: ICustomer.ICustomerData | undefined;
+  custList: ICustomer.ICustomerRespone | undefined;
   fetchCustDetails: (params_0: { id: number }) => void;
 }) => {
   const router = useRouter();
@@ -54,7 +54,7 @@ const CustCard = ({
                   color='success'
                   onClick={(e) => {
                     handleOpenDrawer('Details');
-                    fetchCustDetails({ id: data.id });
+                    fetchCustDetails({ id: data.id || 0 });
                   }}
                 >
                   <InfoCircle variant='Outline' />

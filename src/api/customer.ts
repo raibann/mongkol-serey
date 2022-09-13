@@ -11,7 +11,7 @@ const CUSTOMER_API = {
     size?: number;
     search?: string;
   }) => {
-    const res: ICustomer.ICustomerData = await HttpUtil.get(
+    const res: ICustomer.ICustomerRespone = await HttpUtil.get(
       ROUTE_API.customersList,
       {
         params: {
