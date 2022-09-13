@@ -184,33 +184,27 @@ const Orders = () => {
     console.log(searchData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ToggleValue, page, searchData]);
-  console.log('orders', orderList?.data);
+  // console.log('orders', orderList?.data);
+
+  // show order dialog
   const handleCloseOrderDialog = () => {
     setNewOrder(false);
     setOrderDetail(undefined);
   };
+
+  // handleChange Page
   const handleChangePage = (
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
     setPage(value);
   };
+
+  // handle view order detail
+  // ref for print
   const bookingInvoiceRef = useRef(null);
   const finalInvoiceRef = useRef(null);
 
-  // if (isLoadingOrderList) {
-  //   return (
-  //     <>
-  //       <Stack
-  //         sx={{ height: '100vh' }}
-  //         justifyContent='center'
-  //         alignItems={'center'}
-  //       >
-  //         <CusLoading />
-  //       </Stack>
-  //     </>
-  //   );
-  // }
   return (
     <>
       <PageHeader pageTitle='Orders' />
@@ -250,7 +244,7 @@ const Orders = () => {
             }}
           >
             <CusToggleButton value='pending'>Pending</CusToggleButton>
-            <CusToggleButton value='completed'>Completed</CusToggleButton>
+            <CusToggleButton value='complete'>Completed</CusToggleButton>
             <CusToggleButton value='all'>All</CusToggleButton>
           </ToggleButtonGroup>
 
