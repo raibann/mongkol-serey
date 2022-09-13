@@ -20,7 +20,10 @@ const ORDER_API = {
     });
     return res;
   },
-  orderAction: async (req: IOrder.IOrderActionReq, customerId: number) => {
+  orderAction: async (
+    req: IOrder.IOrderActionReq,
+    customerId: number | undefined
+  ) => {
     const res: IOrder.Order = await HttpUtil.post(ROUTE_API.orderAction, req, {
       params: { customerId: customerId },
     });

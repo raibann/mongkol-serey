@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   TableRow,
   TableCell,
@@ -13,8 +14,9 @@ import { FaFacebookSquare, FaTelegram } from 'react-icons/fa';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, Printer } from 'iconsax-react';
 import { pageStyle } from 'utils/print-util';
+import { paidByColor } from 'utils/expense-util';
 
-export const OrderTableBody = ({
+const OrderTableBody = ({
   data,
   componentRef,
   enablePrint,
@@ -36,21 +38,21 @@ export const OrderTableBody = ({
           <TableCell>
             <Stack direction={'column'}>
               <Typography variant='subtitle2' fontWeight={'light'}>
-                {item.customer.customer_name}
+                {item.customer?.customer_name}
               </Typography>
-              {(!!item.customer.telegram_name && (
+              {(!!item.customer?.telegram_name && (
                 <Stack direction={'row'} alignItems='center' spacing={1}>
                   <FaTelegram style={{ color: '#229ED9' }} />
                   <Typography variant='subtitle2' fontWeight={'light'}>
-                    {item.customer.telegram_name}
+                    {item.customer?.telegram_name}
                   </Typography>
                 </Stack>
               )) ||
-                (!!item.customer.facebook_name && (
+                (!!item.customer?.facebook_name && (
                   <Stack direction={'row'} alignItems='center' spacing={1}>
                     <FaFacebookSquare style={{ color: '#4267B2' }} />
                     <Typography variant='subtitle2' fontWeight={'light'}>
-                      {item.customer.facebook_name}
+                      {item.customer?.facebook_name}
                     </Typography>
                   </Stack>
                 ))}
@@ -67,19 +69,20 @@ export const OrderTableBody = ({
           <TableCell sx={{ maxWidth: 300 }}>
             <Typography noWrap>{item.location}</Typography>
           </TableCell>
-          <TableCell>{item.quantity.toLocaleString()} តុ</TableCell>
+          <TableCell>{item.quantity || 0}តុ</TableCell>
           <TableCell>
             <Stack direction={'row'} spacing={2} alignItems='center'>
               <Chip
                 label='ABA'
                 size='small'
                 sx={{
-                  backgroundColor: '#005b7a',
+                  backgroundColor:
+                    (paidByColor as any)['ABA'] || theme.palette.info.main,
                   color: '#fff',
                 }}
               />
               <Typography variant='subtitle2' fontWeight={'light'}>
-                ${item.deposit.toLocaleString()}
+                ${item.deposit || 0}
               </Typography>
             </Stack>
           </TableCell>
@@ -138,3 +141,5 @@ export const OrderTableHead = () => {
     </TableHead>
   );
 };
+
+export default React.memo(OrderTableBody);

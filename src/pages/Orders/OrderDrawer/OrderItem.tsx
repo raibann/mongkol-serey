@@ -14,7 +14,7 @@ import theme from 'theme/theme';
 import { IOrderForm } from '.';
 
 interface IMenuItems {
-  id: number | undefined;
+  id?: number;
   title: string;
 }
 

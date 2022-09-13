@@ -1,4 +1,11 @@
-import { alpha, Autocomplete, Button, Stack, Typography } from '@mui/material';
+import {
+  alpha,
+  Autocomplete,
+  Button,
+  MenuItem,
+  Stack,
+  Typography,
+} from '@mui/material';
 import {
   Controller,
   FormProvider,
@@ -10,11 +17,10 @@ import CustomerForm, {
 } from 'pages/Customer/CustForm/CustomerForm';
 import { BsPlus, BsCheckCircleFill, BsCircle } from 'react-icons/bs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { CusIconButton } from 'components/CusIconButton';
 import { MdClose } from 'react-icons/md';
-import { paidByBank } from 'utils/stock-util';
 import { BoxRemove } from 'iconsax-react';
 import { validatePatterns } from 'utils/validate-util';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
@@ -29,6 +35,9 @@ import FinalInvoiceForm, {
   FinalInvoiceInput,
   IFinalInvoice,
 } from './FinalInvoiceForm';
+import { CusBackDrop } from 'components/CusLoading';
+import CUSTOMER_API from 'api/customer';
+import { paidBy } from 'utils/expense-util';
 
 export interface IOrderForm {
   orderId?: number;
@@ -51,21 +60,29 @@ interface IlistMenu {
   unit: string;
   price: number | '';
   menuItem: {
-    id: number | undefined;
+    id?: number;
     title: string;
   }[];
 }
 const OrderDrawer = ({
   handleCloseOrderDialog,
   orderDetail,
+  onActionSuccess,
 }: {
+  onActionSuccess: () => void;
   handleCloseOrderDialog: () => void;
   orderDetail: IOrder.Order | undefined;
 }) => {
   // useRequests
   const orderActionReq = useRequest(ORDER_API.orderAction, {
     manual: true,
-    onSuccess: (data) => console.log('success', data),
+    onSuccess: (data) => {
+      console.log('success', data);
+      onActionSuccess();
+    },
+  });
+  const customerListReq = useRequest(CUSTOMER_API.getCustomerList, {
+    manual: true,
   });
 
   // react-hooks-form
@@ -76,13 +93,18 @@ const OrderDrawer = ({
   const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
   const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
   const [newCustomer, setNewCustomer] = useState(0);
+  const [selectedCustomer, setSelectedCustomer] =
+    useState<ICustomer.Customer>();
+
+  // refs
+  const customerRef = useRef(orderDetail?.customer);
 
   const onSubmit: SubmitHandler<
     IOrderForm & CustomerInput & FinalInvoiceInput
   > = (data) => {
     orderActionReq.run(
       {
-        id: data.orderId,
+        id: data.orderId || undefined,
         amountInKhmer: data.depositText,
         bookingDate: moment(data.bookingDate).format('yyyy-MM-DD'),
         date: moment(data.eventDate).format('yyyy-MM-DD'),
@@ -90,71 +112,94 @@ const OrderDrawer = ({
         location: data.eventLocation,
         quantity: +data.quantity,
         type: data.eventType,
-        eventPackages: data.listMenu.map((menu) => {
+        eventPackages: data.listMenu?.map((menu) => {
           return {
             id: menu.id,
             category: menu.title,
             price: +menu.price,
             quantity: +menu.quantity,
             unit: menu.unit,
-            packageItems: menu.menuItem.map((item) => {
-              return {
-                id: item.id,
-                title: item.title,
-              };
-            }),
+            packageItems:
+              menu.menuItem?.map((item) => {
+                return {
+                  id: item.id,
+                  title: item.title,
+                };
+              }) || undefined,
           };
         }),
+        finalInvoices: !orderDetail
+          ? undefined
+          : data.finalInvoice?.map((invoice) => {
+              return {
+                id: invoice.id,
+                category: invoice.fTitle,
+                price: +invoice.fPrice,
+                quantity: +invoice.fQty,
+                unit: invoice.fUnit,
+              };
+            }),
       },
-      1
+      selectedCustomer?.id
     );
-    console.log(data.listMenu);
   };
 
   // useEffect
   useEffect(() => {
     if (orderDetail) {
-      setValue('orderId', orderDetail.id);
-      setValue('eventLocation', orderDetail.location);
-      setValue('paidBy', 'ABA Bank');
-      setValue('bookingDate', new Date(orderDetail.bookingDate));
-      setValue('eventDate', new Date(orderDetail.date));
-      setValue('deposit', orderDetail.deposit);
-      setValue('depositText', orderDetail.amountInKhmer);
-      setValue('eventType', orderDetail.type);
-      setValue('quantity', orderDetail.quantity);
-
       const tmpListMenu: IlistMenu[] = orderDetail.eventPackages.map((item) => {
         return {
-          id: item.id,
-          title: item.category,
-          price: +item.price,
-          unit: item.unit,
-          quantity: item.quantity,
-          menuItem: item.packageItems.map((e) => {
+          id: item?.id,
+          title: item.category || '',
+          price: +item.price || '',
+          unit: item.unit || '',
+          quantity: item.quantity || '',
+          menuItem: item.packageItems?.map((e) => {
             return {
-              id: e.id,
-              title: e.title,
+              id: e?.id,
+              title: e.title || '',
             };
           }),
         };
       });
-
+      const tmpFinalInvoice: IFinalInvoice[] = orderDetail?.finalInvoices?.map(
+        (e) => {
+          return {
+            id: e?.id,
+            fPrice: e.price || '',
+            fQty: e.quantity || '',
+            fTitle: e.category || '',
+            fUnit: e.unit || '',
+          };
+        }
+      );
+      setValue('orderId', orderDetail?.id);
+      setValue('eventLocation', orderDetail.location || '');
+      setValue('paidBy', 'ABA Bank' || '');
+      setValue('bookingDate', new Date(orderDetail.bookingDate) || null);
+      setValue('eventDate', new Date(orderDetail.date) || null);
+      setValue('deposit', orderDetail.deposit || '');
+      setValue('depositText', orderDetail.amountInKhmer || '');
+      setValue('eventType', orderDetail.type || '');
+      setValue('quantity', orderDetail.quantity || '');
       setValue('listMenu', tmpListMenu);
+      setValue('finalInvoice', tmpFinalInvoice);
+      setSelectedCustomer(orderDetail?.customer);
       setListMenu(tmpListMenu);
+      setFinalInvoice(tmpFinalInvoice);
       return;
     }
 
-    setFinalInvoice([
-      {
-        id: undefined,
-        fTitle: '',
-        fQty: '',
-        fPrice: '',
-        fUnit: '',
-      },
-    ]);
+    addListOrderHandler();
+    addFinalInvoiceHandler();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Methods
+  const addListOrderHandler = () => {
     setListMenu([
+      ...listMenu,
       {
         id: undefined,
         title: '',
@@ -164,27 +209,6 @@ const OrderDrawer = ({
         menuItem: [
           {
             id: undefined,
-            title: '',
-          },
-        ],
-      },
-    ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Methods
-  const addListOrderHandler = () => {
-    setListMenu([
-      ...listMenu,
-      {
-        id: new Date().getTime(),
-        title: '',
-        price: '',
-        quantity: '',
-        unit: '',
-        menuItem: [
-          {
-            id: new Date().getTime(),
             title: '',
           },
         ],
@@ -204,7 +228,7 @@ const OrderDrawer = ({
     setFinalInvoice([
       ...finalInvoice,
       {
-        id: new Date().getTime(),
+        id: undefined,
         fTitle: '',
         fQty: '',
         fPrice: '',
@@ -221,8 +245,24 @@ const OrderDrawer = ({
     setValue('finalInvoice', tmp);
   };
 
+  const generateFinalInvoice = () => {
+    const tmp: IFinalInvoice[] = methods.watch('listMenu').map((e) => {
+      return {
+        id: undefined,
+        fPrice: e.price,
+        fQty: e.quantity,
+        fTitle: e.title,
+        fUnit: e.unit,
+      };
+    });
+    setFinalInvoice(tmp);
+    setValue('finalInvoice', tmp);
+  };
+
   return (
     <>
+      {orderActionReq.loading && <CusBackDrop open={true} />}
+
       <Stack
         p={3}
         direction='row'
@@ -287,26 +327,37 @@ const OrderDrawer = ({
 
           <Stack px={3} spacing={4}>
             <Stack spacing={4} direction='row'>
-              <Controller
-                control={methods.control}
-                name='customerId'
-                defaultValue=''
-                render={({ field, fieldState: { error } }) => {
-                  return (
-                    <LabelTextField label='Customer'>
-                      <StyledOutlinedTextField
-                        placeholder='Select Customer'
-                        disabled={
-                          newCustomer === 1 || orderDetail !== undefined
-                        }
-                        error={Boolean(error)}
-                        helperText={error?.message}
-                        {...field}
-                      />
-                    </LabelTextField>
-                  );
-                }}
-              />
+              <LabelTextField label='Customer'>
+                <Autocomplete
+                  disableClearable
+                  openOnFocus
+                  loading={customerListReq.loading}
+                  onFocus={() =>
+                    !customerListReq.data && customerListReq.run({ size: 1000 })
+                  }
+                  defaultValue={customerRef.current}
+                  onChange={(e, value) => {
+                    setSelectedCustomer(value);
+                  }}
+                  renderInput={(params) => (
+                    <StyledOutlinedTextField
+                      placeholder='Select Customer'
+                      {...params}
+                    />
+                  )}
+                  getOptionLabel={(option) => option.customer_name || ''}
+                  renderOption={(props, option) => {
+                    return (
+                      option && (
+                        <MenuItem {...props} key={option.id}>
+                          {`${option?.id}. ${option?.customer_name}`}
+                        </MenuItem>
+                      )
+                    );
+                  }}
+                  options={customerListReq.data?.data || []}
+                />
+              </LabelTextField>
             </Stack>
 
             <Stack spacing={4} direction='row'>
@@ -556,7 +607,7 @@ const OrderDrawer = ({
                             {...params}
                           />
                         )}
-                        options={paidByBank.map((data, i) => data)}
+                        options={paidBy.map((data) => data)}
                       />
                     </LabelTextField>
                   );
@@ -618,21 +669,23 @@ const OrderDrawer = ({
             <>
               <InputGroupTitle marginTop={8}>Final Invoice</InputGroupTitle>
 
-              <Stack
-                width='100%'
-                spacing={1}
-                pt={2}
-                px={3}
-                position='relative'
-                direction='row'
-                alignItems='center'
-              >
-                <Typography sx={{ flex: 1 }}>Title</Typography>
-                <Typography sx={{ flex: 1 }}>Quanity</Typography>
-                <Typography sx={{ flex: 1 }}>Unit</Typography>
-                <Typography sx={{ flex: 1 }}>Price</Typography>
-                <div style={{ width: 40 }} />
-              </Stack>
+              {finalInvoice && finalInvoice.length > 0 && (
+                <Stack
+                  width='100%'
+                  spacing={1}
+                  pt={2}
+                  px={3}
+                  position='relative'
+                  direction='row'
+                  alignItems='center'
+                >
+                  <Typography sx={{ flex: 1 }}>Title</Typography>
+                  <Typography sx={{ flex: 1 }}>Quanity</Typography>
+                  <Typography sx={{ flex: 1 }}>Unit</Typography>
+                  <Typography sx={{ flex: 1 }}>Price</Typography>
+                  <div style={{ width: 40 }} />
+                </Stack>
+              )}
 
               <Stack px={3}>
                 {finalInvoice && finalInvoice.length > 0 ? (
@@ -666,17 +719,30 @@ const OrderDrawer = ({
                     >
                       {`Final Invoice is Empty...`}
                     </Typography>
-                    <Button
-                      variant='text'
-                      color='info'
-                      onClick={addFinalInvoiceHandler}
-                      sx={{
-                        mx: 2,
-                        mt: 1,
-                      }}
-                    >
-                      Add More
-                    </Button>
+                    <Stack direction='row'>
+                      <Button
+                        variant='text'
+                        color='info'
+                        onClick={addFinalInvoiceHandler}
+                        sx={{
+                          mx: 2,
+                          mt: 1,
+                        }}
+                      >
+                        Add More
+                      </Button>
+                      <Button
+                        variant='text'
+                        color='success'
+                        onClick={generateFinalInvoice}
+                        sx={{
+                          mx: 2,
+                          mt: 1,
+                        }}
+                      >
+                        Generate
+                      </Button>
+                    </Stack>
                   </Stack>
                 )}
                 {finalInvoice && finalInvoice.length > 0 && (
