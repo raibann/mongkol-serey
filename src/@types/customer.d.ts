@@ -6,23 +6,6 @@ declare namespace ICustomer {
     message: string;
     status: number;
   }
-
-  interface Data {
-    id: number;
-    customer_name: string;
-    facebook_name: string;
-    telegram_name: string;
-    contact_number: string;
-    house: string;
-    street: string;
-    commune: string;
-    district: string;
-    province: string;
-    location: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt?: any;
-  }
   interface ICustomerDetails {
     orders: Order[];
     customer: Customer;
@@ -92,5 +75,18 @@ declare namespace ICustomer {
     createdAt: string;
     updatedAt: string;
     deletedAt?: any;
+  }
+  interface ICustomerRequest {
+    id?: number;
+    customer_name: string;
+    facebook_name: string;
+    telegram_name: string;
+    contact_number: string;
+    house: string;
+    street: string;
+    commune: string;
+    district: string;
+    province: string;
+    location: string;
   }
 }

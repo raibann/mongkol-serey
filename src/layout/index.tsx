@@ -11,6 +11,7 @@ export default function Home() {
       <Sidebar {...{ drawerWidth }} />
       <Box
         component='main'
+        id='main'
         flexGrow={1}
         sx={{
           background: theme.palette.background.paper,
