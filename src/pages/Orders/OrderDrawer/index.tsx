@@ -5,6 +5,7 @@ import {
   MenuItem,
   Stack,
   Typography,
+  IconButton,
 } from '@mui/material';
 import {
   Controller,
@@ -18,10 +19,10 @@ import CustomerForm, {
 import { BsPlus, BsCheckCircleFill, BsCircle } from 'react-icons/bs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { useEffect, useRef, useState } from 'react';
+import { BoxRemove, Trash } from 'iconsax-react';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { CusIconButton } from 'components/CusIconButton';
 import { MdClose } from 'react-icons/md';
-import { BoxRemove } from 'iconsax-react';
 import { validatePatterns } from 'utils/validate-util';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
@@ -175,7 +176,7 @@ const OrderDrawer = ({
       );
       setValue('orderId', orderDetail?.id);
       setValue('eventLocation', orderDetail.location || '');
-      setValue('paidBy', 'ABA Bank' || '');
+      setValue('paidBy', 'ABA' || '');
       setValue('bookingDate', new Date(orderDetail.bookingDate) || null);
       setValue('eventDate', new Date(orderDetail.date) || null);
       setValue('deposit', orderDetail.deposit || '');
@@ -268,6 +269,12 @@ const OrderDrawer = ({
         direction='row'
         justifyContent='space-between'
         alignItems='center'
+        position='sticky'
+        top={0}
+        sx={{
+          backgroundColor: '#fff',
+          zIndex: theme.zIndex.drawer + 1,
+        }}
       >
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
           {orderDetail ? 'Update Order' : 'New Order'}
@@ -763,7 +770,15 @@ const OrderDrawer = ({
             </>
           )}
 
-          <Stack height={200} p={3} pt={10} position='relative'>
+          <Stack
+            height={50}
+            px={3}
+            mt={10}
+            mb={3}
+            spacing={3}
+            position='relative'
+            direction='row'
+          >
             <Button
               type='submit'
               variant='contained'
@@ -774,15 +789,25 @@ const OrderDrawer = ({
                 fontSize: 18,
                 fontWeight: 'bold',
                 p: 1.5,
-                position: 'absolute',
-                bottom: theme.spacing(3),
-                right: theme.spacing(3),
-                left: theme.spacing(3),
                 borderRadius: '50vh',
+                flexGrow: 1,
               }}
             >
               Save
             </Button>
+            {orderDetail && (
+              <IconButton
+                sx={{
+                  aspectRatio: '1/1',
+                  width: '50px',
+                  height: '100%',
+                  background: (theme) => theme.palette.error.main,
+                  color: '#fff',
+                }}
+              >
+                <Trash />
+              </IconButton>
+            )}
           </Stack>
         </form>
       </FormProvider>

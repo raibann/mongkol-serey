@@ -171,7 +171,7 @@ const Orders = () => {
   });
   const { run: searchOrderList } = useRequest(fetchOrderList, {
     manual: true,
-    debounceInterval: 300,
+    debounceInterval: 500,
   });
 
   // useEffects
@@ -304,7 +304,7 @@ const Orders = () => {
             </Stack>
           ) : orderList && orderList.data && orderList.data.length > 0 ? (
             <>
-              <Table sx={{ minWidth: 935 }}>
+              <Table sx={{ minWidth: 1050 }}>
                 <OrderTableHead />
                 <TableBody>
                   <OrderTableBody

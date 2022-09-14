@@ -38,7 +38,7 @@ const OrderTableBody = ({
           <TableCell>
             <Stack direction={'column'}>
               <Typography variant='subtitle2' fontWeight={'light'}>
-                {item.customer?.customer_name}
+                {item.customer?.customer_name || 'No Name'}
               </Typography>
               {(!!item.customer?.telegram_name && (
                 <Stack direction={'row'} alignItems='center' spacing={1}>
@@ -56,6 +56,9 @@ const OrderTableBody = ({
                     </Typography>
                   </Stack>
                 ))}
+              {!item.customer && (
+                <Typography color='error'>No Customer</Typography>
+              )}
             </Stack>
           </TableCell>
           <TableCell width={200}>
@@ -69,7 +72,11 @@ const OrderTableBody = ({
           <TableCell sx={{ maxWidth: 300 }}>
             <Typography noWrap>{item.location}</Typography>
           </TableCell>
-          <TableCell>{item.quantity || 0}តុ</TableCell>
+          <TableCell>
+            {item.quantity || 0}តុ{' '}
+            <span style={{ color: theme.palette.info.main }}>|</span>{' '}
+            {item.type}
+          </TableCell>
           <TableCell>
             <Stack direction={'row'} spacing={2} alignItems='center'>
               <Chip
@@ -132,8 +139,8 @@ export const OrderTableHead = () => {
         <TableCell>CUSTOMER</TableCell>
         <TableCell>DATE</TableCell>
         <TableCell width={200}>LOCATION</TableCell>
-        <TableCell>QUANTITY</TableCell>
-        <TableCell>DEPOSIT</TableCell>
+        <TableCell>QTY | TYPE</TableCell>
+        <TableCell align='center'>DEPOSIT</TableCell>
         <TableCell width={140} align='center'>
           ACTIONS
         </TableCell>
