@@ -304,7 +304,7 @@ const Orders = () => {
             </Stack>
           ) : orderList && orderList.data && orderList.data.length > 0 ? (
             <>
-              <Table sx={{ minWidth: 1050 }}>
+              <Table sx={{ minWidth: 1000 }}>
                 <OrderTableHead />
                 <TableBody>
                   <OrderTableBody
@@ -321,14 +321,16 @@ const Orders = () => {
               direction={'column'}
               alignItems={'center'}
               justifyContent='center'
+              spacing={1}
               sx={{ height: '100%' }}
             >
-              <BoxRemove size='80' color={theme.palette.primary.main} />
-              <Typography variant='h6'>No data</Typography>
+              <BoxRemove size='80' color={theme.palette.error.main} />
+              <Typography variant='h6' color='error'>
+                No Order...
+              </Typography>
             </Stack>
           )}
         </TableContainer>
-        {/* print invoice */}
         <Box sx={{ display: 'none' }}>
           <BookingInvoice
             ref={bookingInvoiceRef}

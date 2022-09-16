@@ -17,7 +17,7 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction='up' ref={ref} {...props} unmountOnExit />;
 });
 const ResponsiveDialog = (props: IErrorDialog) => {
-  const { open, onCloseDialog, children, size } = props;
+  const { open, onCloseDialog, children, size, ...rest } = props;
   const { isMdDown } = useResponsive();
 
   return (
@@ -31,6 +31,7 @@ const ResponsiveDialog = (props: IErrorDialog) => {
         sx: { height: ['100%', '100%', size === 'sm' ? '50vh' : '90vh'] },
       }}
       fullScreen={isMdDown}
+      {...rest}
     >
       {children}
     </Dialog>

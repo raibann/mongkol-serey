@@ -12,7 +12,7 @@ import ReactToPrint from 'react-to-print';
 import theme from 'theme/theme';
 import { FaFacebookSquare, FaTelegram } from 'react-icons/fa';
 import { CusIconButton } from 'components/CusIconButton';
-import { Edit, Printer } from 'iconsax-react';
+import { Edit, MoneySend, Printer } from 'iconsax-react';
 import { pageStyle } from 'utils/print-util';
 import { paidByColor } from 'utils/expense-util';
 
@@ -21,11 +21,13 @@ const OrderTableBody = ({
   componentRef,
   enablePrint,
   onEditClick,
+  onAddExpenseClick,
 }: {
   data: IOrder.Order[] | undefined;
-  componentRef: React.MutableRefObject<null>;
+  componentRef?: React.MutableRefObject<null>;
   enablePrint?: boolean;
   onEditClick?: (i: number) => void;
+  onAddExpenseClick?: (i: number) => void;
 }) => {
   return (
     <>
@@ -61,22 +63,19 @@ const OrderTableBody = ({
               )}
             </Stack>
           </TableCell>
-          <TableCell width={200}>
+          <TableCell>
             <Typography variant='subtitle2' fontWeight={'light'}>
               <b>Event:</b> {moment(item.date).format('DD-MM-YYYY')}
             </Typography>
             <Typography variant='subtitle2' fontWeight={'light'}>
-              <b>Booked:</b> {moment(item.bookingDate).format('DD-MM-YYYY')}
+              <b>Books:</b> {moment(item.bookingDate).format('DD-MM-YYYY')}
             </Typography>
           </TableCell>
-          <TableCell sx={{ maxWidth: 300 }}>
+          <TableCell sx={{ maxWidth: 200 }}>
             <Typography noWrap>{item.location}</Typography>
           </TableCell>
-          <TableCell>
-            {item.quantity || 0}តុ{' '}
-            <span style={{ color: theme.palette.info.main }}>|</span>{' '}
-            {item.type}
-          </TableCell>
+          <TableCell>{item.quantity || 0}តុ </TableCell>
+          <TableCell>{item.type}</TableCell>
           <TableCell>
             <Stack direction={'row'} spacing={2} alignItems='center'>
               <Chip
@@ -103,7 +102,16 @@ const OrderTableBody = ({
                 <Edit size={18} />
               </CusIconButton>
             )}
-            {enablePrint && (
+            {onAddExpenseClick && (
+              <CusIconButton
+                onClick={() => onAddExpenseClick(i)}
+                color='info'
+                sx={{ p: 0.5, mx: 0.5 }}
+              >
+                <MoneySend size={18} />
+              </CusIconButton>
+            )}
+            {enablePrint && componentRef?.current && (
               <ReactToPrint
                 pageStyle={pageStyle}
                 documentTitle='final invoice'
@@ -122,7 +130,11 @@ const OrderTableBody = ({
   );
 };
 
-export const OrderTableHead = () => {
+export const OrderTableHead = ({
+  showAction = true,
+}: {
+  showAction?: boolean;
+}) => {
   return (
     <TableHead sx={{ position: 'sticky', top: 0, zIndex: theme.zIndex.appBar }}>
       <TableRow
@@ -137,12 +149,13 @@ export const OrderTableHead = () => {
       >
         <TableCell>ID</TableCell>
         <TableCell>CUSTOMER</TableCell>
-        <TableCell>DATE</TableCell>
-        <TableCell width={200}>LOCATION</TableCell>
-        <TableCell>QTY | TYPE</TableCell>
+        <TableCell width={200}>DATE</TableCell>
+        <TableCell>LOCATION</TableCell>
+        <TableCell>QTY</TableCell>
+        <TableCell>TYPE</TableCell>
         <TableCell align='center'>DEPOSIT</TableCell>
-        <TableCell width={140} align='center'>
-          ACTIONS
+        <TableCell width={showAction ? 140 : 'auto'} align='center'>
+          {showAction && 'ACTIONS'}
         </TableCell>
       </TableRow>
     </TableHead>

@@ -273,7 +273,7 @@ const OrderDrawer = ({
         top={0}
         sx={{
           backgroundColor: '#fff',
-          zIndex: theme.zIndex.drawer + 1,
+          zIndex: theme.zIndex.drawer,
         }}
       >
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
@@ -775,7 +775,7 @@ const OrderDrawer = ({
             px={3}
             mt={10}
             mb={3}
-            spacing={3}
+            spacing={2}
             position='relative'
             direction='row'
           >
@@ -797,12 +797,16 @@ const OrderDrawer = ({
             </Button>
             {orderDetail && (
               <IconButton
+                color='inherit'
                 sx={{
                   aspectRatio: '1/1',
                   width: '50px',
                   height: '100%',
-                  background: (theme) => theme.palette.error.main,
                   color: '#fff',
+                  background: (theme) => theme.palette.error.main,
+                  '&:hover': {
+                    background: (theme) => theme.palette.error.light,
+                  },
                 }}
               >
                 <Trash />
