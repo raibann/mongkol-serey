@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import { Container } from '@mui/system';
 import { CusLoading } from 'components/CusLoading';
-import React from 'react';
 import {
   FaFacebookSquare,
   FaTelegram,
@@ -47,7 +46,7 @@ export default function CustomerDetails({
       ) : (
         <Container sx={{ mb: 4 }}>
           <Grid container>
-            <Grid item xs={12} sx={{}}>
+            <Grid item xs={12}>
               <Stack alignItems={'center'} spacing={2}>
                 <Avatar
                   src='/images/girlavatar.png'
@@ -135,7 +134,9 @@ export default function CustomerDetails({
                 <Grid container columnSpacing={2}>
                   <Grid
                     item
-                    xs={4}
+                    xs={12}
+                    sm={2}
+                    md={3}
                     sx={{
                       background: (theme) => theme.palette.primary.main,
                     }}
@@ -146,30 +147,32 @@ export default function CustomerDetails({
                       justifyContent={'center'}
                       sx={{ height: '100%', width: '100%' }}
                     >
-                      <Typography variant='h6'>
+                      <Typography variant='subtitle1'>
                         {formatInvoiceId(data.id.toString())}
                       </Typography>
                     </Stack>
                   </Grid>
-                  <Grid item xs={4} sx={{ py: 1 }}>
-                    <Stack direction={'column'} spacing={1}>
-                      <Typography variant='h6'>{data.type}</Typography>
+                  <Grid item xs={6} sm={5} md={4} sx={{ py: 1 }}>
+                    <Stack direction={'column'} spacing={1} sx={{ ml: 2 }}>
+                      <Typography variant='subtitle1' fontWeight={'Bold'}>
+                        {data.type}
+                      </Typography>
                       <Stack direction={'row'} alignItems='center' spacing={1}>
                         <Location
-                          size='24'
+                          size='16'
                           color={theme.palette.info.main}
                           variant='Bold'
                         />
-                        <Typography variant='subtitle1'>
+                        <Typography variant='subtitle2'>
                           {data.location}
                         </Typography>
                       </Stack>
                     </Stack>
                   </Grid>
-                  <Grid item xs={4} sx={{ py: 1 }}>
-                    <Stack direction={'column'} spacing={1}>
-                      <Typography variant='subtitle1'>{data.date}</Typography>
-                      <Typography variant='subtitle1'>
+                  <Grid item xs={6} sm={5} md={4} sx={{ py: 1 }}>
+                    <Stack direction={'column'} spacing={1} sx={{ ml: 2 }}>
+                      <Typography variant='subtitle2'>{data.date}</Typography>
+                      <Typography variant='subtitle2'>
                         {data.quantity} តុ
                       </Typography>
                     </Stack>

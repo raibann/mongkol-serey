@@ -21,7 +21,7 @@ import theme from 'theme/theme';
 import CustCard from './CustCard';
 import CustomerDetails from './CustomerDetails';
 import CustomerForm, { CustomerInput } from './CustForm/CustomerForm';
-import { useRequest } from 'ahooks';
+import { useDebounce, useRequest } from 'ahooks';
 import CUSTOMER_API from 'api/customer';
 import { CusLoading } from 'components/CusLoading';
 
@@ -30,8 +30,9 @@ export default function Customers() {
     ''
   );
   const [page, setPage] = useState(1);
+  const [searchData, setSearchData] = useState('');
   const methods = useForm<CustomerInput>();
-  const { handleSubmit } = methods;
+  const { handleSubmit, setValue } = methods;
   const { isSmDown } = useResponsive();
   // handle add and edit stock
   const handleOpenDrawer = (obj: 'Add' | 'Edit' | 'Details' | '') => {
@@ -44,6 +45,7 @@ export default function Customers() {
     data: custList,
     loading: isLoadingCustList,
     run: fetchCustList,
+    refresh: refreshCustList,
   } = useRequest(CUSTOMER_API.getCustomerList, {
     manual: true,
   });
@@ -51,16 +53,45 @@ export default function Customers() {
     data: custDetails,
     loading: isLoadingCustDetails,
     run: fetchCustDetails,
-  } = useRequest(CUSTOMER_API.getCustomerDetails, { manual: true });
+  } = useRequest(CUSTOMER_API.getCustomerDetails, {
+    manual: true,
+    onSuccess: (data) => {
+      if (openDrawer === 'Edit') {
+        setValue('customerId', data.customer.id);
+        setValue('facebook', `${data.customer.facebook_name}`);
+        setValue('telegram', `${data.customer.telegram_name}`);
+        setValue('customerName', `${data.customer.customer_name}`);
+        setValue('contact', `${data.customer.contact_number}`);
+        setValue('houseNo', `${data.customer.house}`);
+        setValue('stNo', `${data.customer.street}`);
+        setValue('province', `${data.customer.province}`);
+        setValue('district', `${data.customer.district}`);
+        setValue('commune', `${data.customer.commune}`);
+        setValue('location', `${data.customer.location}`);
+      }
+    },
+  });
+  const debouncedValue = useDebounce(searchData, { wait: 1000 });
+  // actions customer
   const newCustomerRequest = useRequest(CUSTOMER_API.postNewCustomer, {
     manual: true,
+    onSuccess: () => {
+      setOpenDrawer('');
+      refreshCustList();
+    },
   });
-  useEffect(() => {
-    fetchCustList({ page: page - 1 });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  const deleteCustomerReq = useRequest(CUSTOMER_API.deleteCustomer, {
+    manual: true,
+    onSuccess: () => {
+      refreshCustList();
+    },
+  });
 
-  // console.log('page', page);
+  // fetch page
+  useEffect(() => {
+    fetchCustList({ page: page - 1, search: debouncedValue });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, debouncedValue]);
 
   const handleChangePage = (
     event: React.ChangeEvent<unknown>,
@@ -68,7 +99,6 @@ export default function Customers() {
   ) => {
     setPage(value);
   };
-
   return (
     <>
       <PageHeader pageTitle={'Customers'}>
@@ -96,7 +126,7 @@ export default function Customers() {
           <CusTextField
             placeholder='Search...'
             size='small'
-            // fullWidth={isSmDown}
+            onChange={(e) => setSearchData(e.currentTarget.value)}
             sx={{ width: ['100%', '80%', 'auto'] }}
             InputProps={{
               endAdornment: (
@@ -114,7 +144,7 @@ export default function Customers() {
           height: [
             'calc(100vh - 130px)',
             'calc(100vh - 130px)',
-            'calc(100vh - 74px)',
+            'calc(100vh - 85px)',
           ],
           position: 'relative',
           overflow: 'hidden',
@@ -125,11 +155,7 @@ export default function Customers() {
             alignItems={'center'}
             justifyContent={'center'}
             sx={{
-              height: [
-                'calc( 100vh - 130px)',
-                'calc( 100vh - 130px)',
-                'calc( 100vh - 74px)',
-              ],
+              height: ['calc( 100vh - 130px)', 'calc( 100vh - 130px)', '100%'],
             }}
           >
             <CusLoading />
@@ -158,6 +184,7 @@ export default function Customers() {
                   handleOpenDrawer,
                   custList,
                   fetchCustDetails,
+                  deleteCustomerReq,
                 }}
               />
             </Grid>
@@ -172,9 +199,14 @@ export default function Customers() {
             bottom: 0,
             left: 0,
             bgcolor: (theme) => theme.palette.common.white,
+            py: 2,
           }}
         >
-          <Pagination count={10} page={page} onChange={handleChangePage} />
+          <Pagination
+            count={custList?.totalPage}
+            page={page}
+            onChange={handleChangePage}
+          />
         </Stack>
       </Container>
       <ResponsiveDrawer
@@ -206,121 +238,114 @@ export default function Customers() {
             color='error'
             onClick={() => {
               handleOpenDrawer('');
+              methods.clearErrors();
+              setValue('facebook', '');
+              setValue('telegram', '');
+              setValue('customerName', '');
+              setValue('contact', '');
+              setValue('houseNo', '');
+              setValue('stNo', '');
+              setValue('province', '');
+              setValue('district', '');
+              setValue('commune', '');
+              setValue('location', '');
             }}
           >
             <MdClose />
           </CusIconButton>
         </Stack>
-        {openDrawer === 'Add' && (
-          <FormProvider {...methods}>
-            <form
-              onSubmit={handleSubmit((data) => {
-                console.log(data);
-                newCustomerRequest.run({
-                  cusRequest: {
-                    facebook_name: data.facebook,
-                    telegram_name: data.telegram,
-                    customer_name: data.customerName,
-                    house: data.houseNo,
-                    commune:
-                      (data.commune as Commune.ICommune)?.full_name_km ||
-                      data.commune.toString(),
-                    contact_number: data.contact,
-                    district:
-                      (data.district as District.IDistrict)?.full_name_km ||
-                      data.district.toString(),
-                    location: data.location,
-                    province:
-                      (data.province as Province.IProvince)?.full_name_km ||
-                      data.province.toString(),
-                    street: data.stNo,
-                  },
-                });
-              })}
+        {openDrawer !== '' &&
+          openDrawer !== 'Details' &&
+          (isLoadingCustDetails ? (
+            <Stack
+              alignItems={'center'}
+              sx={{ height: 'calc(100vh - 88px)' }}
+              justifyContent='center'
             >
-              <CustomerForm />
-              <Stack direction={'row'} spacing={4} sx={{ px: 3, py: 4, mt: 4 }}>
-                <Button
-                  onClick={() => {
-                    handleOpenDrawer('');
-                  }}
-                  variant='contained'
-                  fullWidth
-                  sx={{
-                    borderRadius: 3,
-                    p: 2,
-                    textTransform: 'capitalize',
-                    boxShadow: 1,
-                    color: (theme) => theme.palette.common.white,
-                    background: (theme) => theme.palette.error.main,
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type='submit'
-                  variant='contained'
-                  fullWidth
-                  sx={{
-                    borderRadius: 3,
-                    p: 2,
-                    textTransform: 'capitalize',
-                    boxShadow: 1,
-                    color: (theme) => theme.palette.common.white,
-                  }}
-                >
-                  Save
-                </Button>
-              </Stack>
-            </form>
-          </FormProvider>
-        )}
-        {openDrawer === 'Edit' && (
-          <FormProvider {...methods}>
-            <form>
-              <CustomerForm />
-              <Stack direction={'row'} spacing={4} sx={{ px: 3, py: 6 }}>
-                <Button
-                  onClick={() => {
-                    handleOpenDrawer('');
-                  }}
-                  variant='contained'
-                  fullWidth
-                  sx={{
-                    borderRadius: 3,
-                    p: 2,
-                    textTransform: 'capitalize',
-                    boxShadow: 1,
-                    color: (theme) => theme.palette.common.white,
-                    background: (theme) => theme.palette.error.main,
-                    '&:hover': {
+              <CusLoading />
+            </Stack>
+          ) : (
+            <FormProvider {...methods}>
+              <form
+                onSubmit={handleSubmit((data) => {
+                  console.log(data);
+                  newCustomerRequest.run({
+                    cusRequest: {
+                      id: data.customerId || undefined,
+                      facebook_name: data.facebook,
+                      telegram_name: data.telegram,
+                      customer_name: data.customerName,
+                      house: data.houseNo,
+                      commune:
+                        (data.commune as Commune.ICommune)?.full_name_km ||
+                        data.commune.toString(),
+                      contact_number: data.contact,
+                      district:
+                        (data.district as District.IDistrict)?.full_name_km ||
+                        data.district.toString(),
+                      location: data.location,
+                      province:
+                        (data.province as Province.IProvince)?.full_name_km ||
+                        data.province.toString(),
+                      street: data.stNo,
+                    },
+                  });
+                })}
+              >
+                <CustomerForm />
+                <Stack direction={'row'} spacing={4} sx={{ px: 3, py: 6 }}>
+                  <Button
+                    onClick={() => {
+                      handleOpenDrawer('');
+                      methods.clearErrors();
+                      setValue('facebook', '');
+                      setValue('telegram', '');
+                      setValue('customerName', '');
+                      setValue('contact', '');
+                      setValue('houseNo', '');
+                      setValue('stNo', '');
+                      setValue('province', '');
+                      setValue('district', '');
+                      setValue('commune', '');
+                      setValue('location', '');
+                    }}
+                    variant='contained'
+                    fullWidth
+                    sx={{
+                      borderRadius: 3,
+                      p: 2,
+                      textTransform: 'capitalize',
+                      boxShadow: 1,
+                      color: (theme) => theme.palette.common.white,
                       background: (theme) => theme.palette.error.main,
-                    },
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type='submit'
-                  variant='contained'
-                  fullWidth
-                  sx={{
-                    borderRadius: 3,
-                    p: 2,
-                    textTransform: 'capitalize',
-                    boxShadow: 1,
-                    color: (theme) => theme.palette.common.white,
-                    '&:hover': {
-                      background: (theme) => theme.palette.primary.main,
-                    },
-                  }}
-                >
-                  Save
-                </Button>
-              </Stack>
-            </form>
-          </FormProvider>
-        )}
+                      '&:hover': {
+                        background: (theme) => theme.palette.error.main,
+                      },
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type='submit'
+                    variant='contained'
+                    fullWidth
+                    sx={{
+                      borderRadius: 3,
+                      p: 2,
+                      textTransform: 'capitalize',
+                      boxShadow: 1,
+                      color: (theme) => theme.palette.common.white,
+                      '&:hover': {
+                        background: (theme) => theme.palette.primary.main,
+                      },
+                    }}
+                  >
+                    Save
+                  </Button>
+                </Stack>
+              </form>
+            </FormProvider>
+          ))}
         {openDrawer === 'Details' && (
           <CustomerDetails {...{ custDetails, isLoadingCustDetails }} />
         )}

@@ -1,28 +1,45 @@
 import { Paper, Stack, Typography, Avatar, Grid } from '@mui/material';
+import { Result } from 'ahooks/lib/useRequest/src/types';
 import { CusIconButton } from 'components/CusIconButton';
-import useRouter from 'hook/useRouter';
-import { Add, Edit, InfoCircle } from 'iconsax-react';
+import { Edit, InfoCircle, Trash } from 'iconsax-react';
+import THEME_UTIL from 'utils/theme-util';
 const CustCard = ({
   handleOpenDrawer,
   custList,
   fetchCustDetails,
+  deleteCustomerReq,
 }: {
   handleOpenDrawer: (obj: 'Add' | 'Edit' | 'Details' | '') => void;
   custList: ICustomer.ICustomerRespone | undefined;
   fetchCustDetails: (params_0: { id: number }) => void;
+  deleteCustomerReq: Result<
+    ICustomer.ICustomerDetails,
+    [
+      {
+        id: number;
+      }
+    ]
+  >;
 }) => {
-  const router = useRouter();
-
   return (
     <>
       {custList?.data.map((data, i) => (
         <Grid item xs={6} md={3} key={i}>
-          <Paper sx={{ py: 2 }}>
+          <Paper sx={{ p: 2 }}>
             <Stack direction={'column'} alignItems='center' spacing={1.5}>
               <Avatar
-                src='/images/girlavatar.png'
-                sx={{ width: 100, height: 'auto' }}
-              />
+                // src='/images/girlavatar.png'
+                sx={{
+                  width: 72,
+                  height: 72,
+                  background: THEME_UTIL.goldGradientMain,
+                  color: (theme) => theme.palette.secondary.main,
+                  textTransform: 'uppercase',
+                  fontSize: 24,
+                }}
+              >
+                {data.customer_name.charAt(0)}
+              </Avatar>
               <Stack alignItems={'center'}>
                 <Typography
                   variant='h6'
@@ -36,28 +53,47 @@ const CustCard = ({
                 >
                   {data.customer_name}
                 </Typography>
+                <Typography
+                  variant='subtitle1'
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    width: 150,
+                    textAlign: 'center',
+                  }}
+                >
+                  {data.contact_number}
+                </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
                 <CusIconButton
-                  color='primary'
-                  onClick={() => router.navigate('/orders')}
-                >
-                  <Add variant='Outline' />
-                </CusIconButton>
-                <CusIconButton
                   color='info'
-                  onClick={() => handleOpenDrawer('Edit')}
+                  onClick={() => {
+                    handleOpenDrawer('Edit');
+                    fetchCustDetails({ id: data.id || 0 });
+                  }}
                 >
                   <Edit variant='Outline' />
                 </CusIconButton>
                 <CusIconButton
                   color='success'
-                  onClick={(e) => {
+                  onClick={() => {
                     handleOpenDrawer('Details');
                     fetchCustDetails({ id: data.id || 0 });
                   }}
                 >
                   <InfoCircle variant='Outline' />
+                </CusIconButton>
+                <CusIconButton
+                  color='error'
+                  onClick={() => {
+                    deleteCustomerReq.run({
+                      id: data.id || 0,
+                    });
+                  }}
+                >
+                  <Trash variant='Outline' />
                 </CusIconButton>
               </Stack>
             </Stack>

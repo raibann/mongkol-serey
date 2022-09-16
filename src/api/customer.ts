@@ -16,7 +16,7 @@ const CUSTOMER_API = {
       {
         params: {
           page: page,
-          size: 10,
+          size: 12,
           search: search,
         },
       }
@@ -37,6 +37,12 @@ const CUSTOMER_API = {
     const res: ICustomer.ICustomerRequest = await HttpUtil.post(
       ROUTE_API.addCustomer,
       cusRequest
+    );
+    return res;
+  },
+  deleteCustomer: async ({ id }: { id: number }) => {
+    const res: ICustomer.ICustomerDetails = await HttpUtil.delete(
+      ROUTE_API.deletCustomer.replace(':id', `${id}`)
     );
     return res;
   },
