@@ -1,6 +1,11 @@
 import {
+  Avatar,
+  Badge,
   Button,
   List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
   ListSubheader,
   Menu,
   Popover,
@@ -16,7 +21,6 @@ import PageHeader from 'components/PageHeader';
 import { CusIconButton } from 'components/CusIconButton';
 import { Calendar2 } from 'iconsax-react';
 import { Notification } from 'iconsax-react';
-import AnniversaryItem from './AnniversaryItem';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 // import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
@@ -27,6 +31,9 @@ import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import useResponsive from 'hook/useResponsive';
 import { Controller, useForm } from 'react-hook-form';
+import { useRequest } from 'ahooks';
+import REMINDER_API from 'api/reminder';
+import THEME_UTIL from 'utils/theme-util';
 
 interface IDateRange {
   startDate: string;
@@ -52,6 +59,8 @@ const DashboardHeader = ({
     React.useState<null | HTMLElement>(null);
 
   useEffect(() => {
+    let monday = moment().weekday(1);
+    let friday = moment().weekday(5);
     switch (ToggleValue) {
       case 'month':
         return setDateRange({
@@ -62,6 +71,11 @@ const DashboardHeader = ({
         return setDateRange({
           startDate: moment().startOf('year').format('YYYY-MM-DD'),
           endDate: moment().endOf('year').format('YYYY-MM-DD'),
+        });
+      case 'week':
+        return setDateRange({
+          startDate: moment(monday).format('YYYY-MM-DD'),
+          endDate: moment(friday).format('YYYY-MM-DD'),
         });
       default:
         return;
@@ -76,8 +90,8 @@ const DashboardHeader = ({
       startDate: moment(data.startDate).format('YYYY-MM-DD'),
       endDate: moment(data.endDate).format('YYYY-MM-DD'),
     });
-    // console.log('start date', moment(data.startDate).format('YYYY-MM-DD'));
-    // console.log('end date', moment(data.endDate).format('YYYY-MM-DD'));
+    console.log('start date', moment(data.startDate).format('YYYY-MM-DD'));
+    console.log('end date', moment(data.endDate).format('YYYY-MM-DD'));
   };
   // notification
   const handleClickNoti = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -97,11 +111,9 @@ const DashboardHeader = ({
       setAnchorElDatePicker(null);
     }
   };
-  const Anniversary = Array(6).fill({
-    name: 'Meas Saominea',
-    lastOrder: '30-02-2002',
-    daysLeft: 0,
-  });
+  // fetch notifications
+  const reminderList = useRequest(REMINDER_API.getReminder, { manual: false });
+  const reminderData = reminderList.data;
   const { isSmDown } = useResponsive();
   return (
     <>
@@ -153,19 +165,37 @@ const DashboardHeader = ({
             <Calendar2 size='24' variant='Outline' />
           </CusIconButton>
 
-          <CusIconButton
-            color='primary'
-            onClick={handleClickNoti}
-            sx={{
-              display: {
-                xs: 'none',
-                md: 'block',
-              },
-              height: 40,
-            }}
-          >
-            <Notification size='24' variant='Bold' />
-          </CusIconButton>
+          {reminderData && reminderData?.data.length > 0 ? (
+            <Badge color='error' badgeContent=' ' variant='dot'>
+              <CusIconButton
+                color='primary'
+                onClick={handleClickNoti}
+                sx={{
+                  display: {
+                    xs: 'none',
+                    md: 'block',
+                  },
+                  height: 40,
+                }}
+              >
+                <Notification size='24' variant='Bold' />
+              </CusIconButton>
+            </Badge>
+          ) : (
+            <CusIconButton
+              color='primary'
+              onClick={handleClickNoti}
+              sx={{
+                display: {
+                  xs: 'none',
+                  md: 'block',
+                },
+                height: 40,
+              }}
+            >
+              <Notification size='24' variant='Bold' />
+            </CusIconButton>
+          )}
         </Stack>
       </PageHeader>
       <Menu
@@ -200,14 +230,49 @@ const DashboardHeader = ({
               Anniverysary
             </Typography>
           </ListSubheader>
-          {Anniversary.map((data, i) => (
-            <AnniversaryItem
-              key={i}
-              daysLeft={data.daysLeft}
-              lastOrder={data.lastOrder}
-              name={data.name}
-            />
-          ))}
+          {reminderData?.data.map(
+            (data) =>
+              moment().diff(data.date, 'years') === 1 && (
+                <ListItem
+                  key={data.id}
+                  sx={{
+                    px: 0,
+                    pt: 0,
+                  }}
+                  secondaryAction={
+                    <Typography
+                      fontSize={14}
+                      color={theme.palette.success.main}
+                      fontWeight='bold'
+                    >
+                      Today
+                    </Typography>
+                  }
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      sx={{
+                        background: THEME_UTIL.goldGradientMain,
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {data.customer.customer_name
+                        .split(' ')[0]
+                        .charAt(0)
+                        .toUpperCase() +
+                        data.customer.customer_name
+                          .split(' ')[1]
+                          .charAt(0)
+                          .toUpperCase()}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={`${data.id}. ${data.type}`}
+                    secondary={moment(data.date).format('DD-MM-YYYY')}
+                  />
+                </ListItem>
+              )
+          )}
         </List>
       </Menu>
       {/* pop over */}
@@ -232,11 +297,7 @@ const DashboardHeader = ({
         >
           <Stack sx={{ p: 2, height: '100%' }} spacing={2}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Stack
-                direction={isSmDown ? 'column' : 'row'}
-                spacing={2}
-                // alignItems='center'
-              >
+              <Stack direction={isSmDown ? 'column' : 'row'} spacing={2}>
                 <Controller
                   control={control}
                   name='startDate'

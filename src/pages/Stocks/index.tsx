@@ -12,7 +12,7 @@ import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import { Add, SearchNormal1 } from 'iconsax-react';
+import { BoxAdd, SearchNormal1 } from 'iconsax-react';
 import { useState } from 'react';
 import theme from 'theme/theme';
 import { stockData } from 'utils/stock-util';
@@ -53,7 +53,7 @@ const Stocks = () => {
         >
           <Button
             variant='contained'
-            startIcon={<Add />}
+            startIcon={<BoxAdd />}
             sx={{
               color: theme.palette.common.white,
               boxShadow: theme.shadows[1],
