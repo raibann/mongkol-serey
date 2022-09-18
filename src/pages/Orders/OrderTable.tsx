@@ -40,7 +40,7 @@ const OrderTableBody = ({
           <TableCell>
             <Stack direction={'column'}>
               <Typography variant='subtitle2' fontWeight={'light'}>
-                {item.customer?.customer_name || 'No Name'}
+                {item.customer?.customer_name || 'No Customer'}
               </Typography>
               {(!!item.customer?.telegram_name && (
                 <Stack direction={'row'} alignItems='center' spacing={1}>
@@ -58,9 +58,6 @@ const OrderTableBody = ({
                     </Typography>
                   </Stack>
                 ))}
-              {!item.customer && (
-                <Typography color='error'>No Customer</Typography>
-              )}
             </Stack>
           </TableCell>
           <TableCell>
@@ -79,11 +76,12 @@ const OrderTableBody = ({
           <TableCell>
             <Stack direction={'row'} spacing={2} alignItems='center'>
               <Chip
-                label='ABA'
+                label={item.paidBy || 'Cash'}
                 size='small'
                 sx={{
                   backgroundColor:
-                    (paidByColor as any)['ABA'] || theme.palette.info.main,
+                    (paidByColor as any)[item.paidBy || 'Cash'] ||
+                    theme.palette.info.main,
                   color: '#fff',
                 }}
               />
@@ -153,7 +151,7 @@ export const OrderTableHead = ({
         <TableCell>LOCATION</TableCell>
         <TableCell>QTY</TableCell>
         <TableCell>TYPE</TableCell>
-        <TableCell align='center'>DEPOSIT</TableCell>
+        <TableCell>DEPOSIT</TableCell>
         <TableCell width={showAction ? 140 : 'auto'} align='center'>
           {showAction && 'ACTIONS'}
         </TableCell>

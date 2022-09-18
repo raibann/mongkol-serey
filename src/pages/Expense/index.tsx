@@ -28,6 +28,7 @@ export default function Expense() {
   const expenseListReq = useRequest(EXPENSE_API.getExpense, {
     manual: true,
   });
+  const expenseSearchReq = useRequest(expenseListReq.run, { manual: true });
 
   // Variable
   const expenseList = expenseListReq.data?.data;
@@ -35,18 +36,27 @@ export default function Expense() {
   // State
   const [ToggleValue, setToggleValue] = useState('pending');
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
   const [openDialogs, setOpenDialogs] = useState<IOrder.Order>();
   const { isSmDown } = useResponsive();
 
   // useEffects
   useEffect(() => {
+    if (search !== '') {
+      expenseSearchReq.run({
+        page: page - 1,
+        status: ToggleValue,
+        search: search,
+      });
+    }
+
     expenseListReq.run({
       page: page - 1,
       status: ToggleValue,
       search: '',
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ToggleValue, page]);
+  }, [ToggleValue, page, search]);
 
   // Methods
   const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
@@ -100,6 +110,8 @@ export default function Expense() {
             placeholder='Search...'
             size='small'
             fullWidth={isSmDown}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             InputProps={{
               endAdornment: (
                 <InputAdornment position='end'>

@@ -113,6 +113,7 @@ const OrderDrawer = ({
         location: data.eventLocation,
         quantity: +data.quantity,
         type: data.eventType,
+        paidBy: data.paidBy,
         eventPackages: data.listMenu?.map((menu) => {
           return {
             id: menu.id,
@@ -126,11 +127,11 @@ const OrderDrawer = ({
                   id: item.id,
                   title: item.title,
                 };
-              }) || undefined,
+              }) || [],
           };
         }),
         finalInvoices: !orderDetail
-          ? undefined
+          ? []
           : data.finalInvoice?.map((invoice) => {
               return {
                 id: invoice.id,
@@ -375,14 +376,30 @@ const OrderDrawer = ({
                 rules={{
                   required: { value: true, message: 'Event type is Required' },
                 }}
-                render={({ field, fieldState: { error } }) => {
+                render={({
+                  field: { onChange, ...rest },
+                  fieldState: { error },
+                }) => {
                   return (
                     <LabelTextField label='Event Type'>
-                      <StyledOutlinedTextField
-                        placeholder='Enter Event Type'
-                        error={Boolean(error)}
-                        helperText={error?.message}
-                        {...field}
+                      <Autocomplete
+                        freeSolo
+                        disableClearable
+                        openOnFocus
+                        id='paidby'
+                        {...rest}
+                        onInputChange={(e, value) => {
+                          setValue('eventType', value);
+                        }}
+                        renderInput={(params) => (
+                          <StyledOutlinedTextField
+                            placeholder='Enter Event Type'
+                            error={Boolean(error)}
+                            helperText={error?.message}
+                            {...params}
+                          />
+                        )}
+                        options={['Wedding', 'Birthday', 'Party']}
                       />
                     </LabelTextField>
                   );
@@ -528,6 +545,10 @@ const OrderDrawer = ({
                 defaultValue=''
                 rules={{
                   required: { value: true, message: 'Deposit is Required' },
+                  pattern: {
+                    value: validatePatterns.numberOnly,
+                    message: 'Deposit amount should be number only',
+                  },
                 }}
                 render={({ field, fieldState: { error } }) => {
                   return (

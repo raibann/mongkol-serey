@@ -278,7 +278,7 @@ const Dashboard = () => {
                 >
                   <BoxRemove size='64' color={theme.palette.error.main} />
                   <Typography variant='body1' color='error'>
-                    No data
+                    No upcoming event...
                   </Typography>
                 </Stack>
               )}

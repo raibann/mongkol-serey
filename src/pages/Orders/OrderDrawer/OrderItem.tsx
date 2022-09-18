@@ -11,6 +11,7 @@ import { Trash } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
+import { validatePatterns } from 'utils/validate-util';
 import { IOrderForm } from '.';
 
 interface IMenuItems {
@@ -113,6 +114,10 @@ const OrderItem = ({
             defaultValue=''
             rules={{
               required: { value: true, message: 'Quantity is Required' },
+              pattern: {
+                value: validatePatterns.numberOnly,
+                message: 'Quantity should be number only',
+              },
             }}
             render={({ field, fieldState: { error } }) => {
               return (
@@ -155,6 +160,10 @@ const OrderItem = ({
             defaultValue=''
             rules={{
               required: { value: true, message: 'Price is Required' },
+              pattern: {
+                value: validatePatterns.numberOnly,
+                message: 'Price should be number only',
+              },
             }}
             render={({ field, fieldState: { error } }) => {
               return (

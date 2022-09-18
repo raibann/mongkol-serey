@@ -59,6 +59,7 @@ function ExpenseDialogs({
         orderDetail.id,
         data.expenseRowData?.map((e) => {
           return {
+            id: e?.id || undefined,
             expense_on: e.title || '',
             note: e.other || '',
             paidBy: e.paidBy || '',
@@ -77,14 +78,35 @@ function ExpenseDialogs({
   // useEffects
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
+
+    if (orderDetail?.expenses && orderDetail.expenses.length > 0) {
+      const tmpList = orderDetail.expenses.map((e) => {
+        return {
+          id: e.id,
+          title: e.expense_on,
+          other: e.note,
+          paidBy: e.paidBy,
+          totalPrice: e.price,
+        };
+      });
+      setListExpense(tmpList);
+      setValue('expenseRowData', tmpList);
+    } else {
       setListExpense(listTitle);
+    }
+
+    setTimeout(() => {
       setLoading(false);
-    }, 200);
+    }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Methods
+  const formatInvoiceId = (value: string) => {
+    const pad = '00000';
+    return pad.substring(0, pad.length - value.length) + value;
+  };
+
   const handleAddNewRowDataExpense = () => {
     setListExpense([
       {
@@ -135,7 +157,11 @@ function ExpenseDialogs({
                       <Note size='24' color={theme.palette.primary.main} />
                     </ListItemAvatar>
                     <ListItemText
-                      primary={orderDetail?.id || 'N/A'}
+                      primary={
+                        orderDetail?.id
+                          ? formatInvoiceId(orderDetail.id.toString())
+                          : 'N/A'
+                      }
                       secondary='Invoice ID'
                     />
                   </ListItem>
@@ -147,7 +173,9 @@ function ExpenseDialogs({
                       />
                     </ListItemAvatar>
                     <ListItemText
-                      primary={orderDetail?.customer.customer_name || 'N/A'}
+                      primary={
+                        orderDetail?.customer?.customer_name || 'No Customer'
+                      }
                       secondary='Customer'
                     />
                   </ListItem>
@@ -156,7 +184,10 @@ function ExpenseDialogs({
                       <Call size='24' color={theme.palette.primary.main} />
                     </ListItemAvatar>
                     <ListItemText
-                      primary={orderDetail?.customer.contact_number || 'N/A'}
+                      primary={
+                        orderDetail?.customer?.contact_number ||
+                        'No phone number'
+                      }
                       secondary='Phone Number'
                     />
                   </ListItem>
@@ -189,12 +220,12 @@ function ExpenseDialogs({
                   >
                     <ListItemText
                       primary={`$${
-                        orderDetail?.finalInvoices.reduce(
+                        orderDetail?.finalInvoices?.reduce(
                           (init, val) => init + val.price,
                           0
                         ) || '0'
                       }`}
-                      secondary='Total income'
+                      secondary='Total Income'
                       primaryTypographyProps={{
                         fontSize: 24,
                         fontWeight: 'medium',
@@ -310,8 +341,8 @@ function ExpenseDialogs({
                 {!isSmDown && (
                   <Stack direction={'row'}>
                     <Typography sx={{ flex: 1 }}>Title</Typography>
-                    <Typography sx={{ flex: 1 }}>Total</Typography>
-                    <Typography sx={{ flex: 1 }}>Paid</Typography>
+                    <Typography sx={{ flex: 1 }}>Total Price</Typography>
+                    <Typography sx={{ flex: 1 }}>Paid By</Typography>
                     <Typography sx={{ flex: 1 }}>Other</Typography>
                     <div style={{ width: 40 }} />
                   </Stack>

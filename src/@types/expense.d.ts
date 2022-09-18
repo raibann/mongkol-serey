@@ -8,9 +8,9 @@ declare namespace IExpense {
   }
 
   interface IAddExpenseReq {
+    id?: number;
     expense_on: string;
     paidBy: string;
-    quantity?: number;
     price: number;
     note: string;
   }
