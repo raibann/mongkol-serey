@@ -1,82 +1,145 @@
-import { Paper, Stack, Typography, Avatar, Grid } from '@mui/material';
-import { Facebook, Gift, Call, Send2 } from 'iconsax-react';
+import { Paper, Stack, Typography, Grid } from '@mui/material';
+import { Facebook, Call, Personalcard, CalendarTick } from 'iconsax-react';
+import moment from 'moment';
+import React from 'react';
 import theme from 'theme/theme';
-import { upcomingEvent } from 'utils/reminder-util';
 
-const UpcomingEvent = () => {
+const UpcomingEvent = ({
+  listItem,
+}: {
+  listItem: IReminder.IReminderData | undefined;
+}) => {
   return (
     <>
-      <Grid container rowSpacing={2} columnSpacing={2}>
-        {upcomingEvent.map((data, i) => (
-          <Grid item xs={12} md={3} key={i}>
-            <Paper sx={{ p: 2 }}>
-              <Grid container>
-                <Grid item xs={6}>
-                  <Stack direction={'column'} alignItems='center'>
-                    <Avatar
-                      src='/images/avatar.svg'
-                      variant='square'
-                      sx={{ width: 80, height: 'auto' }}
-                    />
-                    <Typography variant='h6'>{data.customerName}</Typography>
-                    <Stack direction={'column'}>
-                      <Typography
-                        variant='caption'
-                        sx={{ color: (theme) => theme.palette.text.secondary }}
+      <Grid container rowSpacing={2} columnSpacing={4}>
+        {listItem &&
+          listItem.data.map(
+            (item) =>
+              365 - moment().diff(item.date, 'days') !== 0 && (
+                <React.Fragment key={item.id}>
+                  <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                    <Paper sx={{ p: 3 }}>
+                      <Stack
+                        direction={'row'}
+                        justifyContent='center'
+                        spacing={2}
                       >
-                        Ordered: {data.ordered}
-                      </Typography>
+                        <Typography
+                          variant='subtitle1'
+                          textAlign={'center'}
+                          color={theme.palette.secondary.main}
+                          fontWeight={600}
+                        >
+                          Upcoming
+                        </Typography>
+                        <Typography
+                          variant='subtitle1'
+                          textAlign={'center'}
+                          color={theme.palette.error.main}
+                          fontWeight={600}
+                        >
+                          {365 - moment().diff(item.date, 'days')} days
+                        </Typography>
+                      </Stack>
                       <Typography
-                        variant='caption'
-                        sx={{ color: (theme) => theme.palette.text.secondary }}
+                        variant='subtitle2'
+                        gutterBottom
+                        textAlign={'center'}
+                        color={theme.palette.secondary.light}
                       >
-                        Last order: {data.lastOrder}
+                        {moment(item.date).format('YYYY-MM-DD')}
                       </Typography>
-                    </Stack>
-                  </Stack>
-                </Grid>
-                <Grid item xs={6}>
-                  <Stack direction={'row'} spacing={1}>
-                    <Typography variant='subtitle2' fontWeight={'bold'}>
-                      Upcoming
-                    </Typography>
-                    <Typography
-                      variant='subtitle2'
-                      fontWeight={'medium'}
-                      color={'error'}
-                    >
-                      {data.upComing}
-                    </Typography>
-                  </Stack>
-                  <Stack sx={{ px: 1.5, mt: 1 }} spacing={1}>
-                    <Stack direction={'row'} spacing={1}>
-                      <Facebook size='16' color={theme.palette.primary.main} />
-                      <Typography variant='subtitle2'>
-                        {data.facebook}
-                      </Typography>
-                    </Stack>
-                    <Stack direction={'row'} spacing={1}>
-                      <Send2 size='16' color={theme.palette.primary.main} />
-                      <Typography variant='subtitle2'>
-                        {data.telegram}
-                      </Typography>
-                    </Stack>
-                    <Stack direction={'row'} spacing={1}>
-                      <Call size='16' color={theme.palette.primary.main} />
-                      <Typography variant='subtitle2'>
-                        {data.contacNumber}
-                      </Typography>
-                    </Stack>
-                    <Stack direction={'row'} spacing={1}>
-                      <Gift size='16' color={theme.palette.primary.main} />
-                      <Typography variant='subtitle2'>{data.gift}</Typography>
-                    </Stack>
-                  </Stack>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid>
-        ))}
+                      <Stack
+                        direction={'row'}
+                        alignItems='center'
+                        justifyContent={'center'}
+                        spacing={2}
+                      >
+                        <Stack
+                          sx={{
+                            height: '100%',
+                            bgcolor: theme.palette.common.white,
+                            boxShadow: theme.shadows[1],
+                            borderRadius: 2,
+                          }}
+                          alignItems='center'
+                          justifyContent={'center'}
+                          direction={'column'}
+                        >
+                          <CalendarTick
+                            size='80'
+                            color={theme.palette.primary.main}
+                            variant='Bulk'
+                          />
+                        </Stack>
+                        <Stack direction={'column'} spacing={0.5}>
+                          <Stack
+                            direction={'row'}
+                            spacing={1}
+                            alignItems='center'
+                          >
+                            <Personalcard
+                              color={theme.palette.warning.main}
+                              variant='Bulk'
+                            />
+                            <Typography
+                              variant='body2'
+                              color={theme.palette.secondary.light}
+                              sx={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                width: 120,
+                              }}
+                            >
+                              {item.customer.customer_name}
+                            </Typography>
+                          </Stack>
+                          <Stack
+                            direction={'row'}
+                            spacing={1}
+                            alignItems='center'
+                          >
+                            <Facebook
+                              color={theme.palette.info.main}
+                              variant='Bulk'
+                            />
+                            <Typography
+                              variant='body2'
+                              color={theme.palette.secondary.light}
+                              sx={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                width: 120,
+                              }}
+                            >
+                              {item.customer.facebook_name}
+                            </Typography>
+                          </Stack>
+                          <Stack
+                            direction={'row'}
+                            spacing={1}
+                            alignItems='center'
+                          >
+                            <Call
+                              color={theme.palette.success.main}
+                              variant='Bulk'
+                            />
+                            <Typography
+                              variant='body2'
+                              color={theme.palette.secondary.light}
+                            >
+                              {item.customer.contact_number}
+                            </Typography>
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                    </Paper>
+                  </Grid>
+                </React.Fragment>
+              )
+          )}
       </Grid>
     </>
   );

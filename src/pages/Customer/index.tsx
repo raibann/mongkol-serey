@@ -14,7 +14,7 @@ import { CusIconButton } from 'components/CusIconButton';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
+import { BoxRemove, SearchNormal1, UserAdd } from 'iconsax-react';
 import React, { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
@@ -112,7 +112,7 @@ export default function Customers() {
         >
           <Button
             variant='contained'
-            startIcon={<Add />}
+            startIcon={<UserAdd />}
             sx={{
               color: theme.palette.common.white,
               boxShadow: theme.shadows[1],
@@ -174,8 +174,10 @@ export default function Customers() {
               ],
             }}
           >
-            <BoxRemove size='80' color={theme.palette.primary.main} />
-            <Typography variant='h6'>No data</Typography>
+            <BoxRemove size='80' color={theme.palette.error.main} />
+            <Typography variant='h6' color='error'>
+              No customer
+            </Typography>
           </Stack>
         ) : (
           <Box sx={{ overflow: 'auto', height: '100%' }}>

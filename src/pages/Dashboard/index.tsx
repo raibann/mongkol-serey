@@ -14,7 +14,8 @@ import DashboardCard from 'components/DashboardCard';
 import useResponsive from 'hook/useResponsive';
 import {
   BoxRemove,
-  DollarCircle,
+  MoneyRecive,
+  MoneySend,
   Profile2User,
   WalletAdd,
 } from 'iconsax-react';
@@ -97,6 +98,16 @@ const Dashboard = () => {
         return;
     }
   };
+  // format cash
+  const formatCash = (n: number) => {
+    if (n < 1e3)
+      return n.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    if (n >= 1e3 && n < 1e6)
+      return n.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + 'M';
+    if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + 'B';
+    if (n >= 1e12) return +(n / 1e12).toFixed(1) + 'T';
+  };
   const CHART1_DATA = chartData?.charts.map((data) => {
     return {
       name: monthGenerate(data.month),
@@ -105,7 +116,7 @@ const Dashboard = () => {
   });
   const CHART2_DATA = chartData?.charts.map((data) => {
     return {
-      name: data.month,
+      name: monthGenerate(data.month),
       Sales: data.profits,
       Expenses: data.expenses,
     };
@@ -129,40 +140,41 @@ const Dashboard = () => {
               <Grid item xs={12} sm={6} md={6} lg>
                 <DashboardCard
                   title='Total Profits'
-                  value={`${dashTotal?.totalProfits}`}
-                  percentage='2.3%'
-                  isHigher
-                  icon={<DollarCircle />}
-                  type={''}
+                  value={`${formatCash(
+                    dashTotal?.totalProfits
+                      ? dashTotal?.totalProfits - dashTotal?.totalExpenses
+                      : 0
+                  )} `}
+                  icon={<MoneyRecive />}
+                  startType={'$'}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6} lg>
                 <DashboardCard
                   title='Total Expenses'
-                  value={`${dashTotal?.totalExpenses}`}
-                  percentage='2%'
-                  icon={<DollarCircle />}
-                  type={''}
+                  value={`${formatCash(
+                    dashTotal?.totalExpenses ? dashTotal?.totalExpenses : 0
+                  )}`}
+                  startType={'$'}
+                  icon={<MoneySend />}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6} lg>
                 <DashboardCard
                   title='Total Orders'
                   value={`${dashTotal?.totalOrders}`}
-                  percentage='5%'
-                  isHigher
                   icon={<WalletAdd />}
-                  type={'Events'}
+                  endType={'Events'}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={6} lg>
                 <DashboardCard
                   title='Total Customers'
                   value={`${dashTotal?.totalCustomer}`}
-                  percentage='2.3%'
-                  isHigher
+                  // percentage='2.3%'
+                  // isHigher
                   icon={<Profile2User />}
-                  type={'Customers'}
+                  endType={'Customers'}
                 />
               </Grid>
             </Grid>
@@ -253,17 +265,16 @@ const Dashboard = () => {
                   }}
                 >
                   {chartData?.reminder.map((data, i) => {
-                    const s = moment(data.date, 'YYYY-MM-DD').format('DD');
-                    const e = moment(data.bookingDate, 'YYYY-MM-DD').format(
-                      'DD'
-                    );
-                    console.log('s:', s, 'e:', e);
+                    const dateFormat = moment(data.date).format('DD-MM-YYYY');
+                    const s = moment(data.date).format('DD');
                     return (
                       <AnniversaryItem
                         key={i}
-                        daysLeft={data.id}
-                        lastOrder={data.bookingDate}
+                        daysLeft={parseInt(s) - parseInt(moment().format('DD'))}
+                        eventDate={dateFormat}
                         name={data.customer.customer_name}
+                        invoiceId={data.id}
+                        eventType={data.type}
                       />
                     );
                   })}
@@ -301,9 +312,17 @@ const Dashboard = () => {
                 pr: 5,
               }}
             >
-              <Typography fontWeight={500} variant='h5' ml={5} mb={3}>
-                Sales Report
-              </Typography>
+              <Stack direction={'row'} justifyContent='space-between'>
+                <Typography fontWeight={500} variant='h5' ml={5} mb={3}>
+                  Sales Report
+                </Typography>
+                <Typography fontWeight={500} variant='subtitle1' mb={3}>
+                  Total: $
+                  {formatCash(
+                    dashTotal?.totalProfits ? dashTotal?.totalProfits : 0
+                  )}
+                </Typography>
+              </Stack>
               <ResponsiveContainer width='100%' height='90%'>
                 <BarChart
                   data={CHART2_DATA}
