@@ -7,36 +7,61 @@ import {
   TableBody,
   TableContainer,
   ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
+import { SearchNormal1, BoxRemove } from 'iconsax-react';
+import { useEffect, useState } from 'react';
+import { CusLoading } from 'components/CusLoading';
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import { SearchNormal1 } from 'iconsax-react';
-import { ORDER_DATA } from 'pages/Orders';
-import { useEffect, useState } from 'react';
 import theme from 'theme/theme';
-import ExpenseDialogs from './ExpenseDialogs';
-import { ExpenseTableHead } from './ExpenseTable';
-import ExpenseTableBody from './ExpenseTable';
 import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
-import axios from 'utils/http-util';
+import useRequest from '@ahooksjs/use-request';
+import EXPENSE_API from 'api/expense';
+import OrderTable, { OrderTableHead } from 'pages/Orders/OrderTable';
+import ExpenseDialogs from './ExpenseDialogs';
 
 export default function Expense() {
+  // useRequests
+  const expenseListReq = useRequest(EXPENSE_API.getExpense, {
+    manual: true,
+  });
+  const expenseSearchReq = useRequest(expenseListReq.run, { manual: true });
+
+  // Variable
+  const expenseList = expenseListReq.data?.data;
+
+  // State
   const [ToggleValue, setToggleValue] = useState('pending');
-  const [openDialogs, setOpenDialogs] = useState(false);
-  const handleOpenDialogs = () => {
-    setOpenDialogs(true);
-  };
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [openDialogs, setOpenDialogs] = useState<IOrder.Order>();
   const { isSmDown } = useResponsive();
 
+  // useEffects
   useEffect(() => {
-    axios
-      .get(
-        'https://mongkol-serey-backend.herokuapp.com/api/expense/v1/orders?status=all'
-      )
-      .then((res) => console.log(res));
-  }, []);
+    if (search !== '') {
+      expenseSearchReq.run({
+        page: page - 1,
+        status: ToggleValue,
+        search: search,
+      });
+    }
+
+    expenseListReq.run({
+      page: page - 1,
+      status: ToggleValue,
+      search: '',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ToggleValue, page, search]);
+
+  // Methods
+  const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   return (
     <>
@@ -78,13 +103,15 @@ export default function Expense() {
             }}
           >
             <CusToggleButton value='pending'>Pending</CusToggleButton>
-            <CusToggleButton value='completed'>Completed</CusToggleButton>
+            <CusToggleButton value='complete'>Completed</CusToggleButton>
             <CusToggleButton value='all'>All</CusToggleButton>
           </ToggleButtonGroup>
           <CusTextField
             placeholder='Search...'
             size='small'
             fullWidth={isSmDown}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             InputProps={{
               endAdornment: (
                 <InputAdornment position='end'>
@@ -96,42 +123,53 @@ export default function Expense() {
         </Stack>
         <TableContainer
           sx={{
-            height: '100%',
+            height: 'calc(100% - 48px - 56px)',
             overflow: 'auto',
-            pb: { xs: 22, md: 15, lg: 0 },
+            pb: { xs: 15, md: 10, lg: 5 },
           }}
         >
-          <Table
-            stickyHeader
-            sx={{
-              '& thead tr th': {
-                background: (theme) => theme.palette.background.paper,
-                fontWeight: '600',
-                whiteSpace: 'nowrap',
-              },
-            }}
-          >
-            <ExpenseTableHead />
-            <TableBody>
-              {ORDER_DATA.map((order) => {
-                return (
-                  <ExpenseTableBody
-                    key={order.id}
-                    id={order.id}
-                    name={order.name}
-                    social={order.social}
-                    bookingDate={order.bookingDate}
-                    deposit={order.deposit}
-                    eventDate={order.eventDate}
-                    eventLocation={order.eventLocation}
-                    paidBy={order.paidBy}
-                    quantity={order.quantity}
-                    {...{ handleOpenDialogs }}
-                  />
-                );
-              })}
-            </TableBody>
-          </Table>
+          {expenseListReq.loading ? (
+            <Stack
+              direction={'column'}
+              alignItems={'center'}
+              justifyContent='center'
+              sx={{ height: '100%' }}
+            >
+              <CusLoading />
+            </Stack>
+          ) : expenseList && expenseList.length > 0 ? (
+            <Table
+              sx={{
+                minWidth: 1000,
+                '& thead tr th': {
+                  background: (theme) => theme.palette.background.paper,
+                  fontWeight: '600',
+                  whiteSpace: 'nowrap',
+                },
+              }}
+            >
+              <OrderTableHead showAction={false} />
+              <TableBody>
+                <OrderTable
+                  data={expenseList}
+                  onAddExpenseClick={(i) => setOpenDialogs(expenseList[i])}
+                />
+              </TableBody>
+            </Table>
+          ) : (
+            <Stack
+              direction={'column'}
+              alignItems={'center'}
+              justifyContent='center'
+              spacing={1}
+              sx={{ height: '100%' }}
+            >
+              <BoxRemove size='80' color={theme.palette.error.main} />
+              <Typography variant='h6' color='error'>
+                No Expense...
+              </Typography>
+            </Stack>
+          )}
         </TableContainer>
         <Stack
           alignItems='center'
@@ -144,17 +182,33 @@ export default function Expense() {
             bgcolor: '#fff',
           }}
         >
-          <Pagination count={10} />
+          <Pagination
+            page={page}
+            onChange={handleChangePage}
+            count={expenseListReq.data?.totalPage}
+          />
         </Stack>
       </Paper>
       <ResponsiveDialog
         onCloseDialog={() => {}}
-        open={openDialogs}
+        open={openDialogs !== undefined}
         PaperProps={{
-          sx: { height: '100%' },
+          elevation: 0,
+          sx: {
+            height: { xs: '100vh', md: '90vh' },
+            backgroundColor: 'transparent',
+            borderRadius: 0,
+          },
         }}
       >
-        <ExpenseDialogs {...{ setOpenDialogs }} />
+        <ExpenseDialogs
+          orderDetail={openDialogs}
+          onCloseDialogClick={() => setOpenDialogs(undefined)}
+          onAddExpenseSuccess={() => {
+            expenseListReq.refresh();
+            setOpenDialogs(undefined);
+          }}
+        />
       </ResponsiveDialog>
     </>
   );

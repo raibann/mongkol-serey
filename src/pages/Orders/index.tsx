@@ -27,129 +27,6 @@ import OrderTableBody, { OrderTableHead } from './OrderTable';
 import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
 import { bookingInvoice, finalInvoice } from 'utils/print-util';
 import { CusLoading } from 'components/CusLoading';
-interface IOrderData {
-  id: number;
-  name: string;
-  social: string;
-  eventDate: string;
-  quantity: number;
-  eventLocation: string;
-  bookingDate: string;
-  deposit: number;
-  paidBy?: string;
-}
-export const ORDER_DATA: IOrderData[] = [
-  {
-    id: 1,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: '',
-  },
-  {
-    id: 2,
-    name: 'Ma Raibann',
-    social: '@raibann.rb',
-    eventDate: '05-10-2022',
-    quantity: 100,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '20-07-2022',
-    deposit: 2899999,
-    paidBy: '',
-  },
-  {
-    id: 3,
-    name: 'Rem Brosna',
-    social: '@rem.brosna',
-    eventDate: '25-12-2022',
-    quantity: 70,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '16-11-2022',
-    deposit: 400,
-    paidBy: '',
-  },
-  {
-    id: 4,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: '',
-  },
-  {
-    id: 5,
-    name: 'Ma Raibann',
-    social: '@raibann.rb',
-    eventDate: '05-10-2022',
-    quantity: 100,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '20-07-2022',
-    deposit: 2000,
-    paidBy: '',
-  },
-  {
-    id: 6,
-    name: 'Rem Brosna',
-    social: '@rem.brosna',
-    eventDate: '25-12-2022',
-    quantity: 70,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '16-11-2022',
-    deposit: 400,
-    paidBy: '',
-  },
-  {
-    id: 7,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: '',
-  },
-  {
-    id: 8,
-    name: 'Ma Raibann',
-    social: '@raibann.rb',
-    eventDate: '05-10-2022',
-    quantity: 100,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '20-07-2022',
-    deposit: 2000,
-    paidBy: '',
-  },
-  {
-    id: 9,
-    name: 'Rem Brosna',
-    social: '@rem.brosna',
-    eventDate: '25-12-2022',
-    quantity: 70,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '16-11-2022',
-    deposit: 400,
-    paidBy: '',
-  },
-  {
-    id: 10,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: '',
-  },
-];
 
 const Orders = () => {
   const [ToggleValue, setToggleValue] = useState('pending');
@@ -171,7 +48,7 @@ const Orders = () => {
   });
   const { run: searchOrderList } = useRequest(fetchOrderList, {
     manual: true,
-    debounceInterval: 300,
+    debounceInterval: 500,
   });
 
   // useEffects
@@ -188,7 +65,7 @@ const Orders = () => {
     fetchOrderList({
       page: `${page - 1}`,
       status: ToggleValue,
-      search: searchData,
+      search: '',
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ToggleValue, page, searchData]);
@@ -304,7 +181,7 @@ const Orders = () => {
             </Stack>
           ) : orderList && orderList.data && orderList.data.length > 0 ? (
             <>
-              <Table sx={{ minWidth: 935 }}>
+              <Table sx={{ minWidth: 1000 }}>
                 <OrderTableHead />
                 <TableBody>
                   <OrderTableBody
@@ -321,14 +198,16 @@ const Orders = () => {
               direction={'column'}
               alignItems={'center'}
               justifyContent='center'
+              spacing={1}
               sx={{ height: '100%' }}
             >
-              <BoxRemove size='80' color={theme.palette.primary.main} />
-              <Typography variant='h6'>No data</Typography>
+              <BoxRemove size='80' color={theme.palette.error.main} />
+              <Typography variant='h6' color='error'>
+                No Order...
+              </Typography>
             </Stack>
           )}
         </TableContainer>
-        {/* print invoice */}
         <Box sx={{ display: 'none' }}>
           <BookingInvoice
             ref={bookingInvoiceRef}

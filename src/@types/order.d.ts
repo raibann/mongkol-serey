@@ -8,6 +8,7 @@ declare namespace IOrder {
   }
   interface Order {
     id?: number;
+    paidBy: string;
     date: string;
     bookingDate: string;
     location: string;
@@ -42,9 +43,8 @@ declare namespace IOrder {
   }
 
   interface Expense {
-    id: number;
+    id?: number;
     expense_on: string;
-    quantity: number;
     price: number;
     paidBy: string;
     note: string;
@@ -92,6 +92,7 @@ declare namespace IOrder {
     deposit: number;
     amountInKhmer: string;
     location: string;
+    paidBy: string;
     date: string;
     finalInvoices?: FinalInvoice[];
     eventPackages?: EventPackage[];

@@ -34,125 +34,6 @@ import theme from 'theme/theme';
 import AnniversaryItem from './AnniversaryItem';
 import DashboardHeader from './DashboardHeader';
 import PieChartComp from './PieChartComp';
-// const CHART1_DATA = [
-//   {
-//     name: 'Jan',
-//     Events: 15,
-//   },
-//   {
-//     name: 'Feb',
-//     Events: 30,
-//   },
-//   {
-//     name: 'Mar',
-//     Events: 20,
-//   },
-//   {
-//     name: 'Apr',
-//     Events: 27,
-//   },
-//   {
-//     name: 'May',
-//     Events: 18,
-//   },
-//   {
-//     name: 'Jun',
-//     Events: 23,
-//   },
-//   {
-//     name: 'Jul',
-//     Events: 34,
-//   },
-//   {
-//     name: 'Aug',
-//     Events: 10,
-//   },
-//   {
-//     name: 'Sep',
-//     Events: 28,
-//   },
-//   {
-//     name: 'Oct',
-//     Events: 34,
-//   },
-//   {
-//     name: 'Nov',
-//     Events: 23,
-//   },
-//   {
-//     name: 'Dec',
-//     Events: 16,
-//   },
-// ];
-
-// const CHART2_DATA = [
-//   {
-//     name: 'Jan',
-//     Sales: 27,
-//     Expenses: 10,
-//   },
-//   {
-//     name: 'Feb',
-//     Sales: 30,
-//     Expenses: 20,
-//   },
-//   {
-//     name: 'Mar',
-//     Sales: 20,
-//     Expenses: 10,
-//   },
-//   {
-//     name: 'Apr',
-//     Sales: 27,
-//     Expenses: 17,
-//   },
-//   {
-//     name: 'May',
-//     Sales: 18,
-//     Expenses: 8,
-//   },
-//   {
-//     name: 'Jun',
-//     Sales: 23,
-//     Expenses: 15,
-//   },
-//   {
-//     name: 'Jul',
-//     Sales: 34,
-//     Expenses: 13,
-//   },
-//   {
-//     name: 'Aug',
-//     Sales: 10,
-//     Expenses: 4,
-//   },
-//   {
-//     name: 'Sep',
-//     Sales: 28,
-//     Expenses: 7,
-//   },
-//   {
-//     name: 'Oct',
-//     Sales: 34,
-//     Expenses: 22,
-//   },
-//   {
-//     name: 'Nov',
-//     Sales: 23,
-//     Expenses: 20,
-//   },
-//   {
-//     name: 'Dec',
-//     Sales: 16,
-//     Expenses: 10,
-//   },
-// ];
-
-// const Anniversary = Array(6).fill({
-//   name: 'Meas Saominea',
-//   lastOrder: '30-02-2002',
-//   daysLeft: 3,
-// });
 
 const Dashboard = () => {
   // use moment
@@ -210,7 +91,6 @@ const Dashboard = () => {
         return 'Oct';
       case 11:
         return 'Nov';
-
       case 12:
         return 'Dec';
       default:
@@ -223,7 +103,6 @@ const Dashboard = () => {
       Events: data.amount,
     };
   });
-  // console.log('CHART1', CHART1_DATA);
   const CHART2_DATA = chartData?.charts.map((data) => {
     return {
       name: data.month,
@@ -231,14 +110,7 @@ const Dashboard = () => {
       Expenses: data.expenses,
     };
   });
-  // console.log('CHART2', CHART2_DATA);
-  // const CHART2_DATA = [
-  //   {
-  //     name: 'Jan',
-  //     Sales: 27,
-  //     Expenses: 10,
-  //   },
-  // ];
+
   return (
     <>
       <DashboardHeader {...{ setDateRange, fetchDashTotal }} />
@@ -401,10 +273,13 @@ const Dashboard = () => {
                   direction={'column'}
                   alignItems={'center'}
                   justifyContent='center'
-                  sx={{ height: '60%' }}
+                  spacing={1}
+                  sx={{ height: 'calc(100% - 100px)' }}
                 >
-                  <BoxRemove size='64' color={theme.palette.primary.main} />
-                  <Typography variant='subtitle2'>No data</Typography>
+                  <BoxRemove size='64' color={theme.palette.error.main} />
+                  <Typography variant='body1' color='error'>
+                    No upcoming event...
+                  </Typography>
                 </Stack>
               )}
             </Paper>

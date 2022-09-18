@@ -6,6 +6,7 @@ import {
   Pagination,
   Stack,
   Typography,
+  Paper,
 } from '@mui/material';
 import { Container } from '@mui/system';
 import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
@@ -193,20 +194,22 @@ export default function Customers() {
         <Stack
           alignItems='center'
           width='100%'
-          p={1}
           sx={{
             position: 'absolute',
-            bottom: 0,
-            left: 0,
-            bgcolor: (theme) => theme.palette.common.white,
-            py: 2,
+            bottom: 12,
+            zIndex: (theme) => theme.zIndex.appBar,
           }}
         >
-          <Pagination
-            count={custList?.totalPage}
-            page={page}
-            onChange={handleChangePage}
-          />
+          <Paper
+            sx={{
+              p: 1.5,
+              borderRadius: '50vh',
+              boxShadow: (theme) => theme.shadows[2],
+              bgcolor: (theme) => theme.palette.common.white,
+            }}
+          >
+            <Pagination count={10} page={page} onChange={handleChangePage} />
+          </Paper>
         </Stack>
       </Container>
       <ResponsiveDrawer

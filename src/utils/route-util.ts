@@ -22,6 +22,7 @@ export const ROUTE_API = {
   deletCustomer: '/api/customer/v1/delete/:id',
 
   expensesList: '/api/expense/v1/orders',
+  addExpense: '/api/expense/v1/:id',
 
   remindersList: '/api/reminder/v1/orders',
 
