@@ -13,7 +13,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import theme from 'theme/theme';
 import React from 'react';
 import CusToggleButton from 'components/CusToggleButton';
@@ -42,7 +42,11 @@ interface IDateRange {
 
 const DashboardHeader = ({
   setDateRange,
+  toggleValue,
+  setToggleValue,
 }: {
+  toggleValue: string;
+  setToggleValue: React.Dispatch<React.SetStateAction<string>>;
   setDateRange: React.Dispatch<
     React.SetStateAction<{
       startDate: string;
@@ -50,7 +54,6 @@ const DashboardHeader = ({
     }>
   >;
 }) => {
-  const [ToggleValue, setToggleValue] = useState('week');
   // ancher notification
   const [anchorElNotification, setAnchorElNotification] =
     React.useState<null | HTMLElement>(null);
@@ -61,7 +64,7 @@ const DashboardHeader = ({
   useEffect(() => {
     let monday = moment().weekday(1);
     let friday = moment().weekday(5);
-    switch (ToggleValue) {
+    switch (toggleValue) {
       case 'month':
         return setDateRange({
           startDate: moment().startOf('month').format('YYYY-MM-DD'),
@@ -81,7 +84,7 @@ const DashboardHeader = ({
         return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ToggleValue]);
+  }, [toggleValue]);
 
   // Validate date range
   const { handleSubmit, control } = useForm<IDateRange>();
@@ -139,7 +142,7 @@ const DashboardHeader = ({
           alignItems='center'
         >
           <ToggleButtonGroup
-            value={ToggleValue}
+            value={toggleValue}
             exclusive
             fullWidth
             size='small'

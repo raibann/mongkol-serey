@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Box,
   Button,
+  Dialog,
+  DialogTitle,
   Drawer,
   InputAdornment,
   Pagination,
@@ -11,7 +14,6 @@ import {
   TableContainer,
   ToggleButtonGroup,
   Typography,
-  Box,
 } from '@mui/material';
 import theme from 'theme/theme';
 import BookingInvoice from 'components/ComToPrint/BookingInvoice';
@@ -25,16 +27,18 @@ import useRequest from '@ahooksjs/use-request';
 import ORDER_API from 'api/order';
 import OrderTableBody, { OrderTableHead } from './OrderTable';
 import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
-import { bookingInvoice, finalInvoice } from 'utils/print-util';
+import { bookingInvoice, finalInvoice, pageStyle } from 'utils/print-util';
 import { CusLoading } from 'components/CusLoading';
+import ReactToPrint from 'react-to-print';
 
 const Orders = () => {
+  // States
   const [ToggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
+  const [printer, setPrinter] = useState(false);
   const [page, setPage] = React.useState(1);
   const [searchData, setSearchData] = useState('');
-
   const { isMdDown } = useResponsive();
 
   // useRequests
@@ -80,7 +84,7 @@ const Orders = () => {
   };
 
   const bookingInvoiceRef = useRef(null);
-  const finalInvoiceRef = useRef(null);
+  // const finalInvoiceRef = useRef(null);
 
   return (
     <>
@@ -186,8 +190,7 @@ const Orders = () => {
                 <TableBody>
                   <OrderTableBody
                     data={orderList.data}
-                    componentRef={bookingInvoiceRef}
-                    enablePrint
+                    onPrintClick={(i) => setPrinter(true)}
                     onEditClick={(i) => setOrderDetail(orderList.data[i])}
                   />
                 </TableBody>
@@ -208,18 +211,6 @@ const Orders = () => {
             </Stack>
           )}
         </TableContainer>
-        <Box sx={{ display: 'none' }}>
-          <BookingInvoice
-            ref={bookingInvoiceRef}
-            customerInfo={bookingInvoice.customerInfo}
-            orderInfo={bookingInvoice.orderInfo}
-          />
-          <FinalInvoice
-            ref={finalInvoiceRef}
-            customerInfo={finalInvoice.customerInfo}
-            orderInfo={finalInvoice.orderInfo}
-          />
-        </Box>
 
         <Stack
           alignItems='center'
@@ -256,13 +247,53 @@ const Orders = () => {
         />
       </Drawer>
 
-      {/* <ResponsiveDialog
-        open={openPhotoDialog}
-        onCloseDialog={() => setOpenPhotoDialog(false)}
-        size='sm'
+      <Dialog
+        open={printer}
+        onClose={() => setPrinter(false)}
+        fullScreen
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            width: 'auto',
+            height: '95vh',
+          },
+        }}
       >
-        <PhotoDialogContent />
-      </ResponsiveDialog> */}
+        <DialogTitle
+          sx={{
+            position: 'sticky',
+            top: 0,
+            boxShadow: (theme) => theme.shadows[2],
+            zIndex: (theme) => theme.zIndex.drawer + 3,
+            backgroundColor: '#fff',
+          }}
+        >
+          <ReactToPrint
+            pageStyle={pageStyle}
+            documentTitle='final invoice'
+            trigger={() => <Button variant='contained'>Booking</Button>}
+            content={() =>
+              (bookingInvoiceRef?.current && bookingInvoiceRef.current) || null
+            }
+          />
+        </DialogTitle>
+        <Box
+          sx={{
+            scale: '0.8',
+          }}
+        >
+          <BookingInvoice
+            ref={bookingInvoiceRef}
+            customerInfo={bookingInvoice.customerInfo}
+            orderInfo={bookingInvoice.orderInfo}
+          />
+        </Box>
+        {/* <FinalInvoice
+            ref={finalInvoiceRef}
+            customerInfo={finalInvoice.customerInfo}
+            orderInfo={finalInvoice.orderInfo}
+          /> */}
+      </Dialog>
     </>
   );
 };

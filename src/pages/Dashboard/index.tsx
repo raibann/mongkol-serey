@@ -40,6 +40,7 @@ const Dashboard = () => {
   // use moment
   let monday = moment().weekday(1);
   let friday = moment().weekday(5);
+  const [toggleValue, setToggleValue] = useState('week');
   const [dateRange, setDateRange] = useState({
     startDate: moment(monday).format('YYYY-MM-DD'),
     endDate: moment(friday).format('YYYY-MM-DD'),
@@ -124,7 +125,9 @@ const Dashboard = () => {
 
   return (
     <>
-      <DashboardHeader {...{ setDateRange, fetchDashTotal }} />
+      <DashboardHeader
+        {...{ setDateRange, fetchDashTotal, setToggleValue, toggleValue }}
+      />
       {isDashLoading ? (
         <Stack
           sx={{ height: 'calc( 100vh - 74px )' }}
@@ -216,13 +219,13 @@ const Dashboard = () => {
 
                     {isMdDown ? (
                       <>
-                        <XAxis type='number' domain={[0, 100]} />
+                        <XAxis type='number' domain={[0, 25]} />
                         <YAxis dataKey='name' type='category' />
                       </>
                     ) : (
                       <>
                         <XAxis dataKey='name' />
-                        <YAxis domain={[0, 100]} />
+                        <YAxis domain={[0, 25]} />
                       </>
                     )}
 
@@ -317,10 +320,10 @@ const Dashboard = () => {
                   Sales Report
                 </Typography>
                 <Typography fontWeight={500} variant='subtitle1' mb={3}>
-                  Total: $
-                  {formatCash(
+                  Total Income: $
+                  {`${formatCash(
                     dashTotal?.totalProfits ? dashTotal?.totalProfits : 0
-                  )}
+                  )}/this ${toggleValue}`}
                 </Typography>
               </Stack>
               <ResponsiveContainer width='100%' height='90%'>
@@ -332,13 +335,13 @@ const Dashboard = () => {
                   <CartesianGrid vertical={false} />
                   {isMdDown ? (
                     <>
-                      <XAxis type='number' domain={[0, 100]} />
+                      <XAxis type='number' domain={[0, 10000]} />
                       <YAxis dataKey='name' type='category' />
                     </>
                   ) : (
                     <>
                       <XAxis dataKey='name' />
-                      <YAxis type='number' domain={[0, 100]} />
+                      <YAxis type='number' domain={[0, 10000]} />
                     </>
                   )}
                   <Tooltip />
