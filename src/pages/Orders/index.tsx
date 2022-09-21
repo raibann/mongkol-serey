@@ -4,6 +4,7 @@ import {
   Button,
   Dialog,
   DialogTitle,
+  Divider,
   Drawer,
   InputAdornment,
   Pagination,
@@ -27,7 +28,6 @@ import useRequest from '@ahooksjs/use-request';
 import ORDER_API from 'api/order';
 import OrderTableBody, { OrderTableHead } from './OrderTable';
 import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
-import { bookingInvoice, finalInvoice, pageStyle } from 'utils/print-util';
 import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
 
@@ -36,7 +36,7 @@ const Orders = () => {
   const [ToggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
-  const [printer, setPrinter] = useState(false);
+  const [printer, setPrinter] = useState<IOrder.Order>();
   const [page, setPage] = React.useState(1);
   const [searchData, setSearchData] = useState('');
   const { isMdDown } = useResponsive();
@@ -84,7 +84,7 @@ const Orders = () => {
   };
 
   const bookingInvoiceRef = useRef(null);
-  // const finalInvoiceRef = useRef(null);
+  const finalInvoiceRef = useRef(null);
 
   return (
     <>
@@ -190,7 +190,7 @@ const Orders = () => {
                 <TableBody>
                   <OrderTableBody
                     data={orderList.data}
-                    onPrintClick={(i) => setPrinter(true)}
+                    onPrintClick={(i) => setPrinter(orderList.data[i])}
                     onEditClick={(i) => setOrderDetail(orderList.data[i])}
                   />
                 </TableBody>
@@ -248,8 +248,8 @@ const Orders = () => {
       </Drawer>
 
       <Dialog
-        open={printer}
-        onClose={() => setPrinter(false)}
+        open={printer !== undefined}
+        onClose={() => setPrinter(undefined)}
         fullScreen
         PaperProps={{
           sx: {
@@ -280,22 +280,48 @@ const Orders = () => {
         <Box
           sx={{
             scale: '0.8',
+            transform: 'translateY(-100px)',
           }}
         >
-          <BookingInvoice
-            ref={bookingInvoiceRef}
-            customerInfo={bookingInvoice.customerInfo}
-            orderInfo={bookingInvoice.orderInfo}
-          />
+          {printer && (
+            <BookingInvoice ref={bookingInvoiceRef} order={printer} />
+          )}
         </Box>
-        {/* <FinalInvoice
-            ref={finalInvoiceRef}
-            customerInfo={finalInvoice.customerInfo}
-            orderInfo={finalInvoice.orderInfo}
-          /> */}
+
+        {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
+          <>
+            <Divider sx={{ borderWidth: '5px' }} />
+            <Box
+              sx={{
+                scale: '0.8',
+                pt: '100px',
+                pb: '100px',
+              }}
+            >
+              <FinalInvoice ref={finalInvoiceRef} order={printer} />
+            </Box>
+          </>
+        )}
       </Dialog>
     </>
   );
 };
 
 export default Orders;
+
+const pageStyle = ` @page {
+  size: A4;
+  margin:2.54cm;
+}
+
+@media all {
+  .pagebreak {
+    display: none;
+  }
+}
+
+@media print {
+  .pagebreak {
+    page-break-before: always;
+  }
+}`;

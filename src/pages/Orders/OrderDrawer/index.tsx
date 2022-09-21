@@ -82,7 +82,9 @@ const OrderDrawer = ({
       console.log('success', data);
       if (orderDetail?.expenses && orderDetail.expenses.length > 0) {
         expenseActionReq.run(orderDetail.id || 0, orderDetail.expenses);
+        return;
       }
+      onActionSuccess();
     },
   });
   const expenseActionReq = useRequest(EXPENSE_API.addExpense, {

@@ -6,7 +6,6 @@ import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
 // import CusInput from 'components/CusInput';
 import { useRef, useState } from 'react';
 import ReactToPrint from 'react-to-print';
-import { bookingInvoice, pageStyle } from 'utils/print-util';
 
 export default function Home() {
   const [state, setState] = useState(false);
@@ -30,25 +29,25 @@ export default function Home() {
           </Button>
         </CusInput>
       </ResponsiveDialog> */}
-      <ResponsiveDrawer onCloseDrawer={() => setState(false)} open={state}>
+      {/* <ResponsiveDrawer onCloseDrawer={() => setState(false)} open={state}>
         <ReactToPrint
           pageStyle={pageStyle}
           documentTitle='final invoice'
           trigger={() => <Button variant='contained'>Print</Button>}
           content={() => componentRef.current}
         />
-      </ResponsiveDrawer>
+      </ResponsiveDrawer> */}
       <Stack alignItems={'center'} sx={{ mb: 4 }}>
         {/* <FinalInvoice
           ref={componentRef}
           customerInfo={finalInvoice.customerInfo}
           orderInfo={finalInvoice.orderInfo}
         /> */}
-        <BookingInvoice
+        {/* <BookingInvoice
           ref={componentRef}
           customerInfo={bookingInvoice.customerInfo}
           orderInfo={bookingInvoice.orderInfo}
-        />
+        /> */}
       </Stack>
     </>
   );
