@@ -5,6 +5,7 @@ import {
   Avatar,
   ListItemText,
 } from '@mui/material';
+import { User } from 'iconsax-react';
 import theme from 'theme/theme';
 import THEME_UTIL from 'utils/theme-util';
 
@@ -51,8 +52,11 @@ const AnniversaryItem = ({
               fontWeight: 'bold',
             }}
           >
-            {name.split(' ')[0].charAt(0).toUpperCase() +
-              name.split(' ')[1].charAt(0).toUpperCase()}
+            {!!name ? (
+              name.charAt(0)
+            ) : (
+              <User color={theme.palette.common.white} variant='Bold' />
+            )}
           </Avatar>
         </ListItemAvatar>
         <ListItemText

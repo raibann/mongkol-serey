@@ -19,7 +19,7 @@ import React from 'react';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import { CusIconButton } from 'components/CusIconButton';
-import { Calendar2 } from 'iconsax-react';
+import { BoxRemove, Calendar2, User } from 'iconsax-react';
 import { Notification } from 'iconsax-react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -31,9 +31,9 @@ import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import useResponsive from 'hook/useResponsive';
 import { Controller, useForm } from 'react-hook-form';
-import { useRequest } from 'ahooks';
-import REMINDER_API from 'api/reminder';
 import THEME_UTIL from 'utils/theme-util';
+import { useReminderContext } from 'context/ReminderContext';
+import { CusLoading } from 'components/CusLoading';
 
 interface IDateRange {
   startDate: string;
@@ -59,8 +59,8 @@ const DashboardHeader = ({
     React.useState<null | HTMLElement>(null);
 
   useEffect(() => {
-    let monday = moment().weekday(1);
-    let friday = moment().weekday(5);
+    let monday = moment().weekday(0);
+    let friday = moment().weekday(6);
     switch (ToggleValue) {
       case 'month':
         return setDateRange({
@@ -90,8 +90,8 @@ const DashboardHeader = ({
       startDate: moment(data.startDate).format('YYYY-MM-DD'),
       endDate: moment(data.endDate).format('YYYY-MM-DD'),
     });
-    console.log('start date', moment(data.startDate).format('YYYY-MM-DD'));
-    console.log('end date', moment(data.endDate).format('YYYY-MM-DD'));
+    // console.log('start date', moment(data.startDate).format('YYYY-MM-DD'));
+    // console.log('end date', moment(data.endDate).format('YYYY-MM-DD'));
   };
   // notification
   const handleClickNoti = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -112,9 +112,14 @@ const DashboardHeader = ({
     }
   };
   // fetch notifications
-  const reminderList = useRequest(REMINDER_API.getReminder, { manual: false });
-  const reminderData = reminderList.data;
+  const { reminderList, reminderLoading } = useReminderContext();
+
+  const temp = reminderList?.filter(
+    (el) => moment().diff(el.date, 'years') === 1
+  );
+
   const { isSmDown } = useResponsive();
+
   return (
     <>
       <PageHeader
@@ -160,28 +165,10 @@ const DashboardHeader = ({
             <CusToggleButton value='month'>Month</CusToggleButton>
             <CusToggleButton value='year'>Year</CusToggleButton>
           </ToggleButtonGroup>
-
           <CusIconButton color='primary' onClick={handleClickDatepicker}>
             <Calendar2 size='24' variant='Outline' />
           </CusIconButton>
-
-          {reminderData && reminderData?.data.length > 0 ? (
-            <Badge color='error' badgeContent=' ' variant='dot'>
-              <CusIconButton
-                color='primary'
-                onClick={handleClickNoti}
-                sx={{
-                  display: {
-                    xs: 'none',
-                    md: 'block',
-                  },
-                  height: 40,
-                }}
-              >
-                <Notification size='24' variant='Bold' />
-              </CusIconButton>
-            </Badge>
-          ) : (
+          <Badge color='error' badgeContent={temp?.length}>
             <CusIconButton
               color='primary'
               onClick={handleClickNoti}
@@ -195,7 +182,7 @@ const DashboardHeader = ({
             >
               <Notification size='24' variant='Bold' />
             </CusIconButton>
-          )}
+          </Badge>
         </Stack>
       </PageHeader>
       <Menu
@@ -230,48 +217,69 @@ const DashboardHeader = ({
               Anniverysary
             </Typography>
           </ListSubheader>
-          {reminderData?.data.map(
-            (data) =>
-              moment().diff(data.date, 'years') === 1 && (
-                <ListItem
-                  key={data.id}
-                  sx={{
-                    px: 0,
-                    pt: 0,
-                  }}
-                  secondaryAction={
-                    <Typography
-                      fontSize={14}
-                      color={theme.palette.success.main}
-                      fontWeight='bold'
-                    >
-                      Today
-                    </Typography>
-                  }
-                >
-                  <ListItemAvatar>
-                    <Avatar
-                      sx={{
-                        background: THEME_UTIL.goldGradientMain,
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      {data.customer.customer_name
-                        .split(' ')[0]
-                        .charAt(0)
-                        .toUpperCase() +
-                        data.customer.customer_name
-                          .split(' ')[1]
-                          .charAt(0)
-                          .toUpperCase()}
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={`${data.id}. ${data.type}`}
-                    secondary={moment(data.date).format('DD-MM-YYYY')}
-                  />
-                </ListItem>
-              )
+          {reminderLoading ? (
+            <Stack
+              alignItems={'center'}
+              justifyContent='center'
+              height={'100%'}
+            >
+              <CusLoading />
+            </Stack>
+          ) : temp && temp.length > 0 ? (
+            reminderList?.map(
+              (data) =>
+                moment().diff(data.date, 'years') === 1 && (
+                  <ListItem
+                    key={data.id}
+                    sx={{
+                      px: 0,
+                      pt: 0,
+                    }}
+                    secondaryAction={
+                      <Typography
+                        fontSize={14}
+                        color={theme.palette.success.main}
+                        fontWeight='bold'
+                      >
+                        Today
+                      </Typography>
+                    }
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        sx={{
+                          background: THEME_UTIL.goldGradientMain,
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {data.customer !== null ? (
+                          data.customer.customer_name.charAt(0).toUpperCase()
+                        ) : (
+                          <User
+                            color={theme.palette.common.white}
+                            variant='Bold'
+                          />
+                        )}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={`${data.id}. ${data.type}`}
+                      secondary={moment(data.date).format('DD-MM-YYYY')}
+                    />
+                  </ListItem>
+                )
+            )
+          ) : (
+            <Stack
+              alignItems={'center'}
+              justifyContent='center'
+              height={'100%'}
+            >
+              <BoxRemove size='48' color={theme.palette.error.main} />
+              <Typography variant='h6' color='error'>
+                No notification
+              </Typography>
+            </Stack>
           )}
         </List>
       </Menu>
@@ -341,7 +349,8 @@ const DashboardHeader = ({
               sx={{
                 width: '100%',
                 color: (theme) => theme.palette.common.white,
-                borderRadius: 3,
+                borderRadius: 2,
+                boxShadow: 0,
               }}
             >
               Confirm

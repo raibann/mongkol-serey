@@ -25,6 +25,7 @@ import CustomerForm, { CustomerInput } from './CustForm/CustomerForm';
 import { useDebounce, useRequest } from 'ahooks';
 import CUSTOMER_API from 'api/customer';
 import { CusLoading } from 'components/CusLoading';
+import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 
 export default function Customers() {
   const [openDrawer, setOpenDrawer] = useState<'Add' | 'Edit' | 'Details' | ''>(
@@ -32,6 +33,7 @@ export default function Customers() {
   );
   const [page, setPage] = useState(1);
   const [searchData, setSearchData] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState<number>();
   const methods = useForm<CustomerInput>();
   const { handleSubmit, setValue } = methods;
   const { isSmDown } = useResponsive();
@@ -85,6 +87,7 @@ export default function Customers() {
     manual: true,
     onSuccess: () => {
       refreshCustList();
+      setConfirmDelete(undefined);
     },
   });
 
@@ -187,7 +190,7 @@ export default function Customers() {
                   handleOpenDrawer,
                   custList,
                   fetchCustDetails,
-                  deleteCustomerReq,
+                  setConfirmDelete,
                 }}
               />
             </Grid>
@@ -199,6 +202,7 @@ export default function Customers() {
           sx={{
             position: 'absolute',
             bottom: 12,
+            mx: 'auto',
             zIndex: (theme) => theme.zIndex.appBar,
           }}
         >
@@ -210,7 +214,11 @@ export default function Customers() {
               bgcolor: (theme) => theme.palette.common.white,
             }}
           >
-            <Pagination count={10} page={page} onChange={handleChangePage} />
+            <Pagination
+              count={custList?.totalPage}
+              page={page}
+              onChange={handleChangePage}
+            />
           </Paper>
         </Stack>
       </Container>
@@ -355,6 +363,20 @@ export default function Customers() {
           <CustomerDetails {...{ custDetails, isLoadingCustDetails }} />
         )}
       </ResponsiveDrawer>
+      <ConfirmDialogSlide
+        open={confirmDelete !== undefined}
+        maxWidth='xs'
+        title={'Are you sure to delete?'}
+        cancel={() => {
+          setConfirmDelete(undefined);
+        }}
+        confirm={() => {
+          deleteCustomerReq.run({
+            id: confirmDelete || 0,
+          });
+        }}
+        loading={deleteCustomerReq.loading}
+      />
     </>
   );
 }

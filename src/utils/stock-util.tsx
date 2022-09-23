@@ -115,32 +115,5 @@ const stockData: IStockData[] = [
     },
   },
 ];
-const paidByBank = [
-  'ACLEDA Bank',
-  'ABA Bank',
-  'WING Bank',
-  'BAKONG',
-  'CANADIA Bank',
-  'SATHAPANA Bank',
-  'WOORI WON Bank',
-  'TRUE MONEY ',
-  'AMK',
-  'PRASAC',
-  'PHILLIP Bank',
-  'PRINCE Bank',
-  'HATTHA Bank',
-  'CP Bank',
-  'VATTANAC Bank',
-  'JTRUST ROYAL Bank',
-  'FTB Bank',
-  'PPC Bank',
-  'CHIP MONG Bank',
-  'MOHANOKOR',
-  'SBI LY HOUR Bank',
-  'MAY Bank',
-  'eMoney Agent',
-  'Pi Pay',
-  'Cash',
-];
 const cateName = ['Grocery', 'Meat', 'Vegetable', 'Fruits', 'Drinks'];
-export { stockData, paidByBank, cateName };
+export { stockData, cateName };

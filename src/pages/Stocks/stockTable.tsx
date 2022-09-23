@@ -43,7 +43,7 @@ export const StockTableHead = () => {
     <TableHead>
       <TableRow>
         <TableCell>No.</TableCell>
-        <TableCell>CATEGORY NAME</TableCell>
+        <TableCell>CATEGORIRES</TableCell>
         <TableCell>PRODUCT NAME</TableCell>
         <TableCell>QUANTITY</TableCell>
         <TableCell>PRICE</TableCell>

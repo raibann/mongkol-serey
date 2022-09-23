@@ -28,4 +28,8 @@ export const ROUTE_API = {
 
   charts: '/api/dashboard/v1/charts',
   totals: '/api/dashboard/v1/orders',
+
+  stockList: '/api/stock/v1/list',
+  addStock: '/api/stock/v1/action',
+  deleteStock: '/api/stock/v1/delete/:id',
 };

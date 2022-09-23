@@ -9,6 +9,7 @@ import provincesJson from 'geography/Provinces.json';
 import districtJson from 'geography/District.json';
 import communeJson from 'geography/Communes.json';
 import useResponsive from 'hook/useResponsive';
+import { validatePatterns } from 'utils/validate-util';
 
 export type CustomerInput = {
   customerId?: number | '';
@@ -34,6 +35,53 @@ const CustomerForm = () => {
   return (
     <>
       <Stack spacing={4} px={3}>
+        <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
+          <Controller
+            control={control}
+            name='customerName'
+            defaultValue=''
+            rules={{
+              required: { value: true, message: 'Customer Name is Required' },
+            }}
+            render={({ field, fieldState: { error } }) => {
+              return (
+                <LabelTextField label='Customer Name'>
+                  <StyledOutlinedTextField
+                    placeholder='Enter Customer Name'
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    {...field}
+                  />
+                </LabelTextField>
+              );
+            }}
+          />
+
+          <Controller
+            control={control}
+            name='contact'
+            defaultValue=''
+            rules={{
+              required: { value: true, message: 'Contact Number is Required' },
+              pattern: {
+                value: validatePatterns.numberOnly,
+                message: 'Required only number',
+              },
+            }}
+            render={({ field, fieldState: { error } }) => {
+              return (
+                <LabelTextField label='Contact Number'>
+                  <StyledOutlinedTextField
+                    placeholder='Enter Contact Number'
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    {...field}
+                  />
+                </LabelTextField>
+              );
+            }}
+          />
+        </Stack>
         <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
           <Controller
             control={control}
@@ -87,51 +135,6 @@ const CustomerForm = () => {
             }}
           />
         </Stack>
-
-        <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
-          <Controller
-            control={control}
-            name='customerName'
-            defaultValue=''
-            rules={{
-              required: { value: true, message: 'Customer Name is Required' },
-            }}
-            render={({ field, fieldState: { error } }) => {
-              return (
-                <LabelTextField label='Customer Name'>
-                  <StyledOutlinedTextField
-                    placeholder='Enter Customer Name'
-                    error={Boolean(error)}
-                    helperText={error?.message}
-                    {...field}
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
-
-          <Controller
-            control={control}
-            name='contact'
-            defaultValue=''
-            rules={{
-              required: { value: true, message: 'Contact Number is Required' },
-            }}
-            render={({ field, fieldState: { error } }) => {
-              return (
-                <LabelTextField label='Contact Number'>
-                  <StyledOutlinedTextField
-                    placeholder='Enter Contact Number'
-                    error={Boolean(error)}
-                    helperText={error?.message}
-                    {...field}
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
-        </Stack>
-
         <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
           <Controller
             control={control}

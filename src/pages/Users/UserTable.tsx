@@ -4,12 +4,12 @@ import {
   TableHead,
   Stack,
   Typography,
+  Avatar,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, Trash } from 'iconsax-react';
 import theme from 'theme/theme';
 import { IUser } from 'utils/users-util';
-import BackgroundLetterAvatars from 'components/AvatarBg';
 export const UserTableBody = ({
   props,
   index,
@@ -23,7 +23,9 @@ export const UserTableBody = ({
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
       <TableCell>{index + 1}</TableCell>
       <TableCell>
-        <BackgroundLetterAvatars name={props.username} />
+        <Avatar variant='rounded' sx={{ bgcolor: theme.palette.primary.main }}>
+          {props.username.charAt(0).toUpperCase()}
+        </Avatar>
       </TableCell>
       <TableCell>{props.username}</TableCell>
       <TableCell>{props.password}</TableCell>

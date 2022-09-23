@@ -1,21 +1,16 @@
-import useRequest from '@ahooksjs/use-request';
 import { Container, Stack, Typography } from '@mui/material';
-import REMINDER_API from 'api/reminder';
 import { CusLoading } from 'components/CusLoading';
 import PageHeader from 'components/PageHeader';
+import { useReminderContext } from 'context/ReminderContext';
 import EventToday from './EventCard/today';
 import UpcomingEvent from './EventCard/upcoming';
 
 export default function Reminder() {
-  // request api
-
-  const reminderList = useRequest(REMINDER_API.getReminder, { manual: false });
-  // console.log('reminder list:', reminderList.data);
-
+  const { reminderList, reminderLoading } = useReminderContext();
   return (
     <>
       <PageHeader pageTitle='Reminder' />
-      {reminderList.loading ? (
+      {reminderLoading ? (
         <Stack
           justifyContent={'center'}
           alignItems='center'
@@ -34,11 +29,11 @@ export default function Reminder() {
           <Typography variant='h6' sx={{ pb: 2 }}>
             Aniversary today
           </Typography>
-          <EventToday listItem={reminderList.data} />
+          <EventToday listItem={reminderList} />
           <Typography variant='h6' sx={{ py: 2 }}>
             Upcoming Aniversary
           </Typography>
-          <UpcomingEvent listItem={reminderList.data} />
+          <UpcomingEvent listItem={reminderList} />
         </Container>
       )}
     </>

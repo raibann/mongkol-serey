@@ -12,7 +12,8 @@ import LabelTextField from 'components/LabelTextField';
 import useResponsive from 'hook/useResponsive';
 import { Controller, useForm } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
-import { cateName, paidByBank } from 'utils/stock-util';
+import { paidBy } from 'utils/expense-util';
+import { cateName } from 'utils/stock-util';
 import { validatePatterns } from 'utils/validate-util';
 interface IAddStockInput {
   categoryName: string;
@@ -257,7 +258,7 @@ export default function FormStock({
                             placeholder='Enter paid by'
                           />
                         )}
-                        options={paidByBank.map((data, i) => data)}
+                        options={paidBy.map((data, i) => data)}
                       />
                     </LabelTextField>
                   );

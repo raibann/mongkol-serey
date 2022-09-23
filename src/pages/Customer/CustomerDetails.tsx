@@ -20,6 +20,7 @@ import {
 } from 'react-icons/fa';
 import theme from 'theme/theme';
 import { Location } from 'iconsax-react';
+import THEME_UTIL from 'utils/theme-util';
 
 export default function CustomerDetails({
   custDetails,
@@ -49,13 +50,18 @@ export default function CustomerDetails({
             <Grid item xs={12}>
               <Stack alignItems={'center'} spacing={2}>
                 <Avatar
-                  src='/images/girlavatar.png'
                   sx={{
-                    width: 150,
-                    height: 'auto',
+                    width: 72,
+                    height: 72,
+                    background: THEME_UTIL.goldGradientMain,
+                    color: (theme) => theme.palette.secondary.main,
+                    textTransform: 'uppercase',
+                    fontSize: 24,
                     boxShadow: (theme) => theme.shadows[1],
                   }}
-                />
+                >
+                  {custDetails?.customer.customer_name.charAt(0)}
+                </Avatar>
                 <Typography variant='h6'>
                   {custDetails?.customer.customer_name}
                 </Typography>

@@ -6,10 +6,14 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
+  Typography,
 } from '@mui/material';
 import { useDrawerContext } from 'context/DrawerContext';
+import { useReminderContext } from 'context/ReminderContext';
 import { motion } from 'framer-motion';
-import useRouter from 'hook/useRouter';
+import useRouter, { ROUTE_PATH } from 'hook/useRouter';
+import moment from 'moment';
 import theme from 'theme/theme';
 import navigationUtil from 'utils/navigation-util';
 import THEME_UTIL from 'utils/theme-util';
@@ -17,7 +21,10 @@ import THEME_UTIL from 'utils/theme-util';
 const DrawerContent = () => {
   const { location, navigate } = useRouter();
   const { openDrawer, setOpenDrawer } = useDrawerContext();
-
+  const { reminderList, reminderLoading } = useReminderContext();
+  const temp = reminderList?.filter(
+    (el) => moment().diff(el.date, 'years') === 1
+  );
   return (
     <>
       <Avatar
@@ -77,7 +84,25 @@ const DrawerContent = () => {
                   {nav.icon}
                 </ListItemIcon>
                 <ListItemText
-                  primary={nav.title}
+                  primary={
+                    <Stack direction={'row'} justifyContent='space-between'>
+                      <Typography>{nav.title}</Typography>
+                      {nav.toUrl === ROUTE_PATH.reminder &&
+                        !reminderLoading &&
+                        temp?.length !== 0 && (
+                          <Box
+                            sx={{
+                              bgcolor: theme.palette.error.main,
+                              color: theme.palette.common.white,
+                              px: 1,
+                              borderRadius: 1,
+                            }}
+                          >
+                            {temp?.length}
+                          </Box>
+                        )}
+                    </Stack>
+                  }
                   primaryTypographyProps={{
                     fontWeight: 500,
                     color:

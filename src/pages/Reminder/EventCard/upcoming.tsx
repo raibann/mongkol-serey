@@ -1,5 +1,11 @@
 import { Paper, Stack, Typography, Grid } from '@mui/material';
-import { Facebook, Call, Personalcard, CalendarTick } from 'iconsax-react';
+import {
+  Facebook,
+  Call,
+  Personalcard,
+  CalendarTick,
+  BoxRemove,
+} from 'iconsax-react';
 import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
@@ -7,13 +13,16 @@ import theme from 'theme/theme';
 const UpcomingEvent = ({
   listItem,
 }: {
-  listItem: IReminder.IReminderData | undefined;
+  listItem: IReminder.Data[] | undefined;
 }) => {
+  const temp = listItem?.filter(
+    (el) => 365 - moment().diff(el.date, 'days') !== 0
+  );
   return (
     <>
       <Grid container rowSpacing={2} columnSpacing={4}>
-        {listItem &&
-          listItem.data.map(
+        {temp && temp.length > 0 ? (
+          temp?.map(
             (item) =>
               365 - moment().diff(item.date, 'days') !== 0 && (
                 <React.Fragment key={item.id}>
@@ -92,7 +101,9 @@ const UpcomingEvent = ({
                                 width: 120,
                               }}
                             >
-                              {item.customer.customer_name}
+                              {item.customer !== null
+                                ? item.customer.customer_name
+                                : 'No Customer'}
                             </Typography>
                           </Stack>
                           <Stack
@@ -114,7 +125,9 @@ const UpcomingEvent = ({
                                 width: 120,
                               }}
                             >
-                              {item.customer.facebook_name}
+                              {item.customer !== null
+                                ? item.customer.facebook_name
+                                : 'No Social'}
                             </Typography>
                           </Stack>
                           <Stack
@@ -130,7 +143,9 @@ const UpcomingEvent = ({
                               variant='body2'
                               color={theme.palette.secondary.light}
                             >
-                              {item.customer.contact_number}
+                              {item.customer !== null
+                                ? item.customer.contact_number
+                                : 'No Contact Number'}
                             </Typography>
                           </Stack>
                         </Stack>
@@ -139,7 +154,20 @@ const UpcomingEvent = ({
                   </Grid>
                 </React.Fragment>
               )
-          )}
+          )
+        ) : (
+          <Stack
+            alignItems={'center'}
+            justifyContent='center'
+            height={'100%'}
+            width='100%'
+          >
+            <BoxRemove size='48' color={theme.palette.error.main} />
+            <Typography variant='h6' color='error'>
+              No aniversary
+            </Typography>
+          </Stack>
+        )}
       </Grid>
     </>
   );

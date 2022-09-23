@@ -38,8 +38,8 @@ import PieChartComp from './PieChartComp';
 
 const Dashboard = () => {
   // use moment
-  let monday = moment().weekday(1);
-  let friday = moment().weekday(5);
+  let monday = moment().weekday(0);
+  let friday = moment().weekday(6);
   const [dateRange, setDateRange] = useState({
     startDate: moment(monday).format('YYYY-MM-DD'),
     endDate: moment(friday).format('YYYY-MM-DD'),
@@ -272,7 +272,11 @@ const Dashboard = () => {
                         key={i}
                         daysLeft={parseInt(s) - parseInt(moment().format('DD'))}
                         eventDate={dateFormat}
-                        name={data.customer.customer_name}
+                        name={
+                          data.customer !== null
+                            ? data.customer.customer_name
+                            : ''
+                        }
                         invoiceId={data.id}
                         eventType={data.type}
                       />

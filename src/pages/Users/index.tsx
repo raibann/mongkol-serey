@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
-import { Add, SearchNormal1 } from 'iconsax-react';
+import { SearchNormal1, UserAdd } from 'iconsax-react';
 import React, { useState } from 'react';
 import theme from 'theme/theme';
 import { UserTableBody, UserTableHead } from './UserTable';
@@ -52,7 +52,7 @@ export default function Users() {
         >
           <Button
             variant='contained'
-            startIcon={<Add />}
+            startIcon={<UserAdd />}
             sx={{
               color: theme.palette.common.white,
               boxShadow: theme.shadows[1],

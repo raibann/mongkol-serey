@@ -1,5 +1,4 @@
 import { Paper, Stack, Typography, Avatar, Grid } from '@mui/material';
-import { Result } from 'ahooks/lib/useRequest/src/types';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, InfoCircle, Trash } from 'iconsax-react';
 import THEME_UTIL from 'utils/theme-util';
@@ -7,19 +6,12 @@ const CustCard = ({
   handleOpenDrawer,
   custList,
   fetchCustDetails,
-  deleteCustomerReq,
+  setConfirmDelete,
 }: {
   handleOpenDrawer: (obj: 'Add' | 'Edit' | 'Details' | '') => void;
   custList: ICustomer.ICustomerRespone | undefined;
   fetchCustDetails: (params_0: { id: number }) => void;
-  deleteCustomerReq: Result<
-    ICustomer.ICustomerDetails,
-    [
-      {
-        id: number;
-      }
-    ]
-  >;
+  setConfirmDelete: React.Dispatch<React.SetStateAction<number | undefined>>;
 }) => {
   return (
     <>
@@ -28,7 +20,6 @@ const CustCard = ({
           <Paper sx={{ p: 2 }}>
             <Stack direction={'column'} alignItems='center' spacing={1.5}>
               <Avatar
-                // src='/images/girlavatar.png'
                 sx={{
                   width: 72,
                   height: 72,
@@ -88,9 +79,7 @@ const CustCard = ({
                 <CusIconButton
                   color='error'
                   onClick={() => {
-                    deleteCustomerReq.run({
-                      id: data.id || 0,
-                    });
+                    setConfirmDelete(data.id);
                   }}
                 >
                   <Trash variant='Outline' />
