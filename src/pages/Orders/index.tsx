@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Box,
   Button,
+  Dialog,
+  DialogTitle,
+  Divider,
   Drawer,
   InputAdornment,
   Pagination,
@@ -11,7 +15,6 @@ import {
   TableContainer,
   ToggleButtonGroup,
   Typography,
-  Box,
 } from '@mui/material';
 import theme from 'theme/theme';
 import BookingInvoice from 'components/ComToPrint/BookingInvoice';
@@ -25,16 +28,17 @@ import useRequest from '@ahooksjs/use-request';
 import ORDER_API from 'api/order';
 import OrderTableBody, { OrderTableHead } from './OrderTable';
 import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
-import { bookingInvoice, finalInvoice } from 'utils/print-util';
 import { CusLoading } from 'components/CusLoading';
+import ReactToPrint from 'react-to-print';
 
 const Orders = () => {
+  // States
   const [ToggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
+  const [printer, setPrinter] = useState<IOrder.Order>();
   const [page, setPage] = React.useState(1);
   const [searchData, setSearchData] = useState('');
-
   const { isMdDown } = useResponsive();
 
   // useRequests
@@ -186,8 +190,7 @@ const Orders = () => {
                 <TableBody>
                   <OrderTableBody
                     data={orderList.data}
-                    componentRef={bookingInvoiceRef}
-                    enablePrint
+                    onPrintClick={(i) => setPrinter(orderList.data[i])}
                     onEditClick={(i) => setOrderDetail(orderList.data[i])}
                   />
                 </TableBody>
@@ -208,18 +211,6 @@ const Orders = () => {
             </Stack>
           )}
         </TableContainer>
-        <Box sx={{ display: 'none' }}>
-          <BookingInvoice
-            ref={bookingInvoiceRef}
-            customerInfo={bookingInvoice.customerInfo}
-            orderInfo={bookingInvoice.orderInfo}
-          />
-          <FinalInvoice
-            ref={finalInvoiceRef}
-            customerInfo={finalInvoice.customerInfo}
-            orderInfo={finalInvoice.orderInfo}
-          />
-        </Box>
 
         <Stack
           alignItems='center'
@@ -256,15 +247,81 @@ const Orders = () => {
         />
       </Drawer>
 
-      {/* <ResponsiveDialog
-        open={openPhotoDialog}
-        onCloseDialog={() => setOpenPhotoDialog(false)}
-        size='sm'
+      <Dialog
+        open={printer !== undefined}
+        onClose={() => setPrinter(undefined)}
+        fullScreen
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            width: 'auto',
+            height: '95vh',
+          },
+        }}
       >
-        <PhotoDialogContent />
-      </ResponsiveDialog> */}
+        <DialogTitle
+          sx={{
+            position: 'sticky',
+            top: 0,
+            boxShadow: (theme) => theme.shadows[2],
+            zIndex: (theme) => theme.zIndex.drawer + 3,
+            backgroundColor: '#fff',
+          }}
+        >
+          <ReactToPrint
+            pageStyle={pageStyle}
+            documentTitle='final invoice'
+            trigger={() => <Button variant='contained'>Booking</Button>}
+            content={() =>
+              (bookingInvoiceRef?.current && bookingInvoiceRef.current) || null
+            }
+          />
+        </DialogTitle>
+        <Box
+          sx={{
+            scale: '0.8',
+            transform: 'translateY(-100px)',
+          }}
+        >
+          {printer && (
+            <BookingInvoice ref={bookingInvoiceRef} order={printer} />
+          )}
+        </Box>
+
+        {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
+          <>
+            <Divider sx={{ borderWidth: '5px' }} />
+            <Box
+              sx={{
+                scale: '0.8',
+                pt: '100px',
+                pb: '100px',
+              }}
+            >
+              <FinalInvoice ref={finalInvoiceRef} order={printer} />
+            </Box>
+          </>
+        )}
+      </Dialog>
     </>
   );
 };
 
 export default Orders;
+
+const pageStyle = ` @page {
+  size: A4;
+  margin:2.54cm;
+}
+
+@media all {
+  .pagebreak {
+    display: none;
+  }
+}
+
+@media print {
+  .pagebreak {
+    page-break-before: always;
+  }
+}`;

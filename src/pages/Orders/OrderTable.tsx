@@ -8,24 +8,20 @@ import {
   Chip,
 } from '@mui/material';
 import moment from 'moment';
-import ReactToPrint from 'react-to-print';
 import theme from 'theme/theme';
 import { FaFacebookSquare, FaTelegram } from 'react-icons/fa';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, MoneySend, Printer } from 'iconsax-react';
-import { pageStyle } from 'utils/print-util';
 import { paidByColor } from 'utils/expense-util';
 
 const OrderTableBody = ({
   data,
-  componentRef,
-  enablePrint,
+  onPrintClick,
   onEditClick,
   onAddExpenseClick,
 }: {
   data: IOrder.Order[] | undefined;
-  componentRef?: React.MutableRefObject<null>;
-  enablePrint?: boolean;
+  onPrintClick?: (i: number) => void;
   onEditClick?: (i: number) => void;
   onAddExpenseClick?: (i: number) => void;
 }) => {
@@ -109,17 +105,14 @@ const OrderTableBody = ({
                 <MoneySend size={18} />
               </CusIconButton>
             )}
-            {enablePrint && componentRef?.current && (
-              <ReactToPrint
-                pageStyle={pageStyle}
-                documentTitle='final invoice'
-                trigger={() => (
-                  <CusIconButton color='primary' sx={{ p: 0.5, mx: 0.5 }}>
-                    <Printer size={18} />
-                  </CusIconButton>
-                )}
-                content={() => componentRef.current}
-              />
+            {onPrintClick && (
+              <CusIconButton
+                color='primary'
+                sx={{ p: 0.5, mx: 0.5 }}
+                onClick={() => onPrintClick(i)}
+              >
+                <Printer size={18} />
+              </CusIconButton>
             )}
           </TableCell>
         </TableRow>

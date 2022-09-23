@@ -13,19 +13,18 @@ import {
 import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
-import { IBookingInvoice } from 'utils/print-util';
+import { eventType } from './FinalInvoice';
+// import { IBookingInvoice } from 'utils/print-util';
+
+interface IBookingInvoice {
+  order: IOrder.Order;
+}
 
 const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
-  (props, ref) => {
-    // eslint-disable-line max-len
-
-    const getMonth = moment(props.orderInfo.eventDate, 'DD/MM/YYYY').format(
-      'MMMM'
-    );
-    const getDay = moment(props.orderInfo.eventDate, 'DD/MM/YYYY').format('DD');
-    const getYear = moment(props.orderInfo.eventDate, 'DD/MM/YYYY').format(
-      'YYYY'
-    );
+  ({ order }, ref) => {
+    const getMonth = moment(order.date).format('MMMM');
+    const getDay = moment(order.date).format('DD');
+    const getYear = moment(order.date).format('YYYY');
     const generateMonth = (month: string) => {
       switch (month) {
         case 'January':
@@ -51,10 +50,15 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
         case 'November':
           return 'វិច្ឆិកា';
         case 'December':
-          return 'ធ្នូរ';
+          return 'ធ្នូ';
         default:
           return;
       }
+    };
+
+    const formatInvoiceId = (value: string) => {
+      const pad = '00000';
+      return pad.substring(0, pad.length - value.length) + value;
     };
 
     return (
@@ -71,7 +75,6 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
             <Stack
               sx={{ height: '100%' }}
               alignItems='flex-start'
-              // justifyContent='center'
               spacing={0.5}
             >
               <Typography
@@ -143,7 +146,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   លេខវិក័យបត្រ៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.orderInfo.invoiceId}
+                  {order.id && formatInvoiceId(order.id?.toString())}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -155,7 +158,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   អតិថិជន​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.customerInfo.name}
+                  {order.customer?.customer_name}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -167,7 +170,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   ទូរស័ព្ទលេខ​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.customerInfo.phone}
+                  {order.customer?.contact_number}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -179,7 +182,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   កម្មវិធី​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.orderInfo.eventDate}
+                  {order.date}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -191,7 +194,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   ទីតាំង​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.orderInfo.eventLocation}
+                  {order.location}
                 </Typography>
               </Stack>
             </Stack>
@@ -204,7 +207,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           fontFamily='Khmer Busra high'
           fontSize={20}
         >
-          វិក័យបត្រកក់ប្រាក់ {props.orderInfo.eventType}
+          វិក័យបត្រកក់ប្រាក់ {(eventType as any)[`${order.type}`]}
         </Typography>
         <Typography
           textAlign='justify'
@@ -217,7 +220,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           ជាអ្នកតំណាងក្រុមហ៊ុន{' '}
           <b>មង្គលសេរីតុរោង&ម្ហូបការ Mungkul Serey Catering Services</b>{' '}
           បានទទួលការកក់ប្រាក់ សេវាកម្មចុងភៅ តុការ កម្មវិធីភ្ជាប់ពាក្យ{' '}
-          <b>ចំនួន {props.orderInfo.tables}។</b>
+          <b>ចំនួន {order.quantity}។</b>
         </Typography>
         <Typography
           textAlign={'center'}
@@ -236,8 +239,9 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           fontSize={18}
         >
           អតិថិជនឈ្មោះ <b>ច័ន្ទ ណុបវីរក្យា</b> មានទីលំនៅនៅ បុរីប៉េងហ៊ួតច្បារអំពៅ
-          ចំនួនទឹកប្រាក់ {props.orderInfo.deposit}
-          <b>({props.orderInfo.amountInKhmer})</b> តាមរយះគណនេយ្យធនាគារ
+          ចំនួនទឹកប្រាក់ ${order.deposit}{' '}
+          {order.amountInKhmer && <b>({order.amountInKhmer})</b>}{' '}
+          តាមរយះគណនេយ្យធនាគារ
           <b>ABA</b> នៅថ្ងៃទី <b>{getDay}</b> ខែ{' '}
           <b>{generateMonth(getMonth)}</b> ឆ្នាំ <b>{getYear}</b>។
         </Typography>
@@ -269,7 +273,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.orderInfo.listFoodOrder?.map((data) => (
+            {order.eventPackages?.map((data) => (
               <TableRow key={data.id}>
                 <TableCell></TableCell>
                 <TableCell>
@@ -288,7 +292,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     lineHeight={1.8}
                     component='div'
                   >
-                    {data.list.map((ls) => (
+                    {data?.packageItems?.map((ls) => (
                       <React.Fragment key={ls.id}>
                         <ol
                           style={{
@@ -297,9 +301,6 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                             fontSize: 18,
                           }}
                         >
-                          <li>{ls.title}</li>
-                          <li>{ls.title}</li>
-                          <li>{ls.title}</li>
                           <li>{ls.title}</li>
                         </ol>
                       </React.Fragment>
@@ -314,7 +315,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     fontWeight={'bold'}
                   >
                     {data.quantity}
-                    {data.units}
+                    {data.unit}
                   </Typography>
                 </TableCell>
                 <TableCell sx={{ verticalAlign: 'top', textAlign: 'center' }}>
@@ -324,9 +325,9 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     fontSize={18}
                     fontWeight={'bold'}
                   >
-                    {data.price}
+                    {(data.price / data.quantity).toFixed(2)}
                     {data.price && '$/'}
-                    {data.units}
+                    {data.unit}
                   </Typography>
                 </TableCell>
               </TableRow>

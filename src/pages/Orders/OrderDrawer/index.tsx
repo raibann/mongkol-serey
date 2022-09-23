@@ -39,6 +39,7 @@ import FinalInvoiceForm, {
 import { CusBackDrop } from 'components/CusLoading';
 import CUSTOMER_API from 'api/customer';
 import { paidBy } from 'utils/expense-util';
+import EXPENSE_API from 'api/expense';
 
 export interface IOrderForm {
   orderId?: number;
@@ -79,8 +80,16 @@ const OrderDrawer = ({
     manual: true,
     onSuccess: (data) => {
       console.log('success', data);
+      if (orderDetail?.expenses && orderDetail.expenses.length > 0) {
+        expenseActionReq.run(orderDetail.id || 0, orderDetail.expenses);
+        return;
+      }
       onActionSuccess();
     },
+  });
+  const expenseActionReq = useRequest(EXPENSE_API.addExpense, {
+    manual: true,
+    onSuccess: () => onActionSuccess(),
   });
   const customerListReq = useRequest(CUSTOMER_API.getCustomerList, {
     manual: true,
@@ -263,7 +272,9 @@ const OrderDrawer = ({
 
   return (
     <>
-      {orderActionReq.loading && <CusBackDrop open={true} />}
+      {(orderActionReq.loading || expenseActionReq.loading) && (
+        <CusBackDrop open={true} />
+      )}
 
       <Stack
         p={3}

@@ -13,7 +13,7 @@ import {
   Paper,
 } from '@mui/material';
 import { Add, Call, Note, UserSquare, Location, Calendar } from 'iconsax-react';
-import { CusLoading } from 'components/CusLoading';
+import { CusBackDrop, CusLoading } from 'components/CusLoading';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { listTitle } from 'utils/expense-util';
 import { useEffect, useState } from 'react';
@@ -135,6 +135,8 @@ function ExpenseDialogs({
 
   return (
     <>
+      {addExpenseReq.loading && <CusBackDrop open={true} />}
+
       <FormProvider {...method}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container sx={{ height: ['auto', 'auto', '90vh'] }}>
