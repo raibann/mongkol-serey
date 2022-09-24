@@ -14,26 +14,24 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect } from 'react';
-import theme from 'theme/theme';
-import React from 'react';
-import CusToggleButton from 'components/CusToggleButton';
-import PageHeader from 'components/PageHeader';
 import { CusIconButton } from 'components/CusIconButton';
 import { BoxRemove, Calendar2, User } from 'iconsax-react';
 import { Notification } from 'iconsax-react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
-import moment from 'moment';
-// import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import { DatePicker } from '@mui/x-date-pickers';
+import { Controller, useForm } from 'react-hook-form';
+import { useReminderContext } from 'context/ReminderContext';
+import { CusLoading } from 'components/CusLoading';
+import theme from 'theme/theme';
+import React from 'react';
+import CusToggleButton from 'components/CusToggleButton';
+import PageHeader from 'components/PageHeader';
+import moment from 'moment';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import useResponsive from 'hook/useResponsive';
-import { Controller, useForm } from 'react-hook-form';
 import THEME_UTIL from 'utils/theme-util';
-import { useReminderContext } from 'context/ReminderContext';
-import { CusLoading } from 'components/CusLoading';
 
 interface IDateRange {
   startDate: string;
@@ -45,8 +43,8 @@ const DashboardHeader = ({
   toggleValue,
   setToggleValue,
 }: {
-  toggleValue: string;
-  setToggleValue: React.Dispatch<React.SetStateAction<string>>;
+  toggleValue: string | null;
+  setToggleValue: React.Dispatch<React.SetStateAction<string | null>>;
   setDateRange: React.Dispatch<
     React.SetStateAction<{
       startDate: string;
@@ -93,8 +91,7 @@ const DashboardHeader = ({
       startDate: moment(data.startDate).format('YYYY-MM-DD'),
       endDate: moment(data.endDate).format('YYYY-MM-DD'),
     });
-    // console.log('start date', moment(data.startDate).format('YYYY-MM-DD'));
-    // console.log('end date', moment(data.endDate).format('YYYY-MM-DD'));
+    setToggleValue(null);
   };
   // notification
   const handleClickNoti = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -141,7 +138,7 @@ const DashboardHeader = ({
       >
         <Stack
           direction={'row'}
-          spacing={2}
+          // spacing={2}
           justifyContent='flex-end'
           sx={{ width: '100%', mt: { xs: 2, md: 0 } }}
           alignItems='center'
@@ -162,13 +159,20 @@ const DashboardHeader = ({
             sx={{
               width: { xs: '100%', md: '30%' },
               height: 40,
+              mr: 2,
             }}
           >
             <CusToggleButton value='week'>Week</CusToggleButton>
             <CusToggleButton value='month'>Month</CusToggleButton>
             <CusToggleButton value='year'>Year</CusToggleButton>
           </ToggleButtonGroup>
-          <CusIconButton color='primary' onClick={handleClickDatepicker}>
+          <CusIconButton
+            color='primary'
+            onClick={handleClickDatepicker}
+            sx={{
+              mr: { xs: 0, md: 2 },
+            }}
+          >
             <Calendar2 size='24' variant='Outline' />
           </CusIconButton>
           <Badge color='error' badgeContent={temp?.length}>

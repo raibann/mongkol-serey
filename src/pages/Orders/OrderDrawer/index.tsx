@@ -13,10 +13,8 @@ import {
   SubmitHandler,
   useForm,
 } from 'react-hook-form';
-import CustomerForm, {
-  CustomerInput,
-} from 'pages/Customer/CustForm/CustomerForm';
-import { BsPlus, BsCheckCircleFill, BsCircle } from 'react-icons/bs';
+import { CustomerInput } from 'pages/Customer/CustForm/CustomerForm';
+import { BsPlus } from 'react-icons/bs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { useEffect, useRef, useState } from 'react';
 import { BoxRemove, Trash } from 'iconsax-react';
@@ -51,7 +49,6 @@ export interface IOrderForm {
   depositText: string;
   paidBy: string;
   quantity: number | '';
-  unitPrice: string;
   listMenu: IlistMenu[];
 }
 
@@ -59,6 +56,7 @@ interface IlistMenu {
   id: number | undefined;
   title: string;
   quantity: number | '';
+  unitPrice: number | '';
   unit: string;
   price: number | '';
   menuItem: {
@@ -102,7 +100,7 @@ const OrderDrawer = ({
   // states
   const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
   const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
-  const [newCustomer, setNewCustomer] = useState(0);
+  const [newCustomer] = useState(0);
   const [selectedCustomer, setSelectedCustomer] =
     useState<ICustomer.Customer>();
 
@@ -129,7 +127,8 @@ const OrderDrawer = ({
             category: menu.title,
             price: +menu.price,
             quantity: +menu.quantity,
-            unit: menu.unit,
+            unit:
+              menu.unit === undefined || menu.unit === '' ? 'តុ' : menu.unit,
             packageItems:
               menu.menuItem?.map((item) => {
                 return {
@@ -163,7 +162,8 @@ const OrderDrawer = ({
           id: item?.id,
           title: item.category || '',
           price: +item.price || '',
-          unit: item.unit || '',
+          unit: item.unit || 'តុ',
+          unitPrice: +(+item.price / item.quantity).toFixed(2) || '',
           quantity: item.quantity || '',
           menuItem: item.packageItems?.map((e) => {
             return {
@@ -216,6 +216,7 @@ const OrderDrawer = ({
         title: '',
         price: '',
         quantity: '',
+        unitPrice: '',
         unit: '',
         menuItem: [
           {
@@ -297,7 +298,7 @@ const OrderDrawer = ({
       </Stack>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {!orderDetail && (
+          {/* {!orderDetail && (
             <Stack direction='row' spacing={2} px={3}>
               <Button
                 disableElevation
@@ -330,15 +331,14 @@ const OrderDrawer = ({
                 New Customer
               </Button>
             </Stack>
-          )}
+          )} */}
 
-          {newCustomer === 1 && (
+          {/* {newCustomer === 1 && (
             <>
               <InputGroupTitle marginTop={3}>Customer Info</InputGroupTitle>
-
               <CustomerForm />
             </>
-          )}
+          )} */}
 
           <InputGroupTitle marginTop={!newCustomer ? 3 : 8}>
             Order Info
@@ -720,8 +720,8 @@ const OrderDrawer = ({
                 >
                   <Typography sx={{ flex: 1 }}>Title</Typography>
                   <Typography sx={{ flex: 1 }}>Quanity</Typography>
-                  <Typography sx={{ flex: 1 }}>Unit</Typography>
-                  <Typography sx={{ flex: 1 }}>Price</Typography>
+                  <Typography sx={{ flex: 1 }}>Price/Unit</Typography>
+                  <Typography sx={{ flex: 1 }}>Total Price</Typography>
                   <div style={{ width: 40 }} />
                 </Stack>
               )}

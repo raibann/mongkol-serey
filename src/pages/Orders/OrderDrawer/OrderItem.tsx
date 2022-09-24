@@ -4,6 +4,8 @@ import {
   Typography,
   TextField,
   IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
@@ -29,21 +31,45 @@ const OrderItem = ({
   onRemoveOrder: () => void;
 }) => {
   const { control, setValue, watch } = useFormContext<IOrderForm>();
+  const unitPrice = watch(`listMenu.${index}.unitPrice`);
+  const quantity = watch(`listMenu.${index}.quantity`);
+  const price = watch(`listMenu.${index}.price`);
+
   const [menuItems, setMenuItems] = useState<IMenuItems[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
+    setValue(`listMenu.${index}.unit`, 'តុ');
+
     if (menuItemsP) {
       return setMenuItems(menuItemsP);
     }
 
-    setMenuItems([
-      {
-        id: undefined,
-        title: '',
-      },
-    ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // useEffect(() => {
+  //   if (unitPrice && quantity) {
+  //     if (!isNaN(+unitPrice * quantity)) {
+  //       setValue(
+  //         `listMenu.${index}.price`,
+  //         +(+unitPrice * quantity).toFixed(2)
+  //       );
+  //     } else {
+  //       setValue(`listMenu.${index}.price`, '');
+  //     }
+  //   } else {
+  //     setValue(`listMenu.${index}.price`, '');
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [unitPrice, quantity]);
 
   const addMenuItemHandler = () => {
     setMenuItems([
@@ -127,39 +153,104 @@ const OrderItem = ({
                     placeholder='Quantity'
                     error={Boolean(error)}
                     helperText={error?.message}
+                    onKeyUp={() => {
+                      if (unitPrice && quantity) {
+                        if (!isNaN(+unitPrice * quantity)) {
+                          setValue(
+                            `listMenu.${index}.price`,
+                            +(+unitPrice * quantity).toFixed(2)
+                          );
+                        } else {
+                          setValue(`listMenu.${index}.price`, '');
+                        }
+                      } else {
+                        setValue(`listMenu.${index}.price`, '');
+                      }
+                    }}
                     {...field}
                   />
                 </LabelTextField>
               );
             }}
           />
-          <Controller
-            control={control}
-            name={`listMenu.${index}.unit`}
-            defaultValue=''
-            rules={{
-              required: { value: true, message: 'Unit is Required' },
-            }}
-            render={({ field, fieldState: { error } }) => {
-              return (
-                <LabelTextField label='Unit'>
-                  <StyledOutlinedTextField
-                    size='small'
-                    placeholder='Unit'
-                    error={Boolean(error)}
-                    helperText={error?.message}
-                    {...field}
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
+
+          <LabelTextField label='Price/Unit'>
+            <Stack
+              direction='row'
+              sx={{
+                position: 'relative',
+              }}
+            >
+              <Controller
+                control={control}
+                name={`listMenu.${index}.unitPrice`}
+                defaultValue=''
+                render={({ field, fieldState: { error } }) => {
+                  return (
+                    <StyledOutlinedTextField
+                      size='small'
+                      placeholder='Price'
+                      error={Boolean(error)}
+                      helperText={error?.message}
+                      onKeyUp={() => {
+                        if (unitPrice && quantity) {
+                          if (!isNaN(+unitPrice * quantity)) {
+                            setValue(
+                              `listMenu.${index}.price`,
+                              +(+unitPrice * quantity).toFixed(2)
+                            );
+                          } else {
+                            setValue(`listMenu.${index}.price`, '');
+                          }
+                        } else {
+                          setValue(`listMenu.${index}.price`, '');
+                        }
+                      }}
+                      {...field}
+                    />
+                  );
+                }}
+              />
+              <Button
+                onClick={handleClick}
+                color='inherit'
+                sx={{
+                  background: '#fff',
+                  position: 'absolute',
+                  right: 2,
+                  top: 2,
+                  bottom: 2,
+                  borderRadius: 2,
+                  color: '#000',
+                  width: 'auto',
+                }}
+              >
+                /{watch(`listMenu.${index}.unit`)}
+              </Button>
+              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                {['តុ', 'ចាន', 'ខ្ទះ', 'កែវ', 'កំប៉ុង', 'គ្រឿង'].map((e) => {
+                  return (
+                    <MenuItem
+                      key={e}
+                      onClick={() => {
+                        setValue(`listMenu.${index}.unit`, e);
+                        handleClose();
+                      }}
+                    >
+                      {e}
+                    </MenuItem>
+                  );
+                })}
+              </Menu>
+            </Stack>
+          </LabelTextField>
+
           <Controller
             control={control}
             name={`listMenu.${index}.price`}
             defaultValue=''
             rules={{
-              required: { value: true, message: 'Price is Required' },
+              required: { value: true, message: 'Total Price is Required' },
               pattern: {
                 value: validatePatterns.numberOnly,
                 message: 'Price should be number only',
@@ -167,12 +258,26 @@ const OrderItem = ({
             }}
             render={({ field, fieldState: { error } }) => {
               return (
-                <LabelTextField label='Price'>
+                <LabelTextField label='Total Price'>
                   <StyledOutlinedTextField
                     size='small'
-                    placeholder='Price'
+                    placeholder='Total Price'
                     error={Boolean(error)}
                     helperText={error?.message}
+                    onKeyUp={() => {
+                      if (price && quantity) {
+                        if (!isNaN(+price / quantity)) {
+                          setValue(
+                            `listMenu.${index}.unitPrice`,
+                            +(+price / quantity).toFixed(2)
+                          );
+                        } else {
+                          setValue(`listMenu.${index}.unitPrice`, '');
+                        }
+                      } else {
+                        setValue(`listMenu.${index}.unitPrice`, '');
+                      }
+                    }}
                     {...field}
                   />
                 </LabelTextField>

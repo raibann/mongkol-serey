@@ -29,24 +29,24 @@ const navigationUtil: Navigation = [
     icon: <MenuBoard size='24' />,
   },
   {
-    title: 'Expense',
-    toUrl: 'expense',
-    icon: <MoneySend size='24' />,
-  },
-  {
-    title: 'Stocks',
-    toUrl: 'stocks',
-    icon: <Box size='24' />,
-  },
-  {
     title: 'Customers',
     toUrl: 'customers',
     icon: <Profile2User size='24' />,
   },
   {
+    title: 'Expense',
+    toUrl: 'expense',
+    icon: <MoneySend size='24' />,
+  },
+  {
     title: 'Reminder',
     toUrl: 'reminder',
     icon: <Notification size='24' />,
+  },
+  {
+    title: 'Stocks',
+    toUrl: 'stocks',
+    icon: <Box size='24' />,
   },
   {
     title: 'Manage Users',

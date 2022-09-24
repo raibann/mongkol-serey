@@ -40,11 +40,12 @@ const Dashboard = () => {
   // use moment
   let monday = moment().weekday(0);
   let friday = moment().weekday(6);
-  const [toggleValue, setToggleValue] = useState('week');
+  const [toggleValue, setToggleValue] = useState<string | null>('week');
   const [dateRange, setDateRange] = useState({
     startDate: moment(monday).format('YYYY-MM-DD'),
     endDate: moment(friday).format('YYYY-MM-DD'),
   });
+  const [loadingDateRange, setLoadingDateRange] = useState(false);
   const { isMdDown } = useResponsive();
   // fetch total
   const {
@@ -53,6 +54,7 @@ const Dashboard = () => {
     loading: isDashLoading,
   } = useRequest(DASHBOARD_API.getTotals, {
     manual: true,
+    onSuccess: () => setLoadingDateRange(false),
   });
   // fetch chart
   const { data: chartData, loading: isLoadingChart } = useRequest(
@@ -67,7 +69,12 @@ const Dashboard = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange]);
-  // console.log(dateRange);
+
+  useEffect(() => {
+    setLoadingDateRange(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toggleValue]);
+
   // function generate month
   const monthGenerate = (value: number) => {
     switch (value) {
@@ -128,7 +135,7 @@ const Dashboard = () => {
       <DashboardHeader
         {...{ setDateRange, fetchDashTotal, setToggleValue, toggleValue }}
       />
-      {isDashLoading ? (
+      {isDashLoading && isLoadingChart ? (
         <Stack
           sx={{ height: 'calc( 100vh - 74px )' }}
           justifyContent='center'
@@ -140,52 +147,67 @@ const Dashboard = () => {
         <>
           <Stack direction={'row'}>
             <Grid container spacing={2} px={2}>
-              <Grid item xs={12} sm={6} md={6} lg>
-                <DashboardCard
-                  title='Total Profits'
-                  value={`${formatCash(
-                    dashTotal?.totalProfits
-                      ? dashTotal?.totalProfits - dashTotal?.totalExpenses
-                      : 0
-                  )} `}
-                  icon={<MoneyRecive />}
-                  startType={'$'}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6} lg>
-                <DashboardCard
-                  title='Total Expenses'
-                  value={`${formatCash(
-                    dashTotal?.totalExpenses ? dashTotal?.totalExpenses : 0
-                  )}`}
-                  startType={'$'}
-                  icon={<MoneySend />}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6} lg>
-                <DashboardCard
-                  title='Total Orders'
-                  value={`${dashTotal?.totalOrders}`}
-                  icon={<WalletAdd />}
-                  endType={'Events'}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6} lg>
-                <DashboardCard
-                  title='Total Customers'
-                  value={`${dashTotal?.totalCustomer}`}
-                  // percentage='2.3%'
-                  // isHigher
-                  icon={<Profile2User />}
-                  endType={'Customers'}
-                />
-              </Grid>
+              {isDashLoading ? (
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '146px',
+                  }}
+                >
+                  <CusLoading />
+                </Grid>
+              ) : (
+                <>
+                  <Grid item xs={12} sm={6} md={6} lg>
+                    <DashboardCard
+                      title='Total Profits'
+                      value={`${formatCash(
+                        dashTotal?.totalProfits
+                          ? dashTotal?.totalProfits - dashTotal?.totalExpenses
+                          : 0
+                      )} `}
+                      icon={<MoneyRecive />}
+                      startType={'$'}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6} lg>
+                    <DashboardCard
+                      title='Total Expenses'
+                      value={`${formatCash(dashTotal?.totalExpenses || 0)}`}
+                      startType={'$'}
+                      icon={<MoneySend />}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6} lg>
+                    <DashboardCard
+                      title='Total Orders'
+                      value={`${dashTotal?.totalOrders || 0}`}
+                      icon={<WalletAdd />}
+                      endType={'Events'}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6} lg>
+                    <DashboardCard
+                      title='Total Customers'
+                      value={`${dashTotal?.totalCustomer || 0}`}
+                      // percentage='2.3%'
+                      // isHigher
+                      icon={<Profile2User />}
+                      endType={'Customers'}
+                    />
+                  </Grid>
+                </>
+              )}
             </Grid>
           </Stack>
           <Stack
             mt={2}
             px={2}
-            direction={{ xs: 'column', md: 'row' }}
+            direction={{ xs: 'column-reverse', md: 'row' }}
             spacing={2}
             height={{ xs: 1020, md: 400 }}
           >
@@ -200,44 +222,35 @@ const Dashboard = () => {
               <Typography fontWeight={500} variant='h5' ml={5} mb={3}>
                 Events
               </Typography>
-              {isLoadingChart ? (
-                <Stack
-                  sx={{ height: '100%' }}
-                  justifyContent='center'
-                  alignItems={'center'}
+
+              <ResponsiveContainer width='100%' height='90%'>
+                <BarChart
+                  data={CHART1_DATA}
+                  barSize={25}
+                  layout={isMdDown ? 'vertical' : 'horizontal'}
                 >
-                  <CusLoading />
-                </Stack>
-              ) : (
-                <ResponsiveContainer width='100%' height='90%'>
-                  <BarChart
-                    data={CHART1_DATA}
-                    barSize={25}
-                    layout={isMdDown ? 'vertical' : 'horizontal'}
-                  >
-                    <CartesianGrid vertical={false} />
+                  <CartesianGrid vertical={false} />
 
-                    {isMdDown ? (
-                      <>
-                        <XAxis type='number' domain={[0, 25]} />
-                        <YAxis dataKey='name' type='category' />
-                      </>
-                    ) : (
-                      <>
-                        <XAxis dataKey='name' />
-                        <YAxis domain={[0, 25]} />
-                      </>
-                    )}
+                  {isMdDown ? (
+                    <>
+                      <XAxis type='number' domain={[0, 25]} />
+                      <YAxis dataKey='name' type='category' />
+                    </>
+                  ) : (
+                    <>
+                      <XAxis dataKey='name' />
+                      <YAxis domain={[0, 25]} />
+                    </>
+                  )}
 
-                    <Tooltip />
-                    <Bar
-                      dataKey='Events'
-                      fill={theme.palette.primary.main}
-                      orientation='top'
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              )}
+                  <Tooltip />
+                  <Bar
+                    dataKey='Events'
+                    fill={theme.palette.primary.main}
+                    orientation='top'
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             </Paper>
 
             <Paper
@@ -323,11 +336,18 @@ const Dashboard = () => {
                 <Typography fontWeight={500} variant='h5' ml={5} mb={3}>
                   Sales Report
                 </Typography>
+
                 <Typography fontWeight={500} variant='subtitle1' mb={3}>
-                  Total Income: $
-                  {`${formatCash(
-                    dashTotal?.totalProfits ? dashTotal?.totalProfits : 0
-                  )}/this ${toggleValue}`}
+                  {isDashLoading || loadingDateRange
+                    ? 'Calculating Income...'
+                    : `${
+                        'Total Income: $' +
+                        formatCash(
+                          dashTotal?.totalProfits ? dashTotal?.totalProfits : 0
+                        )
+                      }${
+                        toggleValue ? `/this ${toggleValue}` : `/specific date`
+                      }`}
                 </Typography>
               </Stack>
               <ResponsiveContainer width='100%' height='90%'>

@@ -270,12 +270,39 @@ const Orders = () => {
         >
           <ReactToPrint
             pageStyle={pageStyle}
-            documentTitle='final invoice'
-            trigger={() => <Button variant='contained'>Booking</Button>}
-            content={() =>
-              (bookingInvoiceRef?.current && bookingInvoiceRef.current) || null
-            }
+            documentTitle='Booking-Invoice'
+            trigger={() => (
+              <Button
+                variant='contained'
+                color='info'
+                disableElevation
+                sx={{
+                  color: '#fff',
+                  mr: 2,
+                }}
+              >
+                Booking
+              </Button>
+            )}
+            content={() => bookingInvoiceRef.current}
           />
+          {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
+            <ReactToPrint
+              pageStyle={pageStyle}
+              documentTitle='Final-Invoice'
+              trigger={() => (
+                <Button
+                  variant='contained'
+                  color='success'
+                  disableElevation
+                  sx={{ color: '#fff' }}
+                >
+                  Final Invoice
+                </Button>
+              )}
+              content={() => finalInvoiceRef.current}
+            />
+          )}
         </DialogTitle>
         <Box
           sx={{
