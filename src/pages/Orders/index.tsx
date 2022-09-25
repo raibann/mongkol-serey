@@ -140,6 +140,15 @@ const Orders = () => {
               placeholder='Search...'
               size='small'
               onChange={(e) => setSearchData(e.currentTarget.value)}
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  searchOrderList({
+                    page: `${page - 1}`,
+                    status: ToggleValue,
+                    search: searchData,
+                  });
+                }
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>

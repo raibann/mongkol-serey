@@ -29,5 +29,11 @@ const ORDER_API = {
     });
     return res;
   },
+  deleteOrder: async (req: { orderId: string }) => {
+    const res: any = await HttpUtil.delete(
+      ROUTE_API.deleteOrder.replace(':id', req.orderId)
+    );
+    return res;
+  },
 };
 export default ORDER_API;

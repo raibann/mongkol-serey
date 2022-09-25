@@ -15,9 +15,9 @@ interface IErrorDialog extends DialogProps {
   onCloseDialog: () => void;
 }
 const ErrorDialog = (props: IErrorDialog) => {
-  const { open } = props;
+  const { open, ...rest } = props;
   return (
-    <Dialog open={open} fullWidth maxWidth='xs'>
+    <Dialog open={open} fullWidth maxWidth='xs' {...rest}>
       <DialogContent>
         <Stack alignItems={'center'} sx={{ px: 4 }} spacing={2}>
           <EmojiSad
@@ -31,7 +31,10 @@ const ErrorDialog = (props: IErrorDialog) => {
           >
             {props.errorTitle || 'NOOB!'}
           </Typography>
-          <Typography sx={{ color: (theme) => theme.palette.error.main }}>
+          <Typography
+            sx={{ color: (theme) => theme.palette.error.main }}
+            textAlign='center'
+          >
             {props.errorMessage}
           </Typography>
           <Button

@@ -28,7 +28,10 @@ export default function Expense() {
   const expenseListReq = useRequest(EXPENSE_API.getExpense, {
     manual: true,
   });
-  const expenseSearchReq = useRequest(expenseListReq.run, { manual: true });
+  const expenseSearchReq = useRequest(expenseListReq.run, {
+    manual: true,
+    debounceInterval: 500,
+  });
 
   // Variable
   const expenseList = expenseListReq.data?.data;
@@ -48,6 +51,7 @@ export default function Expense() {
         status: ToggleValue,
         search: search,
       });
+      return;
     }
 
     expenseListReq.run({
@@ -111,6 +115,15 @@ export default function Expense() {
             size='small'
             fullWidth={isSmDown}
             value={search}
+            onKeyUp={(e) => {
+              if (e.key === 'Enter') {
+                expenseListReq.run({
+                  page: page - 1,
+                  status: ToggleValue,
+                  search: search,
+                });
+              }
+            }}
             onChange={(e) => setSearch(e.target.value)}
             InputProps={{
               endAdornment: (

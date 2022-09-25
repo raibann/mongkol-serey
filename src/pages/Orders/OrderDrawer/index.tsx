@@ -38,6 +38,8 @@ import { CusBackDrop } from 'components/CusLoading';
 import CUSTOMER_API from 'api/customer';
 import { paidBy } from 'utils/expense-util';
 import EXPENSE_API from 'api/expense';
+import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 
 export interface IOrderForm {
   orderId?: number;
@@ -84,13 +86,20 @@ const OrderDrawer = ({
       }
       onActionSuccess();
     },
+    onError: () => setAlertDialog(true),
   });
   const expenseActionReq = useRequest(EXPENSE_API.addExpense, {
     manual: true,
     onSuccess: () => onActionSuccess(),
+    onError: () => setAlertDialog(true),
   });
   const customerListReq = useRequest(CUSTOMER_API.getCustomerList, {
     manual: true,
+  });
+  const deleteOrderReq = useRequest(ORDER_API.deleteOrder, {
+    manual: true,
+    onSuccess: () => setConfirmDialog(false),
+    onError: () => setAlertDialog(true),
   });
 
   // react-hooks-form
@@ -101,6 +110,8 @@ const OrderDrawer = ({
   const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
   const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
   const [newCustomer] = useState(0);
+  const [alertDialog, setAlertDialog] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState(false);
   const [selectedCustomer, setSelectedCustomer] =
     useState<ICustomer.Customer>();
 
@@ -276,6 +287,18 @@ const OrderDrawer = ({
       {(orderActionReq.loading || expenseActionReq.loading) && (
         <CusBackDrop open={true} />
       )}
+
+      <ErrorDialog
+        open={alertDialog}
+        errorTitle='Internal Server Error'
+        errorMessage={
+          orderActionReq.error?.message ||
+          deleteOrderReq.error?.message ||
+          expenseActionReq.error?.message ||
+          'Oops! There seem to be something wrong with your server.'
+        }
+        onCloseDialog={() => setAlertDialog(false)}
+      />
 
       <Stack
         p={3}
@@ -828,21 +851,36 @@ const OrderDrawer = ({
               Save
             </Button>
             {orderDetail && (
-              <IconButton
-                color='inherit'
-                sx={{
-                  aspectRatio: '1/1',
-                  width: '50px',
-                  height: '100%',
-                  color: '#fff',
-                  background: (theme) => theme.palette.error.main,
-                  '&:hover': {
-                    background: (theme) => theme.palette.error.light,
-                  },
-                }}
-              >
-                <Trash />
-              </IconButton>
+              <>
+                <IconButton
+                  color='inherit'
+                  onClick={() => setConfirmDialog(true)}
+                  sx={{
+                    aspectRatio: '1/1',
+                    width: '50px',
+                    height: '100%',
+                    color: '#fff',
+                    background: (theme) => theme.palette.error.main,
+                    '&:hover': {
+                      background: (theme) => theme.palette.error.light,
+                    },
+                  }}
+                >
+                  <Trash />
+                </IconButton>
+
+                <ConfirmDialogSlide
+                  open={confirmDialog}
+                  title='Are you sure you want to delete this order?'
+                  confirm={() =>
+                    deleteOrderReq.run({
+                      orderId: orderDetail?.id?.toString() || '0',
+                    })
+                  }
+                  cancel={() => setConfirmDialog(false)}
+                  loading={deleteOrderReq.loading}
+                />
+              </>
             )}
           </Stack>
         </form>

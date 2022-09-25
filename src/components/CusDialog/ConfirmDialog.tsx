@@ -22,12 +22,14 @@ interface IConfirmDialog extends DialogProps {
   loading: boolean;
 }
 export default function ConfirmDialogSlide(props: IConfirmDialog) {
-  const { open } = props;
+  const { open, ...rest } = props;
   return (
     <Dialog
       open={open}
       TransitionComponent={Transition}
       maxWidth={props.maxWidth}
+      onClose={props.cancel}
+      {...rest}
     >
       <Stack alignItems={'center'} sx={{ p: 4 }} spacing={3}>
         <Stack alignItems={'center'}>
@@ -43,10 +45,10 @@ export default function ConfirmDialogSlide(props: IConfirmDialog) {
         <Stack direction={'row'} spacing={4}>
           <Button
             variant='outlined'
-            color='info'
+            color='error'
             sx={{
               '&:hover': {
-                bgcolor: theme.palette.info.main,
+                bgcolor: theme.palette.error.main,
                 color: theme.palette.common.white,
               },
             }}
@@ -58,10 +60,10 @@ export default function ConfirmDialogSlide(props: IConfirmDialog) {
             onClick={props.confirm}
             loading={props.loading}
             variant='outlined'
-            color='error'
+            color='info'
             sx={{
               '&:hover': {
-                bgcolor: theme.palette.error.main,
+                bgcolor: theme.palette.info.main,
                 color: theme.palette.common.white,
               },
             }}

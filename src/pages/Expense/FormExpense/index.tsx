@@ -44,7 +44,7 @@ function FormExpense({
         <Controller
           control={control}
           name={`expenseRowData.${index}.totalPrice`}
-          defaultValue=''
+          defaultValue={0}
           rules={{
             required: { value: true, message: 'Total price is required' },
             pattern: {

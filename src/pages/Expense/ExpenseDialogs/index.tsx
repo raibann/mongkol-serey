@@ -23,6 +23,7 @@ import theme from 'theme/theme';
 import FormExpense from '../FormExpense';
 import moment from 'moment';
 import EXPENSE_API from 'api/expense';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 
 export interface IAddExpenseInput {
   expenseRowData: IExpenseRow[];
@@ -30,7 +31,7 @@ export interface IAddExpenseInput {
 export interface IExpenseRow {
   id?: number;
   title: string;
-  totalPrice: '' | number;
+  totalPrice: number;
   paidBy: string;
   other: string;
 }
@@ -48,6 +49,7 @@ function ExpenseDialogs({
   const addExpenseReq = useRequest(EXPENSE_API.addExpense, {
     manual: true,
     onSuccess: () => onAddExpenseSuccess(),
+    onError: () => setAlertDialog(true),
   });
 
   // React-hooks-form
@@ -73,6 +75,7 @@ function ExpenseDialogs({
   // States
   const [loading, setLoading] = useState(false);
   const [listExpense, setListExpense] = useState<IExpenseRow[]>([]);
+  const [alertDialog, setAlertDialog] = useState(false);
   const { isSmDown } = useResponsive();
 
   // useEffects
@@ -109,10 +112,11 @@ function ExpenseDialogs({
 
   const handleAddNewRowDataExpense = () => {
     setListExpense([
+      ...listExpense,
       {
         id: undefined,
         title: '',
-        totalPrice: '',
+        totalPrice: 0,
         paidBy: '',
         other: '',
       },
@@ -136,6 +140,16 @@ function ExpenseDialogs({
   return (
     <>
       {addExpenseReq.loading && <CusBackDrop open={true} />}
+
+      <ErrorDialog
+        open={alertDialog}
+        onCloseDialog={() => setAlertDialog(false)}
+        errorTitle='Internal Server Error'
+        errorMessage={
+          addExpenseReq.error?.message ||
+          "Something went wrong! Couldn't add expense to this order."
+        }
+      />
 
       <FormProvider {...method}>
         <form onSubmit={handleSubmit(onSubmit)}>
