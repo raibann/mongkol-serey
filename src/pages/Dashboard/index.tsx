@@ -269,11 +269,11 @@ const Dashboard = () => {
                 >
                   {chartData?.reminder.map((data, i) => {
                     const dateFormat = moment(data.date).format('DD-MM-YYYY');
-                    const s = moment(data.date).format('DD');
+                    // const s = moment(data.date).format('DD');
                     return (
                       <AnniversaryItem
                         key={i}
-                        daysLeft={parseInt(s) - parseInt(moment().format('DD'))}
+                        daysLeft={1 - moment().diff(data.date, 'days')}
                         eventDate={dateFormat}
                         name={
                           data.customer !== null

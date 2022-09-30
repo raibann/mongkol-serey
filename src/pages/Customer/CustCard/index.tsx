@@ -1,17 +1,19 @@
-import { Paper, Stack, Typography, Avatar, Grid } from '@mui/material';
+import { Paper, Stack, Typography, Avatar, Grid, Tooltip } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, InfoCircle, Trash } from 'iconsax-react';
-import THEME_UTIL from 'utils/theme-util';
+
 const CustCard = ({
   handleOpenDrawer,
   custList,
   fetchCustDetails,
   setConfirmDelete,
+  changeBackground,
 }: {
   handleOpenDrawer: (obj: 'Add' | 'Edit' | 'Details' | '') => void;
   custList: ICustomer.ICustomerRespone | undefined;
   fetchCustDetails: (params_0: { id: number }) => void;
   setConfirmDelete: React.Dispatch<React.SetStateAction<number | undefined>>;
+  changeBackground: (name?: string) => string;
 }) => {
   return (
     <>
@@ -23,8 +25,8 @@ const CustCard = ({
                 sx={{
                   width: 72,
                   height: 72,
-                  background: THEME_UTIL.goldGradientMain,
-                  color: (theme) => theme.palette.secondary.main,
+                  background: changeBackground(data.customer_name),
+                  color: (theme) => theme.palette.common.white,
                   textTransform: 'uppercase',
                   fontSize: 24,
                 }}
@@ -58,32 +60,38 @@ const CustCard = ({
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
-                <CusIconButton
-                  color='info'
-                  onClick={() => {
-                    handleOpenDrawer('Edit');
-                    fetchCustDetails({ id: data.id || 0 });
-                  }}
-                >
-                  <Edit variant='Outline' />
-                </CusIconButton>
-                <CusIconButton
-                  color='success'
-                  onClick={() => {
-                    handleOpenDrawer('Details');
-                    fetchCustDetails({ id: data.id || 0 });
-                  }}
-                >
-                  <InfoCircle variant='Outline' />
-                </CusIconButton>
-                <CusIconButton
-                  color='error'
-                  onClick={() => {
-                    setConfirmDelete(data.id);
-                  }}
-                >
-                  <Trash variant='Outline' />
-                </CusIconButton>
+                <Tooltip title='Edit' arrow>
+                  <CusIconButton
+                    color='info'
+                    onClick={() => {
+                      handleOpenDrawer('Edit');
+                      fetchCustDetails({ id: data.id || 0 });
+                    }}
+                  >
+                    <Edit variant='Outline' />
+                  </CusIconButton>
+                </Tooltip>
+                <Tooltip title='Details' arrow>
+                  <CusIconButton
+                    color='success'
+                    onClick={() => {
+                      handleOpenDrawer('Details');
+                      fetchCustDetails({ id: data.id || 0 });
+                    }}
+                  >
+                    <InfoCircle variant='Outline' />
+                  </CusIconButton>
+                </Tooltip>
+                <Tooltip title='Delete' arrow>
+                  <CusIconButton
+                    color='error'
+                    onClick={() => {
+                      setConfirmDelete(data.id);
+                    }}
+                  >
+                    <Trash variant='Outline' />
+                  </CusIconButton>
+                </Tooltip>
               </Stack>
             </Stack>
           </Paper>
