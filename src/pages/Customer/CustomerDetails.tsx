@@ -20,14 +20,15 @@ import {
 } from 'react-icons/fa';
 import theme from 'theme/theme';
 import { Location } from 'iconsax-react';
-import THEME_UTIL from 'utils/theme-util';
 
 export default function CustomerDetails({
   custDetails,
   isLoadingCustDetails,
+  changeBackground,
 }: {
   custDetails: ICustomer.ICustomerDetails | undefined;
   isLoadingCustDetails: boolean;
+  changeBackground: (name?: string) => string;
 }) {
   const formatInvoiceId = (value: string) => {
     const pad = '00000';
@@ -53,8 +54,10 @@ export default function CustomerDetails({
                   sx={{
                     width: 72,
                     height: 72,
-                    background: THEME_UTIL.goldGradientMain,
-                    color: (theme) => theme.palette.secondary.main,
+                    background: changeBackground(
+                      custDetails && custDetails?.customer.customer_name
+                    ),
+                    color: (theme) => theme.palette.common.white,
                     textTransform: 'uppercase',
                     fontSize: 24,
                     boxShadow: (theme) => theme.shadows[1],
