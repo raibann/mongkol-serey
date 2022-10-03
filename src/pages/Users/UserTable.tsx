@@ -11,6 +11,7 @@ import { CusIconButton } from 'components/CusIconButton';
 import { Edit, Trash } from 'iconsax-react';
 import theme from 'theme/theme';
 import { IUser } from 'utils/users-util';
+import { changeBackground } from 'utils/validate-util';
 export const UserTableBody = ({
   props,
   index,
@@ -20,20 +21,6 @@ export const UserTableBody = ({
   index: number;
   onEdit: (obj: 'Add' | 'Edit' | '') => void;
 }) => {
-  const changeBackground = (name: string) => {
-    var hash = 0;
-    let i;
-    for (i = 0; i < name.length; i += 1) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    let color = '#';
-
-    for (i = 0; i < 3; i += 1) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.slice(-2);
-    }
-    return color;
-  };
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
       <TableCell>{index + 1}</TableCell>

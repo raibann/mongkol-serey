@@ -10,6 +10,7 @@ import { CusIconButton } from 'components/CusIconButton';
 import { Calculator, Edit, Trash } from 'iconsax-react';
 import theme from 'theme/theme';
 import { paidByColor } from 'utils/expense-util';
+import { separateComma } from 'utils/validate-util';
 
 export const StockTableBody = ({
   stockList,
@@ -36,7 +37,7 @@ export const StockTableBody = ({
           <TableCell>{index + 1}</TableCell>
           <TableCell>{data.productName}</TableCell>
           <TableCell>{` ${data.quantity} ${data.unit}`}</TableCell>
-          <TableCell>${data.price}</TableCell>
+          <TableCell>${separateComma(data.price)}</TableCell>
           <TableCell>{data.shopName}</TableCell>
           <TableCell>
             <Chip

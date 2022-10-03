@@ -21,9 +21,10 @@ import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import { BoxAdd, BoxRemove, SearchNormal1 } from 'iconsax-react';
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import theme from 'theme/theme';
 import { stockData } from 'utils/stock-util';
+import { validatePatterns } from 'utils/validate-util';
 import FormStock from './FormStock';
 import { StockTableBody, StockTableHead } from './stockTable';
 export interface IStockInput {
@@ -34,6 +35,7 @@ export interface IStockInput {
   shopName: string;
   paidBy: string;
   price: string;
+  currency: string;
 }
 
 const Stocks = () => {
@@ -44,15 +46,25 @@ const Stocks = () => {
   const [useStock, setUseStock] = useState<IStock.IStockDetails | undefined>();
   const [openUseStock, setOpenStock] = useState(false);
   const methods = useForm<IStockInput>();
-  const { handleSubmit, setValue } = methods;
-  console.log('useStock', useStock);
+  const { setValue, control, handleSubmit, watch } = methods;
+
   // fetch data
+  // get list
   const {
     data: stockList,
     run: fetchStockList,
     loading: isLoadingStockList,
     refresh: refreshStockList,
   } = useRequest(STOCK_API.getStockList, { manual: true });
+  // add stock
+  const addNewStock = useRequest(STOCK_API.addStock, {
+    manual: true,
+    onSuccess: () => {
+      setOpenDrawer('');
+      refreshStockList();
+    },
+  });
+  // delete list
   const deleteStock = useRequest(STOCK_API.deleteStock, {
     manual: true,
     onSuccess: () => {
@@ -60,7 +72,7 @@ const Stocks = () => {
       setConfirmDelete(undefined);
     },
   });
-  // watch
+  // search list
   useEffect(() => {
     fetchStockList({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,7 +80,6 @@ const Stocks = () => {
   useEffect(() => {
     if (openDrawer === 'Edit') {
       if (useStock) {
-        console.log(useStock.id);
         setValue('productName', useStock.productName);
         setValue('price', useStock.price.toString());
         setValue('quantity', useStock.quantity.toString());
@@ -87,15 +98,24 @@ const Stocks = () => {
       setValue('note', '');
       methods.clearErrors();
     }
-    if (openUseStock) {
-      if (useStock) {
-        console.log(useStock.id);
-      }
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDrawer, openUseStock, useStock]);
   // method
-
+  const handleSubmitStock = (data: IStockInput) => {
+    addNewStock.run({
+      stockReq: {
+        id: useStock?.id || undefined,
+        productName: data.productName,
+        shopName: data.shopName,
+        currency: data.currency,
+        note: data.note,
+        paidBy: data.paidBy,
+        price: +data.price,
+        quantity: +data.quantity,
+        unit: data.unit,
+      },
+    });
+  };
   const handleOpenDrawer = (obj: 'Add' | 'Edit' | '') => {
     setOpenDrawer(obj);
   };
@@ -237,47 +257,76 @@ const Stocks = () => {
       />
       <FormProvider {...methods}>
         <ResponsiveDrawer open={!!openDrawer} onCloseDrawer={() => {}}>
-          <FormStock {...{ handleOpenDrawer, openDrawer, methods }} />
+          <FormStock
+            {...{ handleOpenDrawer, openDrawer, methods, handleSubmitStock }}
+          />
         </ResponsiveDrawer>
-        <Dialog open={openUseStock} maxWidth={'xs'}>
+        <Dialog
+          open={openUseStock}
+          maxWidth={'xs'}
+          onClose={() => {
+            setOpenStock(false);
+          }}
+        >
           <Stack alignItems={'center'} sx={{ p: 4 }} spacing={3}>
             <Typography variant='h5'>Current Stocks: 100</Typography>
-            <Stack direction={'row'} spacing={2}>
-              <StyledOutlinedTextField placeholder='Enter value' />
-              <LoadingButton
-                type='submit'
-                loading={false}
-                variant='contained'
-                sx={{
-                  '&:hover': {
-                    bgcolor: theme.palette.primary.main,
-                  },
-                  boxShadow: 0,
-                }}
-                onClick={() => {
-                  setOpenStock(false);
-                }}
-              >
-                Use
-              </LoadingButton>
-              <LoadingButton
-                type='submit'
-                loading={false}
-                variant='contained'
-                color='info'
-                sx={{
-                  '&:hover': {
-                    bgcolor: theme.palette.info.main,
-                  },
-                  boxShadow: 0,
-                }}
-                onClick={() => {
-                  setOpenStock(false);
-                }}
-              >
-                Add
-              </LoadingButton>
-            </Stack>
+            <form>
+              <Stack direction={'row'} spacing={2}>
+                <Controller
+                  control={control}
+                  name='quantity'
+                  defaultValue=''
+                  rules={{
+                    required: {
+                      value:
+                        watch('quantity') > `${useStock?.quantity}`
+                          ? true
+                          : false,
+                      message: 'It over current qty',
+                    },
+                    pattern: {
+                      value: validatePatterns.numberOnly,
+                      message: 'Required only number',
+                    },
+                  }}
+                  render={({ field, fieldState: { error } }) => {
+                    return (
+                      <StyledOutlinedTextField
+                        placeholder='Enter value'
+                        error={Boolean(error)}
+                        helperText={error?.message}
+                        {...field}
+                      />
+                    );
+                  }}
+                />
+                <LoadingButton
+                  loading={addNewStock.loading}
+                  variant='contained'
+                  sx={{
+                    boxShadow: 0,
+                  }}
+                  onClick={handleSubmit((data) => {
+                    console.log(data.quantity);
+                  })}
+                >
+                  Use
+                </LoadingButton>
+                <LoadingButton
+                  loading={addNewStock.loading}
+                  variant='contained'
+                  color='info'
+                  sx={{
+                    boxShadow: 0,
+                  }}
+                  onClick={handleSubmit((data) => {
+                    console.log(data.quantity);
+                  })}
+                >
+                  Add
+                </LoadingButton>
+              </Stack>
+            </form>
           </Stack>
         </Dialog>
       </FormProvider>

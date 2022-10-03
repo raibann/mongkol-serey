@@ -13,6 +13,7 @@ import {
 import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
+import { separateComma } from 'utils/validate-util';
 import { eventType } from './FinalInvoice';
 // import { IBookingInvoice } from 'utils/print-util';
 
@@ -22,9 +23,9 @@ interface IBookingInvoice {
 
 const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
   ({ order }, ref) => {
-    const getMonth = moment(order.date).format('MMMM');
-    const getDay = moment(order.date).format('DD');
-    const getYear = moment(order.date).format('YYYY');
+    const getMonth = moment(order.bookingDate).format('MMMM');
+    const getDay = moment(order.bookingDate).format('DD');
+    const getYear = moment(order.bookingDate).format('YYYY');
     const generateMonth = (month: string) => {
       switch (month) {
         case 'January':
@@ -182,7 +183,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   កម្មវិធី​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {order.date}
+                  {moment(order.date).format('DD.MM.YYYY')}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -219,8 +220,8 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           មានអាស័យដ្ឋានស្ថិតនៅផ្ទះលេខ៨០ ផ្លូវលេខ០៣ បុរីពិភពថ្មីឈូកវ៉ា៣
           ជាអ្នកតំណាងក្រុមហ៊ុន{' '}
           <b>មង្គលសេរីតុរោង&ម្ហូបការ Mungkul Serey Catering Services</b>{' '}
-          បានទទួលការកក់ប្រាក់ សេវាកម្មចុងភៅ តុការ កម្មវិធីភ្ជាប់ពាក្យ{' '}
-          <b>ចំនួន {order.quantity}។</b>
+          បានទទួលការកក់ប្រាក់ សេវាកម្មចុងភៅ តុការ{' '}
+          {(eventType as any)[`${order.type}`]} <b>ចំនួន {order.quantity}តុ។</b>
         </Typography>
         <Typography
           textAlign={'center'}
@@ -238,11 +239,26 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           fontFamily='Khmer Busra high'
           fontSize={18}
         >
-          អតិថិជនឈ្មោះ <b>ច័ន្ទ ណុបវីរក្យា</b> មានទីលំនៅនៅ បុរីប៉េងហ៊ួតច្បារអំពៅ
-          ចំនួនទឹកប្រាក់ ${order.deposit}{' '}
+          អតិថិជនឈ្មោះ{' '}
+          <b>
+            {order.customer === null
+              ? 'No Cutomer'
+              : order.customer.customer_name}
+          </b>{' '}
+          {order.customer !== null && (
+            <>
+              មានទីលំនៅ
+              {order.customer.house
+                ? `ផ្ទះលេខ៖${order.customer.house}`
+                : ''}{' '}
+              {order.customer.street ? `ផ្លូវលេខ៖${order.customer.street}` : ''}{' '}
+              {order.customer.location} {order.customer.commune}{' '}
+              {order.customer.district} {order.customer.province}{' '}
+            </>
+          )}
+          ចំនួនទឹកប្រាក់ ${separateComma(order.deposit)}{' '}
           {order.amountInKhmer && <b>({order.amountInKhmer})</b>}{' '}
-          តាមរយះគណនេយ្យធនាគារ
-          <b>ABA</b> នៅថ្ងៃទី <b>{getDay}</b> ខែ{' '}
+          តាមរយះគណនេយ្យធនាគារ <b>ABA</b> នៅថ្ងៃទី <b>{getDay}</b> ខែ{' '}
           <b>{generateMonth(getMonth)}</b> ឆ្នាំ <b>{getYear}</b>។
         </Typography>
         <Table
@@ -292,19 +308,17 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     lineHeight={1.8}
                     component='div'
                   >
-                    {data?.packageItems?.map((ls) => (
-                      <React.Fragment key={ls.id}>
-                        <ol
-                          style={{
-                            listStyleType: 'khmer',
-                            fontFamily: 'Khmer Busra high',
-                            fontSize: 18,
-                          }}
-                        >
-                          <li>{ls.title}</li>
-                        </ol>
-                      </React.Fragment>
-                    ))}
+                    <ol
+                      style={{
+                        listStyleType: 'khmer',
+                        fontFamily: 'Khmer Busra high',
+                        fontSize: 18,
+                      }}
+                    >
+                      {data?.packageItems?.map((ls, i) => (
+                        <li key={i}>{ls.title}</li>
+                      ))}
+                    </ol>
                   </Typography>
                 </TableCell>
                 <TableCell sx={{ verticalAlign: 'top', textAlign: 'center' }}>
@@ -325,7 +339,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     fontSize={18}
                     fontWeight={'bold'}
                   >
-                    {(data.price / data.quantity).toFixed(2)}
+                    {Math.round(+separateComma(data.price / data.quantity))}
                     {data.price && '$/'}
                     {data.unit}
                   </Typography>

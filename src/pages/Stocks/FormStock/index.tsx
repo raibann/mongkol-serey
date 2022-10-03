@@ -20,15 +20,15 @@ export default function FormStock({
   handleOpenDrawer,
   openDrawer,
   methods,
+  handleSubmitStock,
 }: {
   handleOpenDrawer: (obj: 'Add' | 'Edit' | '') => void;
   openDrawer: '' | 'Add' | 'Edit';
   methods: UseFormReturn<IStockInput, object>;
+  handleSubmitStock: (data: IStockInput) => void;
 }) {
   const { control, handleSubmit, setValue } = methods;
-  const handleAddStocks = (data: IStockInput) => {
-    console.log('add new stocks:', data);
-  };
+
   const { isSmDown } = useResponsive();
   return (
     <>
@@ -52,7 +52,7 @@ export default function FormStock({
             <MdClose />
           </CusIconButton>
         </Stack>
-        <form onSubmit={handleSubmit(handleAddStocks)}>
+        <form onSubmit={handleSubmit(handleSubmitStock)}>
           <Stack spacing={4}>
             <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
               <Controller
@@ -157,9 +157,6 @@ export default function FormStock({
               <Controller
                 control={control}
                 name='shopName'
-                rules={{
-                  required: { value: true, message: 'Shop is required' },
-                }}
                 defaultValue=''
                 render={({ field, fieldState: { error } }) => {
                   return (

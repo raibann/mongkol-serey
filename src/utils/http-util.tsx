@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import { getPersistedState } from './persist-util';
 // import { getPersistedState } from './persist-util';
 
 const HttpUtil = Axios.create({
@@ -6,18 +7,19 @@ const HttpUtil = Axios.create({
 });
 
 // // Add a request interceptor
-// axios.interceptors.request.use(async (config) => {
-//   const persistedState =
-//     getPersistedState(process.env.REACT_APP_PERSIST_AUTH) || {};
+HttpUtil.interceptors.request.use(async (config) => {
+  const persistedState =
+    getPersistedState(process.env.REACT_APP_PERSIST_AUTH) || {};
 
-//   const token = persistedState?.token;
-//   config.headers = {
-//     Token: token,
-//     'content-type': 'application/json',
-//     accept: '*/*',
-//   };
-//   return config;
-// });
+  const token = persistedState?.token;
+  config.headers = {
+    Authorization:
+      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNaW5lYSIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaXNzIjoiaHR0cHM6Ly9tb25na29sLXNlcmV5LWJhY2tlbmQuaGVyb2t1YXBwLmNvbS9hcGkvbG9naW4iLCJleHAiOjE2NjcyOTUwNjl9.Q28gFWACFG-foIOqzp4mYSgUvExuXLt8lmQyjHp9Wuc',
+    'content-type': 'application/json',
+    accept: '*/*',
+  };
+  return config;
+});
 // Add a response interceptor
 HttpUtil.interceptors.response.use(
   async function (res) {

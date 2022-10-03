@@ -19,12 +19,13 @@ declare namespace IStock {
     deletedAt?: any;
   }
   interface IStockRequest {
-    id?: nummber;
+    id?: number;
     productName: string;
     quantity: number;
     price: number;
     unit: string;
     shopName: string;
+    currency: string;
     note: string;
     paidBy: string;
   }

@@ -3,7 +3,7 @@ import {
   MenuBoard,
   LogoutCurve,
   Notification,
-  SecurityUser,
+  // SecurityUser,
   MoneySend,
   Profile2User,
   Box,
@@ -48,11 +48,11 @@ const navigationUtil: Navigation = [
     toUrl: 'stocks',
     icon: <Box size='24' />,
   },
-  {
-    title: 'Manage Users',
-    toUrl: 'manage-users',
-    icon: <SecurityUser size='24' />,
-  },
+  // {
+  //   title: 'Manage Users',
+  //   toUrl: 'manage-users',
+  //   icon: <SecurityUser size='24' />,
+  // },
   {
     title: 'Exit',
     toUrl: 'login',

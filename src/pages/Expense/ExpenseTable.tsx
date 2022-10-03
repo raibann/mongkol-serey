@@ -2,6 +2,7 @@ import { TableHead, TableRow, TableCell } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit } from 'iconsax-react';
 import React from 'react';
+import { separateComma } from 'utils/validate-util';
 
 export const ExpenseTableHead = () => {
   return (
@@ -51,7 +52,7 @@ const ExpenseTableBody = ({
       <TableCell>{quantity}</TableCell>
       <TableCell>{eventLocation}</TableCell>
       <TableCell>{bookingDate}</TableCell>
-      <TableCell>${deposit}</TableCell>
+      <TableCell>${separateComma(deposit)}</TableCell>
       <TableCell>{paidBy}</TableCell>
       <TableCell>
         <CusIconButton

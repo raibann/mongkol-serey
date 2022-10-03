@@ -8,7 +8,8 @@ import {
   Stack,
   Typography,
   alpha,
-  Paper,
+  Divider,
+  Box,
 } from '@mui/material';
 import { Container } from '@mui/system';
 import { CusLoading } from 'components/CusLoading';
@@ -19,7 +20,12 @@ import {
   FaHouseUser,
 } from 'react-icons/fa';
 import theme from 'theme/theme';
-import { Location } from 'iconsax-react';
+import moment from 'moment';
+import {
+  formatCash,
+  formatInvoiceId,
+  separateComma,
+} from 'utils/validate-util';
 
 export default function CustomerDetails({
   custDetails,
@@ -30,11 +36,6 @@ export default function CustomerDetails({
   isLoadingCustDetails: boolean;
   changeBackground: (name?: string) => string;
 }) {
-  const formatInvoiceId = (value: string) => {
-    const pad = '00000';
-    return pad.substring(0, pad.length - value.length) + value;
-  };
-
   return (
     <>
       {isLoadingCustDetails ? (
@@ -73,9 +74,7 @@ export default function CustomerDetails({
           </Grid>
           <Stack direction={'column'} spacing={2}>
             <Typography variant='h6'>Information</Typography>
-            <List
-              sx={{ boxShadow: (theme) => theme.shadows[1], borderRadius: 2 }}
-            >
+            <List>
               {!!custDetails?.customer.facebook_name && (
                 <ListItem>
                   <ListItemIcon>
@@ -104,7 +103,10 @@ export default function CustomerDetails({
                 <ListItem>
                   <ListItemIcon>
                     <FaPhoneSquareAlt
-                      style={{ height: 32, color: theme.palette.success.main }}
+                      style={{
+                        height: 32,
+                        color: theme.palette.success.main,
+                      }}
                     />
                   </ListItemIcon>
                   <ListItemText>
@@ -119,11 +121,22 @@ export default function CustomerDetails({
                   />
                 </ListItemIcon>
                 <ListItemText>
-                  {`${custDetails?.customer.house}  ${custDetails?.customer.street}  ${custDetails?.customer.location}
-                ${custDetails?.customer.commune}   ${custDetails?.customer.district}  ${custDetails?.customer.province}`}
+                  {`${
+                    custDetails?.customer.house
+                      ? `ផ្ទះលេខ៖ ${custDetails?.customer.house}`
+                      : ''
+                  }  ${
+                    custDetails?.customer.street
+                      ? `ផ្លូវលេខ៖ ${custDetails?.customer.street}`
+                      : ''
+                  }  ${custDetails?.customer.location}
+                ${custDetails?.customer.commune}   ${
+                    custDetails?.customer.district
+                  }  ${custDetails?.customer.province}`}
                 </ListItemText>
               </ListItem>
             </List>
+            <Divider />
             <Stack direction={'row'} spacing={2}>
               <Typography variant='h6'>Ordered</Typography>
               <Typography
@@ -139,55 +152,63 @@ export default function CustomerDetails({
               </Typography>
             </Stack>
             {custDetails?.orders.map((data) => (
-              <Paper key={data.id} elevation={1} sx={{ overflow: 'hidden' }}>
-                <Grid container columnSpacing={2}>
-                  <Grid
-                    item
-                    xs={12}
-                    sm={2}
-                    md={3}
-                    sx={{
-                      background: (theme) => theme.palette.primary.main,
-                    }}
-                  >
+              <Box
+                key={data.id}
+                sx={{
+                  overflow: 'hidden',
+                  bgcolor: (theme) => theme.palette.background.paper,
+                  borderTopRightRadius: 12,
+                  borderBottomRightRadius: 12,
+                  p: 2,
+                  borderLeft: `10px solid ${theme.palette.info.main}`,
+                }}
+              >
+                <Grid container columnSpacing={2} rowSpacing={2}>
+                  <Grid item xs={12} sm={4}>
                     <Stack
-                      direction={'row'}
-                      alignItems='center'
+                      direction={'column'}
                       justifyContent={'center'}
                       sx={{ height: '100%', width: '100%' }}
                     >
                       <Typography variant='subtitle1'>
-                        {formatInvoiceId(data.id.toString())}
+                        Invoice : <b>{formatInvoiceId(data.id.toString())}</b>
+                      </Typography>
+                      <Typography variant='subtitle1'>
+                        Total :{' '}
+                        <b>
+                          {formatCash(
+                            data.finalInvoices.reduce(
+                              (init, next) => init + next.price,
+                              0
+                            )
+                          )}
+                          $
+                        </b>
                       </Typography>
                     </Stack>
                   </Grid>
-                  <Grid item xs={6} sm={5} md={4} sx={{ py: 1 }}>
-                    <Stack direction={'column'} spacing={1} sx={{ ml: 2 }}>
-                      <Typography variant='subtitle1' fontWeight={'Bold'}>
-                        {data.type}
+                  <Grid item xs>
+                    <Stack direction={'column'} spacing={1}>
+                      <Typography variant='subtitle1'>
+                        Event : <b>{data.type}</b>
                       </Typography>
-                      <Stack direction={'row'} alignItems='center' spacing={1}>
-                        <Location
-                          size='16'
-                          color={theme.palette.info.main}
-                          variant='Bold'
-                        />
-                        <Typography variant='subtitle2'>
-                          {data.location}
-                        </Typography>
-                      </Stack>
-                    </Stack>
-                  </Grid>
-                  <Grid item xs={6} sm={5} md={4} sx={{ py: 1 }}>
-                    <Stack direction={'column'} spacing={1} sx={{ ml: 2 }}>
-                      <Typography variant='subtitle2'>{data.date}</Typography>
                       <Typography variant='subtitle2'>
-                        {data.quantity} តុ
+                        Location : <b>{data.location}</b>
+                      </Typography>
+                    </Stack>
+                  </Grid>
+                  <Grid item xs>
+                    <Stack direction={'column'} spacing={1}>
+                      <Typography variant='subtitle2'>
+                        Date : <b>{moment(data.date).format('DD-MM-YYYY')}</b>
+                      </Typography>
+                      <Typography variant='subtitle2'>
+                        Quantity : <b>{separateComma(data.quantity)}</b> តុ
                       </Typography>
                     </Stack>
                   </Grid>
                 </Grid>
-              </Paper>
+              </Box>
             ))}
           </Stack>
         </Container>

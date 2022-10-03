@@ -32,6 +32,7 @@ import {
   YAxis,
 } from 'recharts';
 import theme from 'theme/theme';
+import { formatCash } from 'utils/validate-util';
 import AnniversaryItem from './AnniversaryItem';
 import DashboardHeader from './DashboardHeader';
 import PieChartComp from './PieChartComp';
@@ -106,16 +107,7 @@ const Dashboard = () => {
         return;
     }
   };
-  // format cash
-  const formatCash = (n: number) => {
-    if (n < 1e3)
-      return n.toLocaleString(undefined, { minimumFractionDigits: 2 });
-    if (n >= 1e3 && n < 1e6)
-      return n.toLocaleString(undefined, { minimumFractionDigits: 2 });
-    if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + 'M';
-    if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + 'B';
-    if (n >= 1e12) return +(n / 1e12).toFixed(1) + 'T';
-  };
+
   const CHART1_DATA = chartData?.charts.map((data) => {
     return {
       name: monthGenerate(data.month),
@@ -281,17 +273,14 @@ const Dashboard = () => {
                   }}
                 >
                   {chartData?.reminder.map((data, i) => {
-                    const dateFormat = moment(data.date).format('DD-MM-YYYY');
-                    // const s = moment(data.date).format('DD');
                     return (
                       <AnniversaryItem
                         key={i}
                         daysLeft={1 - moment().diff(data.date, 'days')}
-                        eventDate={dateFormat}
                         name={
                           data.customer !== null
                             ? data.customer.customer_name
-                            : ''
+                            : 'No Customer'
                         }
                         invoiceId={data.id}
                         eventType={data.type}

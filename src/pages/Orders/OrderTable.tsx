@@ -6,6 +6,7 @@ import {
   Stack,
   Typography,
   Chip,
+  Tooltip,
 } from '@mui/material';
 import moment from 'moment';
 import theme from 'theme/theme';
@@ -13,6 +14,7 @@ import { FaFacebookSquare, FaTelegram } from 'react-icons/fa';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, MoneySend, Printer } from 'iconsax-react';
 import { paidByColor } from 'utils/expense-util';
+import { separateComma } from 'utils/validate-util';
 
 const OrderTableBody = ({
   data,
@@ -82,37 +84,43 @@ const OrderTableBody = ({
                 }}
               />
               <Typography variant='subtitle2' fontWeight={'light'}>
-                ${item.deposit || 0}
+                ${separateComma(item.deposit) || 0}
               </Typography>
             </Stack>
           </TableCell>
           <TableCell align='center'>
             {onEditClick && (
-              <CusIconButton
-                onClick={() => onEditClick(i)}
-                color='info'
-                sx={{ p: 0.5, mx: 0.5 }}
-              >
-                <Edit size={18} />
-              </CusIconButton>
+              <Tooltip title='Edit' arrow>
+                <CusIconButton
+                  onClick={() => onEditClick(i)}
+                  color='info'
+                  sx={{ p: 0.5, mx: 0.5 }}
+                >
+                  <Edit size={18} />
+                </CusIconButton>
+              </Tooltip>
             )}
             {onAddExpenseClick && (
-              <CusIconButton
-                onClick={() => onAddExpenseClick(i)}
-                color='info'
-                sx={{ p: 0.5, mx: 0.5 }}
-              >
-                <MoneySend size={18} />
-              </CusIconButton>
+              <Tooltip title='Add Expense' arrow>
+                <CusIconButton
+                  onClick={() => onAddExpenseClick(i)}
+                  color='info'
+                  sx={{ p: 0.5, mx: 0.5 }}
+                >
+                  <MoneySend size={18} />
+                </CusIconButton>
+              </Tooltip>
             )}
             {onPrintClick && (
-              <CusIconButton
-                color='primary'
-                sx={{ p: 0.5, mx: 0.5 }}
-                onClick={() => onPrintClick(i)}
-              >
-                <Printer size={18} />
-              </CusIconButton>
+              <Tooltip title='Print' arrow>
+                <CusIconButton
+                  color='primary'
+                  sx={{ p: 0.5, mx: 0.5 }}
+                  onClick={() => onPrintClick(i)}
+                >
+                  <Printer size={18} />
+                </CusIconButton>
+              </Tooltip>
             )}
           </TableCell>
         </TableRow>

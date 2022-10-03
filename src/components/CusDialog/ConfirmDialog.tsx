@@ -61,12 +61,7 @@ export default function ConfirmDialogSlide(props: IConfirmDialog) {
             loading={props.loading}
             variant='outlined'
             color='info'
-            sx={{
-              '&:hover': {
-                bgcolor: theme.palette.info.main,
-                color: theme.palette.common.white,
-              },
-            }}
+            loadingIndicator='Deletting…'
           >
             Confirm
           </LoadingButton>

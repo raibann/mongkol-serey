@@ -27,7 +27,13 @@ import OrderDrawer from './OrderDrawer';
 import useRequest from '@ahooksjs/use-request';
 import ORDER_API from 'api/order';
 import OrderTableBody, { OrderTableHead } from './OrderTable';
-import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
+import {
+  Add,
+  ArrowLeft2,
+  BoxRemove,
+  Printer,
+  SearchNormal1,
+} from 'iconsax-react';
 import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
 
@@ -82,7 +88,7 @@ const Orders = () => {
   const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
-
+  const { isSmDown } = useResponsive();
   const bookingInvoiceRef = useRef(null);
   const finalInvoiceRef = useRef(null);
 
@@ -262,61 +268,88 @@ const Orders = () => {
         fullScreen
         PaperProps={{
           sx: {
-            borderRadius: 3,
+            borderRadius: [3, 0, 3],
             width: 'auto',
-            height: '95vh',
+            height: ['auto', '100vh', '95vh'],
           },
         }}
       >
-        <DialogTitle
-          sx={{
-            position: 'sticky',
-            top: 0,
-            boxShadow: (theme) => theme.shadows[2],
-            zIndex: (theme) => theme.zIndex.drawer + 3,
-            backgroundColor: '#fff',
-          }}
-        >
-          <ReactToPrint
-            pageStyle={pageStyle}
-            documentTitle='Booking-Invoice'
-            trigger={() => (
+        {!isSmDown && (
+          <DialogTitle
+            sx={{
+              position: 'sticky',
+              top: 0,
+              boxShadow: (theme) => theme.shadows[2],
+              zIndex: (theme) => theme.zIndex.drawer + 3,
+              backgroundColor: '#fff',
+            }}
+          >
+            <Stack
+              direction={'row'}
+              alignItems='center'
+              justifyContent={'space-between'}
+            >
               <Button
-                variant='contained'
-                color='info'
-                disableElevation
-                sx={{
-                  color: '#fff',
-                  mr: 2,
-                }}
+                variant='text'
+                startIcon={<ArrowLeft2 />}
+                onClick={() => setPrinter(undefined)}
               >
-                Booking
+                Back
               </Button>
-            )}
-            content={() => bookingInvoiceRef.current}
-          />
-          {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
-            <ReactToPrint
-              pageStyle={pageStyle}
-              documentTitle='Final-Invoice'
-              trigger={() => (
-                <Button
-                  variant='contained'
-                  color='success'
-                  disableElevation
-                  sx={{ color: '#fff' }}
-                >
-                  Final Invoice
-                </Button>
-              )}
-              content={() => finalInvoiceRef.current}
-            />
-          )}
-        </DialogTitle>
+
+              <Stack direction={'row'} spacing={2}>
+                <ReactToPrint
+                  pageStyle={pageStyle}
+                  documentTitle='Booking-Invoice'
+                  trigger={() => (
+                    <Button
+                      variant='contained'
+                      color='info'
+                      disableElevation
+                      sx={{
+                        color: '#fff',
+                        boxShadow: theme.shadows[1],
+                        borderRadius: theme.spacing(1),
+                      }}
+                      startIcon={<Printer />}
+                    >
+                      Booking
+                    </Button>
+                  )}
+                  content={() => bookingInvoiceRef.current}
+                />
+                {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
+                  <ReactToPrint
+                    pageStyle={pageStyle}
+                    documentTitle='Final-Invoice'
+                    trigger={() => (
+                      <Button
+                        variant='contained'
+                        color='success'
+                        disableElevation
+                        sx={{
+                          color: '#fff',
+                          boxShadow: theme.shadows[1],
+                          borderRadius: theme.spacing(1),
+                        }}
+                        startIcon={<Printer />}
+                      >
+                        Final Invoice
+                      </Button>
+                    )}
+                    content={() => finalInvoiceRef.current}
+                  />
+                )}
+              </Stack>
+            </Stack>
+          </DialogTitle>
+        )}
+
         <Box
           sx={{
             scale: '0.8',
             transform: 'translateY(-100px)',
+            display: isSmDown ? 'none' : 'block',
           }}
         >
           {printer && (
@@ -324,18 +357,75 @@ const Orders = () => {
           )}
         </Box>
 
+        {!isSmDown && <Divider sx={{ borderWidth: '5px' }} />}
+
         {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
           <>
-            <Divider sx={{ borderWidth: '5px' }} />
             <Box
               sx={{
                 scale: '0.8',
                 pt: '100px',
                 pb: '100px',
+                display: isSmDown ? 'none' : 'block',
               }}
             >
               <FinalInvoice ref={finalInvoiceRef} order={printer} />
             </Box>
+          </>
+        )}
+        {/* for small screen */}
+        {isSmDown && (
+          <>
+            <Stack
+              direction={'row'}
+              sx={{ height: '100%', p: 4 }}
+              alignItems='center'
+              justifyContent={'center'}
+              spacing={2}
+            >
+              <ReactToPrint
+                pageStyle={pageStyle}
+                documentTitle='Booking-Invoice'
+                trigger={() => (
+                  <Button
+                    variant='contained'
+                    color='info'
+                    disableElevation
+                    sx={{
+                      color: '#fff',
+                      boxShadow: theme.shadows[1],
+                      borderRadius: theme.spacing(1),
+                    }}
+                    startIcon={<Printer />}
+                  >
+                    Booking
+                  </Button>
+                )}
+                content={() => bookingInvoiceRef.current}
+              />
+              {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
+                <ReactToPrint
+                  pageStyle={pageStyle}
+                  documentTitle='Final-Invoice'
+                  trigger={() => (
+                    <Button
+                      variant='contained'
+                      color='success'
+                      disableElevation
+                      sx={{
+                        color: '#fff',
+                        boxShadow: theme.shadows[1],
+                        borderRadius: theme.spacing(1),
+                      }}
+                      startIcon={<Printer />}
+                    >
+                      Final Invoice
+                    </Button>
+                  )}
+                  content={() => finalInvoiceRef.current}
+                />
+              )}
+            </Stack>
           </>
         )}
       </Dialog>

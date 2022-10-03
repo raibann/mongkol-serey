@@ -10,8 +10,10 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
+import { separateComma } from 'utils/validate-util';
 
 interface IFinalInvoice {
   order: IOrder.Order;
@@ -157,7 +159,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   កម្មវិធី​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {order.date}
+                  {moment(order.date).format('DD.MM.YYYY')}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -222,25 +224,27 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   {ls.unit}
                 </TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
-                  {(ls.price / ls.quantity).toFixed(2)}$
+                  {Math.round(+separateComma(ls.price / ls.quantity))}$
                 </TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>{ls.price}$</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>
+                  {separateComma(ls.price)}$
+                </TableCell>
               </TableRow>
             ))}
 
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                តម្លៃសរុប {totalPrice.toFixed(2)}$
+                តម្លៃសរុប {separateComma(totalPrice)}$
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                បានកក់ {order.deposit}$
+                បានកក់ {separateComma(order.deposit)}$
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                ប្រាក់នៅសល់ {(totalPrice - order.deposit).toFixed(2)}$
+                ប្រាក់នៅសល់ {separateComma(totalPrice - order.deposit)}$
               </TableCell>
             </TableRow>
           </TableBody>
