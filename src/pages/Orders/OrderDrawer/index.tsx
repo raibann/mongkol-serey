@@ -197,7 +197,7 @@ const OrderDrawer = ({
       );
       setValue('orderId', orderDetail?.id);
       setValue('eventLocation', orderDetail.location || '');
-      setValue('paidBy', 'ABA' || '');
+      setValue('paidBy', orderDetail.paidBy || '');
       setValue('bookingDate', new Date(orderDetail.bookingDate) || null);
       setValue('eventDate', new Date(orderDetail.date) || null);
       setValue('deposit', orderDetail.deposit || '');

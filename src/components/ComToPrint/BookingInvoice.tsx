@@ -258,8 +258,11 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           )}
           ចំនួនទឹកប្រាក់ ${separateComma(order.deposit)}{' '}
           {order.amountInKhmer && <b>({order.amountInKhmer})</b>}{' '}
-          តាមរយះគណនេយ្យធនាគារ <b>ABA</b> នៅថ្ងៃទី <b>{getDay}</b> ខែ{' '}
-          <b>{generateMonth(getMonth)}</b> ឆ្នាំ <b>{getYear}</b>។
+          {order.paidBy !== 'Cash'
+            ? 'តាមរយៈគណនេយ្យធនាគារ' + order.paidBy
+            : 'តាមរយៈក្រដាស់ប្រាក់'}{' '}
+          នៅថ្ងៃទី <b>{getDay}</b> ខែ <b>{generateMonth(getMonth)}</b> ឆ្នាំ{' '}
+          <b>{getYear}</b>។
         </Typography>
         <Table
           sx={{

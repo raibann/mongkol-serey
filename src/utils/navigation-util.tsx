@@ -1,12 +1,12 @@
 import {
   Diagram,
   MenuBoard,
-  LogoutCurve,
   Notification,
-  // SecurityUser,
   MoneySend,
   Profile2User,
   Box,
+  // LogoutCurve,
+  // SecurityUser,
 } from 'iconsax-react';
 import React from 'react';
 import { ROUTE_PATH } from './route-util';
@@ -53,11 +53,11 @@ const navigationUtil: Navigation = [
   //   toUrl: 'manage-users',
   //   icon: <SecurityUser size='24' />,
   // },
-  {
-    title: 'Exit',
-    toUrl: 'login',
-    icon: <LogoutCurve size='24' />,
-  },
+  // {
+  //   title: 'Exit',
+  //   toUrl: 'login',
+  //   icon: <LogoutCurve size='24' />,
+  // },
 ];
 
 export default navigationUtil;

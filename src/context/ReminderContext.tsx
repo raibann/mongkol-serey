@@ -1,6 +1,7 @@
-import { useRequest } from 'ahooks';
+import React, { createContext, useContext, useEffect } from 'react';
 import REMINDER_API from 'api/reminder';
-import React, { createContext, useContext } from 'react';
+import { useRequest } from 'ahooks';
+import { useAuthContext } from 'context/AuthContext';
 
 interface IReminderContext {
   reminderList: IReminder.Data[] | undefined;
@@ -19,14 +20,25 @@ interface IReminderWrapper {
 }
 
 export function ReminderWrapper({ children }: IReminderWrapper) {
+  const { authState } = useAuthContext();
+
   const {
     loading: reminderLoading,
     data: reminderData,
     refresh: reminderRefresh,
+    run,
   } = useRequest(REMINDER_API.getReminder, {
-    manual: false,
+    manual: true,
   });
   const reminderList = reminderData?.data;
+
+  useEffect(() => {
+    if (authState.accessToken !== '' && authState.authed) {
+      run();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authState.accessToken]);
+
   return (
     <ReminderContext.Provider
       value={{ reminderList, reminderLoading, reminderRefresh }}

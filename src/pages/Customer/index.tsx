@@ -75,7 +75,7 @@ export default function Customers() {
       }
     },
   });
-  const debouncedValue = useDebounce(searchData, { wait: 1000 });
+  const debouncedValue = useDebounce(searchData, { wait: 500 });
   // actions customer
   const newCustomerRequest = useRequest(CUSTOMER_API.postNewCustomer, {
     manual: true,
@@ -227,9 +227,7 @@ export default function Customers() {
       </Container>
       <ResponsiveDrawer
         open={!!openDrawer}
-        onCloseDrawer={() => {
-          // setOpenDrawer('');
-        }}
+        onCloseDrawer={() => {}}
         anchor={'right'}
       >
         <Stack
@@ -245,10 +243,10 @@ export default function Customers() {
             bgcolor: (theme) => theme.palette.common.white,
           }}
         >
-          <Typography variant='h5' color='secondary.main' fontWeight='bold'>
-            {openDrawer === 'Add' && 'Add New Customer'}
-            {openDrawer === 'Edit' && 'Edit Details'}
-            {openDrawer === 'Details' && 'Details'}
+          <Typography variant='h4' color='secondary.main' fontWeight='bold'>
+            {openDrawer === 'Add' && 'New Customer'}
+            {openDrawer === 'Edit' && 'Update Customer'}
+            {openDrawer === 'Details' && 'Customer Details'}
           </Typography>
           <CusIconButton
             color='error'

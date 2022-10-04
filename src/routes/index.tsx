@@ -11,7 +11,6 @@ const Expense = lazy(() => import('pages/Expense'));
 const Stocks = lazy(() => import('pages/Stocks'));
 const Customer = lazy(() => import('pages/Customer'));
 const Reminder = lazy(() => import('pages/Reminder'));
-// const Users = lazy(() => import('pages/Users'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -19,7 +18,9 @@ export default function AllRoutes() {
     <Routes>
       <Route
         path={ROUTE_PATH.root}
-        element={true ? <Layout /> : <Navigate to={ROUTE_PATH.login} />}
+        element={
+          authState.authed ? <Layout /> : <Navigate to={ROUTE_PATH.login} />
+        }
       >
         <Route
           path={ROUTE_PATH.dashboard}
@@ -86,8 +87,8 @@ export default function AllRoutes() {
       <Route
         path={ROUTE_PATH.login}
         element={
-          true ? (
-            <Navigate to={ROUTE_PATH.root} />
+          authState.authed ? (
+            <Navigate to={ROUTE_PATH.dashboard} />
           ) : (
             <Suspense fallback={<CusBackDrop open={true} />}>
               <Login />
