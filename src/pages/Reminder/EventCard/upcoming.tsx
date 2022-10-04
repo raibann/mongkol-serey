@@ -1,4 +1,6 @@
 import { Paper, Stack, Typography, Grid } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
 import {
   Facebook,
   Call,
@@ -18,6 +20,7 @@ const UpcomingEvent = ({
   const temp = listItem?.filter(
     (el) => 365 - moment().diff(el.date, 'days') !== 0
   );
+  const navigate = useNavigate();
   return (
     <>
       <Grid container rowSpacing={2} columnSpacing={4}>
@@ -26,7 +29,22 @@ const UpcomingEvent = ({
             (item) =>
               365 - moment().diff(item.date, 'days') !== 0 && (
                 <React.Fragment key={item.id}>
-                  <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    md={6}
+                    lg={4}
+                    xl={3}
+                    sx={{
+                      '&:hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                    onClick={() =>
+                      navigate(`/${ROUTE_PATH.orders}?id=${item.id}`)
+                    }
+                  >
                     <Paper sx={{ p: 3 }}>
                       <Stack
                         direction={'row'}

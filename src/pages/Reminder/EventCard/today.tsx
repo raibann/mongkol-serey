@@ -2,7 +2,9 @@ import { Paper, Stack, Typography, Grid } from '@mui/material';
 import { Facebook, Call, Personalcard, Cake, BoxRemove } from 'iconsax-react';
 import moment from 'moment';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import theme from 'theme/theme';
+import { ROUTE_PATH } from 'utils/route-util';
 
 const EventToday = ({
   listItem,
@@ -10,13 +12,28 @@ const EventToday = ({
   listItem: IReminder.Data[] | undefined;
 }) => {
   const temp = listItem?.filter((el) => moment().diff(el.date, 'years') === 1);
+  const navigate = useNavigate();
+
   return (
     <>
       <Grid container rowSpacing={2} columnSpacing={4}>
         {temp && temp.length > 0 ? (
           temp?.map((item) => (
             <React.Fragment key={item.id}>
-              <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={6}
+                lg={4}
+                xl={3}
+                sx={{
+                  '&:hover': {
+                    cursor: 'pointer',
+                  },
+                }}
+                onClick={() => navigate(`/${ROUTE_PATH.orders}?id=${item.id}`)}
+              >
                 <Paper sx={{ p: 3 }}>
                   <Typography
                     variant='subtitle1'

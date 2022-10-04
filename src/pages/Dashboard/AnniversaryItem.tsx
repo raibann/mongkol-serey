@@ -61,7 +61,7 @@ const AnniversaryItem = ({
           </Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary={`Order ID : ${invoiceId} / ${eventType}`}
+          primary={`Order ID: ${invoiceId} ~ ${eventType}`}
           secondary={name}
         />
       </ListItem>

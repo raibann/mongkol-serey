@@ -36,6 +36,7 @@ import {
 } from 'iconsax-react';
 import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
+import { useSearchParams } from 'react-router-dom';
 
 const Orders = () => {
   // States
@@ -45,7 +46,13 @@ const Orders = () => {
   const [printer, setPrinter] = useState<IOrder.Order>();
   const [page, setPage] = React.useState(1);
   const [searchData, setSearchData] = useState('');
-  const { isMdDown } = useResponsive();
+  const { isMdDown, isSmDown } = useResponsive();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Variables
+  const orderId = searchParams.get('id');
+  const bookingInvoiceRef = useRef(null);
+  const finalInvoiceRef = useRef(null);
 
   // useRequests
   const {
@@ -59,6 +66,12 @@ const Orders = () => {
   const { run: searchOrderList } = useRequest(fetchOrderList, {
     manual: true,
     debounceInterval: 500,
+    onSuccess: (data) => {
+      if (orderId) {
+        const selectedOrder = data.data.find((e) => e.id === +orderId);
+        setPrinter(selectedOrder);
+      }
+    },
   });
 
   // useEffects
@@ -80,6 +93,14 @@ const Orders = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ToggleValue, page, searchData]);
 
+  useEffect(() => {
+    if (orderId) {
+      setToggleValue('all');
+      setSearchData(`#${orderId}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Methods
   const handleCloseOrderDialog = () => {
     setNewOrder(false);
@@ -88,9 +109,11 @@ const Orders = () => {
   const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
-  const { isSmDown } = useResponsive();
-  const bookingInvoiceRef = useRef(null);
-  const finalInvoiceRef = useRef(null);
+  const handleCloseInvoicesDialog = () => {
+    setPrinter(undefined);
+    searchParams.delete('id');
+    setSearchParams(searchParams);
+  };
 
   return (
     <>
@@ -145,6 +168,7 @@ const Orders = () => {
             <CusTextField
               placeholder='Search...'
               size='small'
+              value={searchData}
               onChange={(e) => setSearchData(e.currentTarget.value)}
               onKeyUp={(e) => {
                 if (e.key === 'Enter') {
@@ -264,7 +288,7 @@ const Orders = () => {
 
       <Dialog
         open={printer !== undefined}
-        onClose={() => setPrinter(undefined)}
+        onClose={handleCloseInvoicesDialog}
         fullScreen
         PaperProps={{
           sx: {
@@ -292,7 +316,7 @@ const Orders = () => {
               <Button
                 variant='text'
                 startIcon={<ArrowLeft2 />}
-                onClick={() => setPrinter(undefined)}
+                onClick={handleCloseInvoicesDialog}
               >
                 Back
               </Button>

@@ -11,8 +11,8 @@ import { persistState, getPersistedState } from 'utils/persist-util';
 
 export interface IAuthState {
   authed: boolean;
-  accessToken: String;
-  refreshToken: String;
+  accessToken: string;
+  refreshToken: string;
 }
 
 interface IAuthContext {
@@ -39,18 +39,28 @@ export function AuthWrapper({ children }: IAuthWrapper) {
     getPersistedState(process.env.REACT_APP_PERSIST_AUTH) || { authed: false }
   );
 
-  useEffect(() => {
-    const vers = getPersistedState('version');
-    if (vers && vers !== process.env.REACT_APP_PERSIST_VER) {
-      localStorage.clear();
-      persistState('version', process.env.REACT_APP_PERSIST_VER || '');
-    }
-  }, []);
+  const refreshTokenReq = useRequest(AUTH_API.refreshToken, {
+    manual: true,
+    onSuccess: (data) =>
+      setAuthState({
+        authed: true,
+        refreshToken: data.refresh_token,
+        accessToken: data.access_token,
+      }),
+    onError: () =>
+      setAuthState({ refreshToken: '', accessToken: '', authed: false }),
+  });
 
   useEffect(() => {
     if (!initMount.current) {
       persistState(process.env.REACT_APP_PERSIST_AUTH || '', authState);
-    } else initMount.current = false;
+    } else {
+      initMount.current = false;
+      if (authState.authed && authState.refreshToken !== '') {
+        refreshTokenReq.run(`Bearer ${authState.refreshToken}`);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authState]);
 
   return (

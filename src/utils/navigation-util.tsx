@@ -30,33 +30,28 @@ const navigationUtil: Navigation = [
   },
   {
     title: 'Customers',
-    toUrl: 'customers',
+    toUrl: ROUTE_PATH.customers,
     icon: <Profile2User size='24' />,
   },
   {
     title: 'Expense',
-    toUrl: 'expense',
+    toUrl: ROUTE_PATH.expense,
     icon: <MoneySend size='24' />,
   },
   {
     title: 'Reminder',
-    toUrl: 'reminder',
+    toUrl: ROUTE_PATH.reminder,
     icon: <Notification size='24' />,
   },
   {
     title: 'Stocks',
-    toUrl: 'stocks',
+    toUrl: ROUTE_PATH.stocks,
     icon: <Box size='24' />,
   },
   // {
   //   title: 'Manage Users',
-  //   toUrl: 'manage-users',
+  // toUrl: ROUTE_PATH.manageusers,
   //   icon: <SecurityUser size='24' />,
-  // },
-  // {
-  //   title: 'Exit',
-  //   toUrl: 'login',
-  //   icon: <LogoutCurve size='24' />,
   // },
 ];
 

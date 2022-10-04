@@ -13,12 +13,11 @@ import { LogoutCurve } from 'iconsax-react';
 import { useDrawerContext } from 'context/DrawerContext';
 import { useReminderContext } from 'context/ReminderContext';
 import { motion } from 'framer-motion';
-import useRouter, { ROUTE_PATH } from 'hook/useRouter';
-import moment from 'moment';
+import { useAuthContext } from 'context/AuthContext';
 import theme from 'theme/theme';
+import useRouter, { ROUTE_PATH } from 'hook/useRouter';
 import navigationUtil from 'utils/navigation-util';
 import THEME_UTIL from 'utils/theme-util';
-import { useAuthContext } from 'context/AuthContext';
 
 const DrawerContent = () => {
   const { location, navigate } = useRouter();
@@ -26,9 +25,6 @@ const DrawerContent = () => {
   const { reminderList } = useReminderContext();
   const { logout } = useAuthContext();
 
-  const temp = reminderList?.filter(
-    (el) => moment().diff(el.date, 'years') === 1
-  );
   return (
     <>
       <Avatar
@@ -100,7 +96,7 @@ const DrawerContent = () => {
                             borderRadius: 1,
                           }}
                         >
-                          {temp?.length}
+                          {reminderList?.length}
                         </Box>
                       )}
                     </Stack>
