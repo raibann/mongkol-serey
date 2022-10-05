@@ -79,7 +79,6 @@ const OrderDrawer = ({
   const orderActionReq = useRequest(ORDER_API.orderAction, {
     manual: true,
     onSuccess: (data) => {
-      console.log('success', data);
       if (orderDetail?.expenses && orderDetail.expenses.length > 0) {
         expenseActionReq.run(orderDetail.id || 0, orderDetail.expenses);
         return;

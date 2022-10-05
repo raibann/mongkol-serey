@@ -27,6 +27,7 @@ import CUSTOMER_API from 'api/customer';
 import { CusLoading } from 'components/CusLoading';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import { changeBackground } from 'utils/validate-util';
+import { LoadingButton } from '@mui/lab';
 
 export default function Customers() {
   const [openDrawer, setOpenDrawer] = useState<'Add' | 'Edit' | 'Details' | ''>(
@@ -75,7 +76,7 @@ export default function Customers() {
       }
     },
   });
-  const debouncedValue = useDebounce(searchData, { wait: 500 });
+  const debouncedValue = useDebounce(searchData, { wait: 300 });
   // actions customer
   const newCustomerRequest = useRequest(CUSTOMER_API.postNewCustomer, {
     manual: true,
@@ -98,10 +99,7 @@ export default function Customers() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, debouncedValue]);
 
-  const handleChangePage = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
@@ -282,7 +280,6 @@ export default function Customers() {
             <FormProvider {...methods}>
               <form
                 onSubmit={handleSubmit((data) => {
-                  console.log(data);
                   newCustomerRequest.run({
                     cusRequest: {
                       id: data.customerId || undefined,
@@ -290,17 +287,11 @@ export default function Customers() {
                       telegram_name: data.telegram,
                       customer_name: data.customerName,
                       house: data.houseNo,
-                      commune:
-                        (data.commune as Commune.ICommune)?.full_name_km ||
-                        data.commune.toString(),
+                      province: data?.province || '',
+                      district: data?.district || '',
+                      commune: data?.commune || '',
                       contact_number: data.contact,
-                      district:
-                        (data.district as District.IDistrict)?.full_name_km ||
-                        data.district.toString(),
                       location: data.location,
-                      province:
-                        (data.province as Province.IProvince)?.full_name_km ||
-                        data.province.toString(),
                       street: data.stNo,
                     },
                   });
@@ -339,10 +330,11 @@ export default function Customers() {
                   >
                     Cancel
                   </Button>
-                  <Button
+                  <LoadingButton
                     type='submit'
                     variant='contained'
                     fullWidth
+                    loading={newCustomerRequest.loading}
                     sx={{
                       borderRadius: 3,
                       p: 2,
@@ -355,7 +347,7 @@ export default function Customers() {
                     }}
                   >
                     Save
-                  </Button>
+                  </LoadingButton>
                 </Stack>
               </form>
             </FormProvider>
@@ -369,7 +361,7 @@ export default function Customers() {
       <ConfirmDialogSlide
         open={confirmDelete !== undefined}
         maxWidth='xs'
-        title={'Are you sure to delete?'}
+        title={'Are you sure?'}
         cancel={() => {
           setConfirmDelete(undefined);
         }}

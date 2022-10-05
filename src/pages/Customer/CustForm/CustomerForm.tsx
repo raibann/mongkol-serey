@@ -10,6 +10,7 @@ import districtJson from 'geography/District.json';
 import communeJson from 'geography/Communes.json';
 import useResponsive from 'hook/useResponsive';
 import { validatePatterns } from 'utils/validate-util';
+import { useEffect, useState } from 'react';
 
 export type CustomerInput = {
   customerId?: number | '';
@@ -20,9 +21,9 @@ export type CustomerInput = {
   houseNo: string;
   stNo: string;
   location: string;
-  province: Province.IProvince | string;
-  district: District.IDistrict | string;
-  commune: Commune.ICommune | string;
+  province: string;
+  district: string;
+  commune: string;
 };
 
 const provincesList: Province.IProvince[] = provincesJson;
@@ -30,8 +31,37 @@ const districtList: District.IDistrict[] = districtJson;
 const communeList: Commune.ICommune[] = communeJson;
 
 const CustomerForm = () => {
-  const { control, setValue, watch } = useFormContext<CustomerInput>();
+  const { control, watch, setValue } = useFormContext<CustomerInput>();
   const { isSmDown } = useResponsive();
+  const province = watch('province');
+  const district = watch('district');
+
+  const [selectedPrinvince, setSelectedProvince] =
+    useState<Province.IProvince>();
+  const [selectedDistrict, setSelectedDistrict] =
+    useState<District.IDistrict>();
+
+  useEffect(() => {
+    if (province) {
+      setSelectedProvince(() => {
+        const tmpProvince = provincesList.find(
+          (e) => e.full_name_km === province
+        );
+        return tmpProvince;
+      });
+    }
+
+    if (district) {
+      setSelectedDistrict(() => {
+        const tmpDistrict = districtList.find(
+          (e) => e.full_name_km === district
+        );
+        return tmpDistrict;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <Stack spacing={4} px={3}>
@@ -178,7 +208,7 @@ const CustomerForm = () => {
               required: { value: true, message: 'Province is Required' },
             }}
             render={({
-              field: { onChange, value, ...rest },
+              field: { onChange, ...rest },
               fieldState: { error },
             }) => {
               return (
@@ -189,14 +219,16 @@ const CustomerForm = () => {
                     openOnFocus
                     id='province'
                     options={provincesList}
-                    onChange={(e, val) => {
-                      setValue('province', val as Province.IProvince);
+                    onChange={(_, val) => {
+                      setSelectedProvince(val as Province.IProvince);
                     }}
-                    onInputChange={(e, val) => {
+                    onInputChange={(_, val) => {
                       setValue('province', val);
                     }}
                     getOptionLabel={(option) =>
-                      (option as Province.IProvince).full_name_km || ''
+                      (option as Province.IProvince).full_name_km ||
+                      option.toString() ||
+                      ''
                     }
                     renderOption={(props, option) => (
                       <MenuItem key={option.id} {...props}>
@@ -230,7 +262,7 @@ const CustomerForm = () => {
               required: { value: true, message: 'District is Required' },
             }}
             render={({
-              field: { onChange, value, ...rest },
+              field: { onChange, ...rest },
               fieldState: { error },
             }) => {
               return (
@@ -242,21 +274,22 @@ const CustomerForm = () => {
                     id='district'
                     options={districtList.filter(
                       (option) =>
-                        option.province_id ===
-                          (watch('province') as Province.IProvince)?.id || ''
+                        option.province_id === selectedPrinvince?.id || ''
                     )}
                     getOptionLabel={(option) =>
-                      (option as District.IDistrict).full_name_km || ''
+                      (option as District.IDistrict)?.full_name_km ||
+                      option.toString() ||
+                      ''
                     }
                     renderOption={(props, option) => (
                       <MenuItem key={option.id} {...props}>
                         {option.full_name_km}
                       </MenuItem>
                     )}
-                    onChange={(e, val) =>
-                      setValue('district', val as District.IDistrict)
+                    onChange={(_, val) =>
+                      setSelectedDistrict(val as District.IDistrict)
                     }
-                    onInputChange={(e, val) => {
+                    onInputChange={(_, val) => {
                       setValue('district', val);
                     }}
                     renderInput={(params) => (
@@ -288,7 +321,7 @@ const CustomerForm = () => {
               required: { value: true, message: 'Commune is Required' },
             }}
             render={({
-              field: { onChange, value, ...rest },
+              field: { onChange, ...rest },
               fieldState: { error },
             }) => {
               return (
@@ -300,17 +333,15 @@ const CustomerForm = () => {
                     id='commune'
                     options={communeList.filter(
                       (option) =>
-                        option.district_id ===
-                          (watch('district') as District.IDistrict)?.id || ''
+                        option.district_id === selectedDistrict?.id || ''
                     )}
-                    onChange={(e, val) => {
-                      setValue('commune', val as Commune.ICommune);
-                    }}
-                    onInputChange={(e, val) => {
+                    onInputChange={(_, val) => {
                       setValue('commune', val);
                     }}
                     getOptionLabel={(option) =>
-                      (option as Commune.ICommune).full_name_km || ''
+                      (option as Commune.ICommune)?.full_name_km ||
+                      option.toString() ||
+                      ''
                     }
                     renderOption={(props, option) => (
                       <MenuItem key={option.id} {...props}>
