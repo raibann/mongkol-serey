@@ -276,7 +276,7 @@ const Stocks = () => {
             >
               <Stack>
                 <Typography>
-                  Current : <b>{useStock?.quantity}</b> {useStock?.unit}
+                  Total : <b>{useStock?.quantity}</b> {useStock?.unit}
                 </Typography>
                 <Typography>
                   Used : <b>{useStock?.usedStock}</b> {useStock?.unit}
@@ -284,7 +284,7 @@ const Stocks = () => {
               </Stack>
               <Stack>
                 <Typography>
-                  Total :{' '}
+                  Current :{' '}
                   <b>
                     {(useStock?.quantity &&
                       useStock?.usedStock &&
