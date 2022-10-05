@@ -24,6 +24,7 @@ import FormExpense from '../FormExpense';
 import moment from 'moment';
 import EXPENSE_API from 'api/expense';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
+import { separateComma } from 'utils/validate-util';
 
 export interface IAddExpenseInput {
   expenseRowData: IExpenseRow[];
@@ -77,6 +78,13 @@ function ExpenseDialogs({
   const [listExpense, setListExpense] = useState<IExpenseRow[]>([]);
   const [alertDialog, setAlertDialog] = useState(false);
   const { isSmDown } = useResponsive();
+
+  // All Total
+  const totalIncome =
+    orderDetail?.finalInvoices?.reduce((init, val) => init + val.price, 0) || 0;
+  const totalExpense =
+    orderDetail?.expenses?.reduce((init, val) => init + val.price, 0) || 0;
+  const totalNetProfit = totalIncome - totalExpense;
 
   // useEffects
   useEffect(() => {
@@ -235,12 +243,7 @@ function ExpenseDialogs({
                     }}
                   >
                     <ListItemText
-                      primary={`$${
-                        orderDetail?.finalInvoices?.reduce(
-                          (init, val) => init + val.price,
-                          0
-                        ) || '0'
-                      }`}
+                      primary={`$${separateComma(totalIncome.toFixed())}`}
                       secondary='Total Income'
                       primaryTypographyProps={{
                         fontSize: 24,
@@ -256,13 +259,24 @@ function ExpenseDialogs({
                     }}
                   >
                     <ListItemText
-                      primary={`$${
-                        orderDetail?.expenses?.reduce(
-                          (init, val) => init + val.price,
-                          0
-                        ) || 0
-                      }`}
+                      primary={`$${separateComma(totalExpense.toFixed())}`}
                       secondary='Total Expense'
+                      primaryTypographyProps={{
+                        fontSize: 24,
+                        fontWeight: 'medium',
+                        letterSpacing: 0,
+                        color: 'white',
+                      }}
+                    />
+                  </ListItem>
+                  <ListItem
+                    sx={{
+                      bgcolor: (theme) => theme.palette.info.main,
+                    }}
+                  >
+                    <ListItemText
+                      primary={`$${separateComma(totalNetProfit.toFixed())}`}
+                      secondary='Total Net Profit'
                       primaryTypographyProps={{
                         fontSize: 24,
                         fontWeight: 'medium',

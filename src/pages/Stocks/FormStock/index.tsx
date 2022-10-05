@@ -4,6 +4,8 @@ import {
   Button,
   Autocomplete,
   InputAdornment,
+  MenuItem,
+  Select,
 } from '@mui/material';
 import { Container } from '@mui/system';
 import { CusIconButton } from 'components/CusIconButton';
@@ -75,6 +77,7 @@ export default function FormStock({
                   );
                 }}
               />
+
               <Controller
                 control={control}
                 name='price'
@@ -96,8 +99,31 @@ export default function FormStock({
                         helperText={error?.message}
                         InputProps={{
                           startAdornment: (
-                            <InputAdornment position='start'>
-                              USD
+                            <InputAdornment position='start' sx={{ ml: -1.7 }}>
+                              <Controller
+                                control={control}
+                                name='currency'
+                                defaultValue='$'
+                                render={({ field }) => {
+                                  return (
+                                    <Select
+                                      {...field}
+                                      sx={{
+                                        '& fieldset': {
+                                          border: 0,
+                                        },
+                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline':
+                                          {
+                                            border: 'none',
+                                          },
+                                      }}
+                                    >
+                                      <MenuItem value='$'>USD</MenuItem>
+                                      <MenuItem value='៛'>KHR</MenuItem>
+                                    </Select>
+                                  );
+                                }}
+                              />
                             </InputAdornment>
                           ),
                         }}

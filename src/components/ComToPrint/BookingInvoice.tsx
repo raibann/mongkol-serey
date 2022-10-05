@@ -415,7 +415,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                       fontFamily='Khmer Busra high'
                       fontSize={18}
                     >
-                      000348435
+                      999119199
                     </Typography>
                     <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       (Ratha Mengey)
@@ -446,7 +446,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                 <Grid item xs={6}>
                   <Stack direction={'row'} justifyContent='space-between'>
                     <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                      គណនេយ្យ True Money
+                      គណនេយ្យ Wing
                     </Typography>
                     <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       ៖

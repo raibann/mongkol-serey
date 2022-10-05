@@ -19,16 +19,16 @@ interface IConfirmDialog extends DialogProps {
   title: string;
   cancel: () => void;
   confirm: () => void;
-  loading: boolean;
+  loading?: boolean;
 }
 export default function ConfirmDialogSlide(props: IConfirmDialog) {
-  const { open, ...rest } = props;
+  const { open, title, confirm, cancel, loading, ...rest } = props;
   return (
     <Dialog
       open={open}
       TransitionComponent={Transition}
       maxWidth={props.maxWidth}
-      onClose={props.cancel}
+      onClose={cancel}
       {...rest}
     >
       <Stack alignItems={'center'} sx={{ p: 4 }} spacing={3}>
@@ -39,7 +39,7 @@ export default function ConfirmDialogSlide(props: IConfirmDialog) {
             variant='Bulk'
           />
           <Typography variant='body1' color={'error'}>
-            {props.title}
+            {title}
           </Typography>
         </Stack>
         <Stack direction={'row'} spacing={4}>
@@ -52,13 +52,13 @@ export default function ConfirmDialogSlide(props: IConfirmDialog) {
                 color: theme.palette.common.white,
               },
             }}
-            onClick={props.cancel}
+            onClick={cancel}
           >
             Cancel
           </Button>
           <LoadingButton
-            onClick={props.confirm}
-            loading={props.loading}
+            onClick={confirm}
+            loading={loading}
             variant='outlined'
             color='info'
             loadingIndicator='Deletting…'

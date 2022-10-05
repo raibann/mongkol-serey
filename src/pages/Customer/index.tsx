@@ -76,7 +76,7 @@ export default function Customers() {
       }
     },
   });
-  const debouncedValue = useDebounce(searchData, { wait: 300 });
+  const debouncedValue = useDebounce(searchData, { wait: 500 });
   // actions customer
   const newCustomerRequest = useRequest(CUSTOMER_API.postNewCustomer, {
     manual: true,
@@ -241,9 +241,9 @@ export default function Customers() {
             bgcolor: (theme) => theme.palette.common.white,
           }}
         >
-          <Typography variant='h4' color='secondary.main' fontWeight='bold'>
-            {openDrawer === 'Add' && 'New Customer'}
-            {openDrawer === 'Edit' && 'Update Customer'}
+          <Typography variant='h5' color='secondary.main' fontWeight='bold'>
+            {openDrawer === 'Add' && 'Add New Customer'}
+            {openDrawer === 'Edit' && 'Edit Customer Details'}
             {openDrawer === 'Details' && 'Customer Details'}
           </Typography>
           <CusIconButton
