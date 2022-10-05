@@ -88,7 +88,7 @@ export default function AllRoutes() {
         path={ROUTE_PATH.login}
         element={
           authState.authed ? (
-            <Navigate to={ROUTE_PATH.dashboard} />
+            <Navigate to={ROUTE_PATH.root} />
           ) : (
             <Suspense fallback={<CusBackDrop open={true} />}>
               <Login />

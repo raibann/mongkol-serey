@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
-import Sidebar from 'components/Sidebar';
+import { lazy } from 'react';
 import { Outlet } from 'react-router-dom';
 import theme from 'theme/theme';
-
+const Sidebar = lazy(() => import('components/Sidebar'));
 const drawerWidth = '20vw';
 
 export default function Home() {
