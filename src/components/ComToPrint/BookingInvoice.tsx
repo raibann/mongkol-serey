@@ -258,7 +258,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           )}
           ចំនួនទឹកប្រាក់ ${separateComma(order.deposit)}{' '}
           {order.amountInKhmer && <b>({order.amountInKhmer})</b>}{' '}
-          តាមរយះគណនេយ្យធនាគារ <b>ABA</b> នៅថ្ងៃទី <b>{getDay}</b> ខែ{' '}
+          តាមរយះគណនេយ្យធនាគារ <b>{order.paidBy}</b> នៅថ្ងៃទី <b>{getDay}</b> ខែ{' '}
           <b>{generateMonth(getMonth)}</b> ឆ្នាំ <b>{getYear}</b>។
         </Typography>
         <Table
@@ -412,7 +412,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                       fontFamily='Khmer Busra high'
                       fontSize={18}
                     >
-                      000348435
+                      999119199
                     </Typography>
                     <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       (Ratha Mengey)
@@ -443,7 +443,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                 <Grid item xs={6}>
                   <Stack direction={'row'} justifyContent='space-between'>
                     <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                      គណនេយ្យ True Money
+                      គណនេយ្យ Wing
                     </Typography>
                     <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       ៖

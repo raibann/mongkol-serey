@@ -37,8 +37,9 @@ export const StockTableBody = ({
           <TableCell>{index + 1}</TableCell>
           <TableCell>{data.productName}</TableCell>
           <TableCell>{` ${data.quantity} ${data.unit}`}</TableCell>
-          <TableCell>${separateComma(data.price)}</TableCell>
-          <TableCell>{data.shopName}</TableCell>
+          <TableCell>
+            {data.currency} {separateComma(data.price)}
+          </TableCell>
           <TableCell>
             <Chip
               label={data.paidBy || 'Cash'}
@@ -51,6 +52,8 @@ export const StockTableBody = ({
               }}
             />
           </TableCell>
+          <TableCell>{data.shopName}</TableCell>
+          <TableCell>{data.usedStock}</TableCell>
           <TableCell>{data.note}</TableCell>
           <TableCell>
             <Stack
@@ -115,9 +118,10 @@ export const StockTableHead = () => {
         <TableCell>PRODUCT NAME</TableCell>
         <TableCell>QUANTITY</TableCell>
         <TableCell>PRICE</TableCell>
-        <TableCell>SHOP NAME</TableCell>
         <TableCell>PAID BY</TableCell>
-        <TableCell>Other</TableCell>
+        <TableCell>SHOP NAME</TableCell>
+        <TableCell>Used Stock</TableCell>
+        <TableCell>Remark</TableCell>
         <TableCell></TableCell>
       </TableRow>
     </TableHead>

@@ -6,6 +6,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Autocomplete,
 } from '@mui/material';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
@@ -13,6 +14,7 @@ import { Trash } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
+import { foodList } from 'utils/expense-util';
 import { validatePatterns } from 'utils/validate-util';
 import { IOrderForm } from '.';
 
@@ -174,7 +176,7 @@ const OrderItem = ({
             }}
           />
 
-          <LabelTextField label='Price/Unit'>
+          <LabelTextField label='Unit/Price'>
             <Stack
               direction='row'
               sx={{
@@ -308,24 +310,39 @@ const OrderItem = ({
                   rules={{
                     required: { value: true, message: 'Item is Required' },
                   }}
-                  render={({ field, fieldState: { error } }) => {
+                  render={({
+                    field: { onChange, ...rest },
+                    fieldState: { error },
+                  }) => {
                     return (
-                      <TextField
-                        variant='standard'
+                      <Autocomplete
+                        freeSolo
+                        disableClearable
+                        openOnFocus
+                        id='foodList'
                         size='small'
-                        inputProps={{
-                          style: {
-                            padding: 0,
-                          },
+                        sx={{ width: '100%' }}
+                        onInputChange={(e, value) => {
+                          setValue(
+                            `listMenu.${index}.menuItem.${i}.title`,
+                            value
+                          );
                         }}
-                        sx={{
-                          flexGrow: 1,
-                          outline: 'none',
-                          p: 0,
-                        }}
-                        error={Boolean(error)}
-                        helperText={error?.message}
-                        {...field}
+                        {...rest}
+                        renderInput={(params) => (
+                          <TextField
+                            variant='standard'
+                            sx={{
+                              flexGrow: 1,
+                              outline: 'none',
+                              p: 0,
+                            }}
+                            error={Boolean(error)}
+                            helperText={error?.message}
+                            {...params}
+                          />
+                        )}
+                        options={foodList.map((data) => data)}
                       />
                     );
                   }}

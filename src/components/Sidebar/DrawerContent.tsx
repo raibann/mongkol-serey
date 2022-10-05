@@ -75,10 +75,7 @@ const DrawerContent = () => {
                 <ListItemIcon
                   sx={{
                     zIndex: 2,
-                    color:
-                      location.pathname === `/${nav.toUrl}`
-                        ? theme.palette.common.white
-                        : theme.palette.secondary.main,
+                    color: theme.palette.secondary.main,
                   }}
                 >
                   {nav.icon}

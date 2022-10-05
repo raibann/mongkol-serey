@@ -743,7 +743,7 @@ const OrderDrawer = ({
                 >
                   <Typography sx={{ flex: 1 }}>Title</Typography>
                   <Typography sx={{ flex: 1 }}>Quanity</Typography>
-                  <Typography sx={{ flex: 1 }}>Price/Unit</Typography>
+                  <Typography sx={{ flex: 1 }}>Unit</Typography>
                   <Typography sx={{ flex: 1 }}>Total Price</Typography>
                   <div style={{ width: 40 }} />
                 </Stack>

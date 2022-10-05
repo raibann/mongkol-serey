@@ -9,12 +9,14 @@ declare namespace IStock {
     id: number;
     productName: string;
     quantity: number;
+    usedStock: number;
     price: number;
     unit: string;
     shopName: string;
+    currency: string;
     note: string;
     paidBy: string;
-    createdAt: number;
+    createdAt?: any;
     updatedAt: number;
     deletedAt?: any;
   }
@@ -28,5 +30,6 @@ declare namespace IStock {
     currency: string;
     note: string;
     paidBy: string;
+    usedStock: number;
   }
 }

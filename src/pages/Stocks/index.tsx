@@ -3,6 +3,7 @@ import { LoadingButton } from '@mui/lab';
 import {
   Button,
   Dialog,
+  Grid,
   InputAdornment,
   Paper,
   Stack,
@@ -11,6 +12,7 @@ import {
   TableContainer,
   Typography,
 } from '@mui/material';
+import { useDebounce } from 'ahooks';
 import STOCK_API from 'api/stock';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
@@ -23,7 +25,6 @@ import { BoxAdd, BoxRemove, SearchNormal1 } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import theme from 'theme/theme';
-import { stockData } from 'utils/stock-util';
 import { validatePatterns } from 'utils/validate-util';
 import FormStock from './FormStock';
 import { StockTableBody, StockTableHead } from './stockTable';
@@ -36,35 +37,37 @@ export interface IStockInput {
   paidBy: string;
   price: string;
   currency: string;
+  usedStock: string;
 }
 
 const Stocks = () => {
   // State
   const [openDrawer, setOpenDrawer] = useState<'Add' | 'Edit' | ''>('');
-  const [searchProduct, setSearchProduct] = useState(stockData);
+  const [searchProduct, setSearchProduct] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<number>();
   const [useStock, setUseStock] = useState<IStock.IStockDetails | undefined>();
   const [openUseStock, setOpenStock] = useState(false);
+  const [smsOverStock, setSmsOverStock] = useState('');
   const methods = useForm<IStockInput>();
-  const { setValue, control, handleSubmit, watch } = methods;
+  const { setValue, control, handleSubmit } = methods;
 
   // fetch data
-  // get list
   const {
     data: stockList,
     run: fetchStockList,
     loading: isLoadingStockList,
     refresh: refreshStockList,
   } = useRequest(STOCK_API.getStockList, { manual: true });
-  // add stock
+
   const addNewStock = useRequest(STOCK_API.addStock, {
     manual: true,
     onSuccess: () => {
       setOpenDrawer('');
       refreshStockList();
+      setOpenStock(false);
     },
   });
-  // delete list
+
   const deleteStock = useRequest(STOCK_API.deleteStock, {
     manual: true,
     onSuccess: () => {
@@ -72,11 +75,14 @@ const Stocks = () => {
       setConfirmDelete(undefined);
     },
   });
+  const debouncedValue = useDebounce(searchProduct, { wait: 500 });
   // search list
   useEffect(() => {
-    fetchStockList({});
+    fetchStockList({
+      search: debouncedValue,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [debouncedValue]);
   useEffect(() => {
     if (openDrawer === 'Edit') {
       if (useStock) {
@@ -102,6 +108,7 @@ const Stocks = () => {
   }, [openDrawer, openUseStock, useStock]);
   // method
   const handleSubmitStock = (data: IStockInput) => {
+    // console.log('data', data);
     addNewStock.run({
       stockReq: {
         id: useStock?.id || undefined,
@@ -113,6 +120,7 @@ const Stocks = () => {
         price: +data.price,
         quantity: +data.quantity,
         unit: data.unit,
+        usedStock: 0,
       },
     });
   };
@@ -158,22 +166,7 @@ const Stocks = () => {
             {isMdDown ? 'New' : 'Add New'}
           </Button>
           <CusTextField
-            onChange={(e) => {
-              if (!!e.currentTarget.value) {
-                let tmp = searchProduct.filter(
-                  (el) =>
-                    el.productName
-                      .toLowerCase()
-                      .indexOf(e.currentTarget.value.toLowerCase()) !== -1 ||
-                    el.cateName
-                      .toLowerCase()
-                      .indexOf(e.currentTarget.value.toLowerCase()) !== -1
-                );
-                setSearchProduct(tmp);
-              } else {
-                setSearchProduct(stockData);
-              }
-            }}
+            onChange={(e) => setSearchProduct(e.currentTarget.value)}
             placeholder='Search...'
             size='small'
             InputProps={{
@@ -269,63 +262,122 @@ const Stocks = () => {
           }}
         >
           <Stack alignItems={'center'} sx={{ p: 4 }} spacing={3}>
-            <Typography variant='h5'>Current Stocks: 100</Typography>
+            <Typography variant='h5'>
+              Current Stocks: <b>{useStock?.quantity}</b> {useStock?.unit}
+            </Typography>
             <form>
-              <Stack direction={'row'} spacing={2}>
-                <Controller
-                  control={control}
-                  name='quantity'
-                  defaultValue=''
-                  rules={{
-                    required: {
-                      value:
-                        watch('quantity') > `${useStock?.quantity}`
-                          ? true
-                          : false,
-                      message: 'It over current qty',
-                    },
-                    pattern: {
-                      value: validatePatterns.numberOnly,
-                      message: 'Required only number',
-                    },
-                  }}
-                  render={({ field, fieldState: { error } }) => {
-                    return (
-                      <StyledOutlinedTextField
-                        placeholder='Enter value'
-                        error={Boolean(error)}
-                        helperText={error?.message}
-                        {...field}
-                      />
-                    );
-                  }}
-                />
-                <LoadingButton
-                  loading={addNewStock.loading}
-                  variant='contained'
-                  sx={{
-                    boxShadow: 0,
-                  }}
-                  onClick={handleSubmit((data) => {
-                    console.log(data.quantity);
-                  })}
-                >
-                  Use
-                </LoadingButton>
-                <LoadingButton
-                  loading={addNewStock.loading}
-                  variant='contained'
-                  color='info'
-                  sx={{
-                    boxShadow: 0,
-                  }}
-                  onClick={handleSubmit((data) => {
-                    console.log(data.quantity);
-                  })}
-                >
-                  Add
-                </LoadingButton>
-              </Stack>
+              <Grid container columnSpacing={2} rowSpacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Controller
+                    control={control}
+                    name='usedStock'
+                    defaultValue=''
+                    rules={{
+                      pattern: {
+                        value: validatePatterns.numberOnly,
+                        message: 'Required only number',
+                      },
+                    }}
+                    render={({ field, fieldState: { error } }) => {
+                      return (
+                        <Stack direction={'column'}>
+                          <StyledOutlinedTextField
+                            placeholder='Enter value'
+                            error={Boolean(error) || !!smsOverStock}
+                            {...field}
+                          />
+                          <Typography
+                            color={'error'}
+                            variant='caption'
+                            sx={{
+                              visibility:
+                                error?.message || smsOverStock
+                                  ? 'visible'
+                                  : 'hidden',
+                            }}
+                          >
+                            {error?.message || smsOverStock}
+                          </Typography>
+                        </Stack>
+                      );
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <LoadingButton
+                    loading={addNewStock.loading}
+                    variant='contained'
+                    fullWidth
+                    sx={{
+                      boxShadow: 0,
+                      height: 56,
+                    }}
+                    onClick={handleSubmit((data) => {
+                      if (
+                        useStock &&
+                        data.usedStock > useStock.quantity.toString()
+                      ) {
+                        setSmsOverStock('It over stocks');
+                      } else {
+                        if (useStock) {
+                          addNewStock.run({
+                            stockReq: {
+                              id: useStock.id,
+                              productName: useStock.productName,
+                              shopName: useStock.shopName,
+                              currency: useStock.currency,
+                              note: useStock.note,
+                              paidBy: useStock.paidBy,
+                              price: +useStock.price,
+                              quantity: +useStock.quantity,
+                              unit: useStock.unit,
+                              usedStock: useStock.usedStock
+                                ? useStock.usedStock + +data.usedStock
+                                : +data.usedStock,
+                            },
+                          });
+                        }
+                      }
+                    })}
+                  >
+                    Use
+                  </LoadingButton>
+                </Grid>
+                <Grid item xs={6} sm={3}>
+                  <LoadingButton
+                    loading={addNewStock.loading}
+                    variant='contained'
+                    color='info'
+                    fullWidth
+                    sx={{
+                      boxShadow: 0,
+                      height: 56,
+                      color: (theme) => theme.palette.common.white,
+                    }}
+                    onClick={handleSubmit((data) => {
+                      if (useStock) {
+                        addNewStock.run({
+                          stockReq: {
+                            id: useStock.id,
+                            productName: useStock.productName,
+                            shopName: useStock.shopName,
+                            currency: useStock.currency,
+                            note: useStock.note,
+                            paidBy: useStock.paidBy,
+                            price: +useStock.price,
+                            quantity: +useStock.quantity + +data.usedStock,
+                            unit: useStock.unit,
+                            usedStock: useStock.usedStock,
+                          },
+                        });
+                      }
+                      setSmsOverStock('');
+                    })}
+                  >
+                    Add
+                  </LoadingButton>
+                </Grid>
+              </Grid>
             </form>
           </Stack>
         </Dialog>

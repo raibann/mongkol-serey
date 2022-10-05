@@ -75,7 +75,7 @@ export default function Customers() {
       }
     },
   });
-  const debouncedValue = useDebounce(searchData, { wait: 1000 });
+  const debouncedValue = useDebounce(searchData, { wait: 500 });
   // actions customer
   const newCustomerRequest = useRequest(CUSTOMER_API.postNewCustomer, {
     manual: true,
@@ -247,8 +247,8 @@ export default function Customers() {
         >
           <Typography variant='h5' color='secondary.main' fontWeight='bold'>
             {openDrawer === 'Add' && 'Add New Customer'}
-            {openDrawer === 'Edit' && 'Edit Details'}
-            {openDrawer === 'Details' && 'Details'}
+            {openDrawer === 'Edit' && 'Edit Customer Details'}
+            {openDrawer === 'Details' && 'Customer Details'}
           </Typography>
           <CusIconButton
             color='error'
