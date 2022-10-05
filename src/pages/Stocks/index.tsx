@@ -50,7 +50,7 @@ const Stocks = () => {
   const [smsOverStock, setSmsOverStock] = useState('');
   const methods = useForm<IStockInput>();
   const { setValue, control, handleSubmit } = methods;
-
+  console.log(smsOverStock);
   // fetch data
   const {
     data: stockList,
@@ -65,6 +65,7 @@ const Stocks = () => {
       setOpenDrawer('');
       refreshStockList();
       setOpenStock(false);
+      setSmsOverStock('');
     },
   });
 
@@ -259,12 +260,41 @@ const Stocks = () => {
           maxWidth={'xs'}
           onClose={() => {
             setOpenStock(false);
+            setSmsOverStock('');
+            setValue('usedStock', '');
           }}
         >
-          <Stack alignItems={'center'} sx={{ p: 4 }} spacing={3}>
-            <Typography variant='h5'>
-              Current Stocks: <b>{useStock?.quantity}</b> {useStock?.unit}
+          <Stack alignItems={'center'} sx={{ p: 4 }} spacing={2}>
+            <Typography variant='h5' fontWeight={'medium'}>
+              Stocks Control
             </Typography>
+            <Stack
+              direction={'row'}
+              alignItems='center'
+              justifyContent={'space-between'}
+              sx={{ width: '100%' }}
+            >
+              <Stack>
+                <Typography>
+                  Current : <b>{useStock?.quantity}</b> {useStock?.unit}
+                </Typography>
+                <Typography>
+                  Used : <b>{useStock?.usedStock}</b> {useStock?.unit}
+                </Typography>
+              </Stack>
+              <Stack>
+                <Typography>
+                  Total :{' '}
+                  <b>
+                    {(useStock?.quantity &&
+                      useStock?.usedStock &&
+                      useStock?.quantity - useStock?.usedStock) ||
+                      useStock?.quantity}
+                  </b>{' '}
+                  {useStock?.unit}
+                </Typography>
+              </Stack>
+            </Stack>
             <form>
               <Grid container columnSpacing={2} rowSpacing={2}>
                 <Grid item xs={12} sm={6}>
@@ -311,13 +341,18 @@ const Stocks = () => {
                     sx={{
                       boxShadow: 0,
                       height: 56,
+                      borderRadius: 2,
                     }}
                     onClick={handleSubmit((data) => {
                       if (
                         useStock &&
-                        data.usedStock > useStock.quantity.toString()
+                        +data.usedStock + useStock.usedStock > useStock.quantity
                       ) {
-                        setSmsOverStock('It over stocks');
+                        if (useStock.quantity - useStock.usedStock === 0) {
+                          setSmsOverStock('Empty stock');
+                        } else {
+                          setSmsOverStock('It over stocks');
+                        }
                       } else {
                         if (useStock) {
                           addNewStock.run({
@@ -353,6 +388,7 @@ const Stocks = () => {
                       boxShadow: 0,
                       height: 56,
                       color: (theme) => theme.palette.common.white,
+                      borderRadius: 2,
                     }}
                     onClick={handleSubmit((data) => {
                       if (useStock) {
