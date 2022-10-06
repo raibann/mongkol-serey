@@ -53,7 +53,9 @@ export const StockTableBody = ({
             />
           </TableCell>
           <TableCell>{data.shopName}</TableCell>
-          <TableCell>{data.usedStock}</TableCell>
+          <TableCell>
+            {data.usedStock} {data.unit}
+          </TableCell>
           <TableCell>{data.note}</TableCell>
           <TableCell>
             <Stack

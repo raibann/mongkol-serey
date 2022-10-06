@@ -90,6 +90,7 @@ const Stocks = () => {
         setValue('productName', useStock.productName);
         setValue('price', useStock.price.toString());
         setValue('quantity', useStock.quantity.toString());
+        setValue('currency', useStock.currency);
         setValue('unit', useStock.unit);
         setValue('shopName', useStock.shopName);
         setValue('paidBy', useStock.paidBy);

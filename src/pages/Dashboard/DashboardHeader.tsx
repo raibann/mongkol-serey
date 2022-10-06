@@ -269,8 +269,12 @@ const DashboardHeader = ({
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={`${data.id}. ${data.type}`}
-                      secondary={moment(data.date).format('DD-MM-YYYY')}
+                      primary={`Order ID: ${data.id} ~ ${data.type}`}
+                      secondary={
+                        data.customer === null
+                          ? 'No Customer'
+                          : data.customer.customer_name
+                      }
                     />
                   </ListItem>
                 )
