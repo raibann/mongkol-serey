@@ -196,7 +196,7 @@ const Stocks = () => {
             >
               <CusLoading />
             </Stack>
-          ) : stockList && stockList.data.length < 0 ? (
+          ) : stockList && stockList.data.length === 0 ? (
             <Stack
               direction={'column'}
               alignItems={'center'}
