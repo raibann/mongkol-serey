@@ -50,7 +50,7 @@ const Stocks = () => {
   const [smsOverStock, setSmsOverStock] = useState('');
   const methods = useForm<IStockInput>();
   const { setValue, control, handleSubmit } = methods;
-  console.log(smsOverStock);
+  // console.log(smsOverStock);
   // fetch data
   const {
     data: stockList,

@@ -18,7 +18,7 @@ export default function FormUser({
 }) {
   const { control, handleSubmit, watch } = useForm<IRegister>();
   const handleAddUser = (data: IRegister) => {
-    console.log('add new stocks:', data);
+    // console.log('add new stocks:', data);
   };
   return (
     <Container>

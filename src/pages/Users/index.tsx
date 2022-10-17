@@ -22,7 +22,7 @@ import useResponsive from 'hook/useResponsive';
 export default function Users() {
   const [openDrawer, setOpenDrawer] = useState<'Add' | 'Edit' | ''>('');
   const [searchProduct, setSearchProduct] = useState(UserData);
-  console.log(searchProduct);
+  // console.log(searchProduct);
   // handle add and edit stock
   const handleOpenDrawer = (obj: 'Add' | 'Edit' | '') => {
     setOpenDrawer(obj);
