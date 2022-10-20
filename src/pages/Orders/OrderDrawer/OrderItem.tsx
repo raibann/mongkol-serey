@@ -176,7 +176,7 @@ const OrderItem = ({
             }}
           />
 
-          <LabelTextField label='Unit/Price'>
+          <LabelTextField label='Unit Price'>
             <Stack
               direction='row'
               sx={{
@@ -225,6 +225,11 @@ const OrderItem = ({
                   borderRadius: 2,
                   color: '#000',
                   width: 'auto',
+                  minWidth: 0,
+                  px: 1,
+                  '&.css-1lskwbk-MuiButtonBase-root-MuiButton-root': {
+                    p: 0,
+                  },
                 }}
               >
                 /{watch(`listMenu.${index}.unit`)}
