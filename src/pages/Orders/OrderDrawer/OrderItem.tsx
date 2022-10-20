@@ -230,7 +230,7 @@ const OrderItem = ({
                 /{watch(`listMenu.${index}.unit`)}
               </Button>
               <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                {['តុ', 'ចាន', 'ខ្ទះ', 'កែវ', 'កំប៉ុង', 'គ្រឿង'].map((e) => {
+                {['តុ', 'ចាន', 'ខ្ទះ', 'នាក់', 'ឈុត'].map((e) => {
                   return (
                     <MenuItem
                       key={e}
