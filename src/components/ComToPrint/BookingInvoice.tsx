@@ -341,12 +341,10 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     fontSize={18}
                     fontWeight={'bold'}
                   >
-                    {data.price !== 0 && data.quantity !== 0
+                    {data.price > 0 && data.quantity > 0
                       ? Math.round(+separateComma(data.price / data.quantity))
                       : ''}
-                    {data.price !== 0 &&
-                      data.quantity !== 0 &&
-                      `$/${data.unit}`}
+                    {data.price > 0 && `$/${data.unit}`}
                   </Typography>
                 </TableCell>
               </TableRow>

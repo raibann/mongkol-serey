@@ -171,10 +171,10 @@ const OrderDrawer = ({
         return {
           id: item?.id,
           title: item.category || '',
-          price: +item.price || '',
+          price: +item.price || 0,
           unit: item.unit || 'តុ',
-          unitPrice: +(+item.price / item.quantity).toFixed(2) || '',
-          quantity: item.quantity || '',
+          unitPrice: +(+item.price / item.quantity).toFixed(2) || 0,
+          quantity: item.quantity || 0,
           menuItem: item.packageItems?.map((e) => {
             return {
               id: e?.id,
