@@ -7,10 +7,6 @@ import React, {
 } from 'react';
 import { persistState, getPersistedState } from 'utils/persist-util';
 
-export interface IGlobalState {
-  authed: boolean;
-}
-
 interface IAppContext {
   globalState: any;
   setGlobalState: React.Dispatch<any>;
@@ -27,9 +23,7 @@ interface IAppWrapper {
 
 export function AppWrapper({ children }: IAppWrapper) {
   const initMount = useRef(true);
-  const [globalState, setGlobalState] = useState<IGlobalState>({
-    authed: false,
-  });
+  const [globalState, setGlobalState] = useState('');
 
   useEffect(() => {
     const vers = getPersistedState('version');

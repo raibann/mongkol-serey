@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
-import Sidebar from 'components/Sidebar';
+import { lazy } from 'react';
 import { Outlet } from 'react-router-dom';
 import theme from 'theme/theme';
-
+const Sidebar = lazy(() => import('components/Sidebar'));
 const drawerWidth = '20vw';
 
 export default function Home() {
@@ -11,6 +11,7 @@ export default function Home() {
       <Sidebar {...{ drawerWidth }} />
       <Box
         component='main'
+        id='main'
         flexGrow={1}
         sx={{
           background: theme.palette.background.paper,

@@ -1,6 +1,11 @@
 import {
+  Avatar,
+  Badge,
   Button,
   List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
   ListSubheader,
   Menu,
   Popover,
@@ -8,25 +13,25 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { CusIconButton } from 'components/CusIconButton';
+import { BoxRemove, Calendar2, User } from 'iconsax-react';
+import { Notification } from 'iconsax-react';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers';
+import { Controller, useForm } from 'react-hook-form';
+import { useReminderContext } from 'context/ReminderContext';
+import { CusLoading } from 'components/CusLoading';
 import theme from 'theme/theme';
 import React from 'react';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
-import { CusIconButton } from 'components/CusIconButton';
-import { Calendar2 } from 'iconsax-react';
-import { Notification } from 'iconsax-react';
-import AnniversaryItem from './AnniversaryItem';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import moment from 'moment';
-// import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
-import { DatePicker } from '@mui/x-date-pickers';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import useResponsive from 'hook/useResponsive';
-import { Controller, useForm } from 'react-hook-form';
+import THEME_UTIL from 'utils/theme-util';
 
 interface IDateRange {
   startDate: string;
@@ -35,7 +40,11 @@ interface IDateRange {
 
 const DashboardHeader = ({
   setDateRange,
+  toggleValue,
+  setToggleValue,
 }: {
+  toggleValue: string | null;
+  setToggleValue: React.Dispatch<React.SetStateAction<string | null>>;
   setDateRange: React.Dispatch<
     React.SetStateAction<{
       startDate: string;
@@ -43,13 +52,37 @@ const DashboardHeader = ({
     }>
   >;
 }) => {
-  const [ToggleValue, setToggleValue] = useState('week');
   // ancher notification
   const [anchorElNotification, setAnchorElNotification] =
     React.useState<null | HTMLElement>(null);
   // anchor datepicker
   const [anchorElDatePicker, setAnchorElDatePicker] =
     React.useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    let monday = moment().weekday(0);
+    let friday = moment().weekday(6);
+    switch (toggleValue) {
+      case 'month':
+        return setDateRange({
+          startDate: moment().startOf('month').format('YYYY-MM-DD'),
+          endDate: moment().endOf('month').format('YYYY-MM-DD'),
+        });
+      case 'year':
+        return setDateRange({
+          startDate: moment().startOf('year').format('YYYY-MM-DD'),
+          endDate: moment().endOf('year').format('YYYY-MM-DD'),
+        });
+      case 'week':
+        return setDateRange({
+          startDate: moment(monday).format('YYYY-MM-DD'),
+          endDate: moment(friday).format('YYYY-MM-DD'),
+        });
+      default:
+        return;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toggleValue]);
 
   // Validate date range
   const { handleSubmit, control } = useForm<IDateRange>();
@@ -58,8 +91,7 @@ const DashboardHeader = ({
       startDate: moment(data.startDate).format('YYYY-MM-DD'),
       endDate: moment(data.endDate).format('YYYY-MM-DD'),
     });
-    console.log('start date', moment(data.startDate).format('YYYY-MM-DD'));
-    console.log('end date', moment(data.endDate).format('YYYY-MM-DD'));
+    setToggleValue(null);
   };
   // notification
   const handleClickNoti = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -79,12 +111,15 @@ const DashboardHeader = ({
       setAnchorElDatePicker(null);
     }
   };
-  const Anniversary = Array(6).fill({
-    name: 'Meas Saominea',
-    lastOrder: '30-02-2002',
-    daysLeft: 0,
-  });
+  // fetch notifications
+  const { reminderList, reminderLoading } = useReminderContext();
+
+  const temp = reminderList?.filter(
+    (el) => moment().diff(el.date, 'years') === 1
+  );
+
   const { isSmDown } = useResponsive();
+
   return (
     <>
       <PageHeader
@@ -103,13 +138,12 @@ const DashboardHeader = ({
       >
         <Stack
           direction={'row'}
-          spacing={2}
           justifyContent='flex-end'
           sx={{ width: '100%', mt: { xs: 2, md: 0 } }}
           alignItems='center'
         >
           <ToggleButtonGroup
-            value={ToggleValue}
+            value={toggleValue}
             exclusive
             fullWidth
             size='small'
@@ -124,30 +158,37 @@ const DashboardHeader = ({
             sx={{
               width: { xs: '100%', md: '30%' },
               height: 40,
+              mr: 2,
             }}
           >
             <CusToggleButton value='week'>Week</CusToggleButton>
             <CusToggleButton value='month'>Month</CusToggleButton>
             <CusToggleButton value='year'>Year</CusToggleButton>
           </ToggleButtonGroup>
-
-          <CusIconButton color='primary' onClick={handleClickDatepicker}>
-            <Calendar2 size='24' variant='Outline' />
-          </CusIconButton>
-
           <CusIconButton
             color='primary'
-            onClick={handleClickNoti}
+            onClick={handleClickDatepicker}
             sx={{
-              display: {
-                xs: 'none',
-                md: 'block',
-              },
-              height: 40,
+              mr: { xs: 0, md: 2 },
             }}
           >
-            <Notification size='24' variant='Bold' />
+            <Calendar2 size='24' variant='Outline' />
           </CusIconButton>
+          <Badge color='error' badgeContent={temp?.length}>
+            <CusIconButton
+              color='primary'
+              onClick={handleClickNoti}
+              sx={{
+                display: {
+                  xs: 'none',
+                  md: 'block',
+                },
+                height: 40,
+              }}
+            >
+              <Notification size='24' variant='Bold' />
+            </CusIconButton>
+          </Badge>
         </Stack>
       </PageHeader>
       <Menu
@@ -170,8 +211,8 @@ const DashboardHeader = ({
         >
           <ListSubheader
             sx={{
-              p: 1,
-              px: 2,
+              p: 2,
+              pl: 0,
               background: (theme) => theme.palette.common.white,
             }}
           >
@@ -182,14 +223,74 @@ const DashboardHeader = ({
               Anniverysary
             </Typography>
           </ListSubheader>
-          {Anniversary.map((data, i) => (
-            <AnniversaryItem
-              key={i}
-              daysLeft={data.daysLeft}
-              lastOrder={data.lastOrder}
-              name={data.name}
-            />
-          ))}
+          {reminderLoading ? (
+            <Stack
+              alignItems={'center'}
+              justifyContent='center'
+              height={'100%'}
+            >
+              <CusLoading />
+            </Stack>
+          ) : temp && temp.length > 0 ? (
+            reminderList?.map(
+              (data) =>
+                moment().diff(data.date, 'years') === 1 && (
+                  <ListItem
+                    key={data.id}
+                    sx={{
+                      px: 0,
+                      pt: 0,
+                    }}
+                    secondaryAction={
+                      <Typography
+                        fontSize={14}
+                        color={theme.palette.success.main}
+                        fontWeight='bold'
+                      >
+                        Today
+                      </Typography>
+                    }
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        sx={{
+                          background: THEME_UTIL.goldGradientMain,
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {data.customer !== null ? (
+                          data.customer.customer_name.charAt(0).toUpperCase()
+                        ) : (
+                          <User
+                            color={theme.palette.common.white}
+                            variant='Bold'
+                          />
+                        )}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={`Order ID: ${data.id} ~ ${data.type}`}
+                      secondary={
+                        data.customer === null
+                          ? 'No Customer'
+                          : data.customer.customer_name
+                      }
+                    />
+                  </ListItem>
+                )
+            )
+          ) : (
+            <Stack
+              alignItems={'center'}
+              justifyContent='center'
+              height={'100%'}
+            >
+              <BoxRemove size='48' color={theme.palette.error.main} />
+              <Typography variant='h6' color='error'>
+                No notification
+              </Typography>
+            </Stack>
+          )}
         </List>
       </Menu>
       {/* pop over */}
@@ -214,11 +315,7 @@ const DashboardHeader = ({
         >
           <Stack sx={{ p: 2, height: '100%' }} spacing={2}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Stack
-                direction={isSmDown ? 'column' : 'row'}
-                spacing={2}
-                // alignItems='center'
-              >
+              <Stack direction={isSmDown ? 'column' : 'row'} spacing={2}>
                 <Controller
                   control={control}
                   name='startDate'
@@ -262,7 +359,8 @@ const DashboardHeader = ({
               sx={{
                 width: '100%',
                 color: (theme) => theme.palette.common.white,
-                borderRadius: 3,
+                borderRadius: 2,
+                boxShadow: 0,
               }}
             >
               Confirm

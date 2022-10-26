@@ -10,12 +10,33 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
-import { IFinalInvoice } from 'utils/print-util';
+import { separateComma } from 'utils/validate-util';
+
+interface IFinalInvoice {
+  order: IOrder.Order;
+}
+
+export const eventType = {
+  Wedding: 'ពិធីរៀបមង្គលការ',
+  Party: 'ពិធីជប់លៀង',
+  Birthday: 'ពិធីខួបកំណើត',
+};
 
 const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
-  (props, ref) => {
+  ({ order }, ref) => {
+    const formatInvoiceId = (value: string) => {
+      const pad = '00000';
+      return pad.substring(0, pad.length - value.length) + value;
+    };
+
+    const totalPrice = order.finalInvoices?.reduce(
+      (init, next) => init + next.price,
+      0
+    );
+
     return (
       <Box
         ref={ref}
@@ -102,7 +123,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   លេខវិក័យបត្រ៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.orderInfo.invoiceId}
+                  {order.id && formatInvoiceId(order.id.toString())}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -114,7 +135,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   អតិថិជន​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.customerInfo.name}
+                  {order.customer?.customer_name}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -126,7 +147,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   ទូរស័ព្ទលេខ​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.customerInfo?.phone}
+                  {order.customer?.contact_number}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -138,7 +159,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   កម្មវិធី​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.orderInfo?.eventDate}
+                  {moment(order.date).format('DD.MM.YYYY')}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -150,7 +171,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   ទីតាំង​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.orderInfo?.eventLocation}
+                  {order.location}
                 </Typography>
               </Stack>
             </Stack>
@@ -163,7 +184,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
           fontFamily='Khmer Busra high'
           fontSize={20}
         >
-          វិក័យបត្រ{props.orderInfo?.eventType}
+          វិក័យបត្រ {(eventType as any)[`${order.type}`]}
         </Typography>
         <Table
           sx={{
@@ -194,34 +215,36 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.orderInfo.listOrdered?.map((ls, i) => (
+            {order.finalInvoices?.map((ls, i) => (
               <TableRow key={ls.id}>
-                <TableCell sx={{ textAlign: 'center' }}>{ls.id}</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>{i + 1}</TableCell>
                 <TableCell>អាហារពេលល្ងាច៖ Full</TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
-                  {ls.quantity.value}
-                  {ls.quantity.units}
+                  {ls.quantity}
+                  {ls.unit}
                 </TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>{ls.price}$</TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
-                  {ls.subTotal}$
+                  {Math.round(+separateComma(ls.price / ls.quantity))}$
+                </TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>
+                  {separateComma(ls.price)}$
                 </TableCell>
               </TableRow>
             ))}
 
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                តម្លៃសរុប {props.orderInfo.totalPrice}$
+                តម្លៃសរុប {separateComma(totalPrice)}$
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                បានកក់ {props.orderInfo.deposit}$
+                បានកក់ {separateComma(order.deposit)}$
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                ប្រាក់នៅសល់ {props.orderInfo.remainMoney}$
+                ប្រាក់នៅសល់ {separateComma(totalPrice - order.deposit)}$
               </TableCell>
             </TableRow>
           </TableBody>
@@ -252,7 +275,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   fontFamily='Khmer Busra high'
                   fontSize={18}
                 >
-                  000348435
+                  999119199
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   (Ratha Mengey)
@@ -283,7 +306,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
             <Grid item xs={6}>
               <Stack direction={'row'} justifyContent='space-between'>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  គណនេយ្យ True Money
+                  គណនេយ្យ Wing
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
                   ៖

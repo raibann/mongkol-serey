@@ -11,15 +11,21 @@ import { persistState, getPersistedState } from 'utils/persist-util';
 
 export interface IAuthState {
   authed: boolean;
+  accessToken: string;
+  refreshToken: string;
 }
 
 interface IAuthContext {
-  authState: any;
-  setAuthState: React.Dispatch<any>;
+  authState: IAuthState;
+  setAuthState: React.Dispatch<React.SetStateAction<IAuthState>>;
 }
 
 export const AuthContext = createContext<IAuthContext>({
-  authState: {},
+  authState: {
+    authed: false,
+    refreshToken: '',
+    accessToken: '',
+  },
   setAuthState: () => {},
 });
 
@@ -29,22 +35,32 @@ interface IAuthWrapper {
 
 export function AuthWrapper({ children }: IAuthWrapper) {
   const initMount = useRef(true);
-  const [authState, setAuthState] = useState(
-    getPersistedState(process.env.REACT_APP_PERSIST_AUTH) || {}
+  const [authState, setAuthState] = useState<IAuthState>(
+    getPersistedState(process.env.REACT_APP_PERSIST_AUTH) || { authed: false }
   );
 
-  useEffect(() => {
-    const vers = getPersistedState('version');
-    if (vers && vers !== process.env.REACT_APP_PERSIST_VER) {
-      localStorage.clear();
-      persistState('version', process.env.REACT_APP_PERSIST_AUTH || '');
-    }
-  }, []);
+  const refreshTokenReq = useRequest(AUTH_API.refreshToken, {
+    manual: true,
+    onSuccess: (data) =>
+      setAuthState({
+        authed: true,
+        refreshToken: data.refresh_token,
+        accessToken: data.access_token,
+      }),
+    onError: () =>
+      setAuthState({ refreshToken: '', accessToken: '', authed: false }),
+  });
 
   useEffect(() => {
     if (!initMount.current) {
       persistState(process.env.REACT_APP_PERSIST_AUTH || '', authState);
-    } else initMount.current = false;
+    } else {
+      initMount.current = false;
+      if (authState.authed && authState.refreshToken !== '') {
+        refreshTokenReq.run(`Bearer ${authState.refreshToken}`);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authState]);
 
   return (
@@ -56,29 +72,47 @@ export function AuthWrapper({ children }: IAuthWrapper) {
 
 export function useAuthContext() {
   const { authState, setAuthState } = useContext(AuthContext);
+  const [loginErrorDialog, setLoginErrorDialog] = useState(false);
+
+  const closeDialog = () => {
+    setLoginErrorDialog(false);
+  };
 
   // login useRequest
-  const { run: runPostLogin } = useRequest(AUTH_API.postLogin, {
+  const {
+    run: login,
+    loading,
+    error,
+  } = useRequest(AUTH_API.postLogin, {
     manual: true,
-    throwOnError: true,
-    onSuccess: (loginData) => setAuthState({ ...loginData, authed: true }),
-    onError: (loginError) => setAuthState({ ...loginError, authed: false }),
+    onSuccess: (loginData) =>
+      setAuthState({
+        refreshToken: loginData.token.refresh_token,
+        accessToken: loginData.token.access_token,
+        authed: true,
+      }),
+    onError: () => {
+      setLoginErrorDialog(true);
+      setAuthState({ refreshToken: '', accessToken: '', authed: false });
+    },
   });
 
-  // login useRequest
-  // const { run: runPostLogout } = useRequest(AUTH_API.postLogout, {
-  //   manual: true,
-  //   onSuccess: (data) => setAuthState({ authed: false, ...data }),
-  // });
-
-  const login = runPostLogin;
-
-  // const logout = runPostLogout;
+  const logout = () => {
+    setAuthState({
+      authed: false,
+      accessToken: '',
+      refreshToken: '',
+    });
+  };
 
   return {
     authState,
     setAuthState,
     login,
-    // logout,
+    logout,
+    loading,
+    error,
+    loginDialog: loginErrorDialog,
+    closeDialog,
   };
 }

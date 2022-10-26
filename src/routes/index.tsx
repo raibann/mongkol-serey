@@ -11,7 +11,6 @@ const Expense = lazy(() => import('pages/Expense'));
 const Stocks = lazy(() => import('pages/Stocks'));
 const Customer = lazy(() => import('pages/Customer'));
 const Reminder = lazy(() => import('pages/Reminder'));
-const Users = lazy(() => import('pages/Users'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -71,14 +70,14 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
-        <Route
+        {/* <Route
           path={ROUTE_PATH.manageusers}
           element={
             <Suspense fallback={<CusBackDrop open={true} />}>
               <Users />
             </Suspense>
           }
-        />
+        /> */}
         <Route
           path={ROUTE_PATH.root}
           element={<Navigate to={ROUTE_PATH.dashboard} />}

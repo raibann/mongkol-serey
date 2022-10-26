@@ -6,17 +6,24 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
+  Typography,
 } from '@mui/material';
+import { LogoutCurve } from 'iconsax-react';
 import { useDrawerContext } from 'context/DrawerContext';
+import { useReminderContext } from 'context/ReminderContext';
 import { motion } from 'framer-motion';
-import useRouter from 'hook/useRouter';
+import { useAuthContext } from 'context/AuthContext';
 import theme from 'theme/theme';
+import useRouter, { ROUTE_PATH } from 'hook/useRouter';
 import navigationUtil from 'utils/navigation-util';
 import THEME_UTIL from 'utils/theme-util';
 
 const DrawerContent = () => {
   const { location, navigate } = useRouter();
   const { openDrawer, setOpenDrawer } = useDrawerContext();
+  const { reminderList } = useReminderContext();
+  const { logout } = useAuthContext();
 
   return (
     <>
@@ -68,16 +75,29 @@ const DrawerContent = () => {
                 <ListItemIcon
                   sx={{
                     zIndex: 2,
-                    color:
-                      location.pathname === `/${nav.toUrl}`
-                        ? theme.palette.common.white
-                        : theme.palette.secondary.main,
+                    color: theme.palette.secondary.main,
                   }}
                 >
                   {nav.icon}
                 </ListItemIcon>
                 <ListItemText
-                  primary={nav.title}
+                  primary={
+                    <Stack direction={'row'} justifyContent='space-between'>
+                      <Typography>{nav.title}</Typography>
+                      {nav.toUrl === ROUTE_PATH.reminder && reminderList && (
+                        <Box
+                          sx={{
+                            bgcolor: theme.palette.error.main,
+                            color: theme.palette.common.white,
+                            px: 1,
+                            borderRadius: 1,
+                          }}
+                        >
+                          {reminderList?.length}
+                        </Box>
+                      )}
+                    </Stack>
+                  }
                   primaryTypographyProps={{
                     fontWeight: 500,
                     color:
@@ -93,6 +113,37 @@ const DrawerContent = () => {
             </ListItem>
           );
         })}
+        <ListItem sx={{ py: 0.5 }}>
+          <ListItemButton
+            sx={{
+              position: 'relative',
+              borderRadius: 2,
+            }}
+            onClick={() => {
+              logout();
+              openDrawer && setOpenDrawer(false);
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                zIndex: 2,
+                color: theme.palette.secondary.main,
+              }}
+            >
+              <LogoutCurve size='24' />
+            </ListItemIcon>
+            <ListItemText
+              primary={<Typography>Exit</Typography>}
+              primaryTypographyProps={{
+                fontWeight: 500,
+                color: 'secondary.main',
+              }}
+              sx={{
+                zIndex: 1,
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
       </List>
     </>
   );

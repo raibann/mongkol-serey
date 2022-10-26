@@ -1,75 +1,102 @@
-import { Paper, Stack, Typography, Avatar, Grid } from '@mui/material';
+import { Paper, Stack, Typography, Avatar, Grid, Tooltip } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
-import useRouter from 'hook/useRouter';
-
-import { Add, Edit, InfoCircle } from 'iconsax-react';
-import { ICustCard } from 'utils/cutomer-util';
+import { Edit, InfoCircle, Trash } from 'iconsax-react';
 
 const CustCard = ({
   handleOpenDrawer,
-  customerCard,
-  setSelectedData,
+  custList,
+  fetchCustDetails,
+  setConfirmDelete,
+  changeBackground,
 }: {
   handleOpenDrawer: (obj: 'Add' | 'Edit' | 'Details' | '') => void;
-  customerCard: ICustCard[];
-  setSelectedData: React.Dispatch<React.SetStateAction<ICustCard[]>>;
+  custList: ICustomer.ICustomerRespone | undefined;
+  fetchCustDetails: (params_0: { id: number }) => void;
+  setConfirmDelete: React.Dispatch<React.SetStateAction<number | undefined>>;
+  changeBackground: (name?: string) => string;
 }) => {
-  const router = useRouter();
   return (
     <>
-      <Grid container rowSpacing={2} columnSpacing={2}>
-        {customerCard.map((data, i) => (
-          <Grid item xs={6} md={3} key={i}>
-            <Paper sx={{ py: 2 }}>
-              <Stack direction={'column'} alignItems='center' spacing={1.5}>
-                <Avatar
-                  src='/images/avatar.svg'
-                  sx={{ width: 100, height: 'auto' }}
-                />
-                <Stack alignItems={'center'}>
-                  <Typography variant='h6'>{data.customerName}</Typography>
-                  <Typography
-                    variant='caption'
-                    sx={{ color: (theme) => theme.palette.text.secondary }}
-                  >
-                    Ordered: {data.ordered} times
-                  </Typography>
-                </Stack>
-                <Stack direction={'row'} spacing={1.5}>
-                  <CusIconButton
-                    color='primary'
-                    onClick={() => router.navigate('/orders')}
-                  >
-                    <Add variant='Outline' />
-                  </CusIconButton>
+      {custList?.data.map((data, i) => (
+        <Grid item xs={6} md={3} key={i}>
+          <Paper sx={{ p: 2 }}>
+            <Stack direction={'column'} alignItems='center' spacing={1.5}>
+              <Avatar
+                sx={{
+                  width: 72,
+                  height: 72,
+                  background: changeBackground(data.customer_name),
+                  color: (theme) => theme.palette.common.white,
+                  textTransform: 'uppercase',
+                  fontSize: 24,
+                }}
+              >
+                {data.customer_name.charAt(0)}
+              </Avatar>
+              <Stack alignItems={'center'}>
+                <Typography
+                  variant='h6'
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    width: 150,
+                    textAlign: 'center',
+                  }}
+                >
+                  {data.customer_name}
+                </Typography>
+                <Typography
+                  variant='subtitle1'
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    width: 150,
+                    textAlign: 'center',
+                  }}
+                >
+                  {data.contact_number}
+                </Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={1.5}>
+                <Tooltip title='Edit' arrow>
                   <CusIconButton
                     color='info'
-                    onClick={() => handleOpenDrawer('Edit')}
+                    onClick={() => {
+                      handleOpenDrawer('Edit');
+                      fetchCustDetails({ id: data.id || 0 });
+                    }}
                   >
                     <Edit variant='Outline' />
                   </CusIconButton>
+                </Tooltip>
+                <Tooltip title='Details' arrow>
                   <CusIconButton
                     color='success'
-                    onClick={(e) => {
+                    onClick={() => {
                       handleOpenDrawer('Details');
-                      if (e.target) {
-                        let temp = customerCard.filter(
-                          (el) => el.id === data.id
-                        );
-                        setSelectedData(temp);
-                      } else {
-                        setSelectedData(customerCard);
-                      }
+                      fetchCustDetails({ id: data.id || 0 });
                     }}
                   >
                     <InfoCircle variant='Outline' />
                   </CusIconButton>
-                </Stack>
+                </Tooltip>
+                <Tooltip title='Delete' arrow>
+                  <CusIconButton
+                    color='error'
+                    onClick={() => {
+                      setConfirmDelete(data.id);
+                    }}
+                  >
+                    <Trash variant='Outline' />
+                  </CusIconButton>
+                </Tooltip>
               </Stack>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
+            </Stack>
+          </Paper>
+        </Grid>
+      ))}
     </>
   );
 };

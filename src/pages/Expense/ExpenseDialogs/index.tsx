@@ -10,276 +10,412 @@ import {
   ListItemText,
   AppBar,
   Toolbar,
+  Paper,
 } from '@mui/material';
-import useResponsive from 'hook/useResponsive';
 import { Add, Call, Note, UserSquare, Location, Calendar } from 'iconsax-react';
-import React, { useEffect, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { CusLoading } from 'components/CusLoading';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { listTitle } from 'utils/data-util';
+import { useEffect, useState } from 'react';
+import { useRequest } from 'ahooks';
+import useResponsive from 'hook/useResponsive';
 import theme from 'theme/theme';
-import { listTitle } from 'utils/expense-util';
-import FormExpense, { IAddExpenseInput, IExpenseRow } from '../FormExpense';
+import FormExpense from '../FormExpense';
+import moment from 'moment';
+import EXPENSE_API from 'api/expense';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
+import { separateComma } from 'utils/validate-util';
+import { LoadingButton } from '@mui/lab';
+
+export interface IAddExpenseInput {
+  expenseRowData: IExpenseRow[];
+}
+export interface IExpenseRow {
+  id?: number;
+  title: string;
+  totalPrice: number;
+  paidBy: string;
+  other: string;
+}
 
 function ExpenseDialogs({
-  setOpenDialogs,
+  onAddExpenseSuccess,
+  orderDetail,
+  onCloseDialogClick,
 }: {
-  setOpenDialogs: React.Dispatch<React.SetStateAction<boolean>>;
+  orderDetail: IOrder.Order | undefined;
+  onAddExpenseSuccess: () => void;
+  onCloseDialogClick: () => void;
 }) {
+  // useRequests
+  const addExpenseReq = useRequest(EXPENSE_API.addExpense, {
+    manual: true,
+    onSuccess: () => onAddExpenseSuccess(),
+    onError: () => setAlertDialog(true),
+  });
+
+  // React-hooks-form
   const method = useForm<IAddExpenseInput>();
-  const { handleSubmit } = method;
+  const { handleSubmit, setValue } = method;
+  const onSubmit: SubmitHandler<IAddExpenseInput> = (data) => {
+    if (orderDetail?.id) {
+      addExpenseReq.run(
+        orderDetail.id,
+        data.expenseRowData?.map((e) => {
+          return {
+            id: e?.id || undefined,
+            expense_on: e.title || '',
+            note: e.other || '',
+            paidBy: e.paidBy || '',
+            price: +e.totalPrice || 0,
+          };
+        })
+      );
+    }
+  };
+
+  // States
   const [loading, setLoading] = useState(false);
   const [listExpense, setListExpense] = useState<IExpenseRow[]>([]);
+  const [alertDialog, setAlertDialog] = useState(false);
+  const { isSmDown } = useResponsive();
 
+  // All Total
+  const totalIncome =
+    orderDetail?.finalInvoices?.reduce((init, val) => init + val.price, 0) || 0;
+  const totalExpense =
+    orderDetail?.expenses?.reduce((init, val) => init + val.price, 0) || 0;
+  const totalNetProfit = totalIncome - totalExpense;
+
+  // useEffects
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
+
+    if (orderDetail?.expenses && orderDetail.expenses.length > 0) {
+      const tmpList = orderDetail.expenses.map((e) => {
+        return {
+          id: e.id,
+          title: e.expense_on,
+          other: e.note,
+          paidBy: e.paidBy,
+          totalPrice: e.price,
+        };
+      });
+      setListExpense(tmpList);
+      setValue('expenseRowData', tmpList);
+    } else {
       setListExpense(listTitle);
+    }
+
+    setTimeout(() => {
       setLoading(false);
-    }, 100);
+    }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAddNewRowDataExpense = () => {
-    if (listExpense && listExpense.length > 0) {
-      setListExpense([
-        ...listExpense,
-        {
-          id: new Date().toString(),
-          title: '',
-          totalPrice: '',
-          paidBy: '',
-          other: '',
-        },
-      ]);
-    } else {
-      setListExpense([
-        {
-          id: new Date().toString(),
-          title: '',
-          totalPrice: '',
-          paidBy: '',
-          other: '',
-        },
-      ]);
-    }
+  // Methods
+  const formatInvoiceId = (value: string) => {
+    const pad = '00000';
+    return pad.substring(0, pad.length - value.length) + value;
   };
-  const deleteListExpense = (id: number | string) => {
-    const tmp = listExpense.filter((el) => {
-      return el.id !== id;
+
+  const handleAddNewRowDataExpense = () => {
+    setListExpense([
+      ...listExpense,
+      {
+        id: undefined,
+        title: '',
+        totalPrice: 0,
+        paidBy: '',
+        other: '',
+      },
+    ]);
+  };
+  const deleteListExpense = (idx: number) => {
+    const tmp = listExpense.filter((_, i) => {
+      return i !== idx;
     });
     setListExpense(tmp);
+    setValue('expenseRowData', tmp);
   };
-  const { isSmDown } = useResponsive();
 
-  if (loading) return <Typography fontSize={100}>Loading....</Typography>;
+  if (loading)
+    return (
+      <Stack height='100%' justifyContent='center' alignItems='center'>
+        <CusLoading />
+      </Stack>
+    );
 
   return (
     <>
+      <ErrorDialog
+        open={alertDialog}
+        onCloseDialog={() => setAlertDialog(false)}
+        errorTitle='Internal Server Error'
+        errorMessage={
+          addExpenseReq.error?.message ||
+          "Something went wrong! Couldn't add expense to this order."
+        }
+      />
+
       <FormProvider {...method}>
-        <form
-          onSubmit={handleSubmit((data) => {
-            console.log(data);
-          })}
-        >
-          {/* Header */}
-          <AppBar
-            sx={{
-              position: 'sticky',
-              bgcolor: (theme) => theme.palette.common.white,
-              boxShadow: 0,
-              borderRadius: 0,
-            }}
-          >
-            <Toolbar>
-              <Stack
-                direction={'row'}
-                alignItems='center'
-                justifyContent={'space-between'}
-                sx={{ width: '100%' }}
-              >
-                <Typography variant='h6'>Add Expense</Typography>
-                <Stack
-                  direction={'row'}
-                  spacing={4}
-                  sx={{ width: ['auto', '30%'] }}
-                >
-                  <Button
-                    variant='contained'
-                    fullWidth
-                    onClick={() => setOpenDialogs(false)}
-                    sx={{
-                      borderRadius: 2,
-                      textTransform: 'capitalize',
-                      boxShadow: 1,
-                      color: (theme) => theme.palette.common.white,
-                      background: (theme) => theme.palette.error.main,
-                      '&:hover': {
-                        color: (theme) => theme.palette.common.white,
-                        background: (theme) => theme.palette.error.main,
-                      },
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type='submit'
-                    variant='contained'
-                    fullWidth
-                    sx={{
-                      borderRadius: 2,
-                      textTransform: 'capitalize',
-                      boxShadow: 1,
-                      color: (theme) => theme.palette.common.white,
-                      '&:hover': {
-                        background: (theme) => theme.palette.primary.main,
-                      },
-                    }}
-                  >
-                    Save
-                  </Button>
-                </Stack>
-              </Stack>
-            </Toolbar>
-          </AppBar>
-          <Grid container>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid container sx={{ height: ['auto', 'auto', '90vh'] }}>
             <Grid
               item
               xs={12}
               md={3}
               sx={{
+                background: 'transparent',
                 position: 'relative',
-                height: ['auto', 'auto', 'calc(90vh - 64px)'],
+                height: ['auto', 'auto', '100%'],
               }}
             >
-              <List disablePadding>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Note size='24' color={theme.palette.primary.main} />
-                  </ListItemAvatar>
-                  <ListItemText primary='0018' secondary='Invoice ID' />
-                </ListItem>
-                <ListItem>
-                  <ListItemAvatar>
-                    <UserSquare size='24' color={theme.palette.primary.main} />
-                  </ListItemAvatar>
-                  <ListItemText primary='Team Test' secondary='Customer' />
-                </ListItem>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Call size='24' color={theme.palette.primary.main} />
-                  </ListItemAvatar>
-                  <ListItemText primary='0123456789' secondary='Phone Number' />
-                </ListItem>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Calendar size='24' color={theme.palette.primary.main} />
-                  </ListItemAvatar>
-                  <ListItemText primary='22.01.2022' secondary='Event Party' />
-                </ListItem>
-                <ListItem>
-                  <ListItemAvatar>
-                    <Location size='24' color={theme.palette.primary.main} />
-                  </ListItemAvatar>
-                  <ListItemText primary='Phnom Penh' secondary='Location' />
-                </ListItem>
-              </List>
-              <List
-                disablePadding
-                sx={{
-                  position: ['inherit', 'inherit', 'absolute'],
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                }}
+              <Paper
+                sx={{ overflow: 'hidden', borderRadius: { xs: 0, md: 2 } }}
               >
-                <ListItem
-                  sx={{
-                    bgcolor: (theme) => theme.palette.success.main,
-                  }}
-                >
-                  <ListItemText
-                    primary='$ 10,000'
-                    secondary='Total income'
-                    primaryTypographyProps={{
-                      fontSize: 24,
-                      fontWeight: 'medium',
-                      letterSpacing: 0,
-                      color: 'white',
+                <List disablePadding>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Note size='24' color={theme.palette.primary.main} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        orderDetail?.id
+                          ? formatInvoiceId(orderDetail.id.toString())
+                          : 'N/A'
+                      }
+                      secondary='Invoice ID'
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <UserSquare
+                        size='24'
+                        color={theme.palette.primary.main}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        orderDetail?.customer?.customer_name || 'No Customer'
+                      }
+                      secondary='Customer'
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Call size='24' color={theme.palette.primary.main} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        orderDetail?.customer?.contact_number ||
+                        'No phone number'
+                      }
+                      secondary='Phone Number'
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Calendar size='24' color={theme.palette.primary.main} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        moment(orderDetail?.date).format('DD-MM-yyyy') || 'N/A'
+                      }
+                      secondary='Event Date'
+                    />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Location size='24' color={theme.palette.primary.main} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={orderDetail?.location || 'N/A'}
+                      secondary='Location'
+                    />
+                  </ListItem>
+                </List>
+                <List disablePadding>
+                  <ListItem
+                    sx={{
+                      bgcolor: (theme) => theme.palette.success.main,
                     }}
-                  />
-                </ListItem>
-                <ListItem
-                  sx={{
-                    bgcolor: (theme) => theme.palette.primary.main,
-                  }}
-                >
-                  <ListItemText
-                    primary='$9,000'
-                    secondary='Total Expense'
-                    primaryTypographyProps={{
-                      fontSize: 24,
-                      fontWeight: 'medium',
-                      letterSpacing: 0,
-                      color: 'white',
+                  >
+                    <ListItemText
+                      primary={`$${separateComma(totalIncome.toFixed())}`}
+                      secondary='Total Income'
+                      primaryTypographyProps={{
+                        fontSize: 24,
+                        fontWeight: 'medium',
+                        letterSpacing: 0,
+                        color: 'white',
+                      }}
+                    />
+                  </ListItem>
+                  <ListItem
+                    sx={{
+                      bgcolor: (theme) => theme.palette.primary.main,
                     }}
-                  />
-                </ListItem>
-              </List>
+                  >
+                    <ListItemText
+                      primary={`$${separateComma(totalExpense.toFixed())}`}
+                      secondary='Total Expense'
+                      primaryTypographyProps={{
+                        fontSize: 24,
+                        fontWeight: 'medium',
+                        letterSpacing: 0,
+                        color: 'white',
+                      }}
+                    />
+                  </ListItem>
+                  <ListItem
+                    sx={{
+                      bgcolor: (theme) => theme.palette.info.main,
+                    }}
+                  >
+                    <ListItemText
+                      primary={`$${separateComma(totalNetProfit.toFixed())}`}
+                      secondary='Total Net Profit'
+                      primaryTypographyProps={{
+                        fontSize: 24,
+                        fontWeight: 'medium',
+                        letterSpacing: 0,
+                        color: 'white',
+                      }}
+                    />
+                  </ListItem>
+                </List>
+              </Paper>
             </Grid>
             <Grid
               item
               xs={12}
               md={9}
               sx={{
-                height: ['auto', 'auto', 'calc(90vh - 64px)'],
-                px: 2,
-                overflow: 'auto',
-                mt: [2, 2, 0],
+                height: ['auto', 'auto', '100%'],
+                px: { xs: 0, md: 2 },
+                mt: { xs: 2, md: 0 },
               }}
             >
-              {!isSmDown && (
-                <Stack direction={'row'}>
-                  <Typography sx={{ flex: 1 }}>Title</Typography>
-                  <Typography sx={{ flex: 1 }}>Total</Typography>
-                  <Typography sx={{ flex: 1 }}>Paid</Typography>
-                  <Typography sx={{ flex: 1 }}>Other</Typography>
-                  <div style={{ width: 40 }} />
-                </Stack>
-              )}
-
-              <Stack spacing={2} sx={{ py: 2 }}>
-                <>
-                  {listExpense.map((data) => (
-                    <FormExpense
-                      defaultTitle={data.title}
-                      index={+data.id}
-                      key={data.id}
-                      onRemove={() => deleteListExpense(data.id)}
-                    />
-                  ))}
-                </>
-                <Button
-                  variant='contained'
-                  startIcon={<Add />}
-                  fullWidth
-                  onClick={handleAddNewRowDataExpense}
-                  size='small'
+              <Paper
+                sx={{
+                  height: '100%',
+                  px: 2,
+                  overflow: 'auto',
+                  borderRadius: { xs: 0, md: 2 },
+                }}
+              >
+                <AppBar
                   sx={{
-                    color: theme.palette.primary.main,
-                    boxShadow: theme.shadows[0],
-                    borderRadius: 2,
-                    border: `1px dashed ${theme.palette.primary.main}`,
-                    background: (theme) =>
-                      alpha(theme.palette.primary.main, 0.2),
-                    '&:hover': {
-                      background: (theme) =>
-                        alpha(theme.palette.primary.main, 0.2),
-                      boxShadow: theme.shadows[0],
+                    position: 'sticky',
+                    bgcolor: (theme) => theme.palette.common.white,
+                    boxShadow: 0,
+                    borderRadius: 0,
+                    borderTopLeftRadius: { xs: 0, md: 2 },
+                    borderTopRightRadius: { xs: 0, md: 2 },
+                    mb: 2,
+                    '&.css-hyum1k-MuiToolbar-root': {
+                      px: 0,
                     },
                   }}
                 >
-                  Add New
-                </Button>
-              </Stack>
+                  <Toolbar>
+                    <Stack
+                      direction={'row'}
+                      alignItems='center'
+                      justifyContent={'space-between'}
+                      sx={{ width: '100%' }}
+                    >
+                      <Typography variant='h6'>Add Expense</Typography>
+                      <Stack
+                        direction={'row'}
+                        spacing={4}
+                        sx={{ width: ['auto', '30%'] }}
+                      >
+                        <Button
+                          variant='contained'
+                          fullWidth
+                          onClick={() => onCloseDialogClick()}
+                          sx={{
+                            borderRadius: 2,
+                            textTransform: 'capitalize',
+                            boxShadow: 1,
+                            color: (theme) => theme.palette.common.white,
+                            background: (theme) => theme.palette.error.main,
+                            '&:hover': {
+                              color: (theme) => theme.palette.common.white,
+                              background: (theme) => theme.palette.error.main,
+                            },
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <LoadingButton
+                          type='submit'
+                          variant='contained'
+                          fullWidth
+                          loading={addExpenseReq.loading}
+                          sx={{
+                            borderRadius: 2,
+                            textTransform: 'capitalize',
+                            boxShadow: 1,
+                            color: (theme) => theme.palette.common.white,
+                            '&:hover': {
+                              background: (theme) => theme.palette.primary.main,
+                            },
+                          }}
+                        >
+                          Save
+                        </LoadingButton>
+                      </Stack>
+                    </Stack>
+                  </Toolbar>
+                </AppBar>
+                {!isSmDown && (
+                  <Stack direction={'row'}>
+                    <Typography sx={{ flex: 1 }}>Title</Typography>
+                    <Typography sx={{ flex: 1 }}>Total Price</Typography>
+                    <Typography sx={{ flex: 1 }}>Paid By</Typography>
+                    <Typography sx={{ flex: 1 }}>Other</Typography>
+                    <div style={{ width: 40 }} />
+                  </Stack>
+                )}
+
+                <Stack spacing={2} sx={{ py: 2 }}>
+                  <>
+                    {listExpense.map((data, i) => (
+                      <FormExpense
+                        defaultTitle={data.title}
+                        key={i}
+                        index={i}
+                        onRemove={() => deleteListExpense(i)}
+                      />
+                    ))}
+                  </>
+                  <Button
+                    variant='contained'
+                    startIcon={<Add />}
+                    fullWidth
+                    onClick={handleAddNewRowDataExpense}
+                    size='small'
+                    sx={{
+                      color: theme.palette.primary.main,
+                      boxShadow: theme.shadows[0],
+                      borderRadius: 2,
+                      border: `1px dashed ${theme.palette.primary.main}`,
+                      background: (theme) =>
+                        alpha(theme.palette.primary.main, 0.2),
+                      '&:hover': {
+                        background: (theme) =>
+                          alpha(theme.palette.primary.main, 0.2),
+                        boxShadow: theme.shadows[0],
+                      },
+                    }}
+                  >
+                    Add New
+                  </Button>
+                </Stack>
+              </Paper>
             </Grid>
           </Grid>
         </form>
@@ -288,4 +424,4 @@ function ExpenseDialogs({
   );
 }
 
-export default React.memo(ExpenseDialogs);
+export default ExpenseDialogs;

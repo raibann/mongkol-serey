@@ -5,42 +5,67 @@ import {
   Avatar,
   ListItemText,
 } from '@mui/material';
+import { User } from 'iconsax-react';
+import theme from 'theme/theme';
 import THEME_UTIL from 'utils/theme-util';
+import { changeBackground } from 'utils/validate-util';
 
 const AnniversaryItem = ({
   daysLeft,
-  lastOrder,
   name,
+  invoiceId,
+  eventType,
 }: {
   name: string;
-  lastOrder: string;
   daysLeft: number;
+  invoiceId: number;
+  eventType?: string;
 }) => {
   return (
-    <ListItem
-      sx={{
-        px: 0,
-        pt: 0,
-      }}
-      secondaryAction={
-        <Typography fontSize={14} color='error.main' fontWeight='bold'>
-          {`${daysLeft} Days`}
-        </Typography>
-      }
-    >
-      <ListItemAvatar>
-        <Avatar
-          sx={{
-            background: THEME_UTIL.goldGradientMain,
-            fontWeight: 'bold',
-          }}
-        >
-          {name.split(' ')[0].charAt(0).toUpperCase() +
-            name.split(' ')[1].charAt(0).toUpperCase()}
-        </Avatar>
-      </ListItemAvatar>
-      <ListItemText primary={name} secondary={lastOrder} />
-    </ListItem>
+    <>
+      <ListItem
+        sx={{
+          px: 0,
+          pt: 0,
+        }}
+        secondaryAction={
+          daysLeft === 0 ? (
+            <Typography
+              fontSize={14}
+              color={theme.palette.success.main}
+              fontWeight='bold'
+            >
+              Today
+            </Typography>
+          ) : (
+            <Typography fontSize={14} color='error.main' fontWeight='bold'>
+              {daysLeft}Days
+            </Typography>
+          )
+        }
+      >
+        <ListItemAvatar>
+          <Avatar
+            sx={{
+              background: !!name
+                ? changeBackground(name)
+                : THEME_UTIL.goldGradientMain,
+              fontWeight: 'bold',
+            }}
+          >
+            {!!name ? (
+              name.charAt(0)
+            ) : (
+              <User color={theme.palette.common.white} variant='Bold' />
+            )}
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={`Order ID: ${invoiceId} ~ ${eventType}`}
+          secondary={name}
+        />
+      </ListItem>
+    </>
   );
 };
 

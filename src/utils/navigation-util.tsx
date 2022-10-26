@@ -1,12 +1,12 @@
 import {
   Diagram,
   MenuBoard,
-  LogoutCurve,
   Notification,
-  SecurityUser,
   MoneySend,
   Profile2User,
   Box,
+  // LogoutCurve,
+  // SecurityUser,
 } from 'iconsax-react';
 import React from 'react';
 import { ROUTE_PATH } from './route-util';
@@ -29,35 +29,30 @@ const navigationUtil: Navigation = [
     icon: <MenuBoard size='24' />,
   },
   {
-    title: 'Expense',
-    toUrl: 'expense',
-    icon: <MoneySend size='24' />,
-  },
-  {
-    title: 'Stocks',
-    toUrl: 'stocks',
-    icon: <Box size='24' />,
-  },
-  {
     title: 'Customers',
-    toUrl: 'customers',
+    toUrl: ROUTE_PATH.customers,
     icon: <Profile2User size='24' />,
   },
   {
+    title: 'Expense',
+    toUrl: ROUTE_PATH.expense,
+    icon: <MoneySend size='24' />,
+  },
+  {
     title: 'Reminder',
-    toUrl: 'reminder',
+    toUrl: ROUTE_PATH.reminder,
     icon: <Notification size='24' />,
   },
   {
-    title: 'Manage Users',
-    toUrl: 'manage-users',
-    icon: <SecurityUser size='24' />,
+    title: 'Stocks',
+    toUrl: ROUTE_PATH.stocks,
+    icon: <Box size='24' />,
   },
-  {
-    title: 'Exit',
-    toUrl: 'login',
-    icon: <LogoutCurve size='24' />,
-  },
+  // {
+  //   title: 'Manage Users',
+  // toUrl: ROUTE_PATH.manageusers,
+  //   icon: <SecurityUser size='24' />,
+  // },
 ];
 
 export default navigationUtil;

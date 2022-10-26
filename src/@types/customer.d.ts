@@ -1,27 +1,10 @@
 declare namespace ICustomer {
-  interface ICustomerData {
-    data: Data[];
+  interface ICustomerRespone {
+    data: Customer[];
     totalItem: number;
     totalPage: number;
     message: string;
     status: number;
-  }
-
-  interface Data {
-    id: number;
-    customer_name: string;
-    facebook_name: string;
-    telegram_name: string;
-    contact_number: string;
-    house: string;
-    street: string;
-    commune: string;
-    district: string;
-    province: string;
-    location: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt?: any;
   }
   interface ICustomerDetails {
     orders: Order[];
@@ -37,8 +20,8 @@ declare namespace ICustomer {
     quantity: number;
     deposit: number;
     amountInKhmer: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
     finalInvoices: FinalInvoice[];
     eventPackages: EventPackage[];
@@ -47,7 +30,7 @@ declare namespace ICustomer {
   }
 
   interface Customer {
-    id: number;
+    id?: number;
     customer_name: string;
     facebook_name: string;
     telegram_name: string;
@@ -58,8 +41,8 @@ declare namespace ICustomer {
     district: string;
     province: string;
     location: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     deletedAt?: any;
   }
 
@@ -92,5 +75,18 @@ declare namespace ICustomer {
     createdAt: string;
     updatedAt: string;
     deletedAt?: any;
+  }
+  interface ICustomerRequest {
+    id?: number;
+    customer_name: string;
+    facebook_name: string;
+    telegram_name: string;
+    contact_number: string;
+    house: string;
+    street: string;
+    commune: string;
+    district: string;
+    province: string;
+    location: string;
   }
 }

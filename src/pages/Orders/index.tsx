@@ -1,5 +1,10 @@
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  Box,
   Button,
+  Dialog,
+  DialogTitle,
+  Divider,
   Drawer,
   InputAdornment,
   Pagination,
@@ -11,206 +16,105 @@ import {
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { Box } from '@mui/system';
+import theme from 'theme/theme';
 import BookingInvoice from 'components/ComToPrint/BookingInvoice';
 import FinalInvoice from 'components/ComToPrint/FinalInvoice';
-import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import { Add, BoxRemove, SearchNormal1 } from 'iconsax-react';
-import React, { useEffect, useRef, useState } from 'react';
-import theme from 'theme/theme';
-import { bookingInvoice, finalInvoice } from 'utils/print-util';
 import OrderDrawer from './OrderDrawer';
-import { OrderTableBody, OrderTableHead } from './OrderTable';
-import PhotoDialogContent from './PhotoDialogContent';
-// import { paidBy } from 'utils/expense-util';
 import useRequest from '@ahooksjs/use-request';
 import ORDER_API from 'api/order';
+import OrderTableBody, { OrderTableHead } from './OrderTable';
+import {
+  Add,
+  ArrowLeft2,
+  BoxRemove,
+  Printer,
+  SearchNormal1,
+} from 'iconsax-react';
 import { CusLoading } from 'components/CusLoading';
-import { paidBy } from 'utils/expense-util';
-interface IOrderData {
-  id: number;
-  name: string;
-  social: string;
-  eventDate: string;
-  quantity: number;
-  eventLocation: string;
-  bookingDate: string;
-  deposit: number;
-  paidBy?: string;
-}
-export const ORDER_DATA: IOrderData[] = [
-  {
-    id: 1,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: paidBy[0].imageUrl,
-  },
-  {
-    id: 2,
-    name: 'Ma Raibann',
-    social: '@raibann.rb',
-    eventDate: '05-10-2022',
-    quantity: 100,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '20-07-2022',
-    deposit: 2899999,
-    paidBy: paidBy[1].imageUrl,
-  },
-  {
-    id: 3,
-    name: 'Rem Brosna',
-    social: '@rem.brosna',
-    eventDate: '25-12-2022',
-    quantity: 70,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '16-11-2022',
-    deposit: 400,
-    paidBy: paidBy[2].imageUrl,
-  },
-  {
-    id: 4,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: paidBy[3].imageUrl,
-  },
-  {
-    id: 5,
-    name: 'Ma Raibann',
-    social: '@raibann.rb',
-    eventDate: '05-10-2022',
-    quantity: 100,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '20-07-2022',
-    deposit: 2000,
-    paidBy: paidBy[4].imageUrl,
-  },
-  {
-    id: 6,
-    name: 'Rem Brosna',
-    social: '@rem.brosna',
-    eventDate: '25-12-2022',
-    quantity: 70,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '16-11-2022',
-    deposit: 400,
-    paidBy: paidBy[5].imageUrl,
-  },
-  {
-    id: 7,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: paidBy[6].imageUrl,
-  },
-  {
-    id: 8,
-    name: 'Ma Raibann',
-    social: '@raibann.rb',
-    eventDate: '05-10-2022',
-    quantity: 100,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '20-07-2022',
-    deposit: 2000,
-    paidBy: paidBy[7].imageUrl,
-  },
-  {
-    id: 9,
-    name: 'Rem Brosna',
-    social: '@rem.brosna',
-    eventDate: '25-12-2022',
-    quantity: 70,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '16-11-2022',
-    deposit: 400,
-    paidBy: paidBy[8].imageUrl,
-  },
-  {
-    id: 10,
-    name: 'Meas Saominea',
-    social: '@meassaominea',
-    eventDate: '30-07-2022',
-    quantity: 50,
-    eventLocation: 'Phnom Penh',
-    bookingDate: '06-07-2022',
-    deposit: 300,
-    paidBy: paidBy[9].imageUrl,
-  },
-];
+import ReactToPrint from 'react-to-print';
+import { useSearchParams } from 'react-router-dom';
 
 const Orders = () => {
+  // States
   const [ToggleValue, setToggleValue] = useState('pending');
-  const [orderDetail, setOrderDetail] = useState<IOrderData>();
+  const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
-  const [openPhotoDialog, setOpenPhotoDialog] = useState(false);
+  const [printer, setPrinter] = useState<IOrder.Order>();
   const [page, setPage] = React.useState(1);
   const [searchData, setSearchData] = useState('');
+  const { isMdDown, isSmDown } = useResponsive();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { isMdDown } = useResponsive();
+  // Variables
+  const orderId = searchParams.get('id');
+  const bookingInvoiceRef = useRef(null);
+  const finalInvoiceRef = useRef(null);
 
-  // fetch data
+  // useRequests
   const {
     data: orderList,
     run: fetchOrderList,
     loading: isLoadingOrderList,
+    refresh: refreshGetOrderList,
   } = useRequest(ORDER_API.getOrdersList, {
     manual: true,
-    debounceInterval: searchData !== '' ? 500 : 0,
+  });
+  const { run: searchOrderList } = useRequest(fetchOrderList, {
+    manual: true,
+    debounceInterval: 500,
+    onSuccess: (data) => {
+      if (orderId) {
+        const selectedOrder = data.data.find((e) => e.id === +orderId);
+        setPrinter(selectedOrder);
+      }
+    },
   });
 
+  // useEffects
   useEffect(() => {
+    if (searchData !== '') {
+      searchOrderList({
+        page: `${page - 1}`,
+        status: ToggleValue,
+        search: searchData,
+      });
+      return;
+    }
+
     fetchOrderList({
       page: `${page - 1}`,
       status: ToggleValue,
-      search: searchData,
+      search: '',
     });
-    console.log(searchData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ToggleValue, page, searchData]);
-  console.log('orders', orderList?.data);
+
+  useEffect(() => {
+    if (orderId) {
+      setToggleValue('all');
+      setSearchData(`#${orderId}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Methods
   const handleCloseOrderDialog = () => {
     setNewOrder(false);
     setOrderDetail(undefined);
   };
-  const handleChangePage = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
-  const bookingInvoiceRef = useRef(null);
-  const finalInvoiceRef = useRef(null);
+  const handleCloseInvoicesDialog = () => {
+    setPrinter(undefined);
+    searchParams.delete('id');
+    setSearchParams(searchParams);
+  };
 
-  // if (isLoadingOrderList) {
-  //   return (
-  //     <>
-  //       <Stack
-  //         sx={{ height: '100vh' }}
-  //         justifyContent='center'
-  //         alignItems={'center'}
-  //       >
-  //         <CusLoading />
-  //       </Stack>
-  //     </>
-  //   );
-  // }
   return (
     <>
       <PageHeader pageTitle='Orders' />
@@ -243,6 +147,7 @@ const Orders = () => {
             ) => {
               if (value !== null) {
                 setToggleValue(value);
+                setPage(1);
               }
             }}
             sx={{
@@ -250,7 +155,7 @@ const Orders = () => {
             }}
           >
             <CusToggleButton value='pending'>Pending</CusToggleButton>
-            <CusToggleButton value='completed'>Completed</CusToggleButton>
+            <CusToggleButton value='complete'>Completed</CusToggleButton>
             <CusToggleButton value='all'>All</CusToggleButton>
           </ToggleButtonGroup>
 
@@ -263,7 +168,17 @@ const Orders = () => {
             <CusTextField
               placeholder='Search...'
               size='small'
+              value={searchData}
               onChange={(e) => setSearchData(e.currentTarget.value)}
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  searchOrderList({
+                    page: `${page - 1}`,
+                    status: ToggleValue,
+                    search: searchData,
+                  });
+                }
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position='end'>
@@ -290,13 +205,12 @@ const Orders = () => {
             </Button>
           </Stack>
         </Stack>
-
         <TableContainer
           sx={{
-            height: '100%',
+            height: 'calc(100% - 48px - 56px)',
             overflow: 'auto',
             px: 2,
-            pb: { xs: 22, md: 15, lg: 0 },
+            pb: { xs: 15, md: 10, lg: 5 },
           }}
         >
           {isLoadingOrderList ? (
@@ -308,43 +222,34 @@ const Orders = () => {
             >
               <CusLoading />
             </Stack>
-          ) : orderList?.data && orderList?.data.length > 0 ? (
-            <Table sx={{ minWidth: 935 }}>
-              <OrderTableHead />
-              <TableBody>
-                <OrderTableBody
-                  data={orderList?.data}
-                  onPhotoClick={() => setOpenPhotoDialog(true)}
-                  // componentRef={finalInvoiceRef}
-                  componentRef={bookingInvoiceRef}
-                />
-              </TableBody>
-            </Table>
+          ) : orderList && orderList.data && orderList.data.length > 0 ? (
+            <>
+              <Table sx={{ minWidth: 1000 }}>
+                <OrderTableHead />
+                <TableBody>
+                  <OrderTableBody
+                    data={orderList.data}
+                    onPrintClick={(i) => setPrinter(orderList.data[i])}
+                    onEditClick={(i) => setOrderDetail(orderList.data[i])}
+                  />
+                </TableBody>
+              </Table>
+            </>
           ) : (
             <Stack
               direction={'column'}
               alignItems={'center'}
               justifyContent='center'
+              spacing={1}
               sx={{ height: '100%' }}
             >
-              <BoxRemove size='80' color={theme.palette.primary.main} />
-              <Typography variant='h6'>No data</Typography>
+              <BoxRemove size='80' color={theme.palette.error.main} />
+              <Typography variant='h6' color='error'>
+                No Order...
+              </Typography>
             </Stack>
           )}
         </TableContainer>
-        {/* print invoice */}
-        <Box sx={{ display: 'none' }}>
-          <BookingInvoice
-            ref={bookingInvoiceRef}
-            customerInfo={bookingInvoice.customerInfo}
-            orderInfo={bookingInvoice.orderInfo}
-          />
-          <FinalInvoice
-            ref={finalInvoiceRef}
-            customerInfo={finalInvoice.customerInfo}
-            orderInfo={finalInvoice.orderInfo}
-          />
-        </Box>
 
         <Stack
           alignItems='center'
@@ -357,7 +262,11 @@ const Orders = () => {
             bgcolor: '#fff',
           }}
         >
-          <Pagination count={10} page={page} onChange={handleChangePage} />
+          <Pagination
+            count={orderList?.totalPage}
+            page={page}
+            onChange={handleChangePage}
+          />
         </Stack>
       </Paper>
 
@@ -368,18 +277,201 @@ const Orders = () => {
           sx: { borderRadius: 0, width: { xs: '100vw', md: '50vw' } },
         }}
       >
-        <OrderDrawer {...{ handleCloseOrderDialog }} />
+        <OrderDrawer
+          {...{ handleCloseOrderDialog, orderDetail }}
+          onActionSuccess={() => {
+            refreshGetOrderList();
+            handleCloseOrderDialog();
+          }}
+        />
       </Drawer>
 
-      <ResponsiveDialog
-        open={openPhotoDialog}
-        onCloseDialog={() => setOpenPhotoDialog(false)}
-        size='sm'
+      <Dialog
+        open={printer !== undefined}
+        onClose={handleCloseInvoicesDialog}
+        fullScreen
+        PaperProps={{
+          sx: {
+            borderRadius: [3, 0, 3],
+            width: 'auto',
+            height: ['auto', '100vh', '95vh'],
+          },
+        }}
       >
-        <PhotoDialogContent />
-      </ResponsiveDialog>
+        {!isSmDown && (
+          <DialogTitle
+            sx={{
+              position: 'sticky',
+              top: 0,
+              boxShadow: (theme) => theme.shadows[2],
+              zIndex: (theme) => theme.zIndex.drawer + 3,
+              backgroundColor: '#fff',
+            }}
+          >
+            <Stack
+              direction={'row'}
+              alignItems='center'
+              justifyContent={'space-between'}
+            >
+              <Button
+                variant='text'
+                startIcon={<ArrowLeft2 />}
+                onClick={handleCloseInvoicesDialog}
+              >
+                Back
+              </Button>
+
+              <Stack direction={'row'} spacing={2}>
+                <ReactToPrint
+                  pageStyle={pageStyle}
+                  documentTitle='Booking-Invoice'
+                  trigger={() => (
+                    <Button
+                      variant='contained'
+                      color='info'
+                      disableElevation
+                      sx={{
+                        color: '#fff',
+                        boxShadow: theme.shadows[1],
+                        borderRadius: theme.spacing(1),
+                      }}
+                      startIcon={<Printer />}
+                    >
+                      Booking
+                    </Button>
+                  )}
+                  content={() => bookingInvoiceRef.current}
+                />
+                {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
+                  <ReactToPrint
+                    pageStyle={pageStyle}
+                    documentTitle='Final-Invoice'
+                    trigger={() => (
+                      <Button
+                        variant='contained'
+                        color='success'
+                        disableElevation
+                        sx={{
+                          color: '#fff',
+                          boxShadow: theme.shadows[1],
+                          borderRadius: theme.spacing(1),
+                        }}
+                        startIcon={<Printer />}
+                      >
+                        Final Invoice
+                      </Button>
+                    )}
+                    content={() => finalInvoiceRef.current}
+                  />
+                )}
+              </Stack>
+            </Stack>
+          </DialogTitle>
+        )}
+
+        <Box
+          sx={{
+            scale: '0.8',
+            transform: 'translateY(-100px)',
+            display: isSmDown ? 'none' : 'block',
+          }}
+        >
+          {printer && (
+            <BookingInvoice ref={bookingInvoiceRef} order={printer} />
+          )}
+        </Box>
+
+        {!isSmDown && <Divider sx={{ borderWidth: '5px' }} />}
+
+        {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
+          <>
+            <Box
+              sx={{
+                scale: '0.8',
+                pt: '100px',
+                pb: '100px',
+                display: isSmDown ? 'none' : 'block',
+              }}
+            >
+              <FinalInvoice ref={finalInvoiceRef} order={printer} />
+            </Box>
+          </>
+        )}
+        {/* for small screen */}
+        {isSmDown && (
+          <>
+            <Stack
+              direction={'row'}
+              sx={{ height: '100%', p: 4 }}
+              alignItems='center'
+              justifyContent={'center'}
+              spacing={2}
+            >
+              <ReactToPrint
+                pageStyle={pageStyle}
+                documentTitle='Booking-Invoice'
+                trigger={() => (
+                  <Button
+                    variant='contained'
+                    color='info'
+                    disableElevation
+                    sx={{
+                      color: '#fff',
+                      boxShadow: theme.shadows[1],
+                      borderRadius: theme.spacing(1),
+                    }}
+                    startIcon={<Printer />}
+                  >
+                    Booking
+                  </Button>
+                )}
+                content={() => bookingInvoiceRef.current}
+              />
+              {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
+                <ReactToPrint
+                  pageStyle={pageStyle}
+                  documentTitle='Final-Invoice'
+                  trigger={() => (
+                    <Button
+                      variant='contained'
+                      color='success'
+                      disableElevation
+                      sx={{
+                        color: '#fff',
+                        boxShadow: theme.shadows[1],
+                        borderRadius: theme.spacing(1),
+                      }}
+                      startIcon={<Printer />}
+                    >
+                      Final Invoice
+                    </Button>
+                  )}
+                  content={() => finalInvoiceRef.current}
+                />
+              )}
+            </Stack>
+          </>
+        )}
+      </Dialog>
     </>
   );
 };
 
 export default Orders;
+
+const pageStyle = ` @page {
+  size: A4;
+  margin:2.54cm;
+}
+
+@media all {
+  .pagebreak {
+    display: none;
+  }
+}
+
+@media print {
+  .pagebreak {
+    page-break-before: always;
+  }
+}`;

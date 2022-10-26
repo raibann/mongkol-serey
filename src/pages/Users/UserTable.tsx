@@ -4,12 +4,14 @@ import {
   TableHead,
   Stack,
   Typography,
+  Avatar,
+  Tooltip,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, Trash } from 'iconsax-react';
 import theme from 'theme/theme';
-import { IUser } from 'utils/users-util';
-import BackgroundLetterAvatars from 'components/AvatarBg';
+import { IUser } from 'utils/data-util';
+import { changeBackground } from 'utils/validate-util';
 export const UserTableBody = ({
   props,
   index,
@@ -23,7 +25,12 @@ export const UserTableBody = ({
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
       <TableCell>{index + 1}</TableCell>
       <TableCell>
-        <BackgroundLetterAvatars name={props.username} />
+        <Avatar
+          variant='rounded'
+          sx={{ bgcolor: changeBackground(props.username) }}
+        >
+          {props.username.charAt(0).toUpperCase()}
+        </Avatar>
       </TableCell>
       <TableCell>{props.username}</TableCell>
       <TableCell>{props.password}</TableCell>
@@ -37,16 +44,20 @@ export const UserTableBody = ({
       </TableCell>
       <TableCell>
         <Stack direction={'row'} spacing={2}>
-          <CusIconButton
-            color='info'
-            sx={{ p: 0.5, mx: 0.5 }}
-            onClick={() => onEdit('Edit')}
-          >
-            <Edit size={18} />
-          </CusIconButton>
-          <CusIconButton color='info' sx={{ p: 0.5, mx: 0.5 }}>
-            <Trash size={18} color='#FF8A65' />
-          </CusIconButton>
+          <Tooltip title='Edit' arrow>
+            <CusIconButton
+              color='info'
+              sx={{ p: 0.5, mx: 0.5 }}
+              onClick={() => onEdit('Edit')}
+            >
+              <Edit size={18} />
+            </CusIconButton>
+          </Tooltip>
+          <Tooltip title='Delete' arrow>
+            <CusIconButton color='info' sx={{ p: 0.5, mx: 0.5 }}>
+              <Trash size={18} color='#FF8A65' />
+            </CusIconButton>
+          </Tooltip>
         </Stack>
       </TableCell>
     </TableRow>

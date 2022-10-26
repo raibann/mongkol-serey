@@ -13,19 +13,19 @@ import {
 import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
-import { IBookingInvoice } from 'utils/print-util';
+import { separateComma } from 'utils/validate-util';
+import { eventType } from './FinalInvoice';
+// import { IBookingInvoice } from 'utils/print-util';
+
+interface IBookingInvoice {
+  order: IOrder.Order;
+}
 
 const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
-  (props, ref) => {
-    // eslint-disable-line max-len
-
-    const getMonth = moment(props.orderInfo.eventDate, 'DD/MM/YYYY').format(
-      'MMMM'
-    );
-    const getDay = moment(props.orderInfo.eventDate, 'DD/MM/YYYY').format('DD');
-    const getYear = moment(props.orderInfo.eventDate, 'DD/MM/YYYY').format(
-      'YYYY'
-    );
+  ({ order }, ref) => {
+    const getMonth = moment(order.bookingDate).format('MMMM');
+    const getDay = moment(order.bookingDate).format('DD');
+    const getYear = moment(order.bookingDate).format('YYYY');
     const generateMonth = (month: string) => {
       switch (month) {
         case 'January':
@@ -51,10 +51,15 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
         case 'November':
           return 'វិច្ឆិកា';
         case 'December':
-          return 'ធ្នូរ';
+          return 'ធ្នូ';
         default:
           return;
       }
+    };
+
+    const formatInvoiceId = (value: string) => {
+      const pad = '00000';
+      return pad.substring(0, pad.length - value.length) + value;
     };
 
     return (
@@ -71,7 +76,6 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
             <Stack
               sx={{ height: '100%' }}
               alignItems='flex-start'
-              // justifyContent='center'
               spacing={0.5}
             >
               <Typography
@@ -143,7 +147,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   លេខវិក័យបត្រ៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.orderInfo.invoiceId}
+                  {order.id && formatInvoiceId(order.id?.toString())}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -155,7 +159,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   អតិថិជន​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.customerInfo.name}
+                  {order.customer?.customer_name}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -167,7 +171,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   ទូរស័ព្ទលេខ​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.customerInfo.phone}
+                  {order.customer?.contact_number}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -179,7 +183,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   កម្មវិធី​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.orderInfo.eventDate}
+                  {moment(order.date).format('DD.MM.YYYY')}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
@@ -191,7 +195,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   ទីតាំង​៖
                 </Typography>
                 <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                  {props.orderInfo.eventLocation}
+                  {order.location}
                 </Typography>
               </Stack>
             </Stack>
@@ -204,7 +208,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           fontFamily='Khmer Busra high'
           fontSize={20}
         >
-          វិក័យបត្រកក់ប្រាក់ {props.orderInfo.eventType}
+          វិក័យបត្រកក់ប្រាក់ {(eventType as any)[`${order.type}`]}
         </Typography>
         <Typography
           textAlign='justify'
@@ -216,8 +220,8 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           មានអាស័យដ្ឋានស្ថិតនៅផ្ទះលេខ៨០ ផ្លូវលេខ០៣ បុរីពិភពថ្មីឈូកវ៉ា៣
           ជាអ្នកតំណាងក្រុមហ៊ុន{' '}
           <b>មង្គលសេរីតុរោង&ម្ហូបការ Mungkul Serey Catering Services</b>{' '}
-          បានទទួលការកក់ប្រាក់ សេវាកម្មចុងភៅ តុការ កម្មវិធីភ្ជាប់ពាក្យ{' '}
-          <b>ចំនួន {props.orderInfo.tables}។</b>
+          បានទទួលការកក់ប្រាក់ សេវាកម្មចុងភៅ តុការ{' '}
+          {(eventType as any)[`${order.type}`]} <b>ចំនួន {order.quantity}តុ។</b>
         </Typography>
         <Typography
           textAlign={'center'}
@@ -235,11 +239,30 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           fontFamily='Khmer Busra high'
           fontSize={18}
         >
-          អតិថិជនឈ្មោះ <b>ច័ន្ទ ណុបវីរក្យា</b> មានទីលំនៅនៅ បុរីប៉េងហ៊ួតច្បារអំពៅ
-          ចំនួនទឹកប្រាក់ {props.orderInfo.deposit}
-          <b>({props.orderInfo.amountInKhmer})</b> តាមរយះគណនេយ្យធនាគារ
-          <b>ABA</b> នៅថ្ងៃទី <b>{getDay}</b> ខែ{' '}
-          <b>{generateMonth(getMonth)}</b> ឆ្នាំ <b>{getYear}</b>។
+          អតិថិជនឈ្មោះ{' '}
+          <b>
+            {order.customer === null
+              ? 'No Cutomer'
+              : order.customer.customer_name}
+          </b>{' '}
+          {order.customer !== null && (
+            <>
+              មានទីលំនៅ
+              {order.customer.house
+                ? `ផ្ទះលេខ៖${order.customer.house}`
+                : ''}{' '}
+              {order.customer.street ? `ផ្លូវលេខ៖${order.customer.street}` : ''}{' '}
+              {order.customer.location} {order.customer.commune}{' '}
+              {order.customer.district} {order.customer.province}{' '}
+            </>
+          )}
+          ចំនួនទឹកប្រាក់ ${separateComma(order.deposit)}{' '}
+          {order.amountInKhmer && <b>({order.amountInKhmer})</b>}{' '}
+          {order.paidBy !== 'Cash'
+            ? 'តាមរយៈគណនេយ្យធនាគារ' + order.paidBy
+            : 'តាមរយៈក្រដាស់ប្រាក់'}{' '}
+          នៅថ្ងៃទី <b>{getDay}</b> ខែ <b>{generateMonth(getMonth)}</b> ឆ្នាំ{' '}
+          <b>{getYear}</b>។
         </Typography>
         <Table
           sx={{
@@ -269,7 +292,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.orderInfo.listFoodOrder?.map((data) => (
+            {order.eventPackages?.map((data) => (
               <TableRow key={data.id}>
                 <TableCell></TableCell>
                 <TableCell>
@@ -286,22 +309,19 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     fontFamily='Khmer Busra high'
                     fontSize={18}
                     lineHeight={1.8}
+                    component='div'
                   >
-                    {data.list.map((ls) => (
-                      <ol
-                        key={ls.id}
-                        style={{
-                          listStyleType: 'khmer',
-                          fontFamily: 'Khmer Busra high',
-                          fontSize: 18,
-                        }}
-                      >
-                        <li>{ls.title}</li>
-                        <li>{ls.title}</li>
-                        <li>{ls.title}</li>
-                        <li>{ls.title}</li>
-                      </ol>
-                    ))}
+                    <ol
+                      style={{
+                        listStyleType: 'khmer',
+                        fontFamily: 'Khmer Busra high',
+                        fontSize: 18,
+                      }}
+                    >
+                      {data?.packageItems?.map((ls, i) => (
+                        <li key={i}>{ls.title}</li>
+                      ))}
+                    </ol>
                   </Typography>
                 </TableCell>
                 <TableCell sx={{ verticalAlign: 'top', textAlign: 'center' }}>
@@ -311,8 +331,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     fontSize={18}
                     fontWeight={'bold'}
                   >
-                    {data.quantity}
-                    {data.units}
+                    {data.quantity !== 0 ? `${data.quantity}${data.unit}` : ''}
                   </Typography>
                 </TableCell>
                 <TableCell sx={{ verticalAlign: 'top', textAlign: 'center' }}>
@@ -322,9 +341,10 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     fontSize={18}
                     fontWeight={'bold'}
                   >
-                    {data.price}
-                    {data.price && '$/'}
-                    {data.units}
+                    {data.price > 0 && data.quantity > 0
+                      ? Math.round(+separateComma(data.price / data.quantity))
+                      : ''}
+                    {data.price > 0 && `$/${data.unit}`}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -395,7 +415,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                       fontFamily='Khmer Busra high'
                       fontSize={18}
                     >
-                      000348435
+                      999119199
                     </Typography>
                     <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       (Ratha Mengey)
@@ -426,7 +446,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                 <Grid item xs={6}>
                   <Stack direction={'row'} justifyContent='space-between'>
                     <Typography fontFamily='Khmer Busra high' fontSize={18}>
-                      គណនេយ្យ True Money
+                      គណនេយ្យ Wing
                     </Typography>
                     <Typography fontFamily='Khmer Busra high' fontSize={18}>
                       ៖

@@ -11,18 +11,18 @@ import {
 } from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
-import { Add, SearchNormal1 } from 'iconsax-react';
+import { SearchNormal1, UserAdd } from 'iconsax-react';
 import React, { useState } from 'react';
 import theme from 'theme/theme';
 import { UserTableBody, UserTableHead } from './UserTable';
-import { UserData } from 'utils/users-util';
+import { UserData } from 'utils/data-util';
 import FormUser from './FormUser';
 import useResponsive from 'hook/useResponsive';
 
 export default function Users() {
   const [openDrawer, setOpenDrawer] = useState<'Add' | 'Edit' | ''>('');
   const [searchProduct, setSearchProduct] = useState(UserData);
-  console.log(searchProduct);
+  // console.log(searchProduct);
   // handle add and edit stock
   const handleOpenDrawer = (obj: 'Add' | 'Edit' | '') => {
     setOpenDrawer(obj);
@@ -52,7 +52,7 @@ export default function Users() {
         >
           <Button
             variant='contained'
-            startIcon={<Add />}
+            startIcon={<UserAdd />}
             sx={{
               color: theme.palette.common.white,
               boxShadow: theme.shadows[1],

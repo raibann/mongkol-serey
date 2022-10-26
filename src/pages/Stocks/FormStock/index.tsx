@@ -1,41 +1,47 @@
+import { BaseResult } from '@ahooksjs/use-request/lib/types';
+import { LoadingButton } from '@mui/lab';
 import {
   Stack,
   Typography,
   Button,
   Autocomplete,
   InputAdornment,
+  MenuItem,
+  Select,
 } from '@mui/material';
 import { Container } from '@mui/system';
 import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import useResponsive from 'hook/useResponsive';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, UseFormReturn } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
-import { cateName, paidByBank } from 'utils/stock-util';
+import { paidBy } from 'utils/data-util';
 import { validatePatterns } from 'utils/validate-util';
-interface IAddStockInput {
-  categoryName: string;
-  productName: string;
-  quantity: string;
-  amountInUSD: string;
-  shopName: string;
-  paidBy: string;
-  usedStock: number;
-  amountInKHR: string;
-}
+import { IStockInput } from '..';
 
 export default function FormStock({
   handleOpenDrawer,
   openDrawer,
+  methods,
+  handleSubmitStock,
+  addNewStock,
 }: {
   handleOpenDrawer: (obj: 'Add' | 'Edit' | '') => void;
   openDrawer: '' | 'Add' | 'Edit';
+  methods: UseFormReturn<IStockInput, object>;
+  handleSubmitStock: (data: IStockInput) => void;
+  addNewStock: BaseResult<
+    IStock.IStockRequest,
+    [
+      {
+        stockReq: IStock.IStockRequest;
+      }
+    ]
+  >;
 }) {
-  const { control, handleSubmit, setValue } = useForm<IAddStockInput>();
-  const handleAddStocks = (data: IAddStockInput) => {
-    console.log('add new stocks:', data);
-  };
+  const { control, handleSubmit, setValue } = methods;
+
   const { isSmDown } = useResponsive();
   return (
     <>
@@ -53,51 +59,14 @@ export default function FormStock({
             color='error'
             onClick={() => {
               handleOpenDrawer('');
+              methods.clearErrors();
             }}
           >
             <MdClose />
           </CusIconButton>
         </Stack>
-        <form onSubmit={handleSubmit(handleAddStocks)}>
+        <form onSubmit={handleSubmit(handleSubmitStock)}>
           <Stack spacing={4}>
-            <Stack direction={'row'} spacing={4}>
-              <Controller
-                control={control}
-                name='categoryName'
-                defaultValue=''
-                rules={{
-                  required: { value: true, message: 'Category is required' },
-                }}
-                render={({
-                  field: { onChange, ...rest },
-                  fieldState: { error },
-                }) => {
-                  return (
-                    <LabelTextField label='Category Name'>
-                      <Autocomplete
-                        freeSolo
-                        disableClearable
-                        openOnFocus
-                        id='category'
-                        onInputChange={(e, value) => {
-                          setValue('categoryName', value);
-                        }}
-                        {...rest}
-                        renderInput={(params) => (
-                          <StyledOutlinedTextField
-                            {...params}
-                            error={Boolean(error)}
-                            helperText={error?.message}
-                            placeholder='Enter category name'
-                          />
-                        )}
-                        options={cateName.map((data, i) => data)}
-                      />
-                    </LabelTextField>
-                  );
-                }}
-              />
-            </Stack>
             <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
               <Controller
                 control={control}
@@ -119,6 +88,63 @@ export default function FormStock({
                   );
                 }}
               />
+
+              <Controller
+                control={control}
+                name='price'
+                rules={{
+                  required: { value: true, message: 'Price is required' },
+                  pattern: {
+                    value: validatePatterns.numberOnly,
+                    message: 'Require number only',
+                  },
+                }}
+                defaultValue=''
+                render={({ field, fieldState: { error } }) => {
+                  return (
+                    <LabelTextField label='Price'>
+                      <StyledOutlinedTextField
+                        placeholder='Enter price'
+                        {...field}
+                        error={Boolean(error)}
+                        helperText={error?.message}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start' sx={{ ml: -1.7 }}>
+                              <Controller
+                                control={control}
+                                name='currency'
+                                defaultValue='$'
+                                render={({ field }) => {
+                                  return (
+                                    <Select
+                                      {...field}
+                                      sx={{
+                                        '& fieldset': {
+                                          border: 0,
+                                        },
+                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline':
+                                          {
+                                            border: 'none',
+                                          },
+                                      }}
+                                    >
+                                      <MenuItem value='$'>USD</MenuItem>
+                                      <MenuItem value='៛'>KHR</MenuItem>
+                                    </Select>
+                                  );
+                                }}
+                              />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </LabelTextField>
+                  );
+                }}
+              />
+            </Stack>
+            <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
               <Controller
                 control={control}
                 name='quantity'
@@ -143,63 +169,26 @@ export default function FormStock({
                   );
                 }}
               />
-            </Stack>
-            <Stack direction={isSmDown ? 'column' : 'row'} spacing={4}>
               <Controller
                 control={control}
-                name='amountInUSD'
+                name='unit'
                 defaultValue=''
                 rules={{
+                  required: { value: true, message: 'Unit is required' },
                   pattern: {
-                    value: validatePatterns.numberOnly,
-                    message: 'Require number only',
+                    value: validatePatterns.textOnly,
+                    message: 'Required only text',
                   },
                 }}
                 render={({ field, fieldState: { error } }) => {
                   return (
-                    <LabelTextField label='Amount In USD'>
+                    <LabelTextField label='Unit'>
                       <StyledOutlinedTextField
-                        placeholder='Currency dollar'
+                        placeholder='Enter unit'
                         {...field}
                         error={Boolean(error)}
                         helperText={error?.message}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              USD
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </LabelTextField>
-                  );
-                }}
-              />
-              <Controller
-                control={control}
-                name='amountInKHR'
-                rules={{
-                  pattern: {
-                    value: validatePatterns.numberOnly,
-                    message: 'Require number only',
-                  },
-                }}
-                defaultValue=''
-                render={({ field, fieldState: { error } }) => {
-                  return (
-                    <LabelTextField label='Amount In KHR'>
-                      <StyledOutlinedTextField
-                        placeholder='Currency khmer'
-                        {...field}
-                        error={Boolean(error)}
-                        helperText={error?.message}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              KHR
-                            </InputAdornment>
-                          ),
-                        }}
+                        type='text'
                       />
                     </LabelTextField>
                   );
@@ -210,9 +199,6 @@ export default function FormStock({
               <Controller
                 control={control}
                 name='shopName'
-                rules={{
-                  required: { value: true, message: 'Shop is required' },
-                }}
                 defaultValue=''
                 render={({ field, fieldState: { error } }) => {
                   return (
@@ -257,7 +243,26 @@ export default function FormStock({
                             placeholder='Enter paid by'
                           />
                         )}
-                        options={paidByBank.map((data, i) => data)}
+                        options={paidBy.map((data, i) => data)}
+                      />
+                    </LabelTextField>
+                  );
+                }}
+              />
+            </Stack>
+            <Stack direction={'row'} spacing={4}>
+              <Controller
+                control={control}
+                name='note'
+                defaultValue=''
+                render={({ field }) => {
+                  return (
+                    <LabelTextField label='Note'>
+                      <StyledOutlinedTextField
+                        placeholder='Type something here...'
+                        {...field}
+                        multiline
+                        rows={4}
                       />
                     </LabelTextField>
                   );
@@ -278,24 +283,31 @@ export default function FormStock({
                   boxShadow: 1,
                   color: (theme) => theme.palette.common.white,
                   background: (theme) => theme.palette.error.main,
+                  '&:hover': {
+                    background: (theme) => theme.palette.error.main,
+                  },
                 }}
               >
                 Cancel
               </Button>
-              <Button
+              <LoadingButton
                 type='submit'
                 variant='contained'
                 fullWidth
+                loading={addNewStock.loading}
                 sx={{
                   borderRadius: 3,
                   p: 2,
                   textTransform: 'capitalize',
                   boxShadow: 1,
                   color: (theme) => theme.palette.common.white,
+                  '&:hover': {
+                    background: (theme) => theme.palette.primary.main,
+                  },
                 }}
               >
                 Save
-              </Button>
+              </LoadingButton>
             </Stack>
           </Stack>
         </form>

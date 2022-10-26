@@ -3,13 +3,14 @@ import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextF
 import { Trash } from 'iconsax-react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
+import { validatePatterns } from 'utils/validate-util';
 
 export type FinalInvoiceInput = {
   finalInvoice: IFinalInvoice[];
 };
 
 export interface IFinalInvoice {
-  id: number;
+  id?: number;
   fTitle: string;
   fQty: number | '';
   fUnit: string;
@@ -64,6 +65,10 @@ const FinalInvoiceForm = ({
           defaultValue=''
           rules={{
             required: { value: true, message: 'Quantity is Required' },
+            pattern: {
+              value: validatePatterns.numberOnly,
+              message: 'Quantity should be number only',
+            },
           }}
           render={({ field, fieldState: { error } }) => {
             return (
@@ -102,6 +107,10 @@ const FinalInvoiceForm = ({
           defaultValue=''
           rules={{
             required: { value: true, message: 'Price is Required' },
+            pattern: {
+              value: validatePatterns.numberOnly,
+              message: 'Price should be number only',
+            },
           }}
           render={({ field, fieldState: { error } }) => {
             return (

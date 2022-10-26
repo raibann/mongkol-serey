@@ -4,54 +4,91 @@ import {
   Typography,
   TextField,
   IconButton,
+  Menu,
+  MenuItem,
+  Autocomplete,
 } from '@mui/material';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import { Trash } from 'iconsax-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
+import { foodList } from 'utils/data-util';
+import { validatePatterns } from 'utils/validate-util';
 import { IOrderForm } from '.';
 
+interface IMenuItems {
+  id?: number;
+  title: string;
+}
+
 const OrderItem = ({
+  menuItemsP,
   onRemoveOrder,
   index,
 }: {
+  menuItemsP: IMenuItems[];
   index: number;
   onRemoveOrder: () => void;
 }) => {
-  const { control } = useFormContext<IOrderForm>();
-  const [menuItems, setMenuItems] = useState<
-    {
-      id: number;
-      title: string;
-    }[]
-  >([]);
+  const { control, setValue, watch } = useFormContext<IOrderForm>();
+  const unitPrice = watch(`listMenu.${index}.unitPrice`);
+  const quantity = watch(`listMenu.${index}.quantity`);
+  const price = watch(`listMenu.${index}.price`);
 
-  const addMenuItemHandler = () => {
-    if (menuItems.length > 0) {
-      setMenuItems([
-        ...menuItems,
-        {
-          id: new Date().getTime(),
-          title: '',
-        },
-      ]);
-    } else {
-      setMenuItems([
-        {
-          id: new Date().getTime(),
-          title: '',
-        },
-      ]);
-    }
+  const [menuItems, setMenuItems] = useState<IMenuItems[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
-  const removeMenuItemHandler = (id: number) => {
-    const tmp = menuItems.filter((item) => {
-      return item.id !== id;
+  useEffect(() => {
+    setValue(`listMenu.${index}.unit`, 'តុ');
+
+    if (menuItemsP) {
+      return setMenuItems(menuItemsP);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // useEffect(() => {
+  //   if (unitPrice && quantity) {
+  //     if (!isNaN(+unitPrice * quantity)) {
+  //       setValue(
+  //         `listMenu.${index}.price`,
+  //         +(+unitPrice * quantity).toFixed(2)
+  //       );
+  //     } else {
+  //       setValue(`listMenu.${index}.price`, '');
+  //     }
+  //   } else {
+  //     setValue(`listMenu.${index}.price`, '');
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [unitPrice, quantity]);
+
+  const addMenuItemHandler = () => {
+    setMenuItems([
+      ...menuItems,
+      {
+        id: undefined,
+        title: '',
+      },
+    ]);
+  };
+
+  const removeMenuItemHandler = (i: number) => {
+    const tmp = watch(`listMenu.${index}.menuItem`).filter((_, idx) => {
+      return idx !== i;
     });
     setMenuItems(tmp);
+    setValue(`listMenu.${index}.menuItem`, tmp);
   };
 
   return (
@@ -105,6 +142,10 @@ const OrderItem = ({
             defaultValue=''
             rules={{
               required: { value: true, message: 'Quantity is Required' },
+              pattern: {
+                value: validatePatterns.numberOnly,
+                message: 'Quantity should be number only',
+              },
             }}
             render={({ field, fieldState: { error } }) => {
               return (
@@ -114,48 +155,136 @@ const OrderItem = ({
                     placeholder='Quantity'
                     error={Boolean(error)}
                     helperText={error?.message}
+                    onKeyUp={() => {
+                      if (unitPrice && quantity) {
+                        if (!isNaN(+unitPrice * quantity)) {
+                          setValue(
+                            `listMenu.${index}.price`,
+                            +(+unitPrice * quantity).toFixed(2)
+                          );
+                        } else {
+                          setValue(`listMenu.${index}.price`, '');
+                        }
+                      } else {
+                        setValue(`listMenu.${index}.price`, 0);
+                      }
+                    }}
                     {...field}
                   />
                 </LabelTextField>
               );
             }}
           />
-          <Controller
-            control={control}
-            name={`listMenu.${index}.unit`}
-            defaultValue=''
-            rules={{
-              required: { value: true, message: 'Unit is Required' },
-            }}
-            render={({ field, fieldState: { error } }) => {
-              return (
-                <LabelTextField label='Unit'>
-                  <StyledOutlinedTextField
-                    size='small'
-                    placeholder='Unit'
-                    error={Boolean(error)}
-                    helperText={error?.message}
-                    {...field}
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
+
+          <LabelTextField label='Unit Price'>
+            <Stack
+              direction='row'
+              sx={{
+                position: 'relative',
+              }}
+            >
+              <Controller
+                control={control}
+                name={`listMenu.${index}.unitPrice`}
+                defaultValue=''
+                render={({ field, fieldState: { error } }) => {
+                  return (
+                    <StyledOutlinedTextField
+                      size='small'
+                      placeholder='Price'
+                      error={Boolean(error)}
+                      helperText={error?.message}
+                      onKeyUp={() => {
+                        if (unitPrice && quantity) {
+                          if (!isNaN(+unitPrice * quantity)) {
+                            setValue(
+                              `listMenu.${index}.price`,
+                              +(+unitPrice * quantity).toFixed(2)
+                            );
+                          } else {
+                            setValue(`listMenu.${index}.price`, '');
+                          }
+                        } else {
+                          setValue(`listMenu.${index}.price`, '');
+                        }
+                      }}
+                      {...field}
+                    />
+                  );
+                }}
+              />
+              <Button
+                onClick={handleClick}
+                color='inherit'
+                sx={{
+                  background: '#fff',
+                  position: 'absolute',
+                  right: 2,
+                  top: 2,
+                  bottom: 2,
+                  borderRadius: 2,
+                  color: '#000',
+                  width: 'auto',
+                  minWidth: 0,
+                  px: 1,
+                  '&.css-1lskwbk-MuiButtonBase-root-MuiButton-root': {
+                    p: 0,
+                  },
+                }}
+              >
+                /{watch(`listMenu.${index}.unit`)}
+              </Button>
+              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                {['តុ', 'ចាន', 'ខ្ទះ', 'នាក់', 'ឈុត'].map((e) => {
+                  return (
+                    <MenuItem
+                      key={e}
+                      onClick={() => {
+                        setValue(`listMenu.${index}.unit`, e);
+                        handleClose();
+                      }}
+                    >
+                      {e}
+                    </MenuItem>
+                  );
+                })}
+              </Menu>
+            </Stack>
+          </LabelTextField>
+
           <Controller
             control={control}
             name={`listMenu.${index}.price`}
             defaultValue=''
             rules={{
-              required: { value: true, message: 'Price is Required' },
+              required: { value: true, message: 'Total Price is Required' },
+              pattern: {
+                value: validatePatterns.numberOnly,
+                message: 'Price should be number only',
+              },
             }}
             render={({ field, fieldState: { error } }) => {
               return (
-                <LabelTextField label='Price'>
+                <LabelTextField label='Total Price'>
                   <StyledOutlinedTextField
                     size='small'
-                    placeholder='Price'
+                    placeholder='Total Price'
                     error={Boolean(error)}
                     helperText={error?.message}
+                    onKeyUp={() => {
+                      if (price && quantity) {
+                        if (!isNaN(+price / quantity)) {
+                          setValue(
+                            `listMenu.${index}.unitPrice`,
+                            +(+price / quantity).toFixed(2)
+                          );
+                        } else {
+                          setValue(`listMenu.${index}.unitPrice`, '');
+                        }
+                      } else {
+                        setValue(`listMenu.${index}.unitPrice`, '');
+                      }
+                    }}
                     {...field}
                   />
                 </LabelTextField>
@@ -166,10 +295,10 @@ const OrderItem = ({
 
         {menuItems &&
           menuItems.length > 0 &&
-          menuItems?.map((item, i) => {
+          menuItems?.map((_, i) => {
             return (
               <Stack
-                key={item.id}
+                key={i}
                 direction='row'
                 alignItems='flex-start'
                 spacing={1}
@@ -186,24 +315,39 @@ const OrderItem = ({
                   rules={{
                     required: { value: true, message: 'Item is Required' },
                   }}
-                  render={({ field, fieldState: { error } }) => {
+                  render={({
+                    field: { onChange, ...rest },
+                    fieldState: { error },
+                  }) => {
                     return (
-                      <TextField
-                        variant='standard'
+                      <Autocomplete
+                        freeSolo
+                        disableClearable
+                        openOnFocus
+                        id='foodList'
                         size='small'
-                        inputProps={{
-                          style: {
-                            padding: 0,
-                          },
+                        sx={{ width: '100%' }}
+                        onInputChange={(e, value) => {
+                          setValue(
+                            `listMenu.${index}.menuItem.${i}.title`,
+                            value
+                          );
                         }}
-                        sx={{
-                          flexGrow: 1,
-                          outline: 'none',
-                          p: 0,
-                        }}
-                        error={Boolean(error)}
-                        helperText={error?.message}
-                        {...field}
+                        {...rest}
+                        renderInput={(params) => (
+                          <TextField
+                            variant='standard'
+                            sx={{
+                              flexGrow: 1,
+                              outline: 'none',
+                              p: 0,
+                            }}
+                            error={Boolean(error)}
+                            helperText={error?.message}
+                            {...params}
+                          />
+                        )}
+                        options={foodList.map((data) => data)}
                       />
                     );
                   }}
@@ -211,7 +355,7 @@ const OrderItem = ({
 
                 <IconButton
                   color='error'
-                  onClick={() => removeMenuItemHandler(item.id)}
+                  onClick={() => removeMenuItemHandler(i)}
                   sx={{ p: 0 }}
                 >
                   <Trash />

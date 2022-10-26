@@ -1,4 +1,4 @@
-export const persistState = (storageKey: string, state: Object) => {
+export const persistState = (storageKey: string, state: any) => {
   window.localStorage.setItem(storageKey, JSON.stringify(state));
 };
 

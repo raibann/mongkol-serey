@@ -1,23 +1,14 @@
-import { Stack, Autocomplete, alpha, InputAdornment } from '@mui/material';
-import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import useResponsive from 'hook/useResponsive';
-import { DollarCircle, Trash } from 'iconsax-react';
-import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
-import { paidBy } from 'utils/expense-util';
+import { Stack, Autocomplete, alpha, InputAdornment } from '@mui/material';
+import { Controller, useFormContext } from 'react-hook-form';
+import { DollarCircle, Trash } from 'iconsax-react';
+import { validatePatterns } from 'utils/validate-util';
+import { CusIconButton } from 'components/CusIconButton';
+import { paidBy } from 'utils/data-util';
+import { IAddExpenseInput } from '../ExpenseDialogs';
 
-export interface IAddExpenseInput {
-  expenseRowData: IExpenseRow[];
-}
-export interface IExpenseRow {
-  id: number | string;
-  title: string;
-  totalPrice: string | number;
-  paidBy: string;
-  other: string;
-}
 function FormExpense({
   index,
   onRemove,
@@ -29,20 +20,23 @@ function FormExpense({
 }) {
   const { control, setValue } = useFormContext<IAddExpenseInput>();
   const { isSmDown } = useResponsive();
-  console.log('index', index);
+
   return (
     <>
       <Stack direction={isSmDown ? 'column' : 'row'} spacing={2}>
         <Controller
           control={control}
           name={`expenseRowData.${index}.title`}
+          rules={{ required: { value: true, message: 'Title is required' } }}
           defaultValue={defaultTitle}
-          render={({ field }) => {
+          render={({ field, fieldState: { error } }) => {
             return (
               <StyledOutlinedTextField
                 placeholder='Title'
-                {...field}
                 size='small'
+                error={Boolean(error)}
+                helperText={error?.message}
+                {...field}
               />
             );
           }}
@@ -50,13 +44,21 @@ function FormExpense({
         <Controller
           control={control}
           name={`expenseRowData.${index}.totalPrice`}
-          defaultValue=''
-          render={({ field }) => {
+          defaultValue={0}
+          rules={{
+            required: { value: true, message: 'Total price is required' },
+            pattern: {
+              value: validatePatterns.numberOnly,
+              message: 'Price is number only',
+            },
+          }}
+          render={({ field, fieldState: { error } }) => {
             return (
               <StyledOutlinedTextField
                 placeholder='Total price'
-                {...field}
                 size='small'
+                error={Boolean(error)}
+                helperText={error?.message}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position='start'>
@@ -67,6 +69,7 @@ function FormExpense({
                     </InputAdornment>
                   ),
                 }}
+                {...field}
               />
             );
           }}
@@ -83,7 +86,7 @@ function FormExpense({
                 openOnFocus
                 fullWidth
                 {...rest}
-                onInputChange={(e, value) => {
+                onInputChange={(_, value) => {
                   setValue(`expenseRowData.${index}.paidBy`, value);
                 }}
                 renderInput={(params) => (
@@ -128,4 +131,4 @@ function FormExpense({
     </>
   );
 }
-export default React.memo(FormExpense);
+export default FormExpense;

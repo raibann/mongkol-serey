@@ -1,40 +1,114 @@
-import { TableRow, TableCell, TableHead } from '@mui/material';
+import {
+  TableRow,
+  TableCell,
+  TableHead,
+  Chip,
+  Tooltip,
+  Stack,
+} from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
-import { Edit } from 'iconsax-react';
-import { IStockData } from 'utils/stock-util';
+import { Calculator, Edit, Trash } from 'iconsax-react';
+import theme from 'theme/theme';
+import { paidByColor } from 'utils/data-util';
+import { separateComma } from 'utils/validate-util';
 
 export const StockTableBody = ({
-  props,
-  index,
-  onEdit,
+  stockList,
+  handleOpenDrawer,
+  setConfirmDelete,
+  setUseStock,
+  setOpenStock,
 }: {
-  props: IStockData;
-  index: number;
-  onEdit: (obj: 'Add' | 'Edit' | '') => void;
+  stockList: IStock.IStockRespone | undefined;
+  handleOpenDrawer: (obj: 'Add' | 'Edit' | '') => void;
+  setConfirmDelete: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setUseStock: React.Dispatch<
+    React.SetStateAction<IStock.IStockDetails | undefined>
+  >;
+  setOpenStock: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
-    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-      <TableCell>{index + 1}</TableCell>
-      <TableCell>{props.cateName}</TableCell>
-      <TableCell>{props.productName}</TableCell>
-      <TableCell>{` ${props.quantity.value} ${props.quantity.unit}`}</TableCell>
-      <TableCell>{`${props.price.currency} ${props.price.value}`}</TableCell>
-      <TableCell>{props.shopName}</TableCell>
-      <TableCell>{props.paidBy}</TableCell>
-      <TableCell>
-        {`${props.totalPrice.currency} ${props.totalPrice.value}`}
-      </TableCell>
-      <TableCell>{`${props.inStock.value} ${props.inStock.unit}`}</TableCell>
-      <TableCell>
-        <CusIconButton
-          color='info'
-          sx={{ p: 0.5, mx: 0.5 }}
-          onClick={() => onEdit('Edit')}
+    <>
+      {stockList?.data.map((data, index) => (
+        <TableRow
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          key={index}
         >
-          <Edit size={18} />
-        </CusIconButton>
-      </TableCell>
-    </TableRow>
+          <TableCell>{index + 1}</TableCell>
+          <TableCell>{data.productName}</TableCell>
+          <TableCell>{` ${data.quantity} ${data.unit}`}</TableCell>
+          <TableCell>
+            {data.currency} {separateComma(data.price)}
+          </TableCell>
+          <TableCell>
+            <Chip
+              label={data.paidBy || 'Cash'}
+              size='small'
+              sx={{
+                backgroundColor:
+                  (paidByColor as any)[data.paidBy || 'Cash'] ||
+                  theme.palette.info.main,
+                color: '#fff',
+              }}
+            />
+          </TableCell>
+          <TableCell>{data.shopName}</TableCell>
+          <TableCell>
+            {data.usedStock} {data.unit}
+          </TableCell>
+
+          <TableCell>
+            <Stack
+              direction={'row'}
+              justifyContent='flex-end'
+              alignItems={'center'}
+            >
+              <Tooltip title='Edit' arrow>
+                <CusIconButton
+                  color='info'
+                  sx={{ p: 0.5, mx: 0.5 }}
+                  onClick={() => {
+                    handleOpenDrawer('Edit');
+                    let temp = stockList?.data.find(
+                      (value) => value.id === data.id
+                    );
+                    setUseStock(temp);
+                  }}
+                >
+                  <Edit size={18} />
+                </CusIconButton>
+              </Tooltip>
+              <Tooltip title='Use Stocks' arrow>
+                <CusIconButton
+                  color='info'
+                  sx={{ p: 0.5, mx: 0.5 }}
+                  onClick={() => {
+                    let temp = stockList?.data.find(
+                      (value) => value.id === data.id
+                    );
+                    setUseStock(temp);
+                    setOpenStock(true);
+                  }}
+                >
+                  <Calculator size='18' color={theme.palette.warning.main} />
+                </CusIconButton>
+              </Tooltip>
+              <Tooltip title='Delete' arrow>
+                <CusIconButton
+                  color='info'
+                  sx={{ p: 0.5, mx: 0.5 }}
+                  onClick={() => {
+                    setConfirmDelete(data.id);
+                  }}
+                >
+                  <Trash size='18' color={theme.palette.error.main} />
+                </CusIconButton>
+              </Tooltip>
+            </Stack>
+          </TableCell>
+        </TableRow>
+      ))}
+    </>
   );
 };
 
@@ -43,14 +117,12 @@ export const StockTableHead = () => {
     <TableHead>
       <TableRow>
         <TableCell>No.</TableCell>
-        <TableCell>CATEGORY NAME</TableCell>
         <TableCell>PRODUCT NAME</TableCell>
         <TableCell>QUANTITY</TableCell>
         <TableCell>PRICE</TableCell>
-        <TableCell>SHOP NAME</TableCell>
         <TableCell>PAID BY</TableCell>
-        <TableCell>TOTAL PRICE</TableCell>
-        <TableCell>IN STOCKS</TableCell>
+        <TableCell>SHOP NAME</TableCell>
+        <TableCell>Used Stock</TableCell>
         <TableCell></TableCell>
       </TableRow>
     </TableHead>
