@@ -34,12 +34,12 @@ import FinalInvoiceForm, {
   FinalInvoiceInput,
   IFinalInvoice,
 } from './FinalInvoiceForm';
-import { CusBackDrop } from 'components/CusLoading';
 import CUSTOMER_API from 'api/customer';
-import { paidBy } from 'utils/expense-util';
+import { paidBy } from 'utils/data-util';
 import EXPENSE_API from 'api/expense';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
+import { LoadingButton } from '@mui/lab';
 
 export interface IOrderForm {
   orderId?: number;
@@ -283,9 +283,9 @@ const OrderDrawer = ({
 
   return (
     <>
-      {(orderActionReq.loading || expenseActionReq.loading) && (
+      {/* {(orderActionReq.loading || expenseActionReq.loading) && (
         <CusBackDrop open={true} />
-      )}
+      )} */}
 
       <ErrorDialog
         open={alertDialog}
@@ -833,22 +833,27 @@ const OrderDrawer = ({
             position='relative'
             direction='row'
           >
-            <Button
+            <LoadingButton
               type='submit'
               variant='contained'
+              fullWidth
               disableElevation
+              loading={orderActionReq.loading || expenseActionReq.loading}
               sx={{
-                background: THEME_UTIL.goldGradientMain,
-                color: '#fff',
                 fontSize: 18,
                 fontWeight: 'bold',
                 p: 1.5,
                 borderRadius: '50vh',
-                flexGrow: 1,
+                boxShadow: 1,
+                background: THEME_UTIL.goldGradientMain,
+                color: '#fff',
+                '&:hover': {
+                  background: THEME_UTIL.goldGradientMain,
+                },
               }}
             >
               Save
-            </Button>
+            </LoadingButton>
             {orderDetail && (
               <>
                 <IconButton

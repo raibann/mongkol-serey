@@ -9,7 +9,7 @@ import {
 import { CusIconButton } from 'components/CusIconButton';
 import { Calculator, Edit, Trash } from 'iconsax-react';
 import theme from 'theme/theme';
-import { paidByColor } from 'utils/expense-util';
+import { paidByColor } from 'utils/data-util';
 import { separateComma } from 'utils/validate-util';
 
 export const StockTableBody = ({
@@ -56,7 +56,7 @@ export const StockTableBody = ({
           <TableCell>
             {data.usedStock} {data.unit}
           </TableCell>
-          <TableCell>{data.note}</TableCell>
+
           <TableCell>
             <Stack
               direction={'row'}
@@ -123,7 +123,6 @@ export const StockTableHead = () => {
         <TableCell>PAID BY</TableCell>
         <TableCell>SHOP NAME</TableCell>
         <TableCell>Used Stock</TableCell>
-        <TableCell>Remark</TableCell>
         <TableCell></TableCell>
       </TableRow>
     </TableHead>

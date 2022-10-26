@@ -253,7 +253,13 @@ const Stocks = () => {
       <FormProvider {...methods}>
         <ResponsiveDrawer open={!!openDrawer} onCloseDrawer={() => {}}>
           <FormStock
-            {...{ handleOpenDrawer, openDrawer, methods, handleSubmitStock }}
+            {...{
+              handleOpenDrawer,
+              openDrawer,
+              methods,
+              handleSubmitStock,
+              addNewStock,
+            }}
           />
         </ResponsiveDrawer>
         <Dialog

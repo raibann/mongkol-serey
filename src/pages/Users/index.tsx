@@ -15,7 +15,7 @@ import { SearchNormal1, UserAdd } from 'iconsax-react';
 import React, { useState } from 'react';
 import theme from 'theme/theme';
 import { UserTableBody, UserTableHead } from './UserTable';
-import { UserData } from 'utils/users-util';
+import { UserData } from 'utils/data-util';
 import FormUser from './FormUser';
 import useResponsive from 'hook/useResponsive';
 

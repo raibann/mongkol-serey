@@ -13,9 +13,9 @@ import {
   Paper,
 } from '@mui/material';
 import { Add, Call, Note, UserSquare, Location, Calendar } from 'iconsax-react';
-import { CusBackDrop, CusLoading } from 'components/CusLoading';
+import { CusLoading } from 'components/CusLoading';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { listTitle } from 'utils/expense-util';
+import { listTitle } from 'utils/data-util';
 import { useEffect, useState } from 'react';
 import { useRequest } from 'ahooks';
 import useResponsive from 'hook/useResponsive';
@@ -25,6 +25,7 @@ import moment from 'moment';
 import EXPENSE_API from 'api/expense';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { separateComma } from 'utils/validate-util';
+import { LoadingButton } from '@mui/lab';
 
 export interface IAddExpenseInput {
   expenseRowData: IExpenseRow[];
@@ -147,8 +148,6 @@ function ExpenseDialogs({
 
   return (
     <>
-      {addExpenseReq.loading && <CusBackDrop open={true} />}
-
       <ErrorDialog
         open={alertDialog}
         onCloseDialog={() => setAlertDialog(false)}
@@ -308,13 +307,16 @@ function ExpenseDialogs({
               >
                 <AppBar
                   sx={{
-                    position: 'static',
+                    position: 'sticky',
                     bgcolor: (theme) => theme.palette.common.white,
                     boxShadow: 0,
                     borderRadius: 0,
                     borderTopLeftRadius: { xs: 0, md: 2 },
                     borderTopRightRadius: { xs: 0, md: 2 },
                     mb: 2,
+                    '&.css-hyum1k-MuiToolbar-root': {
+                      px: 0,
+                    },
                   }}
                 >
                   <Toolbar>
@@ -348,10 +350,11 @@ function ExpenseDialogs({
                         >
                           Cancel
                         </Button>
-                        <Button
+                        <LoadingButton
                           type='submit'
                           variant='contained'
                           fullWidth
+                          loading={addExpenseReq.loading}
                           sx={{
                             borderRadius: 2,
                             textTransform: 'capitalize',
@@ -363,7 +366,7 @@ function ExpenseDialogs({
                           }}
                         >
                           Save
-                        </Button>
+                        </LoadingButton>
                       </Stack>
                     </Stack>
                   </Toolbar>

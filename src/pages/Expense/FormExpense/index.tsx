@@ -6,7 +6,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { DollarCircle, Trash } from 'iconsax-react';
 import { validatePatterns } from 'utils/validate-util';
 import { CusIconButton } from 'components/CusIconButton';
-import { paidBy } from 'utils/expense-util';
+import { paidBy } from 'utils/data-util';
 import { IAddExpenseInput } from '../ExpenseDialogs';
 
 function FormExpense({

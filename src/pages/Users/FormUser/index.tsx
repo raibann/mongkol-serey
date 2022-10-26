@@ -4,7 +4,7 @@ import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextF
 import LabelTextField from 'components/LabelTextField';
 import { useForm, Controller } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
-import { IUser, role } from 'utils/users-util';
+import { IUser, role } from 'utils/data-util';
 interface IRegister extends IUser {
   confirmPassowrd: string;
 }

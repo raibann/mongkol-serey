@@ -10,7 +10,7 @@ import {
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, Trash } from 'iconsax-react';
 import theme from 'theme/theme';
-import { IUser } from 'utils/users-util';
+import { IUser } from 'utils/data-util';
 import { changeBackground } from 'utils/validate-util';
 export const UserTableBody = ({
   props,

@@ -4,6 +4,7 @@ export const validatePatterns = {
   positiveNumberOnly: /^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$/,
   positiveNumberOnlyandEmpty: /$^|^[0-9]\d*(\.\d+)?\.?$/,
   email: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+  textOnly: /^[a-zA-Z ]*$/,
 };
 
 // format separateComma

@@ -13,7 +13,7 @@ import theme from 'theme/theme';
 import { FaFacebookSquare, FaTelegram } from 'react-icons/fa';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, MoneySend, Printer } from 'iconsax-react';
-import { paidByColor } from 'utils/expense-util';
+import { paidByColor } from 'utils/data-util';
 import { separateComma } from 'utils/validate-util';
 
 const OrderTableBody = ({

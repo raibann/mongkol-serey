@@ -1,3 +1,5 @@
+import { BaseResult } from '@ahooksjs/use-request/lib/types';
+import { LoadingButton } from '@mui/lab';
 import {
   Stack,
   Typography,
@@ -14,7 +16,7 @@ import LabelTextField from 'components/LabelTextField';
 import useResponsive from 'hook/useResponsive';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
-import { paidBy } from 'utils/expense-util';
+import { paidBy } from 'utils/data-util';
 import { validatePatterns } from 'utils/validate-util';
 import { IStockInput } from '..';
 
@@ -23,11 +25,20 @@ export default function FormStock({
   openDrawer,
   methods,
   handleSubmitStock,
+  addNewStock,
 }: {
   handleOpenDrawer: (obj: 'Add' | 'Edit' | '') => void;
   openDrawer: '' | 'Add' | 'Edit';
   methods: UseFormReturn<IStockInput, object>;
   handleSubmitStock: (data: IStockInput) => void;
+  addNewStock: BaseResult<
+    IStock.IStockRequest,
+    [
+      {
+        stockReq: IStock.IStockRequest;
+      }
+    ]
+  >;
 }) {
   const { control, handleSubmit, setValue } = methods;
 
@@ -164,6 +175,10 @@ export default function FormStock({
                 defaultValue=''
                 rules={{
                   required: { value: true, message: 'Unit is required' },
+                  pattern: {
+                    value: validatePatterns.textOnly,
+                    message: 'Required only text',
+                  },
                 }}
                 render={({ field, fieldState: { error } }) => {
                   return (
@@ -173,6 +188,7 @@ export default function FormStock({
                         {...field}
                         error={Boolean(error)}
                         helperText={error?.message}
+                        type='text'
                       />
                     </LabelTextField>
                   );
@@ -274,10 +290,11 @@ export default function FormStock({
               >
                 Cancel
               </Button>
-              <Button
+              <LoadingButton
                 type='submit'
                 variant='contained'
                 fullWidth
+                loading={addNewStock.loading}
                 sx={{
                   borderRadius: 3,
                   p: 2,
@@ -290,7 +307,7 @@ export default function FormStock({
                 }}
               >
                 Save
-              </Button>
+              </LoadingButton>
             </Stack>
           </Stack>
         </form>

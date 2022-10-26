@@ -14,7 +14,7 @@ import { Trash } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
-import { foodList } from 'utils/expense-util';
+import { foodList } from 'utils/data-util';
 import { validatePatterns } from 'utils/validate-util';
 import { IOrderForm } from '.';
 
@@ -166,7 +166,7 @@ const OrderItem = ({
                           setValue(`listMenu.${index}.price`, '');
                         }
                       } else {
-                        setValue(`listMenu.${index}.price`, '');
+                        setValue(`listMenu.${index}.price`, 0);
                       }
                     }}
                     {...field}
