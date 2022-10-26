@@ -57,22 +57,6 @@ const OrderItem = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // useEffect(() => {
-  //   if (unitPrice && quantity) {
-  //     if (!isNaN(+unitPrice * quantity)) {
-  //       setValue(
-  //         `listMenu.${index}.price`,
-  //         +(+unitPrice * quantity).toFixed(2)
-  //       );
-  //     } else {
-  //       setValue(`listMenu.${index}.price`, '');
-  //     }
-  //   } else {
-  //     setValue(`listMenu.${index}.price`, '');
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [unitPrice, quantity]);
-
   const addMenuItemHandler = () => {
     setMenuItems([
       ...menuItems,

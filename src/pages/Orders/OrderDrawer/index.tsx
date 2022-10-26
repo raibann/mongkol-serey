@@ -40,6 +40,7 @@ import EXPENSE_API from 'api/expense';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { LoadingButton } from '@mui/lab';
+import { motion } from 'framer-motion';
 
 export interface IOrderForm {
   orderId?: number;
@@ -97,7 +98,10 @@ const OrderDrawer = ({
   });
   const deleteOrderReq = useRequest(ORDER_API.deleteOrder, {
     manual: true,
-    onSuccess: () => setConfirmDialog(false),
+    onSuccess: () => {
+      setConfirmDialog(false);
+      onActionSuccess();
+    },
     onError: () => setAlertDialog(true),
   });
 
@@ -113,6 +117,7 @@ const OrderDrawer = ({
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [selectedCustomer, setSelectedCustomer] =
     useState<ICustomer.Customer>();
+  let orderItemId = 0;
 
   // refs
   const customerRef = useRef(orderDetail?.customer);
@@ -698,16 +703,34 @@ const OrderDrawer = ({
           </Stack>
 
           {listMenu && listMenu.length > 0 ? (
-            listMenu?.map((menu, i) => {
-              return (
-                <OrderItem
-                  key={i}
-                  index={i}
-                  menuItemsP={menu.menuItem}
-                  onRemoveOrder={() => deleteListOrderHandler(i)}
-                />
-              );
-            })
+            <motion.div layout style={{ overflow: 'hidden' }}>
+              {listMenu?.map((menu, i) => {
+                return (
+                  <motion.div
+                    key={orderItemId++}
+                    layout
+                    initial={{
+                      opacity: 0,
+                      scale: 0.5,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                    }}
+                    transition={{
+                      duration: 0.2,
+                      ease: 'easeInOut',
+                    }}
+                  >
+                    <OrderItem
+                      index={i}
+                      menuItemsP={menu.menuItem}
+                      onRemoveOrder={() => deleteListOrderHandler(i)}
+                    />
+                  </motion.div>
+                );
+              })}
+            </motion.div>
           ) : (
             <Stack
               alignItems='center'
