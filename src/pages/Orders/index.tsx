@@ -37,12 +37,14 @@ import {
 import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
+import { LoadingButton } from '@mui/lab';
 
 const Orders = () => {
   // States
   const [ToggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
+  const [loadingChangingState, setLoadingChangingState] = useState(false);
   const [printer, setPrinter] = useState<IOrder.Order>();
   const [page, setPage] = React.useState(1);
   const [searchData, setSearchData] = useState('');
@@ -62,6 +64,8 @@ const Orders = () => {
     refresh: refreshGetOrderList,
   } = useRequest(ORDER_API.getOrdersList, {
     manual: true,
+    onSuccess: () => setLoadingChangingState(false),
+    onError: () => setLoadingChangingState(false),
   });
   const { run: searchOrderList } = useRequest(fetchOrderList, {
     manual: true,
@@ -85,11 +89,13 @@ const Orders = () => {
       return;
     }
 
+    setLoadingChangingState(true);
     fetchOrderList({
       page: `${page - 1}`,
       status: ToggleValue,
       search: '',
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ToggleValue, page, searchData]);
 
@@ -191,7 +197,12 @@ const Orders = () => {
               }}
             />
 
-            <Button
+            <LoadingButton
+              loading={
+                isLoadingOrderList &&
+                orderList !== undefined &&
+                !loadingChangingState
+              }
               variant='contained'
               startIcon={<Add />}
               sx={{
@@ -202,7 +213,7 @@ const Orders = () => {
               onClick={() => setNewOrder(true)}
             >
               {isMdDown ? 'New' : 'Add New'}
-            </Button>
+            </LoadingButton>
           </Stack>
         </Stack>
         <TableContainer
@@ -213,7 +224,7 @@ const Orders = () => {
             pb: { xs: 15, md: 10, lg: 5 },
           }}
         >
-          {isLoadingOrderList ? (
+          {isLoadingOrderList && loadingChangingState ? (
             <Stack
               direction={'column'}
               alignItems={'center'}
