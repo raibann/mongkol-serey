@@ -14,7 +14,7 @@ import { Trash } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
-import { foodList } from 'utils/data-util';
+import { foodList, unitList } from 'utils/data-util';
 import { validatePatterns } from 'utils/validate-util';
 import { IOrderForm } from '.';
 
@@ -48,7 +48,7 @@ const OrderItem = ({
   };
 
   useEffect(() => {
-    setValue(`listMenu.${index}.unit`, 'តុ');
+    // setValue(`listMenu.${index}.unit`, 'តុ');
 
     if (menuItemsP) {
       return setMenuItems(menuItemsP);
@@ -232,10 +232,10 @@ const OrderItem = ({
                   },
                 }}
               >
-                /{watch(`listMenu.${index}.unit`)}
+                /{watch(`listMenu.${index}.unit`) || 'តុ'}
               </Button>
               <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                {['តុ', 'ចាន', 'ខ្ទះ', 'នាក់', 'ឈុត'].map((e) => {
+                {unitList.map((e) => {
                   return (
                     <MenuItem
                       key={e}

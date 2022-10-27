@@ -334,8 +334,17 @@ const foodList = [
   'ស៊ុបក្តាមផ្សិតមាស 10ក្រឡ',
   'ត្រីឆ្ពុងចំហុយទឹកស៊ីអៀវចិន',
 ];
+const unitList = ['តុ', 'ចាន', 'ខ្ទះ', 'នាក់', 'ឈុត', 'm²'];
 
-export { paidBy, paidByColor, listTitle, foodList };
+const eventList = [
+  'Wedding',
+  'Birthday',
+  'Party',
+  'House Warming',
+  'Engagement',
+];
+
+export { paidBy, paidByColor, listTitle, foodList, unitList, eventList };
 
 export interface IUser {
   id: number;

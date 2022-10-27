@@ -35,7 +35,7 @@ import FinalInvoiceForm, {
   IFinalInvoice,
 } from './FinalInvoiceForm';
 import CUSTOMER_API from 'api/customer';
-import { paidBy } from 'utils/data-util';
+import { eventList, paidBy } from 'utils/data-util';
 import EXPENSE_API from 'api/expense';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
@@ -419,7 +419,7 @@ const OrderDrawer = ({
                         freeSolo
                         disableClearable
                         openOnFocus
-                        id='paidby'
+                        id='eventType'
                         {...rest}
                         onInputChange={(e, value) => {
                           setValue('eventType', value);
@@ -432,7 +432,7 @@ const OrderDrawer = ({
                             {...params}
                           />
                         )}
-                        options={['Wedding', 'Birthday', 'Party']}
+                        options={eventList}
                       />
                     </LabelTextField>
                   );
