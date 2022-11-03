@@ -13,7 +13,6 @@ import {
 import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
-import { separateComma } from 'utils/validate-util';
 import { eventType } from './FinalInvoice';
 // import { IBookingInvoice } from 'utils/print-util';
 
@@ -256,7 +255,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
               {order.customer.district} {order.customer.province}{' '}
             </>
           )}
-          ចំនួនទឹកប្រាក់ ${separateComma(order.deposit)}{' '}
+          ចំនួនទឹកប្រាក់ ${Intl.NumberFormat().format(order.deposit)}{' '}
           {order.amountInKhmer && <b>({order.amountInKhmer})</b>}{' '}
           {order.paidBy !== 'Cash'
             ? 'តាមរយៈគណនេយ្យធនាគារ' + order.paidBy
@@ -342,7 +341,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                     fontWeight={'bold'}
                   >
                     {data.price > 0 && data.quantity > 0
-                      ? Math.round(+separateComma(data.price / data.quantity))
+                      ? Intl.NumberFormat().format(data.price / data.quantity)
                       : ''}
                     {data.price > 0 && `$/${data.unit}`}
                   </Typography>

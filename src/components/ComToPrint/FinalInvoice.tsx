@@ -13,7 +13,6 @@ import {
 import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
-import { separateComma } from 'utils/validate-util';
 
 interface IFinalInvoice {
   order: IOrder.Order;
@@ -224,27 +223,28 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   {ls.unit}
                 </TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
-                  {Math.round(+separateComma(ls.price / ls.quantity))}$
+                  {Intl.NumberFormat().format(ls.price / ls.quantity)} $
                 </TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
-                  {separateComma(ls.price)}$
+                  {Intl.NumberFormat().format(ls.price)} $
                 </TableCell>
               </TableRow>
             ))}
 
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                តម្លៃសរុប {separateComma(totalPrice)}$
+                តម្លៃសរុប {Intl.NumberFormat().format(totalPrice)}$
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                បានកក់ {separateComma(order.deposit)}$
+                បានកក់ {Intl.NumberFormat().format(order.deposit)}$
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
-                ប្រាក់នៅសល់ {separateComma(totalPrice - order.deposit)}$
+                ប្រាក់នៅសល់{' '}
+                {Intl.NumberFormat().format(totalPrice - order.deposit)}$
               </TableCell>
             </TableRow>
           </TableBody>

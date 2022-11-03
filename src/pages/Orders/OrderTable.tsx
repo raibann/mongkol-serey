@@ -14,7 +14,6 @@ import { FaFacebookSquare, FaTelegram } from 'react-icons/fa';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, MoneySend, Printer } from 'iconsax-react';
 import { paidByColor } from 'utils/data-util';
-import { separateComma } from 'utils/validate-util';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const OrderTableBody = ({
@@ -107,7 +106,7 @@ const OrderTableBody = ({
                   }}
                 />
                 <Typography variant='subtitle2' fontWeight={'light'}>
-                  ${separateComma(item.deposit) || 0}
+                  ${Intl.NumberFormat().format(item.deposit) || 0}
                 </Typography>
               </Stack>
             </TableCell>

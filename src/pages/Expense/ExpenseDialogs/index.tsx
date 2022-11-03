@@ -24,7 +24,6 @@ import FormExpense from '../FormExpense';
 import moment from 'moment';
 import EXPENSE_API from 'api/expense';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
-import { separateComma } from 'utils/validate-util';
 import { LoadingButton } from '@mui/lab';
 
 export interface IAddExpenseInput {
@@ -242,7 +241,7 @@ function ExpenseDialogs({
                     }}
                   >
                     <ListItemText
-                      primary={`$${separateComma(totalIncome.toFixed())}`}
+                      primary={`$${Intl.NumberFormat().format(totalIncome)}`}
                       secondary='Total Income'
                       primaryTypographyProps={{
                         fontSize: 24,
@@ -258,7 +257,7 @@ function ExpenseDialogs({
                     }}
                   >
                     <ListItemText
-                      primary={`$${separateComma(totalExpense.toFixed())}`}
+                      primary={`$${Intl.NumberFormat().format(totalExpense)}`}
                       secondary='Total Expense'
                       primaryTypographyProps={{
                         fontSize: 24,
@@ -274,7 +273,7 @@ function ExpenseDialogs({
                     }}
                   >
                     <ListItemText
-                      primary={`$${separateComma(totalNetProfit.toFixed())}`}
+                      primary={`$${Intl.NumberFormat().format(totalNetProfit)}`}
                       secondary='Total Net Profit'
                       primaryTypographyProps={{
                         fontSize: 24,

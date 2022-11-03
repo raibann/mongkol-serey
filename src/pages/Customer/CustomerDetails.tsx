@@ -21,11 +21,7 @@ import {
 } from 'react-icons/fa';
 import theme from 'theme/theme';
 import moment from 'moment';
-import {
-  formatCash,
-  formatInvoiceId,
-  separateComma,
-} from 'utils/validate-util';
+import { formatCash, formatInvoiceId } from 'utils/validate-util';
 
 export default function CustomerDetails({
   custDetails,
@@ -203,7 +199,8 @@ export default function CustomerDetails({
                         Date : <b>{moment(data.date).format('DD-MM-YYYY')}</b>
                       </Typography>
                       <Typography variant='subtitle2'>
-                        Quantity : <b>{separateComma(data.quantity)}</b> តុ
+                        Quantity :{' '}
+                        <b>{Intl.NumberFormat().format(data.quantity)}</b> តុ
                       </Typography>
                     </Stack>
                   </Grid>
