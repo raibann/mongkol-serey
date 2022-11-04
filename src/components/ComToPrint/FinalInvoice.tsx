@@ -217,7 +217,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
             {order.finalInvoices?.map((ls, i) => (
               <TableRow key={ls.id}>
                 <TableCell sx={{ textAlign: 'center' }}>{i + 1}</TableCell>
-                <TableCell>អាហារពេលល្ងាច៖ Full</TableCell>
+                <TableCell>{ls.category}</TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
                   {ls.quantity}
                   {ls.unit}
