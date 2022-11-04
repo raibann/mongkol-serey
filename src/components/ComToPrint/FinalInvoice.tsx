@@ -223,10 +223,10 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                   {ls.unit}
                 </TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
-                  {Intl.NumberFormat().format(ls.price / ls.quantity)} $
+                  {Intl.NumberFormat().format(ls.price / ls.quantity)}$
                 </TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
-                  {Intl.NumberFormat().format(ls.price)} $
+                  {Intl.NumberFormat().format(ls.price)}$
                 </TableCell>
               </TableRow>
             ))}
