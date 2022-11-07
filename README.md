@@ -99,7 +99,7 @@ npm run build
 17. react-app-env.d.ts is type of react-app-env
 18. reportWebVitals.ts is built-in tool for measuring the real life performance of app.
 19. setupTest.ts is setup file for initializing enzyme.
-20. .env.example and .env.local is environment variables (more [https://create-react-app.dev/docs/adding-custom-environment-variables])
+20. .env.example and .env.local is environment variables (more [ https://create-react-app.dev/docs/adding-custom-environment-variables ])
 21. .gitignore is use for disable file we don't want to push
 22. .gitpod.yml is use for update code online use with gitpod
 23. .prettierrc is use for format code when we build it
