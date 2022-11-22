@@ -6,7 +6,12 @@ interface IBackdropLoading {
 }
 const CusBackDrop = React.memo(({ open = false }: IBackdropLoading) => {
   return (
-    <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
+    <Backdrop
+      sx={{
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+      }}
+      open={open}
+    >
       <div className='lds-facebook'>
         <div></div>
         <div></div>

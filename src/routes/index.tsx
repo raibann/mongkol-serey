@@ -3,7 +3,6 @@ import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import { useAuthContext } from 'context/AuthContext';
-import { CusBackDrop } from 'components/CusLoading';
 const Login = lazy(() => import('pages/Login'));
 const Dashboard = lazy(() => import('pages/Dashboard'));
 const Orders = lazy(() => import('pages/Orders'));
@@ -25,7 +24,7 @@ export default function AllRoutes() {
         <Route
           path={ROUTE_PATH.dashboard}
           element={
-            <Suspense fallback={<CusBackDrop open={true} />}>
+            <Suspense>
               <Dashboard />
             </Suspense>
           }
@@ -33,7 +32,7 @@ export default function AllRoutes() {
         <Route
           path={ROUTE_PATH.orders}
           element={
-            <Suspense fallback={<CusBackDrop open={true} />}>
+            <Suspense>
               <Orders />
             </Suspense>
           }
@@ -41,7 +40,7 @@ export default function AllRoutes() {
         <Route
           path={ROUTE_PATH.stocks}
           element={
-            <Suspense fallback={<CusBackDrop open={true} />}>
+            <Suspense>
               <Stocks />
             </Suspense>
           }
@@ -49,7 +48,7 @@ export default function AllRoutes() {
         <Route
           path={ROUTE_PATH.reminder}
           element={
-            <Suspense fallback={<CusBackDrop open={true} />}>
+            <Suspense>
               <Reminder />
             </Suspense>
           }
@@ -57,7 +56,7 @@ export default function AllRoutes() {
         <Route
           path={ROUTE_PATH.customers}
           element={
-            <Suspense fallback={<CusBackDrop open={true} />}>
+            <Suspense>
               <Customer />
             </Suspense>
           }
@@ -65,7 +64,7 @@ export default function AllRoutes() {
         <Route
           path={ROUTE_PATH.expense}
           element={
-            <Suspense fallback={<CusBackDrop open={true} />}>
+            <Suspense>
               <Expense />
             </Suspense>
           }
@@ -73,7 +72,7 @@ export default function AllRoutes() {
         {/* <Route
           path={ROUTE_PATH.manageusers}
           element={
-            <Suspense fallback={<CusBackDrop open={true} />}>
+            <Suspense >
               <Users />
             </Suspense>
           }
@@ -90,7 +89,7 @@ export default function AllRoutes() {
           authState.authed ? (
             <Navigate to={ROUTE_PATH.root} />
           ) : (
-            <Suspense fallback={<CusBackDrop open={true} />}>
+            <Suspense>
               <Login />
             </Suspense>
           )
