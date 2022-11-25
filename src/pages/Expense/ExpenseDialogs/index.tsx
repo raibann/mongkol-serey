@@ -55,7 +55,7 @@ function ExpenseDialogs({
 
   // React-hooks-form
   const method = useForm<IAddExpenseInput>();
-  const { handleSubmit, setValue } = method;
+  const { handleSubmit, setValue, watch } = method;
   const onSubmit: SubmitHandler<IAddExpenseInput> = (data) => {
     if (orderDetail?.id) {
       addExpenseReq.run(
@@ -131,11 +131,13 @@ function ExpenseDialogs({
     ]);
   };
   const deleteListExpense = (idx: number) => {
-    const tmp = listExpense.filter((_, i) => {
-      return i !== idx;
-    });
-    setListExpense(tmp);
-    setValue('expenseRowData', tmp);
+    // const tmp = listExpense.filter((_, i) => {
+    //   return i !== idx;
+    // });
+    const tmp = watch('expenseRowData');
+    tmp.splice(idx, 1);
+    setValue('expenseRowData', [...tmp]);
+    setListExpense([...tmp]);
   };
 
   if (loading)
