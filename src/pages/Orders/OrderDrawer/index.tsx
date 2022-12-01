@@ -221,6 +221,12 @@ const OrderDrawer = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    if (selectedCustomer) {
+      setValue('eventLocation', selectedCustomer.location);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCustomer?.id]);
 
   // Methods
   const addListOrderHandler = () => {
@@ -285,7 +291,7 @@ const OrderDrawer = ({
     setFinalInvoice(tmp);
     setValue('finalInvoice', tmp);
   };
-
+  // console.log(selectedCustomer);
   return (
     <>
       {/* {(orderActionReq.loading || expenseActionReq.loading) && (
@@ -528,7 +534,7 @@ const OrderDrawer = ({
               <Controller
                 control={methods.control}
                 name='bookingDate'
-                defaultValue={null}
+                defaultValue={new Date()}
                 rules={{
                   required: {
                     value: true,

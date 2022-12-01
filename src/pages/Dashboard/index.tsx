@@ -32,7 +32,8 @@ import {
   YAxis,
 } from 'recharts';
 import theme from 'theme/theme';
-import { formatCash } from 'utils/validate-util';
+import { MonthRanks } from 'utils/data-util';
+import { DataFormater, formatCash } from 'utils/validate-util';
 import AnniversaryItem from './AnniversaryItem';
 import DashboardHeader from './DashboardHeader';
 import PieChartComp from './PieChartComp';
@@ -76,47 +77,15 @@ const Dashboard = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleValue]);
 
-  // function generate month
-  const monthGenerate = (value: number) => {
-    switch (value) {
-      case 1:
-        return 'Jan';
-      case 2:
-        return 'Feb';
-      case 3:
-        return 'Mar';
-      case 4:
-        return 'Apr';
-      case 5:
-        return 'May';
-      case 6:
-        return 'Jun';
-      case 7:
-        return 'Jul';
-      case 8:
-        return 'Aug';
-      case 9:
-        return 'Sep';
-      case 10:
-        return 'Oct';
-      case 11:
-        return 'Nov';
-      case 12:
-        return 'Dec';
-      default:
-        return;
-    }
-  };
-
   const CHART1_DATA = chartData?.charts.map((data) => {
     return {
-      name: monthGenerate(data.month),
+      name: MonthRanks[data.month],
       Events: data.amount,
     };
   });
   const CHART2_DATA = chartData?.charts.map((data) => {
     return {
-      name: monthGenerate(data.month),
+      name: MonthRanks[data.month],
       Sales: data.profits,
       Expenses: data.expenses,
     };
@@ -225,13 +194,13 @@ const Dashboard = () => {
 
                   {isMdDown ? (
                     <>
-                      <XAxis type='number' domain={[0, 25]} />
+                      <XAxis type='number' domain={[0, 20]} />
                       <YAxis dataKey='name' type='category' />
                     </>
                   ) : (
                     <>
                       <XAxis dataKey='name' />
-                      <YAxis domain={[0, 25]} />
+                      <YAxis domain={[0, 20]} />
                     </>
                   )}
 
@@ -348,13 +317,21 @@ const Dashboard = () => {
                   <CartesianGrid vertical={false} />
                   {isMdDown ? (
                     <>
-                      <XAxis type='number' domain={[0, 10000]} />
-                      <YAxis dataKey='name' type='category' />
+                      <XAxis type='number' domain={[0, 100000]} />
+                      <YAxis
+                        dataKey='name'
+                        type='category'
+                        tickFormatter={DataFormater}
+                      />
                     </>
                   ) : (
                     <>
                       <XAxis dataKey='name' />
-                      <YAxis type='number' domain={[0, 10000]} />
+                      <YAxis
+                        type='number'
+                        domain={[0, 100000]}
+                        tickFormatter={DataFormater}
+                      />
                     </>
                   )}
                   <Tooltip />

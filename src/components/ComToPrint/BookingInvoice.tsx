@@ -13,6 +13,7 @@ import {
 import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
+import { MonthKH } from 'utils/data-util';
 import { eventType } from './FinalInvoice';
 // import { IBookingInvoice } from 'utils/print-util';
 
@@ -25,37 +26,6 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
     const getMonth = moment(order.bookingDate).format('MMMM');
     const getDay = moment(order.bookingDate).format('DD');
     const getYear = moment(order.bookingDate).format('YYYY');
-    const generateMonth = (month: string) => {
-      switch (month) {
-        case 'January':
-          return 'មករា';
-        case 'February':
-          return 'កុម្ភៈ';
-        case 'March':
-          return 'មិនា';
-        case 'April':
-          return 'មេសា';
-        case 'May':
-          return 'ឧសភា';
-        case 'June':
-          return 'មិថុនា';
-        case 'July':
-          return 'កក្កដា';
-        case 'August':
-          return 'សីហា';
-        case 'September':
-          return 'កញ្ញា';
-        case 'October':
-          return 'តុលា';
-        case 'November':
-          return 'វិច្ឆិកា';
-        case 'December':
-          return 'ធ្នូ';
-        default:
-          return;
-      }
-    };
-
     const formatInvoiceId = (value: string) => {
       const pad = '00000';
       return pad.substring(0, pad.length - value.length) + value;
@@ -260,7 +230,7 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
           {order.paidBy !== 'Cash'
             ? 'តាមរយៈគណនេយ្យធនាគារ' + order.paidBy
             : 'តាមរយៈក្រដាស់ប្រាក់'}{' '}
-          នៅថ្ងៃទី <b>{getDay}</b> ខែ <b>{generateMonth(getMonth)}</b> ឆ្នាំ{' '}
+          នៅថ្ងៃទី <b>{getDay}</b> ខែ <b>{MonthKH[getMonth]}</b> ឆ្នាំ{' '}
           <b>{getYear}</b>។
         </Typography>
         <Table
