@@ -175,10 +175,6 @@ export default function FormStock({
                 defaultValue=''
                 rules={{
                   required: { value: true, message: 'Unit is required' },
-                  pattern: {
-                    value: validatePatterns.textOnly,
-                    message: 'Required only text',
-                  },
                 }}
                 render={({ field, fieldState: { error } }) => {
                   return (
