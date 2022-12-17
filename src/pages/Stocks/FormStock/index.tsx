@@ -121,12 +121,8 @@ export default function FormStock({
                                       {...field}
                                       sx={{
                                         '& fieldset': {
-                                          border: 0,
+                                          display: 'none',
                                         },
-                                        '&.Mui-focused .MuiOutlinedInput-notchedOutline':
-                                          {
-                                            border: 'none',
-                                          },
                                       }}
                                     >
                                       <MenuItem value='$'>USD</MenuItem>

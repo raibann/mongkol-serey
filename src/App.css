@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Moul&display=swap');
 .lds-facebook {
     display: inline-block;
     position: relative;
@@ -9,7 +10,7 @@
     position: absolute;
     left: 8px;
     width: 16px;
-    background: #F2C335;
+    background: #BB9300;
     animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
   }
   .lds-facebook div:nth-child(1) {
@@ -34,3 +35,5 @@
       height: 32px;
     }
   }
+    
+ 

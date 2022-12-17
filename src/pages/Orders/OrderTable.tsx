@@ -7,6 +7,7 @@ import {
   Typography,
   Chip,
   Tooltip,
+  alpha,
 } from '@mui/material';
 import moment from 'moment';
 import theme from 'theme/theme';
@@ -15,6 +16,7 @@ import { CusIconButton } from 'components/CusIconButton';
 import { Edit, MoneySend, Printer } from 'iconsax-react';
 import { paidByColor } from 'utils/data-util';
 import { AnimatePresence, motion } from 'framer-motion';
+import { yellow } from '@mui/material/colors';
 
 const OrderTableBody = ({
   data,
@@ -37,6 +39,10 @@ const OrderTableBody = ({
             layout
             sx={{
               '&:last-child td, &:last-child th': { border: 0 },
+              background:
+                item.finalInvoices.length === 0
+                  ? alpha(yellow[400], 0.2)
+                  : alpha(theme.palette.success.main, 0.2),
             }}
             initial={{
               scale: 0.9,
@@ -82,10 +88,10 @@ const OrderTableBody = ({
             </TableCell>
             <TableCell>
               <Typography variant='subtitle2' fontWeight={'light'}>
-                <b>Event:</b> {moment(item.date).format('DD-MM-YYYY')}
+                <b>Event :</b> {moment(item.date).format('DD-MM-YYYY')}
               </Typography>
               <Typography variant='subtitle2' fontWeight={'light'}>
-                <b>Books:</b> {moment(item.bookingDate).format('DD-MM-YYYY')}
+                <b>Books :</b> {moment(item.bookingDate).format('DD-MM-YYYY')}
               </Typography>
             </TableCell>
             <TableCell sx={{ maxWidth: 200 }}>

@@ -230,7 +230,6 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
                 </TableCell>
               </TableRow>
             ))}
-
             <TableRow>
               <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
                 តម្លៃសរុប {Intl.NumberFormat().format(totalPrice)}$

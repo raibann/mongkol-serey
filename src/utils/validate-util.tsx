@@ -84,3 +84,19 @@ export const DataFormater = (number: number) => {
     return number.toString();
   }
 };
+export const pageStyle = ` @page {
+  size: A4;
+  margin:2.54cm;
+}
+
+@media all {
+  .pagebreak {
+    display: none;
+  }
+}
+
+@media print {
+  .pagebreak {
+    page-break-before: always;
+  }
+}`;

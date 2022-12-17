@@ -52,11 +52,11 @@ const DrawerContent = () => {
                   borderRadius: 2,
                 }}
                 onClick={() => {
-                  navigate(`/${nav.toUrl}`);
+                  navigate(`${nav.toUrl}`);
                   openDrawer && setOpenDrawer(false);
                 }}
               >
-                {location.pathname === `/${nav.toUrl}` && (
+                {location.pathname === `${nav.toUrl}` && (
                   <Box
                     sx={{
                       position: 'absolute',
@@ -75,7 +75,10 @@ const DrawerContent = () => {
                 <ListItemIcon
                   sx={{
                     zIndex: 2,
-                    color: theme.palette.secondary.main,
+                    color:
+                      location.pathname === `${nav.toUrl}`
+                        ? theme.palette.secondary.main
+                        : theme.palette.primary.main,
                   }}
                 >
                   {nav.icon}
@@ -83,7 +86,12 @@ const DrawerContent = () => {
                 <ListItemText
                   primary={
                     <Stack direction={'row'} justifyContent='space-between'>
-                      <Typography>{nav.title}</Typography>
+                      <Typography
+                        color={theme.palette.secondary.light}
+                        fontWeight={'medium'}
+                      >
+                        {nav.title}
+                      </Typography>
                       {nav.toUrl === ROUTE_PATH.reminder && reminderList && (
                         <Box
                           sx={{
@@ -101,7 +109,7 @@ const DrawerContent = () => {
                   primaryTypographyProps={{
                     fontWeight: 500,
                     color:
-                      location.pathname === `/${nav.toUrl}`
+                      location.pathname === `${nav.toUrl}`
                         ? 'common.white'
                         : 'secondary.main',
                   }}
@@ -127,13 +135,20 @@ const DrawerContent = () => {
             <ListItemIcon
               sx={{
                 zIndex: 2,
-                color: theme.palette.secondary.main,
+                color: theme.palette.primary.main,
               }}
             >
-              <LogoutCurve size='24' />
+              <LogoutCurve size='24' variant='Bold' />
             </ListItemIcon>
             <ListItemText
-              primary={<Typography>Exit</Typography>}
+              primary={
+                <Typography
+                  fontWeight={'medium'}
+                  color={theme.palette.secondary.light}
+                >
+                  Exit
+                </Typography>
+              }
               primaryTypographyProps={{
                 fontWeight: 500,
                 color: 'secondary.main',

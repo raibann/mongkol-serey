@@ -10,6 +10,7 @@ const Expense = lazy(() => import('pages/Expense'));
 const Stocks = lazy(() => import('pages/Stocks'));
 const Customer = lazy(() => import('pages/Customer'));
 const Reminder = lazy(() => import('pages/Reminder'));
+const Quotation = lazy(() => import('pages/Quotation'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -69,6 +70,14 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        <Route
+          path={ROUTE_PATH.quotation}
+          element={
+            <Suspense>
+              <Quotation />
+            </Suspense>
+          }
+        />
         {/* <Route
           path={ROUTE_PATH.manageusers}
           element={
@@ -77,6 +86,7 @@ export default function AllRoutes() {
             </Suspense>
           }
         /> */}
+
         <Route
           path={ROUTE_PATH.root}
           element={<Navigate to={ROUTE_PATH.dashboard} />}

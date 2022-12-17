@@ -17,7 +17,7 @@ import {
   MoneyRecive,
   MoneySend,
   Profile2User,
-  WalletAdd,
+  StatusUp,
 } from 'iconsax-react';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -147,7 +147,7 @@ const Dashboard = () => {
                     <DashboardCard
                       title='Total Orders'
                       value={`${dashTotal?.totalOrders || 0}`}
-                      icon={<WalletAdd />}
+                      icon={<StatusUp />}
                       endType={'Events'}
                     />
                   </Grid>
@@ -332,6 +332,7 @@ const Dashboard = () => {
                         domain={[0, 100000]}
                         tickFormatter={DataFormater}
                       />
+                      <Tooltip formatter={formatCash} />
                     </>
                   )}
                   <Tooltip />

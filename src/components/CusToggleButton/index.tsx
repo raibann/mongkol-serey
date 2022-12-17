@@ -4,6 +4,7 @@ import { styled } from '@mui/material';
 
 const CusToggleButton = styled(ToggleButton)(({ theme }) => ({
   border: 'none',
+  borderRadius: 8,
   background: theme.palette.common.white,
   color: theme.palette.primary.main,
   boxShadow: theme.shadows[1],

@@ -12,6 +12,7 @@ import {
   Stack,
   ToggleButtonGroup,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { useEffect } from 'react';
 import { CusIconButton } from 'components/CusIconButton';
@@ -23,7 +24,6 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { Controller, useForm } from 'react-hook-form';
 import { useReminderContext } from 'context/ReminderContext';
 import { CusLoading } from 'components/CusLoading';
-import theme from 'theme/theme';
 import React from 'react';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
@@ -119,6 +119,7 @@ const DashboardHeader = ({
   );
 
   const { isSmDown } = useResponsive();
+  const theme = useTheme();
 
   return (
     <>

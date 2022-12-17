@@ -17,9 +17,8 @@ let theme = createTheme({
   },
   palette: {
     primary: {
-      main: '#F2C335',
-      light: '#FFF569',
-      dark: '#BB9300',
+      main: '#BB9300',
+      light: '#F2C335',
     },
     secondary: {
       main: '#2E2200',
@@ -68,7 +67,7 @@ theme.components = {
     styleOverrides: {
       root: {
         background: theme.palette.common.white,
-        borderRadius: 8,
+        borderRadius: 12,
       },
     },
   },

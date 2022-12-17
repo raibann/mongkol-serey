@@ -7,6 +7,7 @@ import {
   Menu,
   MenuItem,
   Autocomplete,
+  alpha,
 } from '@mui/material';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
@@ -95,6 +96,7 @@ const OrderItem = ({
               top: 4,
               right: 4,
               fontSize: 12,
+              textTransform: 'capitalize',
             }}
           >
             Remove
@@ -356,7 +358,8 @@ const OrderItem = ({
             mr: 2,
             ml: 3,
             borderStyle: 'dashed',
-            background: theme.palette.common.white,
+            background: alpha(theme.palette.primary.light, 0.1),
+            borderRadius: 2,
           }}
         >
           Add More
