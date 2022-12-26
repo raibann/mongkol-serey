@@ -175,7 +175,7 @@ const UpcomingEvent = ({
           )
         ) : (
           <Stack
-            alignItems={'center'}
+            alignItems='center'
             justifyContent='center'
             height='100%'
             width='100%'
@@ -183,7 +183,7 @@ const UpcomingEvent = ({
           >
             <BoxRemove size='48' color={theme.palette.error.main} />
             <Typography variant='h6' color='error'>
-              No upcoming anniversary...
+              No Upcoming Anniversary
             </Typography>
           </Stack>
         )}

@@ -11,6 +11,7 @@ import {
   AppBar,
   Toolbar,
   Paper,
+  Box,
 } from '@mui/material';
 import { Add, Call, Note, UserSquare, Location, Calendar } from 'iconsax-react';
 import { CusLoading } from 'components/CusLoading';
@@ -74,7 +75,7 @@ function ExpenseDialogs({
   };
 
   // States
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [listExpense, setListExpense] = useState<IExpenseRow[]>([]);
   const [alertDialog, setAlertDialog] = useState(false);
   const { isSmDown } = useResponsive();
@@ -88,8 +89,6 @@ function ExpenseDialogs({
 
   // useEffects
   useEffect(() => {
-    setLoading(true);
-
     if (orderDetail?.expenses && orderDetail.expenses.length > 0) {
       const tmpList = orderDetail.expenses.map((e) => {
         return {
@@ -131,9 +130,6 @@ function ExpenseDialogs({
     ]);
   };
   const deleteListExpense = (idx: number) => {
-    // const tmp = listExpense.filter((_, i) => {
-    //   return i !== idx;
-    // });
     const tmp = watch('expenseRowData');
     tmp.splice(idx, 1);
     setValue('expenseRowData', [...tmp]);
@@ -143,7 +139,9 @@ function ExpenseDialogs({
   if (loading)
     return (
       <Stack height='100%' justifyContent='center' alignItems='center'>
-        <CusLoading />
+        <Box sx={{ bgcolor: 'common.white', p: 10, borderRadius: 4 }}>
+          <CusLoading />
+        </Box>
       </Stack>
     );
 

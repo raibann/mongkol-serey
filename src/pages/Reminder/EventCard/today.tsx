@@ -137,7 +137,7 @@ const EventToday = ({
           ))
         ) : (
           <Stack
-            alignItems={'center'}
+            alignItems='center'
             justifyContent='center'
             height='100%'
             width='100%'
@@ -145,7 +145,7 @@ const EventToday = ({
           >
             <BoxRemove size='48' color={theme.palette.error.main} />
             <Typography variant='h6' color='error'>
-              No anniversary today...
+              No Anniversary Today
             </Typography>
           </Stack>
         )}

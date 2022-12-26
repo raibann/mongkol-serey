@@ -5,12 +5,14 @@ import {
   Stack,
   Table,
   TableBody,
+  TableCell,
   TableContainer,
+  TableRow,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
 import { SearchNormal1, BoxRemove } from 'iconsax-react';
-import { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { CusLoading } from 'components/CusLoading';
 import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
@@ -22,6 +24,7 @@ import useRequest from '@ahooksjs/use-request';
 import EXPENSE_API from 'api/expense';
 import OrderTable, { OrderTableHead } from 'pages/Orders/OrderTable';
 import ExpenseDialogs from './ExpenseDialogs';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function Expense() {
   // useRequests
@@ -66,6 +69,10 @@ export default function Expense() {
   const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
+  const onAddExpense = useCallback(
+    (i: number) => setOpenDialogs(expenseList![i]),
+    [expenseList]
+  );
 
   return (
     <>
@@ -78,7 +85,6 @@ export default function Expense() {
           height: 'calc(100vh - 100px)',
           maxWidth: '100%',
           overflow: 'hidden',
-          px: 2,
           position: 'relative',
         }}
       >
@@ -87,7 +93,7 @@ export default function Expense() {
           alignItems='flex-start'
           justifyContent={'space-between'}
           spacing={2}
-          sx={{ width: '100%', py: 2 }}
+          sx={{ width: '100%', p: 2 }}
         >
           <ToggleButtonGroup
             value={ToggleValue}
@@ -100,6 +106,7 @@ export default function Expense() {
             ) => {
               if (value !== null) {
                 setToggleValue(value);
+                setPage(1);
               }
             }}
             sx={{
@@ -124,7 +131,10 @@ export default function Expense() {
                 });
               }
             }}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position='end'>
@@ -135,13 +145,14 @@ export default function Expense() {
           />
         </Stack>
         <TableContainer
+          className='hide-scrollbar'
           sx={{
             height: 'calc(100% - 48px - 56px)',
             overflow: 'auto',
             pb: { xs: 15, md: 10, lg: 5 },
           }}
         >
-          {expenseListReq.loading ? (
+          {expenseListReq.loading && !expenseList ? (
             <Stack
               direction={'column'}
               alignItems={'center'}
@@ -163,9 +174,40 @@ export default function Expense() {
             >
               <OrderTableHead showAction={false} />
               <TableBody>
+                <AnimatePresence exitBeforeEnter>
+                  {expenseListReq.loading && (
+                    <TableRow
+                      component={motion.tr}
+                      initial={{
+                        scale: 0,
+                        opacity: 0,
+                      }}
+                      animate={{
+                        scale: 1,
+                        opacity: 1,
+                      }}
+                      exit={{
+                        scale: 0,
+                        opacity: 0,
+                      }}
+                      transition={{
+                        delay: 0,
+                        ease: 'easeInOut',
+                      }}
+                    >
+                      <TableCell
+                        colSpan={8}
+                        height={480}
+                        sx={{ textAlign: 'center' }}
+                      >
+                        <CusLoading />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </AnimatePresence>
                 <OrderTable
-                  data={expenseList}
-                  onAddExpenseClick={(i) => setOpenDialogs(expenseList[i])}
+                  data={expenseListReq.loading ? [] : expenseList}
+                  onAddExpenseClick={onAddExpense}
                 />
               </TableBody>
             </Table>
@@ -179,7 +221,7 @@ export default function Expense() {
             >
               <BoxRemove size='80' color={theme.palette.error.main} />
               <Typography variant='h6' color='error'>
-                No Expense...
+                No Expense Data
               </Typography>
             </Stack>
           )}

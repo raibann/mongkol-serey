@@ -183,7 +183,10 @@ export default function Customers() {
             </Typography>
           </Stack>
         ) : (
-          <Box sx={{ overflow: 'auto', height: '100%' }}>
+          <Box
+            className='hide-scrollbar'
+            sx={{ overflow: 'auto', height: '100%' }}
+          >
             <Grid container rowSpacing={4} columnSpacing={2} sx={{ mb: 10 }}>
               <CustCard
                 {...{

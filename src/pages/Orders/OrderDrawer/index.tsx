@@ -40,8 +40,8 @@ import EXPENSE_API from 'api/expense';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { LoadingButton } from '@mui/lab';
-import { motion } from 'framer-motion';
 import { getPersistedState, persistState } from 'utils/persist-util';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export interface IOrderForm {
   orderId?: number;
@@ -80,7 +80,7 @@ const OrderDrawer = ({
   // useRequests
   const orderActionReq = useRequest(ORDER_API.orderAction, {
     manual: true,
-    onSuccess: (data) => {
+    onSuccess: () => {
       if (orderDetail?.expenses && orderDetail.expenses.length > 0) {
         expenseActionReq.run(orderDetail.id || 0, orderDetail.expenses);
         return;
@@ -254,11 +254,11 @@ const OrderDrawer = ({
   };
 
   const deleteListOrderHandler = (i: number) => {
-    const tmp = methods.watch('listMenu').filter((_, idx) => {
-      return idx !== i;
-    });
-    setListMenu(tmp);
-    setValue('listMenu', tmp);
+    const tmp = methods.watch('listMenu');
+    tmp.splice(i, 1);
+
+    setListMenu([...tmp]);
+    setValue('listMenu', [...tmp]);
   };
 
   const addFinalInvoiceHandler = () => {
@@ -275,11 +275,11 @@ const OrderDrawer = ({
   };
 
   const removeFinalInvoiceHandler = (i: number) => {
-    const tmp = methods.watch('finalInvoice').filter((_, idx) => {
-      return i !== idx;
-    });
-    setFinalInvoice(tmp);
-    setValue('finalInvoice', tmp);
+    const tmp = methods.watch('finalInvoice');
+    tmp.splice(i, 1);
+
+    setFinalInvoice([...tmp]);
+    setValue('finalInvoice', [...tmp]);
   };
 
   const generateFinalInvoice = () => {
@@ -440,7 +440,10 @@ const OrderDrawer = ({
                 name='eventType'
                 defaultValue=''
                 rules={{
-                  required: { value: true, message: 'Event type is Required' },
+                  required: {
+                    value: true,
+                    message: 'Event type is Required',
+                  },
                 }}
                 render={({
                   field: { onChange, ...rest },
@@ -732,7 +735,7 @@ const OrderDrawer = ({
           </Stack>
 
           {listMenu && listMenu.length > 0 ? (
-            <motion.div layout style={{ overflow: 'hidden' }}>
+            <AnimatePresence>
               {listMenu?.map((menu, i) => {
                 return (
                   <motion.div
@@ -740,11 +743,15 @@ const OrderDrawer = ({
                     layout
                     initial={{
                       opacity: 0,
-                      scale: 0.5,
+                      scale: 0.9,
                     }}
                     animate={{
                       opacity: 1,
                       scale: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      scale: 0.9,
                     }}
                     transition={{
                       duration: 0.2,
@@ -759,7 +766,7 @@ const OrderDrawer = ({
                   </motion.div>
                 );
               })}
-            </motion.div>
+            </AnimatePresence>
           ) : (
             <Stack
               alignItems='center'
