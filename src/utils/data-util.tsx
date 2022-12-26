@@ -334,7 +334,18 @@ const foodList = [
   'ស៊ុបក្តាមផ្សិតមាស 10ក្រឡ',
   'ត្រីឆ្ពុងចំហុយទឹកស៊ីអៀវចិន',
 ];
-const unitList = ['តុ', 'ចាន', 'ខ្ទះ', 'នាក់', 'ឈុត', 'm²', 'គ្រឿង'];
+const unitList = [
+  'តុ',
+  'ចាន',
+  'ខ្ទះ',
+  'នាក់',
+  'ឈុត',
+  'm²',
+  'គ្រឿង',
+  'ប្រឡោះ',
+  // `m${'2'.sup()}`,
+  'pcs',
+];
 
 const eventList = [
   'Wedding',
@@ -378,3 +389,34 @@ export const UserData: IUser[] = [
 ];
 
 export const role = ['Admin', 'Manager', 'Staff'];
+
+export enum MonthRanks {
+  'Jan' = 1,
+  'Feb' = 2,
+  'Mar' = 3,
+  'Apr' = 4,
+  'May' = 5,
+  'Jun' = 6,
+  'Jul' = 7,
+  'Aug' = 8,
+  'Sep' = 9,
+  'Oct' = 10,
+  'Nov' = 11,
+  'Dec' = 12,
+}
+export const MonthKH: {
+  [key: string]: string;
+} = {
+  January: 'មករា',
+  February: 'កុម្ភៈ',
+  March: 'មិនា',
+  April: 'មេសា',
+  May: 'ឧសភា',
+  June: 'មិថុនា',
+  July: 'កក្កដា',
+  August: 'សីហា',
+  September: 'កញ្ញា',
+  October: 'តុលា',
+  November: 'វិច្ឆិកា',
+  December: 'ធ្នូ',
+};

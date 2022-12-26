@@ -221,6 +221,12 @@ const OrderDrawer = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    if (selectedCustomer) {
+      setValue('eventLocation', selectedCustomer.location);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCustomer?.id]);
 
   // Methods
   const addListOrderHandler = () => {
@@ -285,7 +291,7 @@ const OrderDrawer = ({
     setFinalInvoice(tmp);
     setValue('finalInvoice', tmp);
   };
-
+  // console.log(selectedCustomer);
   return (
     <>
       {/* {(orderActionReq.loading || expenseActionReq.loading) && (
@@ -528,7 +534,7 @@ const OrderDrawer = ({
               <Controller
                 control={methods.control}
                 name='bookingDate'
-                defaultValue={null}
+                defaultValue={new Date()}
                 rules={{
                   required: {
                     value: true,
@@ -692,11 +698,12 @@ const OrderDrawer = ({
               pb: 1,
             }}
           >
-            <Typography fontWeight='bold'>LIST ORDERS</Typography>
+            <Typography fontWeight='medium'>List Orders</Typography>
             <Button
               color='info'
               startIcon={<BsPlus />}
               onClick={addListOrderHandler}
+              sx={{ textTransform: 'capitalize' }}
             >
               Add More
             </Button>
@@ -856,6 +863,30 @@ const OrderDrawer = ({
             position='relative'
             direction='row'
           >
+            {!orderDetail && (
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                fullWidth
+                disableElevation
+                loading={false}
+                color='info'
+                sx={{
+                  fontSize: 18,
+                  fontWeight: 'medium',
+                  p: 1.5,
+                  borderRadius: 2,
+                  boxShadow: 1,
+                  background: (theme) => theme.palette.info.main,
+                  color: '#fff',
+
+                  textTransform: 'capitalize',
+                }}
+              >
+                Save Draft
+              </LoadingButton>
+            )}
+
             <LoadingButton
               type='submit'
               variant='contained'
@@ -864,18 +895,16 @@ const OrderDrawer = ({
               loading={orderActionReq.loading || expenseActionReq.loading}
               sx={{
                 fontSize: 18,
-                fontWeight: 'bold',
+                fontWeight: 'medium',
                 p: 1.5,
-                borderRadius: '50vh',
+                borderRadius: 2,
                 boxShadow: 1,
                 background: THEME_UTIL.goldGradientMain,
+                textTransform: 'capitalize',
                 color: '#fff',
-                '&:hover': {
-                  background: THEME_UTIL.goldGradientMain,
-                },
               }}
             >
-              Save
+              {!orderDetail ? 'Upload' : 'Update'}
             </LoadingButton>
             {orderDetail && (
               <>
@@ -927,7 +956,7 @@ export const InputGroupTitle = ({
     <>
       <Typography
         textAlign='center'
-        fontWeight='bold'
+        fontWeight='medium'
         variant='h5'
         sx={{
           mb: 3,
@@ -936,7 +965,7 @@ export const InputGroupTitle = ({
           p: 1.5,
           borderRadius: 2,
           backgroundColor: theme.palette.background.paper,
-          boxShadow: theme.shadows[2],
+          boxShadow: theme.shadows[1],
         }}
       >
         {children}

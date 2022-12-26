@@ -20,6 +20,7 @@ const Sidebar = ({ drawerWidth }: { drawerWidth: string }) => {
             border: 'none',
             background: theme.palette.common.white,
             borderRadius: 0,
+            boxShadow: '5px 0px 10px  #15223214',
           },
         }}
       >

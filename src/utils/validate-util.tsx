@@ -72,3 +72,31 @@ export const formatInvoiceId = (value: string) => {
   const pad = '00000';
   return pad.substring(0, pad.length - value.length) + value;
 };
+// format data
+export const DataFormater = (number: number) => {
+  if (number > 1e9) {
+    return (number / 1e9).toString() + 'B';
+  } else if (number > 1e6) {
+    return (number / 1e6).toString() + 'M';
+  } else if (number > 1e3) {
+    return (number / 1e3).toString() + 'K';
+  } else {
+    return number.toString();
+  }
+};
+export const pageStyle = ` @page {
+  size: A4;
+  margin:2.54cm;
+}
+
+@media all {
+  .pagebreak {
+    display: none;
+  }
+}
+
+@media print {
+  .pagebreak {
+    page-break-before: always;
+  }
+}`;

@@ -6,6 +6,7 @@ import {
   DialogTitle,
   Divider,
   Drawer,
+  Grid,
   InputAdornment,
   Pagination,
   Paper,
@@ -37,7 +38,7 @@ import {
 import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
-import { LoadingButton } from '@mui/lab';
+// import { LoadingButton } from '@mui/lab';
 
 const Orders = () => {
   // States
@@ -129,93 +130,109 @@ const Orders = () => {
         sx={{
           position: 'relative',
           mx: 2,
-          borderRadius: 4,
+          borderRadius: 3,
           height: 'calc(100vh - 100px)',
           maxWidth: '100%',
           overflow: 'hidden',
         }}
       >
-        <Stack
-          direction={{ xs: 'column', md: 'row' }}
-          justifyContent={{ xs: 'center', md: 'space-between' }}
-          alignItems='center'
-          p={2}
-          rowGap={2}
-        >
-          <ToggleButtonGroup
-            value={ToggleValue}
-            exclusive
-            fullWidth
-            size='small'
-            onChange={(
-              event: React.MouseEvent<HTMLElement, MouseEvent>,
-              value: any
-            ) => {
-              if (value !== null) {
-                setToggleValue(value);
-                setPage(1);
-              }
-            }}
-            sx={{
-              width: { xs: '100%', md: '30%' },
-            }}
-          >
-            <CusToggleButton value='pending'>Pending</CusToggleButton>
-            <CusToggleButton value='complete'>Completed</CusToggleButton>
-            <CusToggleButton value='all'>All</CusToggleButton>
-          </ToggleButtonGroup>
-
-          <Stack
-            direction='row'
-            justifyContent='space-between'
-            alignItems='center'
-            spacing={2}
-          >
-            <CusTextField
-              placeholder='Search...'
+        <Grid container p={2} rowSpacing={2}>
+          <Grid item xs={12} sm={12} md={4}>
+            <ToggleButtonGroup
+              value={ToggleValue}
+              exclusive
+              fullWidth
               size='small'
-              value={searchData}
-              onChange={(e) => setSearchData(e.currentTarget.value)}
-              onKeyUp={(e) => {
-                if (e.key === 'Enter') {
-                  searchOrderList({
-                    page: `${page - 1}`,
-                    status: ToggleValue,
-                    search: searchData,
-                  });
+              onChange={(
+                event: React.MouseEvent<HTMLElement, MouseEvent>,
+                value: any
+              ) => {
+                if (value !== null) {
+                  setToggleValue(value);
+                  setPage(1);
                 }
               }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <SearchNormal1
-                      size='20'
-                      color={theme.palette.primary.main}
-                    />
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <LoadingButton
-              loading={
-                isLoadingOrderList &&
-                orderList !== undefined &&
-                !loadingChangingState
-              }
-              variant='contained'
-              startIcon={<Add />}
-              sx={{
-                color: theme.palette.common.white,
-                boxShadow: theme.shadows[1],
-                borderRadius: 2,
-              }}
-              onClick={() => setNewOrder(true)}
+              // sx={{
+              //   width: { xs: '100%', sm: '40%', md: '30%' },
+              // }}
             >
-              {isMdDown ? 'New' : 'Add New'}
-            </LoadingButton>
-          </Stack>
-        </Stack>
+              <CusToggleButton value='pending'>Pending</CusToggleButton>
+              <CusToggleButton value='complete'>Completed</CusToggleButton>
+              <CusToggleButton value='all'>All</CusToggleButton>
+            </ToggleButtonGroup>
+          </Grid>
+          <Grid item xs={12} sm={12} md={8}>
+            <Grid container columnSpacing={2}>
+              <Grid item xs={4} sm={6} md={8} lg={8} xl={10}>
+                <Stack
+                  direction={'row'}
+                  spacing={2}
+                  justifyContent={isMdDown ? 'flex-start' : 'flex-end'}
+                >
+                  <Button
+                    variant='contained'
+                    sx={{
+                      color: theme.palette.common.white,
+                      boxShadow: theme.shadows[1],
+                      borderRadius: 2,
+                      textTransform: 'capitalize',
+                    }}
+                    startIcon={<Add variant='Bold' size={16} />}
+                    onClick={() => setNewOrder(true)}
+                  >
+                    Order
+                  </Button>
+                  {/* <LoadingButton
+                  loading={
+                    isLoadingOrderList &&
+                    orderList !== undefined &&
+                    !loadingChangingState
+                  }
+                  variant='contained'
+                  startIcon={<Add variant='Bold' size={16} />}
+                  sx={{
+                    color: theme.palette.common.white,
+                    boxShadow: theme.shadows[1],
+                    borderRadius: 2,
+                    textTransform: 'capitalize',
+                  }}
+                  onClick={() => setNewOrder(true)}
+                >
+                  Order
+                </LoadingButton> */}
+                </Stack>
+              </Grid>
+              <Grid item xs={8} sm={6} md={4} lg={4} xl={2}>
+                <CusTextField
+                  placeholder='Search...'
+                  size='small'
+                  value={searchData}
+                  onChange={(e) => setSearchData(e.currentTarget.value)}
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      searchOrderList({
+                        page: `${page - 1}`,
+                        status: ToggleValue,
+                        search: searchData,
+                      });
+                    }
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <SearchNormal1
+                          size='20'
+                          color={theme.palette.primary.main}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ float: 'right' }}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
         <TableContainer
           sx={{
             height: 'calc(100% - 48px - 56px)',

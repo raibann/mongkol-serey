@@ -21,7 +21,7 @@ const DashboardCard = ({
         p: 2,
         width: '100%',
         height: 130,
-        borderRadius: 2,
+        borderRadius: 3,
         background: theme.palette.common.white,
       }}
     >
