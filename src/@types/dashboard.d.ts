@@ -3,6 +3,7 @@ declare namespace IDashboard {
     totalProfits: number;
     totalExpenses: number;
     totalOrders: number;
+    totalTables: number;
     totalCustomer: number;
     eventType: EventType;
   }
@@ -21,6 +22,7 @@ declare namespace IDashboard {
   interface Chart {
     month: number;
     amount: number;
+    tables: number;
     expenses: number;
     profits: number;
   }

@@ -3,16 +3,12 @@ import theme from 'theme/theme';
 
 const DashboardCard = ({
   title,
-  value,
   icon,
-  endType,
-  startType,
+  children,
 }: {
   title: string;
-  value: string;
   icon: React.ReactNode;
-  startType?: string;
-  endType?: string;
+  children: React.ReactNode;
 }) => {
   return (
     <Paper
@@ -20,39 +16,20 @@ const DashboardCard = ({
       sx={{
         p: 2,
         width: '100%',
-        height: 130,
+        height: '100%',
         borderRadius: 3,
         background: theme.palette.common.white,
       }}
     >
-      <Stack direction={'column'}>
+      <Stack direction={'column'} justifyContent='center'>
         <Typography color='text.secondary'>{title}</Typography>
         <Stack
           direction={'row'}
           alignItems='center'
           justifyContent={'space-between'}
         >
-          <Stack direction={'row'} alignItems={'baseline'} spacing={0.5}>
-            <Typography
-              fontSize={28}
-              sx={{ color: (theme) => theme.palette.info.main }}
-            >
-              {startType}
-            </Typography>
-            <Typography
-              fontSize={28}
-              sx={{
-                fontWeight: (theme) => theme.typography.fontWeightMedium,
-              }}
-            >
-              {value}
-            </Typography>
-            <Typography
-              fontSize={16}
-              sx={{ color: (theme) => theme.palette.info.main }}
-            >
-              {endType}
-            </Typography>
+          <Stack direction={'row'} spacing={0.5}>
+            {children}
           </Stack>
           <Stack
             sx={{

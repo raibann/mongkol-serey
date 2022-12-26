@@ -41,6 +41,7 @@ import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { LoadingButton } from '@mui/lab';
 import { motion } from 'framer-motion';
+import { getPersistedState, persistState } from 'utils/persist-util';
 
 export interface IOrderForm {
   orderId?: number;
@@ -107,9 +108,12 @@ const OrderDrawer = ({
 
   // react-hooks-form
   const methods = useForm<IOrderForm & CustomerInput & FinalInvoiceInput>();
-  const { setValue, handleSubmit } = methods;
+  const { setValue, handleSubmit, getValues } = methods;
 
   // states
+  const [orderDraft, setOrderDraft] = useState<
+    IOrderForm & CustomerInput & FinalInvoiceInput
+  >();
   const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
   const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
   const [newCustomer] = useState(0);
@@ -291,6 +295,24 @@ const OrderDrawer = ({
     setFinalInvoice(tmp);
     setValue('finalInvoice', tmp);
   };
+
+  const handleSaveDraft = () => {
+    let tmp = {
+      customerName: getValues('customerName'),
+      eventType: getValues('eventType'),
+      qty: getValues('quantity'),
+      eventDate: getValues('eventDate'),
+      bookingDate: getValues('bookingDate'),
+      deposit: getValues('deposit'),
+      depositText: getValues('depositText'),
+      location: getValues('location'),
+      paidBy: getValues('paidBy'),
+      listMenu: getValues('listMenu'),
+    };
+    // console.log(tmp);
+    persistState(process.env.REACT_APP_PERSIST_DRAFT || '', tmp);
+  };
+  console.log(getPersistedState(process.env.REACT_APP_PERSIST_DRAFT));
   // console.log(selectedCustomer);
   return (
     <>
@@ -864,12 +886,11 @@ const OrderDrawer = ({
             direction='row'
           >
             {!orderDetail && (
-              <LoadingButton
-                type='submit'
+              <Button
+                onClick={handleSaveDraft}
                 variant='contained'
                 fullWidth
                 disableElevation
-                loading={false}
                 color='info'
                 sx={{
                   fontSize: 18,
@@ -879,12 +900,11 @@ const OrderDrawer = ({
                   boxShadow: 1,
                   background: (theme) => theme.palette.info.main,
                   color: '#fff',
-
                   textTransform: 'capitalize',
                 }}
               >
                 Save Draft
-              </LoadingButton>
+              </Button>
             )}
 
             <LoadingButton
