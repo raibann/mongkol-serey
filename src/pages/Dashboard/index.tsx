@@ -267,7 +267,7 @@ const Dashboard = () => {
                 >
                   <BoxRemove size='64' color={theme.palette.error.main} />
                   <Typography variant='body1' color='error'>
-                    No upcoming event...
+                    No upcoming event
                   </Typography>
                 </Stack>
               )}
@@ -344,6 +344,7 @@ const Dashboard = () => {
             </Paper>
 
             <Paper
+              className='hide-scrollbar'
               sx={{
                 px: 3,
                 flexGrow: 1,

@@ -51,15 +51,20 @@ const OrderTableBody = ({
             animate={{
               scale: 1,
               opacity: 1,
+              transition: {
+                delay: 0.3 + i * 0.025,
+                duration: 0.2,
+                ease: 'easeInOut',
+              },
             }}
             exit={{
               scale: 0.9,
               opacity: 0,
-            }}
-            transition={{
-              duration: 0.2,
-              delay: 0.1 + i * 0.025,
-              ease: 'easeInOut',
+              transition: {
+                delay: 0,
+                duration: 0.2,
+                ease: 'easeInOut',
+              },
             }}
           >
             <TableCell>{item.id}</TableCell>
@@ -175,8 +180,8 @@ export const OrderTableHead = ({
           },
         }}
       >
-        <TableCell>ID</TableCell>
-        <TableCell>CUSTOMER</TableCell>
+        <TableCell width={50}>ID</TableCell>
+        <TableCell width={150}>CUSTOMER</TableCell>
         <TableCell width={200}>DATE</TableCell>
         <TableCell>LOCATION</TableCell>
         <TableCell>QTY</TableCell>

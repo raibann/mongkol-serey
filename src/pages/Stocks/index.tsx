@@ -206,7 +206,7 @@ const Stocks = () => {
             >
               <BoxRemove size='80' color={theme.palette.error.main} />
               <Typography variant='h6' color='error'>
-                No Stock...
+                No Stock Data
               </Typography>
             </Stack>
           ) : (

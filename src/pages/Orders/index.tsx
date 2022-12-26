@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -13,7 +13,9 @@ import {
   Stack,
   Table,
   TableBody,
+  TableCell,
   TableContainer,
+  TableRow,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
@@ -38,7 +40,7 @@ import {
 import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
-// import { LoadingButton } from '@mui/lab';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Orders = () => {
   // States
@@ -121,6 +123,14 @@ const Orders = () => {
     searchParams.delete('id');
     setSearchParams(searchParams);
   };
+  const onPrintClick = useCallback(
+    (i: number) => setPrinter(orderList!.data![i]),
+    [orderList]
+  );
+  const onEditClick = useCallback(
+    (i: number) => setOrderDetail(orderList!.data![i]),
+    [orderList]
+  );
 
   return (
     <>
@@ -175,31 +185,17 @@ const Orders = () => {
                       color: theme.palette.common.white,
                       boxShadow: theme.shadows[1],
                       borderRadius: 2,
-                      textTransform: 'capitalize',
+                      textTransform: 'none',
+                      height: 40,
+                      position: 'relative',
+                      overflow: 'hidden',
+                      zIndex: 2,
                     }}
                     startIcon={<Add variant='Bold' size={16} />}
                     onClick={() => setNewOrder(true)}
                   >
                     Order
                   </Button>
-                  {/* <LoadingButton
-                  loading={
-                    isLoadingOrderList &&
-                    orderList !== undefined &&
-                    !loadingChangingState
-                  }
-                  variant='contained'
-                  startIcon={<Add variant='Bold' size={16} />}
-                  sx={{
-                    color: theme.palette.common.white,
-                    boxShadow: theme.shadows[1],
-                    borderRadius: 2,
-                    textTransform: 'capitalize',
-                  }}
-                  onClick={() => setNewOrder(true)}
-                >
-                  Order
-                </LoadingButton> */}
                 </Stack>
               </Grid>
               <Grid item xs={8} sm={6} md={4} lg={4} xl={2}>
@@ -207,7 +203,10 @@ const Orders = () => {
                   placeholder='Search...'
                   size='small'
                   value={searchData}
-                  onChange={(e) => setSearchData(e.currentTarget.value)}
+                  onChange={(e) => {
+                    setSearchData(e.currentTarget.value);
+                    setPage(1);
+                  }}
                   onKeyUp={(e) => {
                     if (e.key === 'Enter') {
                       searchOrderList({
@@ -234,14 +233,14 @@ const Orders = () => {
           </Grid>
         </Grid>
         <TableContainer
+          className='hide-scrollbar'
           sx={{
             height: 'calc(100% - 48px - 56px)',
             overflow: 'auto',
-            px: 2,
             pb: { xs: 15, md: 10, lg: 5 },
           }}
         >
-          {isLoadingOrderList && loadingChangingState ? (
+          {isLoadingOrderList && loadingChangingState && !orderList ? (
             <Stack
               direction={'column'}
               alignItems={'center'}
@@ -255,10 +254,41 @@ const Orders = () => {
               <Table sx={{ minWidth: 1000 }}>
                 <OrderTableHead />
                 <TableBody>
+                  <AnimatePresence exitBeforeEnter>
+                    {isLoadingOrderList && (
+                      <TableRow
+                        component={motion.tr}
+                        initial={{
+                          scale: 0,
+                          opacity: 0,
+                        }}
+                        animate={{
+                          scale: 1,
+                          opacity: 1,
+                        }}
+                        exit={{
+                          scale: 0,
+                          opacity: 0,
+                        }}
+                        transition={{
+                          delay: 0,
+                          ease: 'easeInOut',
+                        }}
+                      >
+                        <TableCell
+                          colSpan={8}
+                          height={480}
+                          sx={{ textAlign: 'center' }}
+                        >
+                          <CusLoading />
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </AnimatePresence>
                   <OrderTableBody
-                    data={orderList.data}
-                    onPrintClick={(i) => setPrinter(orderList.data[i])}
-                    onEditClick={(i) => setOrderDetail(orderList.data[i])}
+                    data={isLoadingOrderList ? [] : orderList.data}
+                    onPrintClick={onPrintClick}
+                    onEditClick={onEditClick}
                   />
                 </TableBody>
               </Table>
@@ -273,7 +303,7 @@ const Orders = () => {
             >
               <BoxRemove size='80' color={theme.palette.error.main} />
               <Typography variant='h6' color='error'>
-                No Order...
+                No Order Data
               </Typography>
             </Stack>
           )}

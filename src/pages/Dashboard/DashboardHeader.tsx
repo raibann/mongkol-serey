@@ -288,7 +288,7 @@ const DashboardHeader = ({
             >
               <BoxRemove size='48' color={theme.palette.error.main} />
               <Typography variant='h6' color='error'>
-                No notification
+                No Notification
               </Typography>
             </Stack>
           )}
