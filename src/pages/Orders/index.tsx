@@ -258,6 +258,7 @@ const Orders = () => {
                     {isLoadingOrderList && (
                       <TableRow
                         component={motion.tr}
+                        layout
                         initial={{
                           scale: 0,
                           opacity: 0,
@@ -265,21 +266,21 @@ const Orders = () => {
                         animate={{
                           scale: 1,
                           opacity: 1,
+                          transition: {
+                            delay: 0.3,
+                            ease: 'easeInOut',
+                          },
                         }}
                         exit={{
                           scale: 0,
                           opacity: 0,
-                        }}
-                        transition={{
-                          delay: 0,
-                          ease: 'easeInOut',
+                          transition: {
+                            delay: 0,
+                            ease: 'easeInOut',
+                          },
                         }}
                       >
-                        <TableCell
-                          colSpan={8}
-                          height={480}
-                          sx={{ textAlign: 'center' }}
-                        >
+                        <TableCell colSpan={8} sx={{ textAlign: 'center' }}>
                           <CusLoading />
                         </TableCell>
                       </TableRow>
