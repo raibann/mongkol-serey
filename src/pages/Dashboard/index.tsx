@@ -1,4 +1,3 @@
-import useRequest from '@ahooksjs/use-request';
 import {
   Box,
   Divider,
@@ -37,6 +36,7 @@ import { DataFormater, formatCash } from 'utils/validate-util';
 import AnniversaryItem from './AnniversaryItem';
 import DashboardHeader from './DashboardHeader';
 import PieChartComp from './PieChartComp';
+import { useRequest } from 'ahooks';
 
 const Dashboard = () => {
   // use moment
@@ -449,7 +449,7 @@ const Dashboard = () => {
                         domain={[0, 100000]}
                         tickFormatter={DataFormater}
                       />
-                      <Tooltip formatter={formatCash} />
+                      <Tooltip />
                     </>
                   )}
                   <Tooltip />
