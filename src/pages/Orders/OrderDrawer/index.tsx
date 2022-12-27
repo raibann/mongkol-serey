@@ -313,7 +313,7 @@ const OrderDrawer = ({
     // console.log(tmp);
     persistState(process.env.REACT_APP_PERSIST_DRAFT || '', tmp);
   };
-  console.log(getPersistedState(process.env.REACT_APP_PERSIST_DRAFT));
+  // console.log(getPersistedState(process.env.REACT_APP_PERSIST_DRAFT));
   // console.log(selectedCustomer);
   return (
     <>

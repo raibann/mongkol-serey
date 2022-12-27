@@ -19,7 +19,7 @@ export default function AllRoutes() {
       <Route
         path={ROUTE_PATH.root}
         element={
-          !authState.authed ? <Layout /> : <Navigate to={ROUTE_PATH.login} />
+          authState.authed ? <Layout /> : <Navigate to={ROUTE_PATH.login} />
         }
       >
         <Route
@@ -96,7 +96,7 @@ export default function AllRoutes() {
       <Route
         path={ROUTE_PATH.login}
         element={
-          !authState.authed ? (
+          authState.authed ? (
             <Navigate to={ROUTE_PATH.root} />
           ) : (
             <Suspense>
