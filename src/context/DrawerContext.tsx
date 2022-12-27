@@ -1,13 +1,18 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { getPersistedState, persistState } from 'utils/persist-util';
 
 interface IDrawerContext {
+  collapse: boolean;
   openDrawer: boolean;
   setOpenDrawer: React.Dispatch<React.SetStateAction<boolean>>;
+  setCollapse: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const DrawerContext = createContext<IDrawerContext>({
+  collapse: false,
   openDrawer: false,
-  setOpenDrawer: () => {},
+  setOpenDrawer() {},
+  setCollapse() {},
 });
 
 interface IAppWrapper {
@@ -16,9 +21,18 @@ interface IAppWrapper {
 
 export function DrawerWrapper({ children }: IAppWrapper) {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [collapse, setCollapse] = useState(
+    getPersistedState('collapse') || false
+  );
+
+  useEffect(() => {
+    persistState('collapse', collapse);
+  }, [collapse]);
 
   return (
-    <DrawerContext.Provider value={{ openDrawer, setOpenDrawer }}>
+    <DrawerContext.Provider
+      value={{ openDrawer, setOpenDrawer, collapse, setCollapse }}
+    >
       {children}
     </DrawerContext.Provider>
   );

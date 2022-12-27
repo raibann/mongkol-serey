@@ -61,8 +61,7 @@ const OrderTableBody = ({
               scale: 0.9,
               opacity: 0,
               transition: {
-                delay: 0,
-                duration: 0.2,
+                delay: 0.1 + i * 0.025,
                 ease: 'easeInOut',
               },
             }}

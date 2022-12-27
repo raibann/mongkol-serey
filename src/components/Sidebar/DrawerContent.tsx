@@ -9,7 +9,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { LogoutCurve } from 'iconsax-react';
+import { ArrowLeft2, LogoutCurve } from 'iconsax-react';
 import { useDrawerContext } from 'context/DrawerContext';
 import { useReminderContext } from 'context/ReminderContext';
 import { motion } from 'framer-motion';
@@ -21,7 +21,8 @@ import THEME_UTIL from 'utils/theme-util';
 
 const DrawerContent = () => {
   const { location, navigate } = useRouter();
-  const { openDrawer, setOpenDrawer } = useDrawerContext();
+  const { openDrawer, setOpenDrawer, collapse, setCollapse } =
+    useDrawerContext();
   const { reminderList } = useReminderContext();
   const { logout } = useAuthContext();
 
@@ -38,11 +39,17 @@ const DrawerContent = () => {
         }}
         sx={{
           mx: 'auto',
-          width: 200,
-          height: 200,
+          width: collapse ? 0 : 200,
+          height: collapse ? 0 : 200,
         }}
       />
-      <List>
+      <List
+        sx={{
+          height: `calc(100vh - ${collapse ? '0px' : '200px'})`,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {navigationUtil.map((nav) => {
           return (
             <ListItem key={nav.title} sx={{ py: 0.5 }}>
@@ -74,6 +81,7 @@ const DrawerContent = () => {
                 )}
                 <ListItemIcon
                   sx={{
+                    minWidth: collapse ? 0 : undefined,
                     zIndex: 2,
                     color:
                       location.pathname === `${nav.toUrl}`
@@ -85,26 +93,28 @@ const DrawerContent = () => {
                 </ListItemIcon>
                 <ListItemText
                   primary={
-                    <Stack direction={'row'} justifyContent='space-between'>
-                      <Typography
-                        color={theme.palette.secondary.light}
-                        fontWeight={'medium'}
-                      >
-                        {nav.title}
-                      </Typography>
-                      {nav.toUrl === ROUTE_PATH.reminder && reminderList && (
-                        <Box
-                          sx={{
-                            bgcolor: theme.palette.error.main,
-                            color: theme.palette.common.white,
-                            px: 1,
-                            borderRadius: 1,
-                          }}
+                    !collapse && (
+                      <Stack direction={'row'} justifyContent='space-between'>
+                        <Typography
+                          color={theme.palette.secondary.light}
+                          fontWeight={'medium'}
                         >
-                          {reminderList?.length}
-                        </Box>
-                      )}
-                    </Stack>
+                          {nav.title}
+                        </Typography>
+                        {nav.toUrl === ROUTE_PATH.reminder && reminderList && (
+                          <Box
+                            sx={{
+                              bgcolor: theme.palette.error.main,
+                              color: theme.palette.common.white,
+                              px: 1,
+                              borderRadius: 1,
+                            }}
+                          >
+                            {reminderList?.length}
+                          </Box>
+                        )}
+                      </Stack>
+                    )
                   }
                   primaryTypographyProps={{
                     fontWeight: 500,
@@ -121,6 +131,7 @@ const DrawerContent = () => {
             </ListItem>
           );
         })}
+
         <ListItem sx={{ py: 0.5 }}>
           <ListItemButton
             sx={{
@@ -134,20 +145,72 @@ const DrawerContent = () => {
           >
             <ListItemIcon
               sx={{
+                minWidth: collapse ? 0 : undefined,
                 zIndex: 2,
                 color: theme.palette.primary.main,
               }}
             >
-              <LogoutCurve size='24' variant='Bold' />
+              <LogoutCurve
+                size='24'
+                variant='Bold'
+                style={{ position: 'relative', left: -2 }}
+              />
             </ListItemIcon>
             <ListItemText
               primary={
-                <Typography
-                  fontWeight={'medium'}
-                  color={theme.palette.secondary.light}
-                >
-                  Exit
-                </Typography>
+                !collapse && (
+                  <Typography
+                    fontWeight={'medium'}
+                    color={theme.palette.secondary.light}
+                  >
+                    Exit
+                  </Typography>
+                )
+              }
+              primaryTypographyProps={{
+                fontWeight: 500,
+                color: 'secondary.main',
+              }}
+              sx={{
+                zIndex: 1,
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+
+        <Box flexGrow={1} />
+
+        <ListItem sx={{ py: 0.5 }}>
+          <ListItemButton
+            sx={{
+              position: 'relative',
+              borderRadius: 2,
+            }}
+            onClick={() => setCollapse(!collapse)}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: collapse ? 0 : undefined,
+                zIndex: 2,
+                color: theme.palette.primary.main,
+              }}
+            >
+              <ArrowLeft2
+                size='24'
+                variant='Bulk'
+                style={{ rotate: collapse ? '180deg' : '0deg' }}
+              />
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                !collapse && (
+                  <Typography
+                    fontWeight={'medium'}
+                    color={theme.palette.secondary.light}
+                  >
+                    Collapse
+                  </Typography>
+                )
               }
               primaryTypographyProps={{
                 fontWeight: 500,
