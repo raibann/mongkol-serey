@@ -1,4 +1,3 @@
-import { BaseResult } from '@ahooksjs/use-request/lib/types';
 import { LoadingButton } from '@mui/lab';
 import {
   Stack,
@@ -19,6 +18,7 @@ import { MdClose } from 'react-icons/md';
 import { paidBy } from 'utils/data-util';
 import { validatePatterns } from 'utils/validate-util';
 import { IStockInput } from '..';
+import { Result } from 'ahooks/lib/useRequest/src/types';
 
 export default function FormStock({
   handleOpenDrawer,
@@ -31,7 +31,7 @@ export default function FormStock({
   openDrawer: '' | 'Add' | 'Edit';
   methods: UseFormReturn<IStockInput, object>;
   handleSubmitStock: (data: IStockInput) => void;
-  addNewStock: BaseResult<
+  addNewStock: Result<
     IStock.IStockRequest,
     [
       {

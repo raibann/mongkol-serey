@@ -27,7 +27,6 @@ import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import OrderDrawer from './OrderDrawer';
-import useRequest from '@ahooksjs/use-request';
 import ORDER_API from 'api/order';
 import OrderTableBody, { OrderTableHead } from './OrderTable';
 import {
@@ -41,6 +40,7 @@ import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useRequest } from 'ahooks';
 
 const Orders = () => {
   // States
@@ -63,6 +63,7 @@ const Orders = () => {
   const {
     data: orderList,
     run: fetchOrderList,
+    runAsync: fetchOrderListAsync,
     loading: isLoadingOrderList,
     refresh: refreshGetOrderList,
   } = useRequest(ORDER_API.getOrdersList, {
@@ -70,9 +71,9 @@ const Orders = () => {
     onSuccess: () => setLoadingChangingState(false),
     onError: () => setLoadingChangingState(false),
   });
-  const { run: searchOrderList } = useRequest(fetchOrderList, {
+  const { run: searchOrderList } = useRequest(fetchOrderListAsync, {
     manual: true,
-    debounceInterval: 500,
+    debounceWait: 500,
     onSuccess: (data) => {
       if (orderId) {
         const selectedOrder = data.data.find((e) => e.id === +orderId);
