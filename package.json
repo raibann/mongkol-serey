@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ahooksjs/use-request": "^2.8.15",
     "@date-io/moment": "^2.14.0",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",

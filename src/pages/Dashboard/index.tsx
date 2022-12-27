@@ -1,4 +1,3 @@
-import useRequest from '@ahooksjs/use-request';
 import {
   Box,
   Divider,
@@ -37,6 +36,7 @@ import { DataFormater, formatCash } from 'utils/validate-util';
 import AnniversaryItem from './AnniversaryItem';
 import DashboardHeader from './DashboardHeader';
 import PieChartComp from './PieChartComp';
+import { useRequest } from 'ahooks';
 
 const Dashboard = () => {
   // use moment
@@ -83,6 +83,7 @@ const Dashboard = () => {
       Events: data.amount,
     };
   });
+
   const CHART2_DATA = chartData?.charts.map((data) => {
     return {
       name: MonthRanks[data.month],
@@ -90,6 +91,38 @@ const Dashboard = () => {
       Expenses: data.expenses,
     };
   });
+  // get table by events
+
+  const getTables = (value: number) => {
+    if (chartData?.charts) {
+      let temp = [...chartData.charts];
+      temp = temp?.filter((data) => data.amount === value);
+      return temp[0].tables;
+    }
+  };
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <Box
+          sx={{
+            background: (theme) => theme.palette.background.default,
+            p: 1,
+            boxShadow: (theme) => theme.shadows[1],
+          }}
+        >
+          <Typography>{label}</Typography>
+          <Typography color={'primary.main'}>
+            Events: {payload[0].value}
+          </Typography>
+          <Typography color='info.main'>
+            Tables: {getTables(parseInt(payload[0].value))}
+          </Typography>
+        </Box>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <>
@@ -126,39 +159,124 @@ const Dashboard = () => {
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Profits'
-                      value={`${formatCash(
-                        dashTotal?.totalProfits
-                          ? dashTotal?.totalProfits - dashTotal?.totalExpenses
-                          : 0
-                      )} `}
                       icon={<MoneyRecive />}
-                      startType={'$'}
+                      children={
+                        <>
+                          <Typography
+                            fontSize={28}
+                            sx={{ color: (theme) => theme.palette.info.main }}
+                          >
+                            $
+                          </Typography>
+                          <Typography
+                            fontSize={24}
+                            sx={{
+                              fontWeight: (theme) =>
+                                theme.typography.fontWeightMedium,
+                            }}
+                          >
+                            {Intl.NumberFormat().format(
+                              dashTotal?.totalProfits
+                                ? dashTotal?.totalProfits -
+                                    dashTotal?.totalExpenses
+                                : 0.0
+                            )}
+                          </Typography>
+                        </>
+                      }
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Expenses'
-                      value={`${formatCash(dashTotal?.totalExpenses || 0)}`}
-                      startType={'$'}
                       icon={<MoneySend />}
+                      children={
+                        <>
+                          <Typography
+                            fontSize={24}
+                            sx={{ color: (theme) => theme.palette.info.main }}
+                          >
+                            $
+                          </Typography>
+                          <Typography
+                            fontSize={28}
+                            sx={{
+                              fontWeight: (theme) =>
+                                theme.typography.fontWeightMedium,
+                            }}
+                          >
+                            {Intl.NumberFormat().format(
+                              dashTotal?.totalExpenses || 0.0
+                            )}
+                          </Typography>
+                        </>
+                      }
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Orders'
-                      value={`${dashTotal?.totalOrders || 0}`}
                       icon={<StatusUp />}
-                      endType={'Events'}
+                      children={
+                        <Stack direction={'column'}>
+                          <Stack
+                            direction={'row'}
+                            alignItems='baseline'
+                            spacing={1}
+                          >
+                            <Typography
+                              fontSize={28}
+                              sx={{
+                                fontWeight: (theme) =>
+                                  theme.typography.fontWeightMedium,
+                              }}
+                            >
+                              {dashTotal?.totalOrders || 0}{' '}
+                            </Typography>
+                            <Typography
+                              fontSize={12}
+                              sx={{ color: (theme) => theme.palette.info.main }}
+                            >
+                              Events
+                            </Typography>
+                          </Stack>
+                          <Typography
+                            fontSize={16}
+                            sx={{
+                              fontWeight: (theme) =>
+                                theme.typography.fontWeightMedium,
+                            }}
+                            color='secondary.light'
+                          >
+                            {dashTotal?.totalTables || 0}{' '}
+                            <span
+                              style={{
+                                fontSize: 12,
+                                color: theme.palette.info.main,
+                              }}
+                            >
+                              Tables
+                            </span>
+                          </Typography>
+                        </Stack>
+                      }
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Customers'
-                      value={`${dashTotal?.totalCustomer || 0}`}
-                      // percentage='2.3%'
-                      // isHigher
                       icon={<Profile2User />}
-                      endType={'Customers'}
+                      children={
+                        <Typography
+                          fontSize={28}
+                          sx={{
+                            fontWeight: (theme) =>
+                              theme.typography.fontWeightMedium,
+                          }}
+                        >
+                          {dashTotal?.totalCustomer}
+                        </Typography>
+                      }
                     />
                   </Grid>
                 </>
@@ -203,8 +321,7 @@ const Dashboard = () => {
                       <YAxis domain={[0, 20]} />
                     </>
                   )}
-
-                  <Tooltip />
+                  <Tooltip content={<CustomTooltip />} />
                   <Bar
                     dataKey='Events'
                     fill={theme.palette.primary.main}
@@ -332,7 +449,7 @@ const Dashboard = () => {
                         domain={[0, 100000]}
                         tickFormatter={DataFormater}
                       />
-                      <Tooltip formatter={formatCash} />
+                      <Tooltip />
                     </>
                   )}
                   <Tooltip />

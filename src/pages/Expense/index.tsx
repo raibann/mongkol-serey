@@ -20,20 +20,20 @@ import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import theme from 'theme/theme';
 import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
-import useRequest from '@ahooksjs/use-request';
 import EXPENSE_API from 'api/expense';
 import OrderTable, { OrderTableHead } from 'pages/Orders/OrderTable';
 import ExpenseDialogs from './ExpenseDialogs';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useRequest } from 'ahooks';
 
 export default function Expense() {
   // useRequests
   const expenseListReq = useRequest(EXPENSE_API.getExpense, {
     manual: true,
   });
-  const expenseSearchReq = useRequest(expenseListReq.run, {
+  const expenseSearchReq = useRequest(expenseListReq.runAsync, {
     manual: true,
-    debounceInterval: 500,
+    debounceWait: 500,
   });
 
   // Variable

@@ -1,4 +1,4 @@
-import useRequest from '@ahooksjs/use-request';
+import { useRequest } from 'ahooks';
 import AUTH_API from 'api/auth';
 import React, {
   createContext,

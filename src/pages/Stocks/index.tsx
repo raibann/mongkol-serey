@@ -1,4 +1,3 @@
-import useRequest from '@ahooksjs/use-request';
 import { LoadingButton } from '@mui/lab';
 import {
   Button,
@@ -12,7 +11,7 @@ import {
   TableContainer,
   Typography,
 } from '@mui/material';
-import { useDebounce } from 'ahooks';
+import { useDebounce, useRequest } from 'ahooks';
 import STOCK_API from 'api/stock';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';

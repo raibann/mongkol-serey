@@ -86,7 +86,6 @@ export default function FormQuotation({
             />
           </LabelTextField>
         </Grid>
-
         {!isSmDown && (
           <>
             <Grid item xs={3}>

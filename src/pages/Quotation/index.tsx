@@ -56,21 +56,23 @@ export default function Quotation() {
               Create Quotation
             </Typography>
             <Stack direction={'row'} spacing={4}>
-              <ReactToPrint
-                pageStyle={pageStyle}
-                documentTitle='Quotation'
-                trigger={() => (
-                  <Button
-                    variant='outlined'
-                    color='info'
-                    sx={{ borderRadius: 1.5, textTransform: 'capitalize' }}
-                    startIcon={<Printer size='24' />}
-                  >
-                    Print
-                  </Button>
-                )}
-                content={() => compToPrint.current}
-              />
+              {quotData && (
+                <ReactToPrint
+                  pageStyle={pageStyle}
+                  documentTitle='Quotation'
+                  trigger={() => (
+                    <Button
+                      variant='outlined'
+                      color='info'
+                      sx={{ borderRadius: 1.5, textTransform: 'capitalize' }}
+                      startIcon={<Printer size='24' />}
+                    >
+                      Print
+                    </Button>
+                  )}
+                  content={() => compToPrint.current}
+                />
+              )}
 
               <Button
                 variant='outlined'
@@ -78,7 +80,7 @@ export default function Quotation() {
                 type='submit'
                 form='hook-form'
               >
-                Generate
+                {quotData ? 'Generated' : 'Generate'}
               </Button>
             </Stack>
           </Stack>
