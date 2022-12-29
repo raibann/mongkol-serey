@@ -39,7 +39,11 @@ import EXPENSE_API from 'api/expense';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { LoadingButton } from '@mui/lab';
-import { getPersistedState, persistState } from 'utils/persist-util';
+import {
+  getPersistedState,
+  persistState,
+  removePersistedState,
+} from 'utils/persist-util';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRequest } from 'ahooks';
 
@@ -68,6 +72,20 @@ interface IlistMenu {
     title: string;
   }[];
 }
+
+type Draft = {
+  bookingDate: Date | null;
+  deposit: number | '';
+  depositText: string;
+  eventDate: Date | null;
+  eventLocation: string;
+  eventType: string;
+  listMenu: IlistMenu[];
+  paidBy: string;
+  quantity: number | '';
+  customer: ICustomer.Customer | undefined;
+};
+
 const OrderDrawer = ({
   handleCloseOrderDialog,
   orderDetail,
@@ -111,12 +129,11 @@ const OrderDrawer = ({
   const { setValue, handleSubmit, getValues } = methods;
 
   // states
-  const [orderDraft, setOrderDraft] = useState<
-    IOrderForm & CustomerInput & FinalInvoiceInput
-  >();
+  // const [orderDraft, setOrderDraft] = useState<
+  //   IOrderForm & CustomerInput & FinalInvoiceInput
+  // >();
   const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
   const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
-  const [newCustomer] = useState(0);
   const [alertDialog, setAlertDialog] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [selectedCustomer, setSelectedCustomer] =
@@ -295,25 +312,42 @@ const OrderDrawer = ({
     setFinalInvoice(tmp);
     setValue('finalInvoice', tmp);
   };
+  let tmp: Draft = {
+    bookingDate: getValues('bookingDate'),
+    deposit: getValues('deposit'),
+    depositText: getValues('depositText'),
+    eventDate: getValues('eventDate'),
+    eventLocation: getValues('eventLocation'),
+    eventType: getValues('eventType'),
+    listMenu: getValues('listMenu'),
+    paidBy: getValues('paidBy'),
+    quantity: getValues('quantity'),
+    customer: selectedCustomer,
+  };
+  const getDraft: Draft = getPersistedState(
+    process.env.REACT_APP_PERSIST_DRAFT
+  );
 
   const handleSaveDraft = () => {
-    let tmp = {
-      customerName: getValues('customerName'),
-      eventType: getValues('eventType'),
-      qty: getValues('quantity'),
-      eventDate: getValues('eventDate'),
-      bookingDate: getValues('bookingDate'),
-      deposit: getValues('deposit'),
-      depositText: getValues('depositText'),
-      location: getValues('location'),
-      paidBy: getValues('paidBy'),
-      listMenu: getValues('listMenu'),
-    };
-    // console.log(tmp);
     persistState(process.env.REACT_APP_PERSIST_DRAFT || '', tmp);
+    handleCloseOrderDialog();
   };
-  // console.log(getPersistedState(process.env.REACT_APP_PERSIST_DRAFT));
-  // console.log(selectedCustomer);
+
+  const handleApplyDraft = () => {
+    setValue('bookingDate', getDraft.bookingDate);
+    setValue('deposit', getDraft.deposit);
+    setValue('depositText', getDraft.depositText);
+    setValue('eventDate', getDraft.eventDate);
+    setValue('eventLocation', getDraft.eventLocation);
+    setValue('eventType', getDraft.eventType);
+    setValue('listMenu', getDraft.listMenu);
+    setValue('paidBy', getDraft.paidBy);
+    setValue('quantity', getDraft.quantity);
+    setSelectedCustomer(getDraft.customer);
+    removePersistedState(process.env.REACT_APP_PERSIST_DRAFT || '');
+  };
+  console.log(selectedCustomer);
+
   return (
     <>
       {/* {(orderActionReq.loading || expenseActionReq.loading) && (
@@ -347,57 +381,27 @@ const OrderDrawer = ({
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
           {orderDetail ? 'Update Order' : 'New Order'}
         </Typography>
-        <CusIconButton color='error' onClick={handleCloseOrderDialog}>
-          <MdClose />
-        </CusIconButton>
+        <Stack direction={'row'} alignItems='center' spacing={4}>
+          {!orderDetail &&
+            getPersistedState(process.env.REACT_APP_PERSIST_DRAFT) && (
+              <Button
+                variant='contained'
+                color='secondary'
+                disableElevation
+                onClick={handleApplyDraft}
+                sx={{ color: (theme) => theme.palette.common.white }}
+              >
+                Apply Draft
+              </Button>
+            )}
+          <CusIconButton color='error' onClick={handleCloseOrderDialog}>
+            <MdClose />
+          </CusIconButton>
+        </Stack>
       </Stack>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* {!orderDetail && (
-            <Stack direction='row' spacing={2} px={3}>
-              <Button
-                disableElevation
-                startIcon={
-                  !newCustomer ? (
-                    <BsCheckCircleFill size={16} />
-                  ) : (
-                    <BsCircle size={16} />
-                  )
-                }
-                color='secondary'
-                variant={!newCustomer ? 'contained' : 'outlined'}
-                onClick={() => setNewCustomer(0)}
-              >
-                Exisiting Customer
-              </Button>
-              <Button
-                disableElevation
-                startIcon={
-                  newCustomer ? (
-                    <BsCheckCircleFill size={16} />
-                  ) : (
-                    <BsCircle size={16} />
-                  )
-                }
-                color='secondary'
-                variant={newCustomer ? 'contained' : 'outlined'}
-                onClick={() => setNewCustomer(1)}
-              >
-                New Customer
-              </Button>
-            </Stack>
-          )} */}
-
-          {/* {newCustomer === 1 && (
-            <>
-              <InputGroupTitle marginTop={3}>Customer Info</InputGroupTitle>
-              <CustomerForm />
-            </>
-          )} */}
-
-          <InputGroupTitle marginTop={!newCustomer ? 3 : 8}>
-            Order Info
-          </InputGroupTitle>
+          <InputGroupTitle>Order Info</InputGroupTitle>
 
           <Stack px={3} spacing={4}>
             <Stack spacing={4} direction='row'>

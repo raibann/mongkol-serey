@@ -63,7 +63,7 @@ const DrawerContent = () => {
                   openDrawer && setOpenDrawer(false);
                 }}
               >
-                {location.pathname === `${nav.toUrl}` && (
+                {location.pathname.includes(nav.toUrl) && (
                   <Box
                     sx={{
                       position: 'absolute',
@@ -83,10 +83,9 @@ const DrawerContent = () => {
                   sx={{
                     minWidth: collapse ? 0 : undefined,
                     zIndex: 2,
-                    color:
-                      location.pathname === `${nav.toUrl}`
-                        ? theme.palette.secondary.main
-                        : theme.palette.primary.main,
+                    color: location.pathname.includes(nav.toUrl)
+                      ? theme.palette.secondary.main
+                      : theme.palette.primary.main,
                   }}
                 >
                   {nav.icon}
@@ -118,10 +117,9 @@ const DrawerContent = () => {
                   }
                   primaryTypographyProps={{
                     fontWeight: 500,
-                    color:
-                      location.pathname === `${nav.toUrl}`
-                        ? 'common.white'
-                        : 'secondary.main',
+                    color: location.pathname.includes(nav.toUrl)
+                      ? 'common.white'
+                      : 'secondary.main',
                   }}
                   sx={{
                     zIndex: 1,

@@ -1,13 +1,14 @@
-import { Box, Button, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Paper, Stack } from '@mui/material';
 import { Container } from '@mui/system';
 import PageHeader from 'components/PageHeader';
 import React, { useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormQuotation from './FormQuotation';
 import QuotationInvoice from 'components/ComToPrint/QuotationInvoice';
-import { Printer } from 'iconsax-react';
+import { ArrowLeft2, Printer, Share } from 'iconsax-react';
 import { pageStyle } from 'utils/validate-util';
 import ReactToPrint from 'react-to-print';
+import useRouter from 'hook/useRouter';
 
 export interface IFormQuotation {
   title: string;
@@ -36,6 +37,7 @@ export default function Quotation() {
   const [quotData, setQuotData] = useState<IFormQuotation>();
   // useRef
   const compToPrint = useRef(null);
+  const { navigate } = useRouter();
 
   const methods = useForm<IFormQuotation>();
   return (
@@ -48,13 +50,26 @@ export default function Quotation() {
         <Container maxWidth={'md'}>
           <Stack
             direction={'row'}
-            py={4}
             alignItems='center'
             justifyContent={'space-between'}
+            pt={2}
+            pb={6}
           >
-            <Typography variant='h5' fontWeight={'bold'}>
-              Create Quotation
-            </Typography>
+            <Button
+              onClick={() => navigate(-1)}
+              sx={{
+                '&:hover': {
+                  background: 'transparent',
+                },
+                color: (theme) => theme.palette.common.black,
+                fontSize: (theme) => theme.typography.h6,
+                textTransform: 'capitalize',
+              }}
+              startIcon={<ArrowLeft2 />}
+            >
+              {' '}
+              Create Quotation{' '}
+            </Button>
             <Stack direction={'row'} spacing={4}>
               {quotData && (
                 <ReactToPrint
@@ -62,9 +77,13 @@ export default function Quotation() {
                   documentTitle='Quotation'
                   trigger={() => (
                     <Button
-                      variant='outlined'
+                      variant='contained'
                       color='info'
-                      sx={{ borderRadius: 1.5, textTransform: 'capitalize' }}
+                      sx={{
+                        borderRadius: 1.5,
+                        textTransform: 'capitalize',
+                        color: (theme) => theme.palette.common.white,
+                      }}
                       startIcon={<Printer size='24' />}
                     >
                       Print
@@ -75,10 +94,16 @@ export default function Quotation() {
               )}
 
               <Button
-                variant='outlined'
-                sx={{ borderRadius: 1.5, textTransform: 'capitalize' }}
+                variant='contained'
+                sx={{
+                  borderRadius: 1.5,
+                  textTransform: 'capitalize',
+                  color: (theme) => theme.palette.common.white,
+                }}
                 type='submit'
+                color='primary'
                 form='hook-form'
+                startIcon={<Share size='24' />}
               >
                 {quotData ? 'Generated' : 'Generate'}
               </Button>

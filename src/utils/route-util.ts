@@ -9,7 +9,7 @@ export const ROUTE_PATH = {
   customers: '/customers',
   expense: '/expense',
   manageusers: '/manage-users',
-  quotation: '/quotation',
+  quotation: '/orders/quotation',
 };
 export const ROUTE_API = {
   login: '/api/auth/v1/login',

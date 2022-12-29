@@ -23,11 +23,13 @@ const OrderTableBody = ({
   onPrintClick,
   onEditClick,
   onAddExpenseClick,
+  isExpense,
 }: {
   data: IOrder.Order[] | undefined;
   onPrintClick?: (i: number) => void;
   onEditClick?: (i: number) => void;
   onAddExpenseClick?: (i: number) => void;
+  isExpense: boolean;
 }) => {
   return (
     <>
@@ -39,10 +41,13 @@ const OrderTableBody = ({
             layout
             sx={{
               '&:last-child td, &:last-child th': { border: 0 },
-              background:
-                item.finalInvoices.length === 0
+              background: isExpense
+                ? item.expenses.length === 0
                   ? alpha(yellow[400], 0.2)
-                  : alpha(theme.palette.success.main, 0.2),
+                  : alpha(theme.palette.success.main, 0.2)
+                : item.finalInvoices.length === 0
+                ? alpha(yellow[400], 0.2)
+                : alpha(theme.palette.success.main, 0.2),
             }}
             initial={{
               scale: 0.9,

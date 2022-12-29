@@ -134,6 +134,7 @@ export default function FormQuotation({
         <Grid item xs={12} mt={2}>
           <Button
             variant='contained'
+            color='secondary'
             fullWidth
             onClick={() => {
               setListItem((pre) => {
@@ -163,7 +164,6 @@ export default function FormQuotation({
             }}
             sx={{
               borderRadius: 2,
-              color: (theme) => theme.palette.common.white,
               textTransform: 'capitalize',
             }}
           >

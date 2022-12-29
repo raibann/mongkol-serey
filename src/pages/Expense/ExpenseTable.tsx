@@ -29,7 +29,6 @@ const ExpenseTableBody = ({
   name,
   paidBy,
   quantity,
-  social,
   handleOpenDialogs,
 }: {
   id: number;

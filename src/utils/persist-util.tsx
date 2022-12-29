@@ -14,3 +14,6 @@ export const getPersistedState: any = (storageKey: string) => {
     return undefined;
   }
 };
+export const removePersistedState = (storageKey: string) => {
+  window.localStorage.removeItem(storageKey);
+};

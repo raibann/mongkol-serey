@@ -3,7 +3,6 @@ import {
   MoneySend,
   Profile2User,
   Box,
-  NoteText,
   Chart,
   NoteFavorite,
   // LogoutCurve,
@@ -24,11 +23,6 @@ const navigationUtil: Navigation = [
     title: 'Dashboard',
     toUrl: ROUTE_PATH.dashboard,
     icon: <Chart size='24' variant='Bold' />,
-  },
-  {
-    title: 'Quotation',
-    toUrl: ROUTE_PATH.quotation,
-    icon: <NoteText size='24' variant='Bold' />,
   },
   {
     title: 'Orders',

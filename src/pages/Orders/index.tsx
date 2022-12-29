@@ -7,6 +7,7 @@ import {
   Divider,
   Drawer,
   Grid,
+  IconButton,
   InputAdornment,
   Pagination,
   Paper,
@@ -17,6 +18,7 @@ import {
   TableContainer,
   TableRow,
   ToggleButtonGroup,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import theme from 'theme/theme';
@@ -30,9 +32,10 @@ import OrderDrawer from './OrderDrawer';
 import ORDER_API from 'api/order';
 import OrderTableBody, { OrderTableHead } from './OrderTable';
 import {
-  Add,
   ArrowLeft2,
   BoxRemove,
+  Calculator,
+  NoteFavorite,
   Printer,
   SearchNormal1,
 } from 'iconsax-react';
@@ -41,6 +44,8 @@ import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRequest } from 'ahooks';
+import useRouter from 'hook/useRouter';
+import { ROUTE_PATH } from 'utils/route-util';
 
 const Orders = () => {
   // States
@@ -58,6 +63,7 @@ const Orders = () => {
   const orderId = searchParams.get('id');
   const bookingInvoiceRef = useRef(null);
   const finalInvoiceRef = useRef(null);
+  const { navigate } = useRouter();
 
   // useRequests
   const {
@@ -179,24 +185,74 @@ const Orders = () => {
                   direction={'row'}
                   spacing={2}
                   justifyContent={isMdDown ? 'flex-start' : 'flex-end'}
+                  alignItems='center'
                 >
-                  <Button
-                    variant='contained'
-                    sx={{
-                      color: theme.palette.common.white,
-                      boxShadow: theme.shadows[1],
-                      borderRadius: 2,
-                      textTransform: 'none',
-                      height: 40,
-                      position: 'relative',
-                      overflow: 'hidden',
-                      zIndex: 2,
-                    }}
-                    startIcon={<Add variant='Bold' size={16} />}
-                    onClick={() => setNewOrder(true)}
-                  >
-                    Order
-                  </Button>
+                  {isSmDown ? (
+                    <>
+                      <Tooltip title='Quotation'>
+                        <IconButton
+                          sx={{
+                            color: (theme) => theme.palette.common.white,
+                            background: (theme) => theme.palette.secondary.main,
+                            height: '100%',
+                          }}
+                          onClick={() => navigate(ROUTE_PATH.quotation)}
+                        >
+                          <Calculator variant='Bold' size='16' />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title='Order'>
+                        <IconButton
+                          onClick={() => setNewOrder(true)}
+                          sx={{
+                            color: (theme) => theme.palette.common.white,
+                            background: (theme) => theme.palette.primary.main,
+                            height: '100%',
+                          }}
+                        >
+                          <NoteFavorite variant='Bold' size={16} />
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant='contained'
+                        sx={{
+                          color: theme.palette.common.white,
+                          boxShadow: theme.shadows[1],
+                          borderRadius: 2,
+                          textTransform: 'none',
+                          height: 40,
+                          position: 'relative',
+                          overflow: 'hidden',
+                          zIndex: 2,
+                        }}
+                        color='secondary'
+                        startIcon={<Calculator variant='Bold' size='16' />}
+                        onClick={() => navigate(ROUTE_PATH.quotation)}
+                      >
+                        Quotation
+                      </Button>
+                      <Button
+                        variant='contained'
+                        sx={{
+                          color: theme.palette.common.white,
+                          boxShadow: theme.shadows[1],
+                          borderRadius: 2,
+                          textTransform: 'none',
+                          height: 40,
+                          position: 'relative',
+                          overflow: 'hidden',
+                          zIndex: 2,
+                        }}
+                        startIcon={<NoteFavorite variant='Bold' size={16} />}
+                        onClick={() => setNewOrder(true)}
+                      >
+                        Order
+                      </Button>
+                    </>
+                  )}
                 </Stack>
               </Grid>
               <Grid item xs={8} sm={6} md={4} lg={4} xl={2}>
@@ -291,6 +347,7 @@ const Orders = () => {
                     data={isLoadingOrderList ? [] : orderList.data}
                     onPrintClick={onPrintClick}
                     onEditClick={onEditClick}
+                    isExpense={false}
                   />
                 </TableBody>
               </Table>

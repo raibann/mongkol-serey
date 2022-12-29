@@ -209,6 +209,7 @@ export default function Expense() {
                 <OrderTable
                   data={expenseListReq.loading ? [] : expenseList}
                   onAddExpenseClick={onAddExpense}
+                  isExpense={true}
                 />
               </TableBody>
             </Table>
