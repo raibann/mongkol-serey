@@ -49,8 +49,6 @@ const OrderItem = ({
   };
 
   useEffect(() => {
-    // setValue(`listMenu.${index}.unit`, 'តុ');
-
     if (menuItemsP) {
       return setMenuItems(menuItemsP);
     }
@@ -87,16 +85,23 @@ const OrderItem = ({
           borderRadius: 3,
         }}
       >
-        <Stack spacing={1} px={2} py={3} position='relative' direction='row'>
+        <Stack
+          spacing={1}
+          px={2}
+          py={3}
+          position='relative'
+          direction={{ xs: 'column', md: 'row' }}
+        >
           <Button
             color='error'
             onClick={onRemoveOrder}
             sx={{
               position: 'absolute',
               top: 4,
-              right: 4,
+              right: 8,
               fontSize: 12,
               textTransform: 'capitalize',
+              p: 0,
             }}
           >
             Remove
@@ -110,10 +115,10 @@ const OrderItem = ({
             }}
             render={({ field, fieldState: { error } }) => {
               return (
-                <LabelTextField label='Category'>
+                <LabelTextField label=''>
                   <StyledOutlinedTextField
                     size='small'
-                    placeholder='Title'
+                    label='Title'
                     error={Boolean(error)}
                     helperText={error?.message}
                     {...field}
@@ -135,10 +140,11 @@ const OrderItem = ({
             }}
             render={({ field, fieldState: { error } }) => {
               return (
-                <LabelTextField label='Quantity'>
+                <LabelTextField label=''>
                   <StyledOutlinedTextField
                     size='small'
-                    placeholder='Quantity'
+                    type='number'
+                    label='Quantity'
                     error={Boolean(error)}
                     helperText={error?.message}
                     onKeyUp={() => {
@@ -162,7 +168,7 @@ const OrderItem = ({
             }}
           />
 
-          <LabelTextField label='Unit Price'>
+          <LabelTextField label=''>
             <Stack
               direction='row'
               sx={{
@@ -177,7 +183,8 @@ const OrderItem = ({
                   return (
                     <StyledOutlinedTextField
                       size='small'
-                      placeholder='Price'
+                      type='number'
+                      label='Price'
                       error={Boolean(error)}
                       helperText={error?.message}
                       onKeyUp={() => {
@@ -251,10 +258,11 @@ const OrderItem = ({
             }}
             render={({ field, fieldState: { error } }) => {
               return (
-                <LabelTextField label='Total Price'>
+                <LabelTextField label=''>
                   <StyledOutlinedTextField
                     size='small'
-                    placeholder='Total Price'
+                    type='number'
+                    label='Total Price'
                     error={Boolean(error)}
                     helperText={error?.message}
                     onKeyUp={() => {
