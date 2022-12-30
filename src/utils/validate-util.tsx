@@ -84,6 +84,7 @@ export const DataFormater = (number: number) => {
     return number.toString();
   }
 };
+
 export const pageStyle = ` @page {
   size: A4;
   margin:2.54cm;
