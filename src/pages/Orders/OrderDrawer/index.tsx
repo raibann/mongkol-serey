@@ -16,7 +16,7 @@ import {
 import { CustomerInput } from 'pages/Customer/CustForm/CustomerForm';
 import { BsPlus } from 'react-icons/bs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { BoxRemove, Trash } from 'iconsax-react';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { CusIconButton } from 'components/CusIconButton';
@@ -138,10 +138,28 @@ const OrderDrawer = ({
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [selectedCustomer, setSelectedCustomer] =
     useState<ICustomer.Customer>();
-  let orderItemId = 0;
 
+  let orderItemId = 0;
+  let tmp: Draft = {
+    bookingDate: getValues('bookingDate'),
+    deposit: getValues('deposit'),
+    depositText: getValues('depositText'),
+    eventDate: getValues('eventDate'),
+    eventLocation: getValues('eventLocation'),
+    eventType: getValues('eventType'),
+    listMenu: getValues('listMenu'),
+    paidBy: getValues('paidBy'),
+    quantity: getValues('quantity'),
+    customer: selectedCustomer,
+  };
+
+  const getDraft: Draft = getPersistedState(
+    process.env.REACT_APP_PERSIST_DRAFT
+  );
+
+  console.log(getDraft);
   // refs
-  const customerRef = useRef(orderDetail?.customer);
+  let customerRef = useRef(orderDetail?.customer);
 
   const onSubmit: SubmitHandler<
     IOrderForm & CustomerInput & FinalInvoiceInput
@@ -312,28 +330,15 @@ const OrderDrawer = ({
     setFinalInvoice(tmp);
     setValue('finalInvoice', tmp);
   };
-  let tmp: Draft = {
-    bookingDate: getValues('bookingDate'),
-    deposit: getValues('deposit'),
-    depositText: getValues('depositText'),
-    eventDate: getValues('eventDate'),
-    eventLocation: getValues('eventLocation'),
-    eventType: getValues('eventType'),
-    listMenu: getValues('listMenu'),
-    paidBy: getValues('paidBy'),
-    quantity: getValues('quantity'),
-    customer: selectedCustomer,
-  };
-  const getDraft: Draft = getPersistedState(
-    process.env.REACT_APP_PERSIST_DRAFT
-  );
 
   const handleSaveDraft = () => {
     persistState(process.env.REACT_APP_PERSIST_DRAFT || '', tmp);
     handleCloseOrderDialog();
   };
 
-  const handleApplyDraft = () => {
+  const handleApplyDraft = useCallback(() => {
+    customerRef.current = getDraft.customer;
+    console.log(customerRef.current);
     setValue('bookingDate', getDraft.bookingDate);
     setValue('deposit', getDraft.deposit);
     setValue('depositText', getDraft.depositText);
@@ -343,10 +348,11 @@ const OrderDrawer = ({
     setValue('listMenu', getDraft.listMenu);
     setValue('paidBy', getDraft.paidBy);
     setValue('quantity', getDraft.quantity);
-    setSelectedCustomer(getDraft.customer);
-    removePersistedState(process.env.REACT_APP_PERSIST_DRAFT || '');
-  };
-  console.log(selectedCustomer);
+    // removePersistedState(process.env.REACT_APP_PERSIST_DRAFT || '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getDraft]);
+
+  // console.log(selectedCustomer);
 
   return (
     <>
