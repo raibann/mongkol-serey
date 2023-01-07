@@ -310,7 +310,7 @@ const Orders = () => {
             >
               <CusLoading />
             </Stack>
-          ) : orderList && orderList.data && orderList.data.length > 0 ? (
+          ) : orderList && orderList.data.length > 0 ? (
             <>
               <Table sx={{ minWidth: 1000 }}>
                 <OrderTableHead />

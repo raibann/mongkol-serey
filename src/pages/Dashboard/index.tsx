@@ -42,6 +42,7 @@ const Dashboard = () => {
   // use moment
   let monday = moment().weekday(0);
   let friday = moment().weekday(6);
+  const [currentTime, setCurrentTime] = useState(moment());
   const [toggleValue, setToggleValue] = useState<string | null>('week');
   const [dateRange, setDateRange] = useState({
     startDate: moment(monday).format('YYYY-MM-DD'),
@@ -77,6 +78,13 @@ const Dashboard = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toggleValue]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(moment());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
   const CHART1_DATA = chartData?.charts.map((data) => {
     return {
       name: MonthRanks[data.month],
@@ -359,15 +367,22 @@ const Dashboard = () => {
                   }}
                 >
                   {chartData?.reminder.map((data, i) => {
+                    const getCount = moment.duration(
+                      moment(data.date).diff(currentTime)
+                    );
+                    // console.log(getCount);
+                    // let test = `${getCount.years()}y ${getCount.months()}m ${getCount.days()}d ${getCount.hours()}h`;
                     return (
                       <AnniversaryItem
                         key={i}
-                        daysLeft={1 - moment().diff(data.date, 'days')}
+                        // daysLeft={1 - moment().diff(data.date, 'days')}
+                        daysLeft={getCount.days()}
                         name={
                           data.customer !== null
                             ? data.customer.customer_name
                             : 'No Customer'
                         }
+                        // name={test}
                         invoiceId={data.id}
                         eventType={data.type}
                       />
