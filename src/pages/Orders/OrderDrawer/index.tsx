@@ -6,6 +6,7 @@ import {
   Stack,
   Typography,
   IconButton,
+  Tooltip,
 } from '@mui/material';
 import {
   Controller,
@@ -16,7 +17,7 @@ import {
 import { CustomerInput } from 'pages/Customer/CustForm/CustomerForm';
 import { BsPlus } from 'react-icons/bs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BoxRemove, Trash } from 'iconsax-react';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { CusIconButton } from 'components/CusIconButton';
@@ -39,13 +40,10 @@ import EXPENSE_API from 'api/expense';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { LoadingButton } from '@mui/lab';
-import {
-  getPersistedState,
-  persistState,
-  removePersistedState,
-} from 'utils/persist-util';
+import { persistState, removePersistedState } from 'utils/persist-util';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRequest } from 'ahooks';
+import { HiOutlineFolderRemove } from 'react-icons/hi';
 
 export interface IOrderForm {
   orderId?: number;
@@ -73,7 +71,7 @@ interface IlistMenu {
   }[];
 }
 
-type Draft = {
+export type Draft = {
   bookingDate: Date | null;
   deposit: number | '';
   depositText: string;
@@ -90,10 +88,14 @@ const OrderDrawer = ({
   handleCloseOrderDialog,
   orderDetail,
   onActionSuccess,
+  draft,
+  onSaveDraft,
 }: {
   onActionSuccess: () => void;
   handleCloseOrderDialog: () => void;
   orderDetail: IOrder.Order | undefined;
+  draft?: Draft;
+  onSaveDraft: (draft?: Draft) => void;
 }) => {
   // useRequests
   const orderActionReq = useRequest(ORDER_API.orderAction, {
@@ -112,12 +114,12 @@ const OrderDrawer = ({
     onSuccess: () => onActionSuccess(),
     onError: () => setAlertDialog(true),
   });
-  const customerListReq = useRequest(CUSTOMER_API.getCustomerList, {
-    manual: true,
-  });
+  const customerListReq = useRequest(() =>
+    CUSTOMER_API.getCustomerList({ size: 1000 })
+  );
   const deleteOrderReq = useRequest(ORDER_API.deleteOrder, {
     manual: true,
-    onSuccess: () => {
+    onSuccess() {
       setConfirmDialog(false);
       onActionSuccess();
     },
@@ -129,9 +131,6 @@ const OrderDrawer = ({
   const { setValue, handleSubmit, getValues } = methods;
 
   // states
-  // const [orderDraft, setOrderDraft] = useState<
-  //   IOrderForm & CustomerInput & FinalInvoiceInput
-  // >();
   const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
   const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
   const [alertDialog, setAlertDialog] = useState(false);
@@ -139,27 +138,9 @@ const OrderDrawer = ({
   const [selectedCustomer, setSelectedCustomer] =
     useState<ICustomer.Customer>();
 
+  // Variables
   let orderItemId = 0;
-  let tmp: Draft = {
-    bookingDate: getValues('bookingDate'),
-    deposit: getValues('deposit'),
-    depositText: getValues('depositText'),
-    eventDate: getValues('eventDate'),
-    eventLocation: getValues('eventLocation'),
-    eventType: getValues('eventType'),
-    listMenu: getValues('listMenu'),
-    paidBy: getValues('paidBy'),
-    quantity: getValues('quantity'),
-    customer: selectedCustomer,
-  };
-
-  const getDraft: Draft = getPersistedState(
-    process.env.REACT_APP_PERSIST_DRAFT
-  );
-
-  console.log(getDraft);
-  // refs
-  let customerRef = useRef(orderDetail?.customer);
+  let customerRef = useRef(orderDetail?.customer || draft?.customer);
 
   const onSubmit: SubmitHandler<
     IOrderForm & CustomerInput & FinalInvoiceInput
@@ -255,6 +236,21 @@ const OrderDrawer = ({
       return;
     }
 
+    if (!orderDetail && draft) {
+      setValue('eventLocation', draft.eventLocation);
+      setValue('bookingDate', draft.bookingDate);
+      setValue('eventDate', draft.eventDate);
+      setValue('paidBy', draft.paidBy);
+      setValue('deposit', draft.deposit);
+      setValue('depositText', draft.depositText);
+      setValue('eventType', draft.eventType);
+      setValue('quantity', draft.quantity);
+      setValue('listMenu', draft.listMenu);
+      setSelectedCustomer(draft?.customer);
+      setListMenu(draft.listMenu);
+      return;
+    }
+
     addListOrderHandler();
     addFinalInvoiceHandler();
 
@@ -332,34 +328,33 @@ const OrderDrawer = ({
   };
 
   const handleSaveDraft = () => {
-    persistState(process.env.REACT_APP_PERSIST_DRAFT || '', tmp);
+    let tmpDraft: Draft = {
+      bookingDate: getValues('bookingDate'),
+      deposit: getValues('deposit'),
+      depositText: getValues('depositText'),
+      eventDate: getValues('eventDate'),
+      eventLocation: getValues('eventLocation'),
+      eventType: getValues('eventType'),
+      paidBy: getValues('paidBy'),
+      quantity: getValues('quantity'),
+      listMenu: getValues('listMenu') || [],
+      customer: selectedCustomer,
+    };
+
+    persistState(process.env.REACT_APP_PERSIST_DRAFT || '', tmpDraft);
+    onSaveDraft(tmpDraft);
     handleCloseOrderDialog();
   };
 
-  const handleApplyDraft = useCallback(() => {
-    customerRef.current = getDraft.customer;
-    console.log(customerRef.current);
-    setValue('bookingDate', getDraft.bookingDate);
-    setValue('deposit', getDraft.deposit);
-    setValue('depositText', getDraft.depositText);
-    setValue('eventDate', getDraft.eventDate);
-    setValue('eventLocation', getDraft.eventLocation);
-    setValue('eventType', getDraft.eventType);
-    setValue('listMenu', getDraft.listMenu);
-    setValue('paidBy', getDraft.paidBy);
-    setValue('quantity', getDraft.quantity);
-    // removePersistedState(process.env.REACT_APP_PERSIST_DRAFT || '');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getDraft]);
-
-  // console.log(selectedCustomer);
+  const handleRemoveDraft = () => {
+    removePersistedState(`${process.env.REACT_APP_PERSIST_DRAFT}`);
+    onSaveDraft();
+    methods.reset();
+    setSelectedCustomer(undefined);
+  };
 
   return (
     <>
-      {/* {(orderActionReq.loading || expenseActionReq.loading) && (
-        <CusBackDrop open={true} />
-      )} */}
-
       <ErrorDialog
         open={alertDialog}
         errorTitle='Internal Server Error'
@@ -388,18 +383,13 @@ const OrderDrawer = ({
           {orderDetail ? 'Update Order' : 'New Order'}
         </Typography>
         <Stack direction={'row'} alignItems='center' spacing={4}>
-          {!orderDetail &&
-            getPersistedState(process.env.REACT_APP_PERSIST_DRAFT) && (
-              <Button
-                variant='contained'
-                color='secondary'
-                disableElevation
-                onClick={handleApplyDraft}
-                sx={{ color: (theme) => theme.palette.common.white }}
-              >
-                Apply Draft
-              </Button>
-            )}
+          {draft && (
+            <Tooltip title='Clear Draft'>
+              <CusIconButton color='error' onClick={handleRemoveDraft}>
+                <HiOutlineFolderRemove />
+              </CusIconButton>
+            </Tooltip>
+          )}
           <CusIconButton color='error' onClick={handleCloseOrderDialog}>
             <MdClose />
           </CusIconButton>
@@ -408,7 +398,6 @@ const OrderDrawer = ({
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <InputGroupTitle>Order Info</InputGroupTitle>
-
           <Stack px={3} spacing={4}>
             <Stack spacing={4} direction='row'>
               <LabelTextField label='Customer'>
@@ -416,9 +405,6 @@ const OrderDrawer = ({
                   disableClearable
                   openOnFocus
                   loading={customerListReq.loading}
-                  onFocus={() =>
-                    !customerListReq.data && customerListReq.run({ size: 1000 })
-                  }
                   defaultValue={customerRef.current}
                   onChange={(e, value) => {
                     setSelectedCustomer(value);
@@ -429,7 +415,7 @@ const OrderDrawer = ({
                       {...params}
                     />
                   )}
-                  getOptionLabel={(option) => option.customer_name || ''}
+                  getOptionLabel={(option) => option?.customer_name || ''}
                   renderOption={(props, option) => {
                     return (
                       option && (

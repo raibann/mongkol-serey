@@ -28,7 +28,7 @@ import CusTextField from 'components/CusTextField';
 import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import OrderDrawer from './OrderDrawer';
+import OrderDrawer, { Draft } from './OrderDrawer';
 import ORDER_API from 'api/order';
 import OrderTableBody, { OrderTableHead } from './OrderTable';
 import {
@@ -46,8 +46,17 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useRequest } from 'ahooks';
 import useRouter from 'hook/useRouter';
 import { ROUTE_PATH } from 'utils/route-util';
+import { getPersistedState } from 'utils/persist-util';
 
 const Orders = () => {
+  // Variables
+  const { isMdDown, isSmDown } = useResponsive();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const orderId = searchParams.get('id');
+  const bookingInvoiceRef = useRef(null);
+  const finalInvoiceRef = useRef(null);
+  const { navigate } = useRouter();
+
   // States
   const [ToggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
@@ -56,14 +65,9 @@ const Orders = () => {
   const [printer, setPrinter] = useState<IOrder.Order>();
   const [page, setPage] = React.useState(1);
   const [searchData, setSearchData] = useState('');
-  const { isMdDown, isSmDown } = useResponsive();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // Variables
-  const orderId = searchParams.get('id');
-  const bookingInvoiceRef = useRef(null);
-  const finalInvoiceRef = useRef(null);
-  const { navigate } = useRouter();
+  const [draft, setDraft] = useState<Draft | undefined>(
+    getPersistedState(`${process.env.REACT_APP_PERSIST_DRAFT}`)
+  );
 
   // useRequests
   const {
@@ -395,10 +399,13 @@ const Orders = () => {
         }}
       >
         <OrderDrawer
-          {...{ handleCloseOrderDialog, orderDetail }}
+          {...{ handleCloseOrderDialog, orderDetail, draft }}
           onActionSuccess={() => {
             refreshGetOrderList();
             handleCloseOrderDialog();
+          }}
+          onSaveDraft={(draft?: Draft) => {
+            setDraft(draft);
           }}
         />
       </Drawer>
@@ -441,7 +448,9 @@ const Orders = () => {
               <Stack direction={'row'} spacing={2}>
                 <ReactToPrint
                   pageStyle={pageStyle}
-                  documentTitle='Booking-Invoice'
+                  documentTitle={`${
+                    printer?.customer.customer_name || 'Default'
+                  }-Booking-Invoice`}
                   trigger={() => (
                     <Button
                       variant='contained'
@@ -462,7 +471,7 @@ const Orders = () => {
                 {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
                   <ReactToPrint
                     pageStyle={pageStyle}
-                    documentTitle='Final-Invoice'
+                    documentTitle={`${printer.customer.customer_name}-Final-Invoice`}
                     trigger={() => (
                       <Button
                         variant='contained'
@@ -526,7 +535,9 @@ const Orders = () => {
             >
               <ReactToPrint
                 pageStyle={pageStyle}
-                documentTitle='Booking-Invoice'
+                documentTitle={`${
+                  printer?.customer.customer_name || 'Default'
+                }-Booking-Invoice`}
                 trigger={() => (
                   <Button
                     variant='contained'
@@ -547,7 +558,7 @@ const Orders = () => {
               {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
                 <ReactToPrint
                   pageStyle={pageStyle}
-                  documentTitle='Final-Invoice'
+                  documentTitle={`${printer.customer.customer_name}-Final-Invoice`}
                   trigger={() => (
                     <Button
                       variant='contained'
