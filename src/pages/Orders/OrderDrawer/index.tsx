@@ -334,6 +334,7 @@ const OrderDrawer = ({
 
       <Stack
         p={3}
+        minHeight={90}
         direction='row'
         justifyContent='space-between'
         alignItems='center'
@@ -623,6 +624,7 @@ const OrderDrawer = ({
                   return (
                     <LabelTextField label='Deposit'>
                       <StyledOutlinedTextField
+                        type='number'
                         placeholder='Enter Deposit'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -636,7 +638,7 @@ const OrderDrawer = ({
               <Controller
                 control={methods.control}
                 name='depositText'
-                defaultValue=''
+                defaultValue='ដុល្លារអាមេរិក'
                 render={({ field }) => {
                   return (
                     <LabelTextField label='Amount in Khmer'>
@@ -719,8 +721,12 @@ const OrderDrawer = ({
             alignItems='center'
             sx={{
               mx: 3,
-              pt: 4,
-              pb: 1,
+              mt: 4,
+              mb: 1,
+              position: 'sticky',
+              top: 90,
+              bgcolor: 'common.white',
+              zIndex: theme.zIndex.appBar - 1,
             }}
           >
             <Typography fontWeight='medium'>List Orders</Typography>

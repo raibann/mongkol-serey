@@ -73,6 +73,7 @@ const FinalInvoiceForm = ({
           render={({ field, fieldState: { error } }) => {
             return (
               <StyledOutlinedTextField
+                type='number'
                 size='small'
                 placeholder='Quantity'
                 error={Boolean(error)}
@@ -116,6 +117,7 @@ const FinalInvoiceForm = ({
             return (
               <StyledOutlinedTextField
                 size='small'
+                type='number'
                 placeholder='Price'
                 error={Boolean(error)}
                 helperText={error?.message}

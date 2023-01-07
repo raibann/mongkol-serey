@@ -15,9 +15,11 @@ const TELEGRAM_API = {
       }
     );
     return {
-      path: `https://api.telegram.org/file/bot${process.env.REACT_APP_TELEGRAM_BOT}/${res.data.result.file_path}`,
+      path: res.data.result.file_path,
     };
   },
+  getImagePath: (path: string) =>
+    `https://api.telegram.org/file/bot${process.env.REACT_APP_TELEGRAM_BOT}/${path}`,
 };
 
 export default TELEGRAM_API;
