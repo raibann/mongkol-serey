@@ -30,3 +30,6 @@ code {
   font-family: 'Khmer Busra high';
   src: url('/public/fonts/Khmer\ Busra\ high\ Regular.ttf');
 }
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
