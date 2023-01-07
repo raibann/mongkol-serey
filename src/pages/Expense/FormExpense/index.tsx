@@ -6,7 +6,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { DollarCircle, Trash } from 'iconsax-react';
 import { validatePatterns } from 'utils/validate-util';
 import { CusIconButton } from 'components/CusIconButton';
-import { paidBy } from 'utils/data-util';
+import { paidBy, paidByColor } from 'utils/data-util';
 import { IAddExpenseInput } from '../ExpenseDialogs';
 
 function FormExpense({
@@ -18,7 +18,7 @@ function FormExpense({
   onRemove: () => void;
   defaultTitle: string;
 }) {
-  const { control, setValue } = useFormContext<IAddExpenseInput>();
+  const { control, setValue, getValues } = useFormContext<IAddExpenseInput>();
   const { isSmDown } = useResponsive();
 
   return (
@@ -94,6 +94,18 @@ function FormExpense({
                     {...params}
                     placeholder='Paid by'
                     size='small'
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        bgcolor: (paidByColor as any)[
+                          getValues(`expenseRowData.${index}.paidBy`) || 'Cash'
+                        ],
+                        color:
+                          getValues(`expenseRowData.${index}.paidBy`) !== ''
+                            ? (theme) => theme.palette.common.white
+                            : (theme) => theme.palette.text.secondary,
+                        borderColor: (theme) => theme.palette.text.primary,
+                      },
+                    }}
                   />
                 )}
                 options={paidBy.map((data) => data)}
