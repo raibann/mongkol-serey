@@ -6,6 +6,7 @@ import {
   ListItemText,
   Paper,
   Stack,
+  Tooltip,
   Typography,
   alpha,
   useTheme,
@@ -23,6 +24,8 @@ const DashboardCard = ({
   secondaryText,
   primaryReverse,
   secondaryReverse,
+  primaryTooltip,
+  secondaryTooltip,
 }: {
   title: string;
   icon: React.ReactNode;
@@ -34,6 +37,8 @@ const DashboardCard = ({
   secondaryText?: string;
   secondaryIcon?: React.ReactNode;
   endTitle?: string;
+  primaryTooltip?: string;
+  secondaryTooltip?: string;
 }) => {
   const theme = useTheme();
   return (
@@ -54,51 +59,61 @@ const DashboardCard = ({
         justifyContent={'space-between'}
       >
         <List disablePadding dense>
-          <ListItem
-            disableGutters
-            disablePadding
-            sx={{ flexDirection: primaryReverse ? 'row-reverse' : 'row' }}
-          >
-            <ListItemIcon
-              sx={{ minWidth: 0, mr: 1, ml: primaryReverse ? 1 : 0 }}
-            >
-              <div>{primaryIcon}</div>
-            </ListItemIcon>
-            <ListItemText
-              primary={primaryText}
-              primaryTypographyProps={{
-                sx: {
-                  fontWeight: theme.typography.fontWeightBold,
-                  fontSize: theme.typography.h6,
-                  lineHeight: 0.5,
-                },
-              }}
-            />
-          </ListItem>
-          {secondaryText && (
+          <Tooltip title={primaryTooltip} placement='top'>
             <ListItem
               disableGutters
               disablePadding
               sx={{
-                flexDirection: secondaryReverse ? 'row-reverse' : 'row',
+                flexDirection: primaryReverse ? 'row-reverse' : 'row',
+                cursor: 'pointer',
               }}
             >
               <ListItemIcon
-                sx={{ minWidth: 0, mr: 1, ml: secondaryReverse ? 1 : 0 }}
+                sx={{
+                  minWidth: 0,
+                  mr: 1,
+                  ml: primaryReverse ? 1 : 0,
+                }}
               >
-                <div>{secondaryIcon}</div>
+                <div>{primaryIcon}</div>
               </ListItemIcon>
               <ListItemText
-                primary={secondaryText}
+                primary={primaryText}
                 primaryTypographyProps={{
                   sx: {
                     fontWeight: theme.typography.fontWeightBold,
                     fontSize: theme.typography.h6,
-                    lineHeight: 0.5,
                   },
                 }}
               />
             </ListItem>
+          </Tooltip>
+          {secondaryText && (
+            <Tooltip title={primaryTooltip} placement='top'>
+              <ListItem
+                disableGutters
+                disablePadding
+                sx={{
+                  flexDirection: secondaryReverse ? 'row-reverse' : 'row',
+                }}
+              >
+                <ListItemIcon
+                  sx={{ minWidth: 0, mr: 1, ml: secondaryReverse ? 1 : 0 }}
+                >
+                  <div>{secondaryIcon}</div>
+                </ListItemIcon>
+                <ListItemText
+                  primary={secondaryText}
+                  primaryTypographyProps={{
+                    sx: {
+                      fontWeight: theme.typography.fontWeightBold,
+                      fontSize: theme.typography.h6,
+                      lineHeight: 0.5,
+                    },
+                  }}
+                />
+              </ListItem>
+            </Tooltip>
           )}
         </List>
         <Avatar

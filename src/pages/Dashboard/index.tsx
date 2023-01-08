@@ -167,6 +167,14 @@ const Dashboard = () => {
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Profits'
+                      primaryTooltip={`${Intl.NumberFormat('en', {
+                        style: 'currency',
+                        currency: 'USD',
+                      }).format(
+                        dashTotal?.totalProfits
+                          ? dashTotal?.totalProfits - dashTotal?.totalExpenses
+                          : 0
+                      )}`}
                       value={`${
                         chartData?.Percentage.totalProfits[
                           +PercentFilter[`${toggleValue}`]
@@ -177,15 +185,17 @@ const Dashboard = () => {
                       primaryIcon={
                         <Typography
                           variant='h6'
-                          sx={{ color: (theme) => theme.palette.info.main }}
+                          sx={{
+                            color: (theme) => theme.palette.info.main,
+                          }}
                         >
                           $
                         </Typography>
                       }
-                      primaryText={Intl.NumberFormat().format(
+                      primaryText={DataFormater(
                         dashTotal?.totalProfits
                           ? dashTotal?.totalProfits - dashTotal?.totalExpenses
-                          : 0.0
+                          : 0
                       )}
                     />
                   </Grid>
@@ -194,6 +204,10 @@ const Dashboard = () => {
                       title='Total Expenses'
                       icon={<MoneySend />}
                       endTitle={`${toggleValue}`}
+                      primaryTooltip={`${Intl.NumberFormat('en', {
+                        style: 'currency',
+                        currency: 'USD',
+                      }).format(dashTotal?.totalExpenses || 0)}`}
                       value={`${
                         chartData?.Percentage.totalExpenses[
                           +PercentFilter[`${toggleValue}`]
@@ -207,15 +221,17 @@ const Dashboard = () => {
                           $
                         </Typography>
                       }
-                      primaryText={Intl.NumberFormat().format(
-                        dashTotal?.totalExpenses || 0.0
-                      )}
+                      primaryText={DataFormater(dashTotal?.totalExpenses || 0)}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Orders'
                       endTitle={`${toggleValue}`}
+                      primaryTooltip={`${Intl.NumberFormat().format(
+                        dashTotal?.totalOrders || 0
+                      )}`}
+                      secondaryTooltip={`${dashTotal?.totalTables || 0}`}
                       icon={<StatusUp />}
                       primaryReverse={true}
                       secondaryReverse={true}
@@ -240,8 +256,12 @@ const Dashboard = () => {
                           +PercentFilter[`${toggleValue}`]
                         ]
                       }`}
-                      primaryText={`${dashTotal?.totalOrders}` || '0'}
-                      secondaryText={`${dashTotal?.totalTables}` || '0'}
+                      primaryText={`${DataFormater(
+                        dashTotal?.totalOrders || 0
+                      )}`}
+                      secondaryText={`${DataFormater(
+                        dashTotal?.totalTables || 0
+                      )}`}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg>
@@ -249,6 +269,9 @@ const Dashboard = () => {
                       title='Total Customers'
                       endTitle={`${toggleValue}`}
                       primaryReverse={true}
+                      primaryTooltip={`${Intl.NumberFormat().format(
+                        dashTotal?.totalCustomer || 0
+                      )}`}
                       primaryIcon={
                         <Typography
                           variant='caption'
@@ -263,7 +286,7 @@ const Dashboard = () => {
                           +PercentFilter[`${toggleValue}`]
                         ]
                       }`}
-                      primaryText={`${dashTotal?.totalCustomer}`}
+                      primaryText={`${dashTotal?.totalCustomer || 0}`}
                     />
                   </Grid>
                 </>
