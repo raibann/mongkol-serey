@@ -31,7 +31,7 @@ import {
   YAxis,
 } from 'recharts';
 import theme from 'theme/theme';
-import { MonthRanks } from 'utils/data-util';
+import { MonthRanks, PercentFilter } from 'utils/data-util';
 import { DataFormater, formatCash } from 'utils/validate-util';
 import AnniversaryItem from './AnniversaryItem';
 import DashboardHeader from './DashboardHeader';
@@ -167,124 +167,103 @@ const Dashboard = () => {
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Profits'
+                      value={`${
+                        chartData?.Percentage.totalProfits[
+                          +PercentFilter[`${toggleValue}`]
+                        ]
+                      }`}
                       icon={<MoneyRecive />}
-                      children={
-                        <>
-                          <Typography
-                            fontSize={28}
-                            sx={{ color: (theme) => theme.palette.info.main }}
-                          >
-                            $
-                          </Typography>
-                          <Typography
-                            fontSize={24}
-                            sx={{
-                              fontWeight: (theme) =>
-                                theme.typography.fontWeightMedium,
-                            }}
-                          >
-                            {Intl.NumberFormat().format(
-                              dashTotal?.totalProfits
-                                ? dashTotal?.totalProfits -
-                                    dashTotal?.totalExpenses
-                                : 0.0
-                            )}
-                          </Typography>
-                        </>
+                      endTitle={`${toggleValue}`}
+                      primaryIcon={
+                        <Typography
+                          variant='h6'
+                          sx={{ color: (theme) => theme.palette.info.main }}
+                        >
+                          $
+                        </Typography>
                       }
+                      primaryText={Intl.NumberFormat().format(
+                        dashTotal?.totalProfits
+                          ? dashTotal?.totalProfits - dashTotal?.totalExpenses
+                          : 0.0
+                      )}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Expenses'
                       icon={<MoneySend />}
-                      children={
-                        <>
-                          <Typography
-                            fontSize={24}
-                            sx={{ color: (theme) => theme.palette.info.main }}
-                          >
-                            $
-                          </Typography>
-                          <Typography
-                            fontSize={28}
-                            sx={{
-                              fontWeight: (theme) =>
-                                theme.typography.fontWeightMedium,
-                            }}
-                          >
-                            {Intl.NumberFormat().format(
-                              dashTotal?.totalExpenses || 0.0
-                            )}
-                          </Typography>
-                        </>
+                      endTitle={`${toggleValue}`}
+                      value={`${
+                        chartData?.Percentage.totalExpenses[
+                          +PercentFilter[`${toggleValue}`]
+                        ]
+                      }`}
+                      primaryIcon={
+                        <Typography
+                          variant='h6'
+                          sx={{ color: (theme) => theme.palette.info.main }}
+                        >
+                          $
+                        </Typography>
                       }
+                      primaryText={Intl.NumberFormat().format(
+                        dashTotal?.totalExpenses || 0.0
+                      )}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Orders'
+                      endTitle={`${toggleValue}`}
                       icon={<StatusUp />}
-                      children={
-                        <Stack direction={'column'}>
-                          <Stack
-                            direction={'row'}
-                            alignItems='baseline'
-                            spacing={1}
-                          >
-                            <Typography
-                              fontSize={28}
-                              sx={{
-                                fontWeight: (theme) =>
-                                  theme.typography.fontWeightMedium,
-                              }}
-                            >
-                              {dashTotal?.totalOrders || 0}{' '}
-                            </Typography>
-                            <Typography
-                              fontSize={12}
-                              sx={{ color: (theme) => theme.palette.info.main }}
-                            >
-                              Events
-                            </Typography>
-                          </Stack>
-                          <Typography
-                            fontSize={16}
-                            sx={{
-                              fontWeight: (theme) =>
-                                theme.typography.fontWeightMedium,
-                            }}
-                            color='secondary.light'
-                          >
-                            {dashTotal?.totalTables || 0}{' '}
-                            <span
-                              style={{
-                                fontSize: 12,
-                                color: theme.palette.info.main,
-                              }}
-                            >
-                              Tables
-                            </span>
-                          </Typography>
-                        </Stack>
+                      primaryReverse={true}
+                      secondaryReverse={true}
+                      primaryIcon={
+                        <Typography
+                          variant='caption'
+                          sx={{ color: (theme) => theme.palette.info.main }}
+                        >
+                          Events
+                        </Typography>
                       }
+                      secondaryIcon={
+                        <Typography
+                          variant='caption'
+                          sx={{ color: (theme) => theme.palette.info.main }}
+                        >
+                          Tables
+                        </Typography>
+                      }
+                      value={`${
+                        chartData?.Percentage.totalOrders[
+                          +PercentFilter[`${toggleValue}`]
+                        ]
+                      }`}
+                      primaryText={`${dashTotal?.totalOrders}` || '0'}
+                      secondaryText={`${dashTotal?.totalTables}` || '0'}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={6} lg>
                     <DashboardCard
                       title='Total Customers'
-                      icon={<Profile2User />}
-                      children={
+                      endTitle={`${toggleValue}`}
+                      primaryReverse={true}
+                      primaryIcon={
                         <Typography
-                          fontSize={28}
-                          sx={{
-                            fontWeight: (theme) =>
-                              theme.typography.fontWeightMedium,
-                          }}
+                          variant='caption'
+                          sx={{ color: (theme) => theme.palette.info.main }}
                         >
-                          {dashTotal?.totalCustomer}
+                          Customers
                         </Typography>
                       }
+                      icon={<Profile2User />}
+                      value={`${
+                        chartData?.Percentage.totalCustomer[
+                          +PercentFilter[`${toggleValue}`]
+                        ]
+                      }`}
+                      primaryText={`${dashTotal?.totalCustomer}`}
                     />
                   </Grid>
                 </>

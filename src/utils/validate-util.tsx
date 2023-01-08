@@ -74,15 +74,10 @@ export const formatInvoiceId = (value: string) => {
 };
 // format data
 export const DataFormater = (number: number) => {
-  if (number > 1e9) {
-    return (number / 1e9).toString() + 'B';
-  } else if (number > 1e6) {
-    return (number / 1e6).toString() + 'M';
-  } else if (number > 1e3) {
-    return (number / 1e3).toString() + 'K';
-  } else {
-    return number.toString();
-  }
+  return Intl.NumberFormat('en-US', {
+    notation: 'compact',
+    compactDisplay: 'short',
+  }).format(number);
 };
 
 export const pageStyle = ` @page {

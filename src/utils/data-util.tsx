@@ -420,3 +420,9 @@ export const MonthKH: {
   November: 'វិច្ឆិកា',
   December: 'ធ្នូ',
 };
+
+export const PercentFilter: { [key: string]: number } = {
+  week: 0,
+  month: 1,
+  year: 2,
+};

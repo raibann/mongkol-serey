@@ -17,8 +17,16 @@ declare namespace IDashboard {
   interface IChart {
     charts: Chart[];
     reminder: Reminder[];
+    Percentage: Percentage;
   }
 
+  interface Percentage {
+    totalProfits: number[];
+    totalExpenses: number[];
+    totalOrders: number[];
+    totalTables: number[];
+    totalCustomer: (number | string)[];
+  }
   interface Chart {
     month: number;
     amount: number;
