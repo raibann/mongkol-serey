@@ -89,7 +89,7 @@ const DashboardCard = ({
             </ListItem>
           </Tooltip>
           {secondaryText && (
-            <Tooltip title={primaryTooltip} placement='top'>
+            <Tooltip title={secondaryTooltip} placement='top'>
               <ListItem
                 disableGutters
                 disablePadding
@@ -128,45 +128,47 @@ const DashboardCard = ({
           {icon}
         </Avatar>
       </Stack>
-      <Stack
-        direction={'row'}
-        spacing={0.5}
-        alignItems='center'
-        justifyContent={'flex-end'}
-      >
-        <Typography
-          variant='caption'
-          fontWeight={'bold'}
-          sx={{
-            color:
-              +value > 0
-                ? theme.palette.success.main
-                : theme.palette.error.main,
-          }}
+      {!isNaN(+value) && (
+        <Stack
+          direction={'row'}
+          spacing={0.5}
+          alignItems='center'
+          justifyContent={'flex-end'}
         >
-          {value.startsWith('-')
-            ? Intl.NumberFormat('en', {
-                maximumFractionDigits: 2,
-              }).format(+value.slice(1))
-            : Intl.NumberFormat('en', {
-                maximumFractionDigits: 2,
-              }).format(+value)}
-          %
-        </Typography>
-        <div>
-          {+value > 0 ? (
-            <ArrowUp size='12' color={theme.palette.success.main} />
-          ) : (
-            <ArrowDown size='12' color={theme.palette.error.main} />
-          )}
-        </div>
-        <Typography
-          variant='caption'
-          sx={{ color: theme.palette.text.secondary }}
-        >
-          than last {endTitle}
-        </Typography>
-      </Stack>
+          <Typography
+            variant='caption'
+            fontWeight={'bold'}
+            sx={{
+              color:
+                +value > 0
+                  ? theme.palette.success.main
+                  : theme.palette.error.main,
+            }}
+          >
+            {value.startsWith('-')
+              ? Intl.NumberFormat('en', {
+                  maximumFractionDigits: 2,
+                }).format(+value.slice(1))
+              : Intl.NumberFormat('en', {
+                  maximumFractionDigits: 2,
+                }).format(+value)}
+            %
+          </Typography>
+          <div>
+            {+value > 0 ? (
+              <ArrowUp size='12' color={theme.palette.success.main} />
+            ) : (
+              <ArrowDown size='12' color={theme.palette.error.main} />
+            )}
+          </div>
+          <Typography
+            variant='caption'
+            sx={{ color: theme.palette.text.secondary }}
+          >
+            than last {endTitle}
+          </Typography>
+        </Stack>
+      )}
     </Paper>
   );
 };
