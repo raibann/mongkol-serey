@@ -96,14 +96,17 @@ function FormExpense({
                     size='small'
                     sx={{
                       '& .MuiOutlinedInput-root': {
-                        bgcolor: (paidByColor as any)[
-                          getValues(`expenseRowData.${index}.paidBy`) || 'Cash'
-                        ],
+                        bgcolor:
+                          (paidByColor as any)[
+                            getValues(`expenseRowData.${index}.paidBy`)
+                          ] || theme.palette.common.white,
                         color:
                           getValues(`expenseRowData.${index}.paidBy`) !== ''
                             ? (theme) => theme.palette.common.white
-                            : (theme) => theme.palette.text.secondary,
-                        borderColor: (theme) => theme.palette.text.primary,
+                            : (theme) => theme.palette.text.primary,
+                        borderColor: (paidByColor as any)[
+                          getValues(`expenseRowData.${index}.paidBy`)
+                        ],
                       },
                     }}
                   />
