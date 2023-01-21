@@ -100,10 +100,11 @@ function FormExpense({
                           (paidByColor as any)[
                             getValues(`expenseRowData.${index}.paidBy`)
                           ] || theme.palette.common.white,
-                        color:
-                          getValues(`expenseRowData.${index}.paidBy`) !== ''
-                            ? (theme) => theme.palette.common.white
-                            : (theme) => theme.palette.text.primary,
+                        color: (paidByColor as any)[
+                          getValues(`expenseRowData.${index}.paidBy`)
+                        ]
+                          ? theme.palette.common.white
+                          : theme.palette.common.black,
                         borderColor: (paidByColor as any)[
                           getValues(`expenseRowData.${index}.paidBy`)
                         ],
