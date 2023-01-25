@@ -128,16 +128,12 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
           <TableBody>
             {quotData?.list.map((data, index) => (
               <TableRow key={index}>
-                <TableCell sx={{ textAlign: 'center' }}>1</TableCell>
-                <TableCell>abc</TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>abc</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>{index + 1}</TableCell>
+                <TableCell>{data.productName}</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>{data.qty}</TableCell>
+                <TableCell sx={{ textAlign: 'center' }}>{data.price}</TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
-                  {/* {Intl.NumberFormat().format(ls.price / ls.quantity)}$ */}
-                  abc
-                </TableCell>
-                <TableCell sx={{ textAlign: 'center' }}>
-                  {/* {Intl.NumberFormat().format(ls.price)}$ */}
-                  abc
+                  {data.subTotal}
                 </TableCell>
               </TableRow>
             ))}

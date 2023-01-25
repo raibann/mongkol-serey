@@ -44,11 +44,11 @@ const navigationUtil: Navigation = [
     toUrl: ROUTE_PATH.reminder,
     icon: <Notification size='24' variant='Bold' />,
   },
-  {
-    title: 'Stocks',
-    toUrl: ROUTE_PATH.stocks,
-    icon: <Box size='24' variant='Bold' />,
-  },
+  // {
+  //   title: 'Stocks',
+  //   toUrl: ROUTE_PATH.stocks,
+  //   icon: <Box size='24' variant='Bold' />,
+  // },
   // {
   //   title: 'Manage Users',
   // toUrl: ROUTE_PATH.manageusers,
