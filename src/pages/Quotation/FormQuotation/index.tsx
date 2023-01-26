@@ -47,14 +47,45 @@ export default function FormQuotation({
         }}
       >
         <Grid item xs={6}>
-          <LabelTextField label='Title'>
+          <LabelTextField label={isSmDown ? '' : 'Customer Name'}>
             <Controller
               control={control}
-              name={'title'}
+              name={'customerName'}
               defaultValue={''}
-              rules={{
-                required: true,
-              }}
+              render={({ field, fieldState: { error } }) => (
+                <StyledOutlinedTextField
+                  placeholder='Customer Name'
+                  size='small'
+                  error={Boolean(error)}
+                  {...field}
+                />
+              )}
+            />
+          </LabelTextField>
+        </Grid>
+        <Grid item xs={6}>
+          <LabelTextField label={isSmDown ? '' : 'Phone Number'}>
+            <Controller
+              control={control}
+              name={'phoneNumber'}
+              defaultValue={''}
+              render={({ field, fieldState: { error } }) => (
+                <StyledOutlinedTextField
+                  placeholder='Phone Number'
+                  size='small'
+                  error={Boolean(error)}
+                  {...field}
+                />
+              )}
+            />
+          </LabelTextField>
+        </Grid>
+        <Grid item xs={6}>
+          <LabelTextField label={isSmDown ? '' : 'Title'}>
+            <Controller
+              control={control}
+              name={'event'}
+              defaultValue={''}
               render={({ field, fieldState: { error } }) => (
                 <StyledOutlinedTextField
                   placeholder='Title'
@@ -67,14 +98,11 @@ export default function FormQuotation({
           </LabelTextField>
         </Grid>
         <Grid item xs={6}>
-          <LabelTextField label='Location'>
+          <LabelTextField label={isSmDown ? '' : 'Location'}>
             <Controller
               control={control}
               name={'location'}
               defaultValue={''}
-              rules={{
-                required: true,
-              }}
               render={({ field, fieldState: { error } }) => (
                 <StyledOutlinedTextField
                   placeholder='Location'
@@ -131,7 +159,7 @@ export default function FormQuotation({
             />
           </LabelTextField>
         </Grid>
-        <Grid item xs={12} mt={2}>
+        <Grid item xs={12} mt={2} sx={{ position: 'relative' }}>
           <Button
             variant='contained'
             color='secondary'

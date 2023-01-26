@@ -1,5 +1,8 @@
 import {
   Avatar,
+  Box,
+  Grid,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -18,38 +21,142 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
   ({ quotData }, ref) => {
     const theme = useTheme();
     return (
-      <div ref={ref}>
-        <Avatar
-          variant='square'
-          src={'images/mongkol_serey_logo_1000.png'}
-          alt='logo'
-          imgProps={{
-            sx: {
-              objectFit: 'contain',
-            },
-          }}
-          sx={{
-            mx: 'auto',
-            width: 167,
-            height: 'auto',
-            my: 2,
-          }}
-        />
-        <Typography fontFamily='Moul' noWrap lineHeight={2}>
-          ចុងភៅមង្គលសិរី
-        </Typography>
-        <Typography
-          fontFamily='Khmer Busra high'
-          lineHeight={2}
-          fontWeight='bold'
-        >
-          081951133 | 011951133
-        </Typography>
+      <Box ref={ref}>
+        <Grid container sx={{ mb: 4 }}>
+          <Grid item xs={7}>
+            <Stack
+              sx={{ height: '100%' }}
+              alignItems='flex-start'
+              // justifyContent='center'
+              spacing={0.5}
+            >
+              <Typography
+                fontWeight={'bold'}
+                fontFamily='Khmer Busra high'
+                fontSize={16}
+              >
+                មង្គលសិរីម្ហូប&តុរោងការ
+              </Typography>
+              <Stack direction={'row'} spacing={1.5}>
+                <Typography
+                  fontWeight={'bold'}
+                  fontFamily='Khmer Busra high'
+                  fontSize={16}
+                >
+                  អាស័យដ្ឋាន​៖
+                </Typography>
+                <Typography
+                  fontWeight={'bold'}
+                  fontFamily='Khmer Busra high'
+                  fontSize={16}
+                >
+                  បុរីឈូកវា០៣ ផ្លូវលេខ០៣ ផ្ទះលេខ៨២
+                </Typography>
+              </Stack>
+              <Stack direction={'row'} spacing={1.5}>
+                <Typography
+                  fontWeight={'bold'}
+                  fontFamily='Khmer Busra high'
+                  fontSize={16}
+                >
+                  ទូរស័ព្ទលេខ​៖
+                </Typography>
+                <Typography
+                  fontWeight={'bold'}
+                  fontFamily='Khmer Busra high'
+                  fontSize={16}
+                >
+                  +85581951133 | 011951133
+                </Typography>
+              </Stack>
+            </Stack>
+          </Grid>
+          <Grid item xs={5}>
+            <Avatar
+              variant='square'
+              src={'/images/mongkol_serey_logo_1000.png'}
+              alt='logo'
+              imgProps={{
+                sx: {
+                  objectFit: 'contain',
+                },
+              }}
+              sx={{
+                mx: 'auto',
+                width: 167,
+                height: 'auto',
+                my: 2,
+              }}
+            />
+            <Grid container>
+              <Grid item xs={4}>
+                <Typography
+                  whiteSpace={'nowrap'}
+                  fontFamily='Khmer Busra high'
+                  fontSize={16}
+                >
+                  អតិថិជន​
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <Typography fontFamily='Khmer Busra high' fontSize={16}>
+                  ​
+                  {`៖ ${
+                    quotData?.customerName || '...............................'
+                  }`}
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography
+                  whiteSpace={'nowrap'}
+                  fontFamily='Khmer Busra high'
+                  fontSize={16}
+                >
+                  ទូរស័ព្ទលេខ​
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <Typography fontFamily='Khmer Busra high' fontSize={16}>
+                  {`៖ ${
+                    quotData?.phoneNumber || '...............................'
+                  }`}
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography
+                  whiteSpace={'nowrap'}
+                  fontFamily='Khmer Busra high'
+                  fontSize={16}
+                >
+                  កម្មវិធី​
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <Typography fontFamily='Khmer Busra high' fontSize={16}>
+                  {`៖ ${quotData?.event || '...............................'}`}
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography
+                  whiteSpace={'nowrap'}
+                  fontFamily='Khmer Busra high'
+                  fontSize={16}
+                >
+                  ទីតាំង
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <Typography fontFamily='Khmer Busra high' fontSize={16}>
+                  {`៖ ${
+                    quotData?.location || '...............................'
+                  }`}
+                </Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
         <Typography textAlign={'center'} fontFamily='Moul' gutterBottom>
-          គម្រោងចំណាយកម្មវិធី{quotData?.title}
-        </Typography>
-        <Typography textAlign={'center'} fontFamily='Moul' gutterBottom>
-          {quotData?.location}
+          គម្រោងចំណាយកម្មវិធី
         </Typography>
 
         <Table
@@ -61,7 +168,7 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
               fontWeight: theme.typography.fontWeightBold,
               py: 1,
               color: 'black',
-              fontSize: 18,
+              fontSize: 16,
             },
             '& thead th': {
               textAlign: 'center',
@@ -133,7 +240,7 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
                 <TableCell sx={{ textAlign: 'center' }}>{data.qty}</TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>{data.price}</TableCell>
                 <TableCell sx={{ textAlign: 'center' }}>
-                  {data.subTotal}
+                  {data.subTotal > 0 ? data.subTotal : ''}
                 </TableCell>
               </TableRow>
             ))}
@@ -155,7 +262,9 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
                   variant='h6'
                   textAlign={'center'}
                 >
-                  {Intl.NumberFormat().format(quotData?.total || 0)}$
+                  {quotData?.total
+                    ? `${Intl.NumberFormat().format(quotData?.total)}$`
+                    : '...............................$'}
                 </Typography>
               </TableCell>
             </TableRow>
@@ -170,7 +279,7 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
         >
           ការចំណាយអាចមានការប្រែប្រួលអាស្រ័យលើការបត់បែនក្នុងកម្មវិធីជាក់ស្ដែង។
         </Typography>
-      </div>
+      </Box>
     );
   }
 );

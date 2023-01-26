@@ -5,7 +5,7 @@ import { Trash } from 'iconsax-react';
 import React, { useEffect } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { unitList } from 'utils/data-util';
-import { validatePatterns } from 'utils/validate-util';
+// import { validatePatterns } from 'utils/validate-util';
 import { IFormQuotation, ListProduct } from '..';
 
 export default function FormItems({
@@ -38,9 +38,9 @@ export default function FormItems({
           control={control}
           name={`list.${index}.productName`}
           defaultValue={data.productName}
-          rules={{
-            required: true,
-          }}
+          // rules={{
+          //   required: true,
+          // }}
           render={({ field, fieldState: { error } }) => (
             <StyledOutlinedTextField
               placeholder='Product Name'
@@ -55,13 +55,13 @@ export default function FormItems({
         <Controller
           control={control}
           name={`list.${index}.qty`}
-          rules={{
-            required: true,
-            pattern: {
-              value: validatePatterns.numberOnly,
-              message: 'Required only number',
-            },
-          }}
+          // rules={{
+          //   required: true,
+          //   pattern: {
+          //     value: validatePatterns.numberOnly,
+          //     message: 'Required only number',
+          //   },
+          // }}
           defaultValue={data.qty}
           render={({ field, fieldState: { error } }) => (
             <StyledOutlinedTextField
@@ -79,9 +79,9 @@ export default function FormItems({
           control={control}
           name={`list.${index}.unit`}
           defaultValue={data.unit}
-          rules={{
-            required: true,
-          }}
+          // rules={{
+          //   required: true,
+          // }}
           render={({ field: { onChange, ...rest }, fieldState: { error } }) => {
             return (
               <Autocomplete
@@ -114,13 +114,13 @@ export default function FormItems({
           control={control}
           name={`list.${index}.price`}
           defaultValue={data.price}
-          rules={{
-            required: true,
-            pattern: {
-              value: validatePatterns.numberOnly,
-              message: 'Required only number',
-            },
-          }}
+          // rules={{
+          //   required: true,
+          //   pattern: {
+          //     value: validatePatterns.numberOnly,
+          //     message: 'Required only number',
+          //   },
+          // }}
           render={({ field, fieldState: { error } }) => (
             <StyledOutlinedTextField
               placeholder='Price'

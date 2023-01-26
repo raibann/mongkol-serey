@@ -30,7 +30,7 @@ const DrawerContent = () => {
     <>
       <Avatar
         variant='square'
-        src={'images/mongkol_serey_logo_1000.png'}
+        src={'/images/mongkol_serey_logo_1000.png'}
         alt='logo'
         imgProps={{
           sx: {
