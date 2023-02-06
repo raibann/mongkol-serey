@@ -100,10 +100,7 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
               </Grid>
               <Grid item xs={8}>
                 <Typography fontFamily='Khmer Busra high' fontSize={16}>
-                  ​
-                  {`៖ ${
-                    quotData?.customerName || '...............................'
-                  }`}
+                  {`៖ ${quotData?.customerName || '....................'}`}
                 </Typography>
               </Grid>
               <Grid item xs={4}>
@@ -117,9 +114,7 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
               </Grid>
               <Grid item xs={8}>
                 <Typography fontFamily='Khmer Busra high' fontSize={16}>
-                  {`៖ ${
-                    quotData?.phoneNumber || '...............................'
-                  }`}
+                  {`៖ ${quotData?.phoneNumber || '....................'}`}
                 </Typography>
               </Grid>
               <Grid item xs={4}>
@@ -133,7 +128,7 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
               </Grid>
               <Grid item xs={8}>
                 <Typography fontFamily='Khmer Busra high' fontSize={16}>
-                  {`៖ ${quotData?.event || '...............................'}`}
+                  {`៖ ${quotData?.event || '....................'}`}
                 </Typography>
               </Grid>
               <Grid item xs={4}>
@@ -147,9 +142,7 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
               </Grid>
               <Grid item xs={8}>
                 <Typography fontFamily='Khmer Busra high' fontSize={16}>
-                  {`៖ ${
-                    quotData?.location || '...............................'
-                  }`}
+                  {`៖ ${quotData?.location || '....................'}`}
                 </Typography>
               </Grid>
             </Grid>
