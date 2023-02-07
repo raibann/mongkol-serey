@@ -67,11 +67,10 @@ const OrderItem = ({
   };
 
   const removeMenuItemHandler = (i: number) => {
-    const tmp = watch(`listMenu.${index}.menuItem`).filter((_, idx) => {
-      return idx !== i;
-    });
-    setMenuItems(tmp);
-    setValue(`listMenu.${index}.menuItem`, tmp);
+    const tmp = watch(`listMenu.${index}.menuItem`);
+    tmp.splice(i, 1);
+    setMenuItems([...tmp]);
+    setValue(`listMenu.${index}.menuItem`, [...tmp]);
   };
 
   return (

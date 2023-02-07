@@ -24,8 +24,8 @@ const DashboardCard = ({
   secondaryText,
   primaryReverse,
   secondaryReverse,
-  primaryTooltip,
-  secondaryTooltip,
+  primaryTooltip = '',
+  secondaryTooltip = '',
 }: {
   title: string;
   icon: React.ReactNode;
@@ -95,6 +95,7 @@ const DashboardCard = ({
                 disablePadding
                 sx={{
                   flexDirection: secondaryReverse ? 'row-reverse' : 'row',
+                  cursor: 'pointer',
                 }}
               >
                 <ListItemIcon

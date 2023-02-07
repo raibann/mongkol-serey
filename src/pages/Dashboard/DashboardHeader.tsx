@@ -5,6 +5,7 @@ import {
   List,
   ListItem,
   ListItemAvatar,
+  ListItemButton,
   ListItemText,
   ListSubheader,
   Menu,
@@ -32,6 +33,8 @@ import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import useResponsive from 'hook/useResponsive';
 import THEME_UTIL from 'utils/theme-util';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
 
 interface IDateRange {
   startDate: string;
@@ -120,6 +123,7 @@ const DashboardHeader = ({
 
   const { isSmDown } = useResponsive();
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -236,48 +240,54 @@ const DashboardHeader = ({
             reminderList?.map(
               (data) =>
                 moment().diff(data.date, 'years') === 1 && (
-                  <ListItem
-                    key={data.id}
-                    sx={{
-                      px: 0,
-                      pt: 0,
-                    }}
-                    secondaryAction={
-                      <Typography
-                        fontSize={14}
-                        color={theme.palette.success.main}
-                        fontWeight='bold'
-                      >
-                        Today
-                      </Typography>
+                  <ListItemButton
+                    onClick={() =>
+                      navigate(`${ROUTE_PATH.orders}?id=${data.id}`)
                     }
                   >
-                    <ListItemAvatar>
-                      <Avatar
-                        sx={{
-                          background: THEME_UTIL.goldGradientMain,
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {data.customer !== null ? (
-                          data.customer.customer_name.charAt(0).toUpperCase()
-                        ) : (
-                          <User
-                            color={theme.palette.common.white}
-                            variant='Bold'
-                          />
-                        )}
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={`Order ID: ${data.id} ~ ${data.type}`}
-                      secondary={
-                        data.customer === null
-                          ? 'No Customer'
-                          : data.customer.customer_name
+                    <ListItem
+                      key={data.id}
+                      sx={{
+                        px: 1,
+                        py: 0,
+                      }}
+                      secondaryAction={
+                        <Typography
+                          fontSize={14}
+                          color={theme.palette.success.main}
+                          fontWeight='bold'
+                        >
+                          Today
+                        </Typography>
                       }
-                    />
-                  </ListItem>
+                    >
+                      <ListItemAvatar>
+                        <Avatar
+                          sx={{
+                            background: THEME_UTIL.goldGradientMain,
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {data.customer !== null ? (
+                            data.customer.customer_name.charAt(0).toUpperCase()
+                          ) : (
+                            <User
+                              color={theme.palette.common.white}
+                              variant='Bold'
+                            />
+                          )}
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={`Order ID: ${data.id} ~ ${data.type}`}
+                        secondary={
+                          data.customer === null
+                            ? 'No Customer'
+                            : data.customer.customer_name
+                        }
+                      />
+                    </ListItem>
+                  </ListItemButton>
                 )
             )
           ) : (
@@ -285,6 +295,7 @@ const DashboardHeader = ({
               alignItems={'center'}
               justifyContent='center'
               height={'100%'}
+              spacing={1}
             >
               <BoxRemove size='48' color={theme.palette.error.main} />
               <Typography variant='h6' color='error'>

@@ -155,6 +155,8 @@ const Orders = () => {
           height: 'calc(100vh - 100px)',
           maxWidth: '100%',
           overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <Grid container p={2} rowSpacing={2}>
@@ -164,18 +166,12 @@ const Orders = () => {
               exclusive
               fullWidth
               size='small'
-              onChange={(
-                event: React.MouseEvent<HTMLElement, MouseEvent>,
-                value: any
-              ) => {
+              onChange={(_, value) => {
                 if (value !== null) {
                   setToggleValue(value);
                   setPage(1);
                 }
               }}
-              // sx={{
-              //   width: { xs: '100%', sm: '40%', md: '30%' },
-              // }}
             >
               <CusToggleButton value='pending'>Pending</CusToggleButton>
               <CusToggleButton value='complete'>Completed</CusToggleButton>
@@ -183,7 +179,7 @@ const Orders = () => {
             </ToggleButtonGroup>
           </Grid>
           <Grid item xs={12} sm={12} md={8}>
-            <Grid container columnSpacing={2}>
+            <Grid container columnSpacing={2} alignItems='center'>
               <Grid item xs={4} sm={6} md={8} lg={8} xl={10}>
                 <Stack
                   direction={'row'}
@@ -296,9 +292,8 @@ const Orders = () => {
         <TableContainer
           className='hide-scrollbar'
           sx={{
-            height: 'calc(100% - 48px - 56px)',
+            flexGrow: 1,
             overflow: 'auto',
-            pb: { xs: 15, md: 10, lg: 5 },
           }}
         >
           {isLoadingOrderList && loadingChangingState && !orderList ? (
@@ -375,18 +370,22 @@ const Orders = () => {
         <Stack
           alignItems='center'
           width='100%'
-          p={1}
+          p={1.5}
           sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            bgcolor: '#fff',
+            bgcolor: 'background.paper',
           }}
         >
           <Pagination
             count={orderList?.totalPage}
             page={page}
             onChange={handleChangePage}
+            color='primary'
+            variant='outlined'
+            sx={{
+              '& .MuiPaginationItem-root': {
+                borderWidth: 0,
+              },
+            }}
           />
         </Stack>
       </Paper>
@@ -449,7 +448,7 @@ const Orders = () => {
                 <ReactToPrint
                   pageStyle={pageStyle}
                   documentTitle={`${
-                    printer?.customer.customer_name || 'Default'
+                    printer?.customer?.customer_name || 'Default'
                   }-Booking-Invoice`}
                   trigger={() => (
                     <Button
@@ -471,7 +470,7 @@ const Orders = () => {
                 {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
                   <ReactToPrint
                     pageStyle={pageStyle}
-                    documentTitle={`${printer.customer.customer_name}-Final-Invoice`}
+                    documentTitle={`${printer?.customer?.customer_name}-Final-Invoice`}
                     trigger={() => (
                       <Button
                         variant='contained'
@@ -510,19 +509,18 @@ const Orders = () => {
         {!isSmDown && <Divider sx={{ borderWidth: '5px' }} />}
 
         {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
-          <>
-            <Box
-              sx={{
-                scale: '0.8',
-                pt: '100px',
-                pb: '100px',
-                display: isSmDown ? 'none' : 'block',
-              }}
-            >
-              <FinalInvoice ref={finalInvoiceRef} order={printer} />
-            </Box>
-          </>
+          <Box
+            sx={{
+              scale: '0.8',
+              pt: '100px',
+              pb: '100px',
+              display: isSmDown ? 'none' : 'block',
+            }}
+          >
+            <FinalInvoice ref={finalInvoiceRef} order={printer} />
+          </Box>
         )}
+
         {/* for small screen */}
         {isSmDown && (
           <>
@@ -536,7 +534,7 @@ const Orders = () => {
               <ReactToPrint
                 pageStyle={pageStyle}
                 documentTitle={`${
-                  printer?.customer.customer_name || 'Default'
+                  printer?.customer?.customer_name || 'Default'
                 }-Booking-Invoice`}
                 trigger={() => (
                   <Button
@@ -558,7 +556,7 @@ const Orders = () => {
               {printer?.finalInvoices && printer.finalInvoices.length > 0 && (
                 <ReactToPrint
                   pageStyle={pageStyle}
-                  documentTitle={`${printer.customer.customer_name}-Final-Invoice`}
+                  documentTitle={`${printer?.customer?.customer_name}-Final-Invoice`}
                   trigger={() => (
                     <Button
                       variant='contained'
@@ -587,7 +585,7 @@ const Orders = () => {
 
 export default Orders;
 
-const pageStyle = ` @page {
+const pageStyle = `@page {
   size: A4;
   margin:2.54cm;
 }

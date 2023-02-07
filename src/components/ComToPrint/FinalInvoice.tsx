@@ -50,7 +50,6 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
             <Stack
               sx={{ height: '100%' }}
               alignItems='flex-start'
-              // justifyContent='center'
               spacing={0.5}
             >
               <Typography
@@ -97,7 +96,7 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
           <Grid item xs={4}>
             <Avatar
               variant='square'
-              src={'images/mongkol_serey_logo_1000.png'}
+              src={'/images/mongkol_serey_logo_1000.png'}
               alt='logo'
               imgProps={{
                 sx: {

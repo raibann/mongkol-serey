@@ -77,15 +77,20 @@ const OrderTableBody = ({
                 <Typography variant='subtitle2' fontWeight={'light'}>
                   {item.customer?.customer_name || 'No Customer'}
                 </Typography>
-                {(!!item.customer?.telegram_name && (
-                  <Stack direction={'row'} alignItems='center' spacing={1}>
+                {(item.customer?.telegram_name && (
+                  <Stack
+                    direction='row'
+                    alignItems='center'
+                    justifyContent='start'
+                    spacing={1}
+                  >
                     <FaTelegram style={{ color: '#229ED9' }} />
                     <Typography variant='subtitle2' fontWeight={'light'}>
                       {item.customer?.telegram_name}
                     </Typography>
                   </Stack>
                 )) ||
-                  (!!item.customer?.facebook_name && (
+                  (item.customer?.facebook_name && (
                     <Stack direction={'row'} alignItems='center' spacing={1}>
                       <FaFacebookSquare style={{ color: '#4267B2' }} />
                       <Typography variant='subtitle2' fontWeight={'light'}>
@@ -96,11 +101,24 @@ const OrderTableBody = ({
               </Stack>
             </TableCell>
             <TableCell>
-              <Typography variant='subtitle2' fontWeight={'light'}>
-                <b>Event :</b> {moment(item.date).format('DD-MM-YYYY')}
+              <Typography variant='subtitle2' fontWeight='light' display='flex'>
+                <b
+                  style={{
+                    width: 55,
+                    textAlign: 'end',
+                    paddingRight: 4,
+                    letterSpacing: 0.55,
+                  }}
+                >
+                  Event :
+                </b>
+                {moment(item.date).format('DD-MM-YYYY')}
               </Typography>
-              <Typography variant='subtitle2' fontWeight={'light'}>
-                <b>Books :</b> {moment(item.bookingDate).format('DD-MM-YYYY')}
+              <Typography variant='subtitle2' fontWeight='light' display='flex'>
+                <b style={{ width: 55, textAlign: 'end', paddingRight: 4 }}>
+                  Books :
+                </b>
+                {moment(item.bookingDate).format('DD-MM-YYYY')}
               </Typography>
             </TableCell>
             <TableCell sx={{ maxWidth: 200 }}>

@@ -142,16 +142,19 @@ export default function Customers() {
           />
         </Stack>
       </PageHeader>
+
       <Container
         maxWidth={'xl'}
         sx={{
           height: [
-            'calc(100vh - 130px)',
-            'calc(100vh - 130px)',
+            'calc(100vh - 138px)',
+            'calc(100vh - 138px)',
             'calc(100vh - 85px)',
           ],
           position: 'relative',
           overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         {isLoadingCustList ? (
@@ -159,7 +162,7 @@ export default function Customers() {
             alignItems={'center'}
             justifyContent={'center'}
             sx={{
-              height: ['calc( 100vh - 130px)', 'calc( 100vh - 130px)', '100%'],
+              height: ['calc( 100vh - 138px)', 'calc( 100vh - 138px)', '100%'],
             }}
           >
             <CusLoading />
@@ -171,8 +174,8 @@ export default function Customers() {
             justifyContent='center'
             sx={{
               height: [
-                'calc( 100vh - 130px)',
-                'calc( 100vh - 130px)',
+                'calc( 100vh - 138px)',
+                'calc( 100vh - 138px)',
                 'calc( 100vh - 74px)',
               ],
             }}
@@ -185,7 +188,7 @@ export default function Customers() {
         ) : (
           <Box
             className='hide-scrollbar'
-            sx={{ overflow: 'auto', height: '100%' }}
+            sx={{ overflow: 'auto', flexGrow: 1 }}
           >
             <Grid container rowSpacing={4} columnSpacing={2} sx={{ mb: 10 }}>
               <CustCard
@@ -200,13 +203,15 @@ export default function Customers() {
             </Grid>
           </Box>
         )}
+
         <Stack
           alignItems='center'
           width='100%'
           sx={{
             position: 'absolute',
             bottom: 12,
-            mx: 'auto',
+            left: 0,
+            right: 0,
             zIndex: (theme) => theme.zIndex.appBar,
           }}
         >
@@ -214,7 +219,9 @@ export default function Customers() {
             sx={{
               p: 1.5,
               borderRadius: '50vh',
-              boxShadow: (theme) => theme.shadows[2],
+              maxWidth: 'fit',
+              border: 'dashed 1px',
+              borderColor: 'divider',
               bgcolor: (theme) => theme.palette.common.white,
             }}
           >
@@ -222,10 +229,18 @@ export default function Customers() {
               count={custList?.totalPage}
               page={page}
               onChange={handleChangePage}
+              color='primary'
+              variant='outlined'
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  borderWidth: 0,
+                },
+              }}
             />
           </Paper>
         </Stack>
       </Container>
+
       <ResponsiveDrawer
         open={!!openDrawer}
         onCloseDrawer={() => {}}

@@ -32,7 +32,7 @@ const EventToday = ({
                     cursor: 'pointer',
                   },
                 }}
-                onClick={() => navigate(`/${ROUTE_PATH.orders}?id=${item.id}`)}
+                onClick={() => navigate(`${ROUTE_PATH.orders}?id=${item.id}`)}
               >
                 <Paper sx={{ p: 3 }}>
                   <Typography

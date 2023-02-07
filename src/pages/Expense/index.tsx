@@ -86,6 +86,8 @@ export default function Expense() {
           maxWidth: '100%',
           overflow: 'hidden',
           position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <Stack
@@ -147,9 +149,8 @@ export default function Expense() {
         <TableContainer
           className='hide-scrollbar'
           sx={{
-            height: 'calc(100% - 48px - 56px)',
+            flexGrow: 1,
             overflow: 'auto',
-            pb: { xs: 15, md: 10, lg: 5 },
           }}
         >
           {expenseListReq.loading && !expenseList ? (
@@ -231,18 +232,22 @@ export default function Expense() {
         <Stack
           alignItems='center'
           width='100%'
-          p={1}
+          p={1.5}
           sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            bgcolor: '#fff',
+            bgcolor: 'background.paper',
           }}
         >
           <Pagination
             page={page}
             onChange={handleChangePage}
             count={expenseListReq.data?.totalPage}
+            color='primary'
+            variant='outlined'
+            sx={{
+              '& .MuiPaginationItem-root': {
+                borderWidth: 0,
+              },
+            }}
           />
         </Stack>
       </Paper>

@@ -42,7 +42,7 @@ const UpcomingEvent = ({
                       },
                     }}
                     onClick={() =>
-                      navigate(`/${ROUTE_PATH.orders}?id=${item.id}`)
+                      navigate(`${ROUTE_PATH.orders}?id=${item.id}`)
                     }
                   >
                     <Paper sx={{ p: 3 }}>

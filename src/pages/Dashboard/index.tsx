@@ -37,6 +37,8 @@ import AnniversaryItem from './AnniversaryItem';
 import DashboardHeader from './DashboardHeader';
 import PieChartComp from './PieChartComp';
 import { useRequest } from 'ahooks';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
 
 const Dashboard = () => {
   // use moment
@@ -50,6 +52,8 @@ const Dashboard = () => {
   });
   const [loadingDateRange, setLoadingDateRange] = useState(false);
   const { isMdDown } = useResponsive();
+  const navigate = useNavigate();
+
   // fetch total
   const {
     data: dashTotal,
@@ -343,7 +347,6 @@ const Dashboard = () => {
 
             <Paper
               sx={{
-                px: 3,
                 flexGrow: 1,
                 height: '100%',
                 overflow: 'auto',
@@ -352,6 +355,7 @@ const Dashboard = () => {
               <Typography
                 fontWeight={600}
                 fontSize={18}
+                px={3}
                 pt={3}
                 pb={2}
                 position='sticky'
@@ -372,19 +376,18 @@ const Dashboard = () => {
                     const getCount = moment.duration(
                       moment(data.date).diff(currentTime)
                     );
-                    // console.log(getCount);
-                    // let test = `${getCount.years()}y ${getCount.months()}m ${getCount.days()}d ${getCount.hours()}h`;
                     return (
                       <AnniversaryItem
-                        key={i}
-                        // daysLeft={1 - moment().diff(data.date, 'days')}
+                        key={data.id}
+                        onClick={() =>
+                          navigate(`${ROUTE_PATH.orders}?id=${data.id}`)
+                        }
                         daysLeft={getCount.days()}
                         name={
                           data.customer !== null
                             ? data.customer.customer_name
                             : 'No Customer'
                         }
-                        // name={test}
                         invoiceId={data.id}
                         eventType={data.type}
                       />

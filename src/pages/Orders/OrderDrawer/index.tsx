@@ -736,13 +736,12 @@ const OrderDrawer = ({
             </Button>
           </Stack>
 
-          {listMenu && listMenu.length > 0 ? (
-            <AnimatePresence>
-              {listMenu?.map((menu, i) => {
+          <AnimatePresence>
+            {listMenu && listMenu.length > 0 ? (
+              listMenu?.map((menu, i) => {
                 return (
                   <motion.div
                     key={orderItemId++}
-                    layout
                     initial={{
                       opacity: 0,
                       scale: 0.9,
@@ -767,25 +766,30 @@ const OrderDrawer = ({
                     />
                   </motion.div>
                 );
-              })}
-            </AnimatePresence>
-          ) : (
-            <Stack
-              alignItems='center'
-              spacing={2}
-              sx={{
-                mx: 3,
-                p: 2,
-                borderRadius: 2,
-                bgcolor: alpha(theme.palette.error.light, 0.1),
-              }}
-            >
-              <BoxRemove size='48' color={theme.palette.error.main} />
-              <Typography color='error' width='100%' textAlign='center' mb={3}>
-                {`No Order Item...`}
-              </Typography>
-            </Stack>
-          )}
+              })
+            ) : (
+              <Stack
+                alignItems='center'
+                spacing={2}
+                sx={{
+                  mx: 3,
+                  p: 2,
+                  borderRadius: 2,
+                  bgcolor: alpha(theme.palette.error.light, 0.1),
+                }}
+              >
+                <BoxRemove size='48' color={theme.palette.error.main} />
+                <Typography
+                  color='error'
+                  width='100%'
+                  textAlign='center'
+                  mb={3}
+                >
+                  {`No Order Item...`}
+                </Typography>
+              </Stack>
+            )}
+          </AnimatePresence>
 
           {orderDetail && (
             <>
