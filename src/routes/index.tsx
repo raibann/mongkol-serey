@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import { useAuthContext } from 'context/AuthContext';
+import Users from 'pages/Users';
 const Login = lazy(() => import('pages/Login'));
 const Dashboard = lazy(() => import('pages/Dashboard'));
 const Orders = lazy(() => import('pages/Orders'));
@@ -78,15 +79,14 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
-        {/* <Route
+        <Route
           path={ROUTE_PATH.manageusers}
           element={
-            <Suspense >
+            <Suspense>
               <Users />
             </Suspense>
           }
-        /> */}
-
+        />
         <Route
           path={ROUTE_PATH.root}
           element={<Navigate to={ROUTE_PATH.dashboard} />}

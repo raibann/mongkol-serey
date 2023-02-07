@@ -20,6 +20,7 @@ declare namespace IAuth {
     id: number;
     name: string;
   }
+
   interface IAuthBody {
     username: string;
     password: string;

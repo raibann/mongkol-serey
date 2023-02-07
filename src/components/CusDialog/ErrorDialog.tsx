@@ -15,7 +15,7 @@ interface IErrorDialog extends DialogProps {
   onCloseDialog: () => void;
 }
 const ErrorDialog = (props: IErrorDialog) => {
-  const { open, ...rest } = props;
+  const { open, errorMessage, errorTitle, ...rest } = props;
   return (
     <Dialog open={open} fullWidth maxWidth='xs' {...rest}>
       <DialogContent>
@@ -29,13 +29,13 @@ const ErrorDialog = (props: IErrorDialog) => {
             variant='h5'
             sx={{ fontWeight: (theme) => theme.typography.fontWeightBold }}
           >
-            {props.errorTitle || 'NOOB!'}
+            {errorTitle || 'NOOB!'}
           </Typography>
           <Typography
             sx={{ color: (theme) => theme.palette.error.main }}
             textAlign='center'
           >
-            {props.errorMessage}
+            {errorMessage}
           </Typography>
           <Button
             onClick={props.onCloseDialog}

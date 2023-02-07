@@ -78,6 +78,7 @@ const Orders = () => {
     refresh: refreshGetOrderList,
   } = useRequest(ORDER_API.getOrdersList, {
     manual: true,
+    loadingDelay: 1000,
     onSuccess: () => setLoadingChangingState(false),
     onError: () => setLoadingChangingState(false),
   });

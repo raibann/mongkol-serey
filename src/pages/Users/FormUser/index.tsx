@@ -1,25 +1,27 @@
-import { Container, Stack, Typography, Button, MenuItem } from '@mui/material';
+import { Container, Stack, Typography, Button } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import { useForm, Controller } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
-import { IUser, role } from 'utils/data-util';
-interface IRegister extends IUser {
+
+interface IRegister {
+  name: string;
+  username: string;
+  password: string;
   confirmPassowrd: string;
 }
 
 export default function FormUser({
-  handleOpenDrawer,
+  setOpenDrawer,
   openDrawer,
 }: {
-  handleOpenDrawer: (obj: 'Add' | 'Edit' | '') => void;
-  openDrawer: '' | 'Add' | 'Edit';
+  setOpenDrawer: (pre?: string | IAuth.User) => void;
+  openDrawer?: string | IAuth.User;
 }) {
   const { control, handleSubmit, watch } = useForm<IRegister>();
-  const handleAddUser = (data: IRegister) => {
-    // console.log('add new stocks:', data);
-  };
+  const handleAddUser = (data: IRegister) => {};
+
   return (
     <Container>
       <Stack
@@ -29,19 +31,34 @@ export default function FormUser({
         py={3}
       >
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
-          {openDrawer} New user
+          {openDrawer === 'add' ? 'Add New user' : 'Edit User'}
         </Typography>
-        <CusIconButton
-          color='error'
-          onClick={() => {
-            handleOpenDrawer('');
-          }}
-        >
+        <CusIconButton color='error' onClick={() => setOpenDrawer(undefined)}>
           <MdClose />
         </CusIconButton>
       </Stack>
       <form onSubmit={handleSubmit(handleAddUser)}>
-        <Stack spacing={4}>
+        <Stack spacing={3}>
+          <Controller
+            control={control}
+            name='name'
+            defaultValue=''
+            rules={{
+              required: { value: true, message: 'Name is required' },
+            }}
+            render={({ field, fieldState: { error } }) => {
+              return (
+                <LabelTextField label='Full Name'>
+                  <StyledOutlinedTextField
+                    placeholder='Enter Full Name'
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    {...field}
+                  />
+                </LabelTextField>
+              );
+            }}
+          />
           <Controller
             control={control}
             name='username'
@@ -110,9 +127,9 @@ export default function FormUser({
               );
             }}
           />
-          <Controller
+          {/* <Controller
             control={control}
-            name='role'
+            name='roles'
             defaultValue=''
             rules={{
               required: { value: true, message: 'Role is required' },
@@ -136,12 +153,10 @@ export default function FormUser({
                 </LabelTextField>
               );
             }}
-          />
+          /> */}
           <Stack direction={'row'} spacing={4} sx={{ pt: 3 }}>
             <Button
-              onClick={() => {
-                handleOpenDrawer('');
-              }}
+              onClick={() => setOpenDrawer(undefined)}
               variant='contained'
               fullWidth
               sx={{

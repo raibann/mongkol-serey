@@ -3,52 +3,48 @@ import {
   TableCell,
   TableHead,
   Stack,
-  Typography,
   Avatar,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Edit, Trash } from 'iconsax-react';
-import theme from 'theme/theme';
-import { IUser } from 'utils/data-util';
 import { changeBackground } from 'utils/validate-util';
+
 export const UserTableBody = ({
   props,
-  index,
   onEdit,
 }: {
-  props: IUser;
-  index: number;
-  onEdit: (obj: 'Add' | 'Edit' | '') => void;
+  props: IAuth.User;
+  onEdit: () => void;
 }) => {
   return (
     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-      <TableCell>{index + 1}</TableCell>
-      <TableCell>
+      <TableCell>{props.id}</TableCell>
+      <TableCell
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         <Avatar
           variant='rounded'
           sx={{ bgcolor: changeBackground(props.username) }}
         >
           {props.username.charAt(0).toUpperCase()}
         </Avatar>
+        <Typography ml={2}>{props.name}</Typography>
       </TableCell>
       <TableCell>{props.username}</TableCell>
-      <TableCell>{props.password}</TableCell>
-      <TableCell>{props.role}</TableCell>
-      <TableCell>
-        {props.status === 1 ? (
-          <Typography color={theme.palette.success.main}>Active</Typography>
-        ) : (
-          <Typography color={'error'}>Deactive</Typography>
-        )}
-      </TableCell>
+      <TableCell>{props.roles[0]?.name || 'No Role'}</TableCell>
+      <TableCell>{props.roles.length ? 'Active' : 'InActive'}</TableCell>
       <TableCell>
         <Stack direction={'row'} spacing={2}>
           <Tooltip title='Edit' arrow>
             <CusIconButton
               color='info'
               sx={{ p: 0.5, mx: 0.5 }}
-              onClick={() => onEdit('Edit')}
+              onClick={onEdit}
             >
               <Edit size={18} />
             </CusIconButton>
@@ -71,7 +67,6 @@ export const UserTableHead = () => {
         <TableCell sx={{ width: '10%' }}>No.</TableCell>
         <TableCell sx={{ width: '20%' }}>Profile</TableCell>
         <TableCell sx={{ width: '20%' }}>Username</TableCell>
-        <TableCell sx={{ width: '20%' }}>Password</TableCell>
         <TableCell sx={{ width: '10%' }}>Role</TableCell>
         <TableCell sx={{ width: '10%' }}>Status</TableCell>
         <TableCell sx={{ width: '10%' }}></TableCell>

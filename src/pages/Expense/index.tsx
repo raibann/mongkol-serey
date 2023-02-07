@@ -233,9 +233,7 @@ export default function Expense() {
           alignItems='center'
           width='100%'
           p={1.5}
-          sx={{
-            bgcolor: 'background.paper',
-          }}
+          sx={{ bgcolor: 'background.paper' }}
         >
           <Pagination
             page={page}
