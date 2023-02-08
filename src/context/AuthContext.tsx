@@ -39,17 +39,20 @@ export function AuthWrapper({ children }: IAuthWrapper) {
     getPersistedState(process.env.REACT_APP_PERSIST_AUTH) || { authed: false }
   );
 
-  const refreshTokenReq = useRequest(AUTH_API.refreshToken, {
-    manual: true,
-    onSuccess: (data) =>
+  const runRefreshToken = async () => {
+    try {
+      const res = await AUTH_API.refreshToken(
+        `Bearer ${authState.refreshToken}`
+      );
       setAuthState({
         authed: true,
-        refreshToken: data.refresh_token,
-        accessToken: data.access_token,
-      }),
-    onError: () =>
-      setAuthState({ refreshToken: '', accessToken: '', authed: false }),
-  });
+        refreshToken: res.refresh_token,
+        accessToken: res.access_token,
+      });
+    } catch {
+      setAuthState({ refreshToken: '', accessToken: '', authed: false });
+    }
+  };
 
   useEffect(() => {
     if (!initMount.current) {
@@ -57,7 +60,7 @@ export function AuthWrapper({ children }: IAuthWrapper) {
     } else {
       initMount.current = false;
       if (authState.authed && authState.refreshToken !== '') {
-        refreshTokenReq.run(`Bearer ${authState.refreshToken}`);
+        runRefreshToken();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

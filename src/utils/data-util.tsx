@@ -1,4 +1,7 @@
 import { IExpenseRow } from 'pages/Expense/ExpenseDialogs';
+import { GrUserAdmin } from 'react-icons/gr';
+import { MdOutlineAdminPanelSettings } from 'react-icons/md';
+import theme from 'theme/theme';
 
 const listTitle: IExpenseRow[] = [
   {
@@ -358,7 +361,31 @@ const eventList = [
 
 export { paidBy, paidByColor, listTitle, foodList, unitList, eventList };
 
-export const role = ['Admin', 'Manager', 'Staff'];
+export const role = [
+  {
+    id: 1,
+    name: 'ROLE_SUPER_ADMIN',
+    icon: (
+      <GrUserAdmin
+        size={24}
+        style={{
+          position: 'relative',
+          left: 2,
+        }}
+      />
+    ),
+  },
+  {
+    id: 2,
+    name: 'ROLE_ADMIN',
+    icon: (
+      <MdOutlineAdminPanelSettings
+        size={28}
+        color={theme.palette.common.black}
+      />
+    ),
+  },
+];
 
 export enum MonthRanks {
   'Jan' = 1,

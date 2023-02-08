@@ -8,6 +8,17 @@ import {
   TableBody,
   Drawer,
   Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Typography,
+  DialogActions,
+  Checkbox,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListItemIcon,
 } from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
@@ -20,6 +31,8 @@ import useResponsive from 'hook/useResponsive';
 import { useRequest } from 'ahooks';
 import USER_API from 'api/user';
 import { CusLoading } from 'components/CusLoading';
+import { role } from 'utils/data-util';
+import { GiGearHammer } from 'react-icons/gi';
 
 export default function Users() {
   // Varaibles
@@ -27,13 +40,38 @@ export default function Users() {
 
   // States
   const [openDrawer, setOpenDrawer] = useState<string | IAuth.User>();
+  const [openRole, setOpenRole] = useState(-1);
+  const [search, setSearch] = useState('');
 
   // ahooks
   const {
     data: userListResponse,
     loading: loadingGetUserList,
-    mutate: mutateUserList,
+    refresh: refreshUserList,
   } = useRequest(USER_API.getUserList);
+  const { run: addRoleToUser, loading: loadingAddRoleToUser } = useRequest(
+    USER_API.addRoleToUser,
+    {
+      manual: true,
+      onSuccess: refreshUserList,
+    }
+  );
+
+  // Response Variables
+  const userList = userListResponse?.filter(
+    (e) =>
+      e.username.toLowerCase().includes(search) ||
+      e.name.toLowerCase().includes(search)
+  );
+
+  // Methods
+  const onCheckRole = (name: string) => {
+    if (!userListResponse) return;
+    addRoleToUser({
+      roleName: name,
+      username: userListResponse[openRole]?.username,
+    });
+  };
 
   return (
     <>
@@ -74,19 +112,8 @@ export default function Users() {
             {isMdDown ? 'New' : 'Add New'}
           </Button>
           <CusTextField
-            // onChange={(e) => {
-            //   if (!!e.currentTarget.value) {
-            //     let tmp = searchProduct.filter(
-            //       (el) =>
-            //         el.username
-            //           .toLowerCase()
-            //           .indexOf(e.currentTarget.value.toLowerCase()) !== -1
-            //     );
-            //     setSearchProduct(tmp);
-            //   } else {
-            //     setSearchProduct(UserData);
-            //   }
-            // }}
+            value={search}
+            onChange={(e) => setSearch(e.target.value?.toLowerCase())}
             placeholder='Search...'
             size='small'
             InputProps={{
@@ -122,12 +149,14 @@ export default function Users() {
             >
               <UserTableHead />
               <TableBody>
-                {userListResponse?.map((data, i) => {
+                {userList?.map((data, i) => {
                   return (
                     <UserTableBody
+                      key={data.id}
                       props={data}
-                      key={i}
                       onEdit={() => setOpenDrawer(data)}
+                      onAddRole={() => setOpenRole(i)}
+                      onSuccess={refreshUserList}
                     />
                   );
                 })}
@@ -139,14 +168,75 @@ export default function Users() {
 
       <Drawer
         open={!!openDrawer}
-        onClose={() => {
-          setOpenDrawer('');
-        }}
+        onClose={() => setOpenDrawer(undefined)}
         anchor={'right'}
         PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
       >
-        <FormUser {...{ setOpenDrawer, openDrawer }} />
+        <FormUser
+          {...{ setOpenDrawer, openDrawer }}
+          onSuccess={refreshUserList}
+        />
       </Drawer>
+
+      <Dialog open={openRole !== -1} onClose={() => setOpenRole(-1)}>
+        <DialogTitle
+          component='div'
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            px: 2,
+          }}
+        >
+          <Typography variant='h6'>User Roles</Typography>
+          <Button startIcon={<GiGearHammer />} sx={{ textTransform: 'none' }}>
+            Banned Account
+          </Button>
+        </DialogTitle>
+        <DialogContent sx={{ width: 500, px: 0 }}>
+          <List sx={{ width: '100%' }}>
+            {role.map((value) => {
+              return (
+                <ListItem
+                  key={value.id}
+                  secondaryAction={
+                    <Checkbox
+                      edge='start'
+                      disabled={loadingAddRoleToUser}
+                      onClick={() => onCheckRole(value.name)}
+                      checked={
+                        userListResponse && userListResponse[openRole]
+                          ? userListResponse[openRole].roles?.findIndex(
+                              (e) => e.name === value.name
+                            ) !== -1
+                          : false
+                      }
+                    />
+                  }
+                  disablePadding
+                >
+                  <ListItemButton
+                    disabled={loadingAddRoleToUser}
+                    onClick={() => onCheckRole(value.name)}
+                  >
+                    <ListItemIcon>{value.icon}</ListItemIcon>
+                    <ListItemText primary={value.name} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setOpenRole(-1)}
+            variant='contained'
+            sx={{ color: 'common.white' }}
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

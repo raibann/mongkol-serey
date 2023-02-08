@@ -37,9 +37,9 @@ export const ROUTE_API = {
   deleteStock: '/api/stock/v1/delete/:id',
 
   userList: '/api/auth/v1/users',
-  addNewUser: '/api/auth/v1/users/save',
-  updateUser: '/api/auth/v1/users/update/:id',
-  deleteUser: '/api/auth/v1/users/delete/:id',
+  addNewUser: '/api/auth/v1/user/save',
+  updateUser: '/api/auth/v1/user/update/:id',
+  deleteUser: '/api/auth/v1/user/delete/:id',
   saveRole: '/api/auth/v1/role/save',
   addRoleToUser: '/api/auth/v1/role/adduser',
 };

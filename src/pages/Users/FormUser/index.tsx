@@ -1,11 +1,16 @@
+import { LoadingButton } from '@mui/lab';
 import { Container, Stack, Typography, Button } from '@mui/material';
+import { useRequest } from 'ahooks';
+import USER_API from 'api/user';
 import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
+import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
 
 interface IRegister {
+  id?: number;
   name: string;
   username: string;
   password: string;
@@ -15,12 +20,39 @@ interface IRegister {
 export default function FormUser({
   setOpenDrawer,
   openDrawer,
+  onSuccess,
 }: {
+  onSuccess?: () => void;
   setOpenDrawer: (pre?: string | IAuth.User) => void;
   openDrawer?: string | IAuth.User;
 }) {
-  const { control, handleSubmit, watch } = useForm<IRegister>();
-  const handleAddUser = (data: IRegister) => {};
+  // ahooks
+  const { run, loading } = useRequest(USER_API.saveUser, {
+    manual: true,
+    onSuccess: () => {
+      onSuccess && onSuccess();
+      setOpenDrawer(undefined);
+    },
+  });
+
+  const { control, handleSubmit, watch, setValue } = useForm<IRegister>();
+
+  // useEffect
+  useEffect(() => {
+    if (openDrawer && openDrawer !== 'add') {
+      const data = openDrawer as IAuth.User;
+      setValue('id', data.id);
+      setValue('name', data.name);
+      setValue('username', data.username);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Methods
+  const handleAddUser = (data: IRegister) => {
+    const { confirmPassowrd, ...rest } = data;
+    run(rest);
+  };
 
   return (
     <Container>
@@ -46,14 +78,24 @@ export default function FormUser({
             rules={{
               required: { value: true, message: 'Name is required' },
             }}
-            render={({ field, fieldState: { error } }) => {
+            render={({
+              field: { onChange, ...rest },
+              fieldState: { error },
+            }) => {
               return (
                 <LabelTextField label='Full Name'>
                   <StyledOutlinedTextField
                     placeholder='Enter Full Name'
+                    onChange={(e) => {
+                      onChange(e);
+                      setValue(
+                        'username',
+                        e.target.value?.toLowerCase().replace(/\s/g, '')
+                      );
+                    }}
                     error={Boolean(error)}
                     helperText={error?.message}
-                    {...field}
+                    {...rest}
                   />
                 </LabelTextField>
               );
@@ -83,13 +125,18 @@ export default function FormUser({
             control={control}
             name='password'
             rules={{
-              required: { value: true, message: 'Passowrd is required' },
+              required: { value: true, message: 'Password is required' },
+              minLength: {
+                value: 6,
+                message: 'Password must be 6 characters long',
+              },
             }}
             defaultValue=''
             render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Password'>
                   <StyledOutlinedTextField
+                    type='password'
                     placeholder='Enter password'
                     error={Boolean(error)}
                     helperText={error?.message}
@@ -118,6 +165,7 @@ export default function FormUser({
               return (
                 <LabelTextField label='Confirm password'>
                   <StyledOutlinedTextField
+                    type='password'
                     placeholder='Enter confirm password'
                     error={Boolean(error)}
                     helperText={error?.message}
@@ -127,33 +175,7 @@ export default function FormUser({
               );
             }}
           />
-          {/* <Controller
-            control={control}
-            name='roles'
-            defaultValue=''
-            rules={{
-              required: { value: true, message: 'Role is required' },
-            }}
-            render={({ field, fieldState: { error } }) => {
-              return (
-                <LabelTextField label='Role'>
-                  <StyledOutlinedTextField
-                    {...field}
-                    select
-                    error={Boolean(error)}
-                    helperText={error?.message}
-                    label='Select a role'
-                  >
-                    {role.map((data, i) => (
-                      <MenuItem key={i} value={data}>
-                        {data}
-                      </MenuItem>
-                    ))}
-                  </StyledOutlinedTextField>
-                </LabelTextField>
-              );
-            }}
-          /> */}
+
           <Stack direction={'row'} spacing={4} sx={{ pt: 3 }}>
             <Button
               onClick={() => setOpenDrawer(undefined)}
@@ -170,7 +192,8 @@ export default function FormUser({
             >
               Cancel
             </Button>
-            <Button
+            <LoadingButton
+              loading={loading}
               type='submit'
               variant='contained'
               fullWidth
@@ -183,7 +206,7 @@ export default function FormUser({
               }}
             >
               Save
-            </Button>
+            </LoadingButton>
           </Stack>
         </Stack>
       </form>

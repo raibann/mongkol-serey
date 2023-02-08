@@ -57,13 +57,7 @@ export default function Reminder() {
         </Stack>
       ) : (
         <Container maxWidth='xl'>
-          <Typography variant='h6' sx={{ pb: 2 }}>
-            Anniversary today
-          </Typography>
           <EventToday listItem={reminderList} />
-          <Typography variant='h6' sx={{ py: 2 }}>
-            Upcoming Anniversary
-          </Typography>
           <UpcomingEvent listItem={reminderList} />
         </Container>
       )}
