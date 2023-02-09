@@ -30,6 +30,7 @@ export default function Expense() {
   // useRequests
   const expenseListReq = useRequest(EXPENSE_API.getExpense, {
     manual: true,
+    loadingDelay: 1000,
   });
   const expenseSearchReq = useRequest(expenseListReq.runAsync, {
     manual: true,

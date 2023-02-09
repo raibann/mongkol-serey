@@ -11,6 +11,7 @@ import {
   InputAdornment,
   Pagination,
   Paper,
+  Popover,
   Stack,
   Table,
   TableBody,
@@ -35,9 +36,9 @@ import {
   ArrowLeft2,
   BoxRemove,
   Calculator,
+  FilterSearch,
   NoteFavorite,
   Printer,
-  SearchNormal1,
 } from 'iconsax-react';
 import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
@@ -63,8 +64,9 @@ const Orders = () => {
   const [newOrder, setNewOrder] = useState(false);
   const [loadingChangingState, setLoadingChangingState] = useState(false);
   const [printer, setPrinter] = useState<IOrder.Order>();
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [searchData, setSearchData] = useState('');
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [draft, setDraft] = useState<Draft | undefined>(
     getPersistedState(`${process.env.REACT_APP_PERSIST_DRAFT}`)
   );
@@ -181,7 +183,7 @@ const Orders = () => {
           </Grid>
           <Grid item xs={12} sm={12} md={8}>
             <Grid container columnSpacing={2} alignItems='center'>
-              <Grid item xs={4} sm={6} md={8} lg={8} xl={10}>
+              <Grid item xs={4} sm={6} md={8} lg={8} xl={9}>
                 <Stack
                   direction={'row'}
                   spacing={2}
@@ -256,7 +258,7 @@ const Orders = () => {
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={8} sm={6} md={4} lg={4} xl={2}>
+              <Grid item xs={8} sm={6} md={4} lg={4} xl={3}>
                 <CusTextField
                   placeholder='Search...'
                   size='small'
@@ -277,10 +279,15 @@ const Orders = () => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>
-                        <SearchNormal1
-                          size='20'
-                          color={theme.palette.primary.main}
-                        />
+                        <IconButton
+                          onClick={(e) => setAnchorEl(e.currentTarget)}
+                          sx={{ mr: -1 }}
+                        >
+                          <FilterSearch
+                            size='20'
+                            color={theme.palette.primary.main}
+                          />
+                        </IconButton>
                       </InputAdornment>
                     ),
                   }}
@@ -390,6 +397,23 @@ const Orders = () => {
           />
         </Stack>
       </Paper>
+
+      <Popover
+        id='filter-order'
+        open={!!anchorEl}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        The content of the Popover.
+      </Popover>
 
       <Drawer
         open={newOrder || orderDetail !== undefined}

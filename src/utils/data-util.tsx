@@ -365,6 +365,7 @@ export const role = [
   {
     id: 1,
     name: 'ROLE_SUPER_ADMIN',
+    description: 'Has access to everything',
     icon: (
       <GrUserAdmin
         size={24}
@@ -378,6 +379,7 @@ export const role = [
   {
     id: 2,
     name: 'ROLE_ADMIN',
+    description: 'No access to user management',
     icon: (
       <MdOutlineAdminPanelSettings
         size={28}

@@ -373,6 +373,7 @@ const DashboardHeader = ({
                 color: (theme) => theme.palette.common.white,
                 borderRadius: 2,
                 boxShadow: 0,
+                py: 1,
               }}
             >
               Confirm

@@ -33,6 +33,7 @@ import USER_API from 'api/user';
 import { CusLoading } from 'components/CusLoading';
 import { role } from 'utils/data-util';
 import { GiGearHammer } from 'react-icons/gi';
+import Unauthorized from 'components/Unauthorized';
 
 export default function Users() {
   // Varaibles
@@ -47,6 +48,7 @@ export default function Users() {
   const {
     data: userListResponse,
     loading: loadingGetUserList,
+    error: errorGetUserList,
     refresh: refreshUserList,
   } = useRequest(USER_API.getUserList);
   const { run: addRoleToUser, loading: loadingAddRoleToUser } = useRequest(
@@ -77,94 +79,101 @@ export default function Users() {
     <>
       <PageHeader pageTitle='Users' />
 
-      <Paper
-        elevation={1}
-        sx={{
-          mx: 2,
-          borderRadius: 4,
-          height: 'calc(100vh - 100px)',
-          maxWidth: '100%',
-          overflow: 'hidden',
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Stack
-          direction='row'
-          justifyContent='space-between'
-          alignItems='center'
-          sx={{ width: '100%', p: 2 }}
-          spacing={2}
+      {errorGetUserList ? (
+        <Unauthorized />
+      ) : (
+        <Paper
+          elevation={1}
+          sx={{
+            mx: 2,
+            borderRadius: 4,
+            height: 'calc(100vh - 100px)',
+            maxWidth: '100%',
+            overflow: 'hidden',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
         >
-          <Button
-            variant='contained'
-            startIcon={<UserAdd />}
-            sx={{
-              color: theme.palette.common.white,
-              boxShadow: theme.shadows[1],
-              borderRadius: 2,
-              whiteSpace: 'nowrap',
-              height: 40,
-            }}
-            onClick={() => setOpenDrawer('add')}
+          <Stack
+            direction='row'
+            justifyContent='space-between'
+            alignItems='center'
+            sx={{ width: '100%', p: 2 }}
+            spacing={2}
           >
-            {isMdDown ? 'New' : 'Add New'}
-          </Button>
-          <CusTextField
-            value={search}
-            onChange={(e) => setSearch(e.target.value?.toLowerCase())}
-            placeholder='Search...'
-            size='small'
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <SearchNormal1 size='20' color={theme.palette.primary.main} />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Stack>
-
-        {loadingGetUserList ? (
-          <Box flexGrow={1} display='grid' sx={{ placeItems: 'center' }}>
-            <CusLoading />
-          </Box>
-        ) : (
-          <TableContainer
-            sx={{
-              overflow: 'auto',
-              flexGrow: 1,
-            }}
-          >
-            <Table
-              stickyHeader
+            <Button
+              variant='contained'
+              startIcon={<UserAdd />}
               sx={{
-                '& thead tr th': {
-                  background: (theme) => theme.palette.background.paper,
-                  fontWeight: '600',
-                  whiteSpace: 'nowrap',
-                },
+                color: theme.palette.common.white,
+                boxShadow: theme.shadows[1],
+                borderRadius: 2,
+                whiteSpace: 'nowrap',
+                height: 40,
+              }}
+              onClick={() => setOpenDrawer('add')}
+            >
+              {isMdDown ? 'New' : 'Add New'}
+            </Button>
+            <CusTextField
+              value={search}
+              onChange={(e) => setSearch(e.target.value?.toLowerCase())}
+              placeholder='Search...'
+              size='small'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <SearchNormal1
+                      size='20'
+                      color={theme.palette.primary.main}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Stack>
+
+          {loadingGetUserList ? (
+            <Box flexGrow={1} display='grid' sx={{ placeItems: 'center' }}>
+              <CusLoading />
+            </Box>
+          ) : (
+            <TableContainer
+              sx={{
+                overflow: 'auto',
+                flexGrow: 1,
               }}
             >
-              <UserTableHead />
-              <TableBody>
-                {userList?.map((data, i) => {
-                  return (
-                    <UserTableBody
-                      key={data.id}
-                      props={data}
-                      onEdit={() => setOpenDrawer(data)}
-                      onAddRole={() => setOpenRole(i)}
-                      onSuccess={refreshUserList}
-                    />
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </Paper>
+              <Table
+                stickyHeader
+                sx={{
+                  '& thead tr th': {
+                    background: (theme) => theme.palette.background.paper,
+                    fontWeight: '600',
+                    whiteSpace: 'nowrap',
+                  },
+                }}
+              >
+                <UserTableHead />
+                <TableBody>
+                  {userList?.map((data, i) => {
+                    return (
+                      <UserTableBody
+                        key={data.id}
+                        props={data}
+                        onEdit={() => setOpenDrawer(data)}
+                        onAddRole={() => setOpenRole(i)}
+                        onSuccess={refreshUserList}
+                      />
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Paper>
+      )}
 
       <Drawer
         open={!!openDrawer}
@@ -220,7 +229,10 @@ export default function Users() {
                     onClick={() => onCheckRole(value.name)}
                   >
                     <ListItemIcon>{value.icon}</ListItemIcon>
-                    <ListItemText primary={value.name} />
+                    <ListItemText
+                      primary={value.name}
+                      secondary={value.description}
+                    />
                   </ListItemButton>
                 </ListItem>
               );

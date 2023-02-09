@@ -8,6 +8,7 @@ import {
   Chip,
   Tooltip,
   alpha,
+  Button,
 } from '@mui/material';
 import moment from 'moment';
 import theme from 'theme/theme';
@@ -73,8 +74,14 @@ const OrderTableBody = ({
           >
             <TableCell>{item.id}</TableCell>
             <TableCell>
-              <Stack direction={'column'}>
-                <Typography variant='subtitle2' fontWeight={'light'}>
+              <Stack direction='column'>
+                <Typography
+                  color={
+                    item.customer?.deletedAt !== null ? 'error' : undefined
+                  }
+                  variant='subtitle2'
+                  fontWeight={'light'}
+                >
                   {item.customer?.customer_name || 'No Customer'}
                 </Typography>
                 {(item.customer?.telegram_name && (
@@ -83,9 +90,27 @@ const OrderTableBody = ({
                     alignItems='center'
                     justifyContent='start'
                     spacing={1}
+                    component={Button}
+                    onClick={() =>
+                      window.open(
+                        `//t.me/+855${item.customer?.telegram_name
+                          .substring(1)
+                          .replaceAll(' ', '')}`
+                      )
+                    }
+                    p={0}
+                    disableRipple
+                    maxWidth='min-content'
+                    whiteSpace='nowrap'
                   >
                     <FaTelegram style={{ color: '#229ED9' }} />
-                    <Typography variant='subtitle2' fontWeight={'light'}>
+                    <Typography
+                      color={
+                        item.customer?.deletedAt !== null ? 'error' : undefined
+                      }
+                      variant='subtitle2'
+                      fontWeight={'light'}
+                    >
                       {item.customer?.telegram_name}
                     </Typography>
                   </Stack>
@@ -93,7 +118,15 @@ const OrderTableBody = ({
                   (item.customer?.facebook_name && (
                     <Stack direction={'row'} alignItems='center' spacing={1}>
                       <FaFacebookSquare style={{ color: '#4267B2' }} />
-                      <Typography variant='subtitle2' fontWeight={'light'}>
+                      <Typography
+                        color={
+                          item.customer?.deletedAt !== null
+                            ? 'error'
+                            : undefined
+                        }
+                        variant='subtitle2'
+                        fontWeight={'light'}
+                      >
                         {item.customer?.facebook_name}
                       </Typography>
                     </Stack>
