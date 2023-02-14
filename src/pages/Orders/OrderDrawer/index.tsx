@@ -17,7 +17,7 @@ import {
 import { CustomerInput } from 'pages/Customer/CustForm/CustomerForm';
 import { BsPlus } from 'react-icons/bs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BoxRemove, Trash } from 'iconsax-react';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { CusIconButton } from 'components/CusIconButton';
@@ -44,6 +44,7 @@ import { persistState, removePersistedState } from 'utils/persist-util';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRequest } from 'ahooks';
 import { HiOutlineFolderRemove } from 'react-icons/hi';
+import CusTextField from 'components/CusTextField';
 
 export interface IOrderForm {
   orderId?: number;
@@ -109,6 +110,7 @@ const OrderDrawer = ({
     },
     onError: () => setAlertDialog(true),
   });
+  const menuListReq = useRequest(ORDER_API.getmenuList);
   const expenseActionReq = useRequest(EXPENSE_API.addExpense, {
     manual: true,
     onSuccess: () => onActionSuccess(),
@@ -140,7 +142,6 @@ const OrderDrawer = ({
 
   // Variables
   let orderItemId = 0;
-  let customerRef = useRef(orderDetail?.customer || draft?.customer);
 
   const onSubmit: SubmitHandler<
     IOrderForm & CustomerInput & FinalInvoiceInput
@@ -402,32 +403,37 @@ const OrderDrawer = ({
           <Stack px={3} spacing={4}>
             <Stack spacing={4} direction='row'>
               <LabelTextField label='Customer'>
-                <Autocomplete
-                  disableClearable
-                  openOnFocus
-                  loading={customerListReq.loading}
-                  defaultValue={customerRef.current}
-                  onChange={(e, value) => {
-                    setSelectedCustomer(value);
-                  }}
-                  renderInput={(params) => (
-                    <StyledOutlinedTextField
-                      placeholder='Select Customer'
-                      {...params}
-                    />
-                  )}
-                  getOptionLabel={(option) => option?.customer_name || ''}
-                  renderOption={(props, option) => {
-                    return (
-                      option && (
-                        <MenuItem {...props} key={option.id}>
-                          {`${option?.id}. ${option?.customer_name}`}
-                        </MenuItem>
-                      )
-                    );
-                  }}
-                  options={customerListReq.data?.data || []}
-                />
+                {!customerListReq.loading && !!customerListReq.data ? (
+                  <Autocomplete
+                    disableClearable
+                    openOnFocus
+                    loading={customerListReq.loading}
+                    value={selectedCustomer}
+                    onChange={(e, value) => {
+                      setSelectedCustomer(value);
+                    }}
+                    renderInput={(params) => (
+                      <StyledOutlinedTextField
+                        placeholder='Select Customer'
+                        {...params}
+                      />
+                    )}
+                    getOptionLabel={(option) => option?.customer_name || ''}
+                    renderOption={(props, option) => {
+                      return (
+                        option && (
+                          <MenuItem {...props} key={option.id}>
+                            {`${option?.id}. ${option?.customer_name}`}
+                          </MenuItem>
+                        )
+                      );
+                    }}
+                    isOptionEqualToValue={() => true}
+                    options={customerListReq.data.data}
+                  />
+                ) : (
+                  <CusTextField />
+                )}
               </LabelTextField>
             </Stack>
 
@@ -761,6 +767,7 @@ const OrderDrawer = ({
                   >
                     <OrderItem
                       index={i}
+                      menuListReq={menuListReq}
                       menuItemsP={menu.menuItem}
                       onRemoveOrder={() => deleteListOrderHandler(i)}
                     />

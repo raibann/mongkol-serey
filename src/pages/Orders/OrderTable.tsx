@@ -109,7 +109,7 @@ const OrderTableBody = ({
                         item.customer?.deletedAt !== null ? 'error' : undefined
                       }
                       variant='subtitle2'
-                      fontWeight={'light'}
+                      fontWeight='light'
                     >
                       {item.customer?.telegram_name}
                     </Typography>

@@ -35,5 +35,9 @@ const ORDER_API = {
     );
     return res;
   },
+  getmenuList: async () => {
+    const res: IMenuList.IMenu[] = await HttpUtil.get(ROUTE_API.menuList);
+    return res;
+  },
 };
 export default ORDER_API;

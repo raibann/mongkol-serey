@@ -9,13 +9,16 @@ import {
   Autocomplete,
   alpha,
 } from '@mui/material';
+import { useRequest } from 'ahooks';
+import { Result } from 'ahooks/lib/useRequest/src/types';
+import ORDER_API from 'api/order';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import { Trash } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
-import { foodList, unitList } from 'utils/data-util';
+import { unitList } from 'utils/data-util';
 import { validatePatterns } from 'utils/validate-util';
 import { IOrderForm } from '.';
 
@@ -25,10 +28,12 @@ interface IMenuItems {
 }
 
 const OrderItem = ({
+  menuListReq,
   menuItemsP,
-  onRemoveOrder,
   index,
+  onRemoveOrder,
 }: {
+  menuListReq: Result<IMenuList.IMenu[], []>;
   menuItemsP: IMenuItems[];
   index: number;
   onRemoveOrder: () => void;
@@ -317,6 +322,8 @@ const OrderItem = ({
                         freeSolo
                         disableClearable
                         openOnFocus
+                        loading={menuListReq.loading}
+                        loadingText='Loading...'
                         id='foodList'
                         size='small'
                         sx={{ width: '100%' }}
@@ -340,7 +347,12 @@ const OrderItem = ({
                             {...params}
                           />
                         )}
-                        options={foodList.map((data) => data)}
+                        isOptionEqualToValue={() => true}
+                        options={
+                          menuListReq.data
+                            ? menuListReq.data?.map((data) => data.title)
+                            : []
+                        }
                       />
                     );
                   }}

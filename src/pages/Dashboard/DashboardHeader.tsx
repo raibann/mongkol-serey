@@ -241,12 +241,12 @@ const DashboardHeader = ({
               (data) =>
                 moment().diff(data.date, 'years') === 1 && (
                   <ListItemButton
+                    key={data.id}
                     onClick={() =>
                       navigate(`${ROUTE_PATH.orders}?id=${data.id}`)
                     }
                   >
                     <ListItem
-                      key={data.id}
                       sx={{
                         px: 1,
                         py: 0,
