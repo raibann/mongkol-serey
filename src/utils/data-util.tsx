@@ -243,6 +243,7 @@ const listTitle: IExpenseRow[] = [
     other: '',
   },
 ];
+
 const paidBy = [
   'ACLEDA',
   'ABA',

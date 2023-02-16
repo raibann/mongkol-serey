@@ -6,12 +6,16 @@ import {
   DialogTitle,
   Divider,
   Drawer,
+  FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
+  MenuItem,
   Pagination,
   Paper,
   Popover,
+  Radio,
+  RadioGroup,
   Stack,
   Table,
   TableBody,
@@ -39,6 +43,7 @@ import {
   FilterSearch,
   NoteFavorite,
   Printer,
+  TickCircle,
 } from 'iconsax-react';
 import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
@@ -48,6 +53,21 @@ import { useRequest } from 'ahooks';
 import useRouter from 'hook/useRouter';
 import { ROUTE_PATH } from 'utils/route-util';
 import { getPersistedState } from 'utils/persist-util';
+import { eventList } from 'utils/data-util';
+
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers';
+import LabelTextField from 'components/LabelTextField';
+import { Controller, useForm } from 'react-hook-form';
+import moment from 'moment';
+
+interface IFilterSearch {
+  eventTYpe: string;
+  type: string;
+  from: string | null;
+  to: string | null;
+}
 
 const Orders = () => {
   // Variables
@@ -70,6 +90,7 @@ const Orders = () => {
   const [draft, setDraft] = useState<Draft | undefined>(
     getPersistedState(`${process.env.REACT_APP_PERSIST_DRAFT}`)
   );
+  const { handleSubmit, control, clearErrors } = useForm<IFilterSearch>();
 
   // useRequests
   const {
@@ -145,6 +166,21 @@ const Orders = () => {
     (i: number) => setOrderDetail(orderList!.data![i]),
     [orderList]
   );
+  const handleSubmitFilter = (data: IFilterSearch) => {
+    setSearchData('');
+    setPage(1);
+    setAnchorEl(null);
+    clearErrors();
+    fetchOrderList({
+      page: '0',
+      status: ToggleValue,
+      search: '',
+      dateType: data.type,
+      startDate: moment(data.from).format('YYYY-MM-DD'),
+      endDate: moment(data.to).format('YYYY-MM-DD'),
+      eventType: data.eventTYpe,
+    });
+  };
 
   return (
     <>
@@ -411,8 +447,138 @@ const Orders = () => {
           vertical: 'top',
           horizontal: 'right',
         }}
+        PaperProps={{
+          sx: {
+            p: 2,
+          },
+        }}
       >
-        The content of the Popover.
+        <form onSubmit={handleSubmit(handleSubmitFilter)}>
+          <Stack direction={'column'} spacing={2}>
+            <Controller
+              control={control}
+              name='eventTYpe'
+              defaultValue=''
+              render={({ field, fieldState: { error } }) => (
+                <CusTextField
+                  select
+                  defaultValue={''}
+                  SelectProps={{
+                    displayEmpty: true,
+                  }}
+                  fullWidth
+                  placeholder='Event Type'
+                  size='small'
+                  error={Boolean(error)}
+                  {...field}
+                >
+                  <MenuItem value=''>All Event Type</MenuItem>
+                  {eventList.map((d, i) => (
+                    <MenuItem key={i} value={d}>
+                      {d}
+                    </MenuItem>
+                  ))}
+                </CusTextField>
+              )}
+            />
+            <Controller
+              control={control}
+              name='type'
+              defaultValue='event'
+              rules={{
+                required: true,
+              }}
+              render={({ field }) => (
+                <RadioGroup row {...field}>
+                  <FormControlLabel
+                    value='event'
+                    control={<Radio />}
+                    label='Event'
+                  />
+                  <FormControlLabel
+                    value='booking'
+                    control={<Radio />}
+                    label='Booking'
+                  />
+                </RadioGroup>
+              )}
+            />
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Controller
+                control={control}
+                name='from'
+                defaultValue={null}
+                rules={{
+                  required: true,
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <LabelTextField label='From'>
+                    <DatePicker
+                      openTo='day'
+                      views={['year', 'month', 'day']}
+                      renderInput={(params) => (
+                        <CusTextField
+                          size='small'
+                          error={Boolean(error)}
+                          {...params}
+                        />
+                      )}
+                      onChange={(date) => {
+                        field.onChange(date);
+                      }}
+                      value={field.value}
+                    />
+                  </LabelTextField>
+                )}
+              />
+              <Controller
+                control={control}
+                name='to'
+                defaultValue={null}
+                rules={{
+                  required: true,
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <LabelTextField label='To'>
+                    <DatePicker
+                      openTo='day'
+                      views={['year', 'month', 'day']}
+                      renderInput={(params) => (
+                        <CusTextField
+                          size='small'
+                          error={Boolean(error)}
+                          {...params}
+                        />
+                      )}
+                      onChange={(date) => {
+                        field.onChange(date);
+                      }}
+                      value={field.value}
+                    />
+                  </LabelTextField>
+                )}
+              />
+            </LocalizationProvider>
+            <Button
+              variant='contained'
+              type='submit'
+              sx={{
+                color: theme.palette.common.white,
+                boxShadow: theme.shadows[1],
+                borderRadius: 2,
+                textTransform: 'none',
+                height: 40,
+                position: 'relative',
+                overflow: 'hidden',
+                zIndex: 2,
+              }}
+              startIcon={<TickCircle variant='Bold' size={16} />}
+            >
+              Confirm
+            </Button>
+          </Stack>
+        </form>
       </Popover>
 
       <Drawer

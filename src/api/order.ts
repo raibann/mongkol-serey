@@ -6,16 +6,28 @@ const ORDER_API = {
     page,
     status,
     search,
+    startDate,
+    endDate,
+    eventType,
+    dateType,
   }: {
     page: string;
     status: string;
     search?: string;
+    startDate?: string;
+    endDate?: string;
+    eventType?: string;
+    dateType?: string;
   }) => {
     const res: IOrder.IOrderRes = await HttpUtil.get(ROUTE_API.ordersList, {
       params: {
         page: page,
         status: status,
         search: search,
+        startDate: startDate,
+        endDate: endDate,
+        eventType: eventType,
+        dateType: dateType,
       },
     });
     return res;

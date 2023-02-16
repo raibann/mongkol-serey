@@ -131,13 +131,15 @@ const DashboardHeader = ({
         pageTitle='Dashboard'
         endComponent={
           <>
-            <CusIconButton
-              color='primary'
-              onClick={handleClickNoti}
-              sx={{ height: 40 }}
-            >
-              <Notification size='24' variant='Bold' />
-            </CusIconButton>
+            <Badge color='error' badgeContent={temp?.length}>
+              <CusIconButton
+                color='primary'
+                onClick={handleClickNoti}
+                sx={{ height: 40 }}
+              >
+                <Notification size='24' variant='Bold' />
+              </CusIconButton>
+            </Badge>
           </>
         }
       >
@@ -179,7 +181,16 @@ const DashboardHeader = ({
           >
             <Calendar2 size='24' variant='Outline' />
           </CusIconButton>
-          <Badge color='error' badgeContent={temp?.length}>
+          <Badge
+            color='error'
+            badgeContent={temp?.length}
+            sx={{
+              display: {
+                xs: 'none',
+                md: 'block',
+              },
+            }}
+          >
             <CusIconButton
               color='primary'
               onClick={handleClickNoti}
@@ -209,7 +220,7 @@ const DashboardHeader = ({
         <List
           disablePadding
           sx={{
-            width: 350,
+            width: 400,
             px: 2,
             pb: 2,
           }}
