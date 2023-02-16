@@ -47,9 +47,15 @@ const ORDER_API = {
     );
     return res;
   },
-  getmenuList: async () => {
-    const res: IMenuList.IMenu[] = await HttpUtil.get(ROUTE_API.menuList);
-    return res;
+  getCategoryAndMenu: async () => {
+    const resMenu: IMenuList.IMenuItem[] = await HttpUtil.get(
+      ROUTE_API.menuList
+    );
+    const resCategory: IMenuList.IMenuCategory[] = await HttpUtil.get(
+      ROUTE_API.categoryList
+    );
+
+    return { resMenu, resCategory };
   },
 };
 export default ORDER_API;

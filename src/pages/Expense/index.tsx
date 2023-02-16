@@ -1,7 +1,13 @@
 import {
+  Button,
+  FormControlLabel,
+  IconButton,
   InputAdornment,
+  MenuItem,
   Pagination,
   Paper,
+  Popover,
+  RadioGroup,
   Stack,
   Table,
   TableBody,
@@ -10,8 +16,14 @@ import {
   TableRow,
   ToggleButtonGroup,
   Typography,
+  Radio,
 } from '@mui/material';
-import { SearchNormal1, BoxRemove } from 'iconsax-react';
+import {
+  BoxRemove,
+  TickCircle,
+  FilterSearch,
+  FilterRemove,
+} from 'iconsax-react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { CusLoading } from 'components/CusLoading';
 import CusTextField from 'components/CusTextField';
@@ -25,6 +37,20 @@ import OrderTable, { OrderTableHead } from 'pages/Orders/OrderTable';
 import ExpenseDialogs from './ExpenseDialogs';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRequest } from 'ahooks';
+import { Controller, useForm } from 'react-hook-form';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers';
+import LabelTextField from 'components/LabelTextField';
+import { eventList } from 'utils/data-util';
+import moment from 'moment';
+
+interface IFilterSearch {
+  eventType: string;
+  type: string;
+  from: string | null;
+  to: string | null;
+}
 
 export default function Expense() {
   // useRequests
@@ -40,19 +66,24 @@ export default function Expense() {
   // Variable
   const expenseList = expenseListReq.data?.data;
 
+  // useForm
+  const { handleSubmit, control, clearErrors, setValue } =
+    useForm<IFilterSearch>();
+
   // State
-  const [ToggleValue, setToggleValue] = useState('pending');
+  const { isSmDown } = useResponsive();
+  const [toggleValue, setToggleValue] = useState('pending');
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [openDialogs, setOpenDialogs] = useState<IOrder.Order>();
-  const { isSmDown } = useResponsive();
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   // useEffects
   useEffect(() => {
     if (search !== '') {
       expenseSearchReq.run({
         page: page - 1,
-        status: ToggleValue,
+        status: toggleValue,
         search: search,
       });
       return;
@@ -60,11 +91,11 @@ export default function Expense() {
 
     expenseListReq.run({
       page: page - 1,
-      status: ToggleValue,
+      status: toggleValue,
       search: '',
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ToggleValue, page, search]);
+  }, [toggleValue, page, search]);
 
   // Methods
   const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {
@@ -74,6 +105,21 @@ export default function Expense() {
     (i: number) => setOpenDialogs(expenseList![i]),
     [expenseList]
   );
+  const handleSubmitFilter = (data: IFilterSearch) => {
+    setSearch('');
+    setPage(1);
+    setAnchorEl(null);
+    clearErrors();
+    expenseListReq.run({
+      page: 0,
+      status: toggleValue,
+      search: '',
+      dateType: data.type,
+      startDate: moment(data.from).format('YYYY-MM-DD'),
+      endDate: moment(data.to).format('YYYY-MM-DD'),
+      eventType: data.eventType,
+    });
+  };
 
   return (
     <>
@@ -99,7 +145,7 @@ export default function Expense() {
           sx={{ width: '100%', p: 2 }}
         >
           <ToggleButtonGroup
-            value={ToggleValue}
+            value={toggleValue}
             exclusive
             fullWidth
             size='small'
@@ -129,7 +175,7 @@ export default function Expense() {
               if (e.key === 'Enter') {
                 expenseListReq.run({
                   page: page - 1,
-                  status: ToggleValue,
+                  status: toggleValue,
                   search: search,
                 });
               }
@@ -141,7 +187,15 @@ export default function Expense() {
             InputProps={{
               endAdornment: (
                 <InputAdornment position='end'>
-                  <SearchNormal1 size='20' color={theme.palette.primary.main} />
+                  <IconButton
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                    sx={{ mr: -1 }}
+                  >
+                    <FilterSearch
+                      size='20'
+                      color={theme.palette.primary.main}
+                    />
+                  </IconButton>
                 </InputAdornment>
               ),
             }}
@@ -271,6 +325,171 @@ export default function Expense() {
           }}
         />
       </ResponsiveDialog>
+
+      <Popover
+        id='filter-order'
+        open={!!anchorEl}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        PaperProps={{
+          sx: {
+            p: 2,
+          },
+        }}
+      >
+        <form onSubmit={handleSubmit(handleSubmitFilter)}>
+          <Stack direction={'column'} spacing={2}>
+            <Controller
+              control={control}
+              name='eventType'
+              defaultValue=''
+              render={({ field, fieldState: { error } }) => (
+                <CusTextField
+                  select
+                  defaultValue={''}
+                  SelectProps={{
+                    displayEmpty: true,
+                  }}
+                  fullWidth
+                  placeholder='Event Type'
+                  size='small'
+                  error={Boolean(error)}
+                  {...field}
+                >
+                  <MenuItem value=''>All Event Type</MenuItem>
+                  {eventList.map((d, i) => (
+                    <MenuItem key={i} value={d}>
+                      {d}
+                    </MenuItem>
+                  ))}
+                </CusTextField>
+              )}
+            />
+            <Controller
+              control={control}
+              name='type'
+              defaultValue='event'
+              rules={{
+                required: true,
+              }}
+              render={({ field }) => (
+                <RadioGroup row {...field}>
+                  <FormControlLabel
+                    value='event'
+                    control={<Radio />}
+                    label='Event'
+                  />
+                  <FormControlLabel
+                    value='booking'
+                    control={<Radio />}
+                    label='Booking'
+                  />
+                </RadioGroup>
+              )}
+            />
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Controller
+                control={control}
+                name='from'
+                defaultValue={null}
+                rules={{
+                  required: true,
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <LabelTextField label='From'>
+                    <DatePicker
+                      openTo='day'
+                      views={['year', 'month', 'day']}
+                      renderInput={(params) => (
+                        <CusTextField
+                          size='small'
+                          error={Boolean(error)}
+                          {...params}
+                        />
+                      )}
+                      onChange={(date) => {
+                        field.onChange(date);
+                      }}
+                      value={field.value}
+                    />
+                  </LabelTextField>
+                )}
+              />
+              <Controller
+                control={control}
+                name='to'
+                defaultValue={null}
+                rules={{
+                  required: true,
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <LabelTextField label='To'>
+                    <DatePicker
+                      openTo='day'
+                      views={['year', 'month', 'day']}
+                      renderInput={(params) => (
+                        <CusTextField
+                          size='small'
+                          error={Boolean(error)}
+                          {...params}
+                        />
+                      )}
+                      onChange={(date) => {
+                        field.onChange(date);
+                      }}
+                      value={field.value}
+                    />
+                  </LabelTextField>
+                )}
+              />
+            </LocalizationProvider>
+            <Stack direction='row' spacing={2}>
+              <Button
+                variant='contained'
+                type='submit'
+                sx={{
+                  color: theme.palette.common.white,
+                  boxShadow: theme.shadows[1],
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  height: 40,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  zIndex: 2,
+                  flexGrow: 1,
+                }}
+                startIcon={<TickCircle variant='Bold' size={16} />}
+              >
+                Confirm
+              </Button>
+              <IconButton
+                color='primary'
+                onClick={() => {
+                  setValue('from', null);
+                  setValue('to', null);
+                  setValue('eventType', '');
+                  setValue('type', 'event');
+                  expenseListReq.run({
+                    page: page - 1,
+                    status: toggleValue,
+                  });
+                }}
+              >
+                <FilterRemove />
+              </IconButton>
+            </Stack>
+          </Stack>
+        </form>
+      </Popover>
     </>
   );
 }

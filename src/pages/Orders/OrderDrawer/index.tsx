@@ -110,7 +110,7 @@ const OrderDrawer = ({
     },
     onError: () => setAlertDialog(true),
   });
-  const menuListReq = useRequest(ORDER_API.getmenuList);
+  const menuListReq = useRequest(ORDER_API.getCategoryAndMenu);
   const expenseActionReq = useRequest(EXPENSE_API.addExpense, {
     manual: true,
     onSuccess: () => onActionSuccess(),
@@ -428,11 +428,13 @@ const OrderDrawer = ({
                         )
                       );
                     }}
-                    isOptionEqualToValue={() => true}
+                    isOptionEqualToValue={(value, option) =>
+                      value.id === option.id
+                    }
                     options={customerListReq.data.data}
                   />
                 ) : (
-                  <CusTextField />
+                  <CusTextField placeholder='Select Customer' />
                 )}
               </LabelTextField>
             </Stack>
@@ -932,6 +934,7 @@ const OrderDrawer = ({
               variant='contained'
               fullWidth
               disableElevation
+              disabled={!!orderDetail?.customer?.deletedAt}
               loading={orderActionReq.loading || expenseActionReq.loading}
               sx={{
                 fontSize: 18,
@@ -944,7 +947,11 @@ const OrderDrawer = ({
                 color: '#fff',
               }}
             >
-              {!orderDetail ? 'Upload' : 'Update'}
+              {!orderDetail
+                ? 'Upload'
+                : !!orderDetail?.customer?.deletedAt
+                ? `This order can't be updated any more`
+                : 'Update'}
             </LoadingButton>
             {orderDetail && (
               <>
