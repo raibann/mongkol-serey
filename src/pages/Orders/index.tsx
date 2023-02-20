@@ -40,6 +40,7 @@ import {
   ArrowLeft2,
   BoxRemove,
   Calculator,
+  FilterRemove,
   FilterSearch,
   NoteFavorite,
   Printer,
@@ -63,7 +64,7 @@ import { Controller, useForm } from 'react-hook-form';
 import moment from 'moment';
 
 interface IFilterSearch {
-  eventTYpe: string;
+  eventType: string;
   type: string;
   from: string | null;
   to: string | null;
@@ -79,18 +80,19 @@ const Orders = () => {
   const { navigate } = useRouter();
 
   // States
-  const [ToggleValue, setToggleValue] = useState('pending');
+  const [toggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
   const [loadingChangingState, setLoadingChangingState] = useState(false);
   const [printer, setPrinter] = useState<IOrder.Order>();
   const [page, setPage] = useState(1);
   const [searchData, setSearchData] = useState('');
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [draft, setDraft] = useState<Draft | undefined>(
     getPersistedState(`${process.env.REACT_APP_PERSIST_DRAFT}`)
   );
-  const { handleSubmit, control, clearErrors } = useForm<IFilterSearch>();
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const { handleSubmit, control, clearErrors, setValue } =
+    useForm<IFilterSearch>();
 
   // useRequests
   const {
@@ -121,7 +123,7 @@ const Orders = () => {
     if (searchData !== '') {
       searchOrderList({
         page: `${page - 1}`,
-        status: ToggleValue,
+        status: toggleValue,
         search: searchData,
       });
       return;
@@ -130,12 +132,11 @@ const Orders = () => {
     setLoadingChangingState(true);
     fetchOrderList({
       page: `${page - 1}`,
-      status: ToggleValue,
-      search: '',
+      status: toggleValue,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ToggleValue, page, searchData]);
+  }, [toggleValue, page, searchData]);
 
   useEffect(() => {
     if (orderId) {
@@ -173,12 +174,12 @@ const Orders = () => {
     clearErrors();
     fetchOrderList({
       page: '0',
-      status: ToggleValue,
+      status: toggleValue,
       search: '',
       dateType: data.type,
       startDate: moment(data.from).format('YYYY-MM-DD'),
       endDate: moment(data.to).format('YYYY-MM-DD'),
-      eventType: data.eventTYpe,
+      eventType: data.eventType,
     });
   };
 
@@ -201,7 +202,7 @@ const Orders = () => {
         <Grid container p={2} rowSpacing={2}>
           <Grid item xs={12} sm={12} md={4}>
             <ToggleButtonGroup
-              value={ToggleValue}
+              value={toggleValue}
               exclusive
               fullWidth
               size='small'
@@ -307,7 +308,7 @@ const Orders = () => {
                     if (e.key === 'Enter') {
                       searchOrderList({
                         page: `${page - 1}`,
-                        status: ToggleValue,
+                        status: toggleValue,
                         search: searchData,
                       });
                     }
@@ -457,7 +458,7 @@ const Orders = () => {
           <Stack direction={'column'} spacing={2}>
             <Controller
               control={control}
-              name='eventTYpe'
+              name='eventType'
               defaultValue=''
               render={({ field, fieldState: { error } }) => (
                 <CusTextField
@@ -560,23 +561,41 @@ const Orders = () => {
                 )}
               />
             </LocalizationProvider>
-            <Button
-              variant='contained'
-              type='submit'
-              sx={{
-                color: theme.palette.common.white,
-                boxShadow: theme.shadows[1],
-                borderRadius: 2,
-                textTransform: 'none',
-                height: 40,
-                position: 'relative',
-                overflow: 'hidden',
-                zIndex: 2,
-              }}
-              startIcon={<TickCircle variant='Bold' size={16} />}
-            >
-              Confirm
-            </Button>
+            <Stack direction='row' spacing={2}>
+              <Button
+                variant='contained'
+                type='submit'
+                sx={{
+                  color: theme.palette.common.white,
+                  boxShadow: theme.shadows[1],
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  height: 40,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  zIndex: 2,
+                  flexGrow: 1,
+                }}
+                startIcon={<TickCircle variant='Bold' size={16} />}
+              >
+                Confirm
+              </Button>
+              <IconButton
+                color='primary'
+                onClick={() => {
+                  setValue('from', null);
+                  setValue('to', null);
+                  setValue('eventType', '');
+                  setValue('type', 'event');
+                  fetchOrderList({
+                    page: `${page - 1}`,
+                    status: toggleValue,
+                  });
+                }}
+              >
+                <FilterRemove />
+              </IconButton>
+            </Stack>
           </Stack>
         </form>
       </Popover>
@@ -585,7 +604,7 @@ const Orders = () => {
         open={newOrder || orderDetail !== undefined}
         anchor={'right'}
         PaperProps={{
-          sx: { borderRadius: 0, width: { xs: '100vw', md: '50vw' } },
+          sx: { borderRadius: 0, width: { xs: '100vw', md: '70vw' } },
         }}
       >
         <OrderDrawer

@@ -7,11 +7,19 @@ const EXPENSE_API = {
     search,
     page,
     size,
+    dateType,
+    endDate,
+    eventType,
+    startDate,
   }: {
-    status: string;
-    search: string;
     page: number;
+    status: string;
+    search?: string;
     size?: number;
+    startDate?: string;
+    endDate?: string;
+    eventType?: string;
+    dateType?: string;
   }) => {
     const res: IExpense.IExpenseRes = await HttpUtil.get(
       ROUTE_API.expensesList,
@@ -21,6 +29,10 @@ const EXPENSE_API = {
           search: search,
           page: page || 0,
           size: size || 10,
+          startDate: startDate,
+          endDate: endDate,
+          eventType: eventType,
+          dateType: dateType,
         },
       }
     );

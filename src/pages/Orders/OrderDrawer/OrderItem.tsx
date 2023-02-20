@@ -9,9 +9,7 @@ import {
   Autocomplete,
   alpha,
 } from '@mui/material';
-import { useRequest } from 'ahooks';
 import { Result } from 'ahooks/lib/useRequest/src/types';
-import ORDER_API from 'api/order';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import { Trash } from 'iconsax-react';
@@ -33,7 +31,13 @@ const OrderItem = ({
   index,
   onRemoveOrder,
 }: {
-  menuListReq: Result<IMenuList.IMenu[], []>;
+  menuListReq: Result<
+    {
+      resMenu: IMenuList.IMenuItem[];
+      resCategory: IMenuList.IMenuCategory[];
+    },
+    []
+  >;
   menuItemsP: IMenuItems[];
   index: number;
   onRemoveOrder: () => void;
@@ -42,6 +46,7 @@ const OrderItem = ({
   const unitPrice = watch(`listMenu.${index}.unitPrice`);
   const quantity = watch(`listMenu.${index}.quantity`);
   const price = watch(`listMenu.${index}.price`);
+  const { resCategory, resMenu } = menuListReq.data || {};
 
   const [menuItems, setMenuItems] = useState<IMenuItems[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -117,15 +122,41 @@ const OrderItem = ({
             rules={{
               required: { value: true, message: 'Title is Required' },
             }}
-            render={({ field, fieldState: { error } }) => {
+            render={({
+              field: { onChange, ...rest },
+              fieldState: { error },
+            }) => {
               return (
                 <LabelTextField label=''>
-                  <StyledOutlinedTextField
+                  <Autocomplete
+                    componentsProps={{
+                      paper: {
+                        sx: {
+                          minWidth: 250,
+                        },
+                      },
+                    }}
+                    freeSolo
+                    disableClearable
+                    openOnFocus
+                    loading={menuListReq.loading}
+                    loadingText='Loading...'
+                    id='categoryList'
                     size='small'
-                    label='Title'
-                    error={Boolean(error)}
-                    helperText={error?.message}
-                    {...field}
+                    sx={{ width: '100%' }}
+                    onInputChange={(e, value) => {
+                      setValue(`listMenu.${index}.title`, value);
+                    }}
+                    {...rest}
+                    renderInput={(params) => (
+                      <StyledOutlinedTextField
+                        label='Category'
+                        error={Boolean(error)}
+                        helperText={error?.message}
+                        {...params}
+                      />
+                    )}
+                    options={resCategory?.map((data) => data.title) || []}
                   />
                 </LabelTextField>
               );
@@ -347,12 +378,7 @@ const OrderItem = ({
                             {...params}
                           />
                         )}
-                        isOptionEqualToValue={() => true}
-                        options={
-                          menuListReq.data
-                            ? menuListReq.data?.map((data) => data.title)
-                            : []
-                        }
+                        options={resMenu?.map((data) => data.title) || []}
                       />
                     );
                   }}

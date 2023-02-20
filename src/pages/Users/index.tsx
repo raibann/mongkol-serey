@@ -198,7 +198,24 @@ export default function Users() {
           }}
         >
           <Typography variant='h6'>User Roles</Typography>
-          <Button startIcon={<GiGearHammer />} sx={{ textTransform: 'none' }}>
+          <Button
+            disabled={
+              openRole !== -1 &&
+              userListResponse &&
+              userListResponse[openRole]?.roles?.length === 0
+            }
+            onClick={() => {
+              addRoleToUser({
+                username: userListResponse
+                  ? userListResponse[openRole].username
+                  : '',
+                roleName: 'banned',
+              });
+              setOpenRole(-1);
+            }}
+            startIcon={<GiGearHammer />}
+            sx={{ textTransform: 'none' }}
+          >
             Banned Account
           </Button>
         </DialogTitle>
