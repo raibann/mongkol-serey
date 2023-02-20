@@ -53,7 +53,7 @@ export default function Quotation() {
         sx={{ mx: 2, height: 'calc(100vh - 90px)', overflow: 'auto' }}
       >
         <Grid container>
-          <Grid item md={6} sm={12} sx={{ px: 4 }}>
+          <Grid item md={6} sm={12} sx={{ pl: 4, pr: 2 }}>
             <Stack
               direction={'row'}
               alignItems='center'

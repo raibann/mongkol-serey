@@ -75,7 +75,7 @@ function ExpenseDialogs({
   };
 
   // States
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [listExpense, setListExpense] = useState<IExpenseRow[]>([]);
   const [alertDialog, setAlertDialog] = useState(false);
   const { isSmDown } = useResponsive();
@@ -99,18 +99,15 @@ function ExpenseDialogs({
           totalPrice: e.price,
         };
       });
-      setListExpense(tmpList.slice(0, 12));
-      setTimeout(() => {
-        setListExpense([...listExpense, ...tmpList.slice(12)]);
-        setValue('expenseRowData', tmpList);
-      }, 300);
+      setListExpense(tmpList);
+      setValue('expenseRowData', tmpList);
     } else {
-      setListExpense(listTitle.slice(0, 12));
-      setTimeout(() => {
-        setListExpense([...listExpense, ...listTitle.slice(12)]);
-      }, 300);
+      setListExpense(listTitle);
     }
 
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

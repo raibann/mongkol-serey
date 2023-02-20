@@ -376,6 +376,7 @@ export const role = [
         }}
       />
     ),
+    disable: true,
   },
   {
     id: 2,
@@ -387,6 +388,7 @@ export const role = [
         color={theme.palette.common.black}
       />
     ),
+    disable: false,
   },
 ];
 

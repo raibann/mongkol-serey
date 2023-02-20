@@ -149,7 +149,7 @@ export default function Users() {
                 stickyHeader
                 sx={{
                   '& thead tr th': {
-                    background: (theme) => theme.palette.background.paper,
+                    bgcolor: 'background.paper',
                     fontWeight: '600',
                     whiteSpace: 'nowrap',
                   },
@@ -202,7 +202,10 @@ export default function Users() {
             disabled={
               openRole !== -1 &&
               userListResponse &&
-              userListResponse[openRole]?.roles?.length === 0
+              (userListResponse[openRole]?.roles?.length === 0 ||
+                userListResponse[openRole]?.roles?.findIndex(
+                  (e) => e.id === 1
+                ) !== -1)
             }
             onClick={() => {
               addRoleToUser({
@@ -228,7 +231,7 @@ export default function Users() {
                   secondaryAction={
                     <Checkbox
                       edge='start'
-                      disabled={loadingAddRoleToUser}
+                      disabled={loadingAddRoleToUser || value.disable}
                       onClick={() => onCheckRole(value.name)}
                       checked={
                         userListResponse && userListResponse[openRole]
@@ -242,7 +245,7 @@ export default function Users() {
                   disablePadding
                 >
                   <ListItemButton
-                    disabled={loadingAddRoleToUser}
+                    disabled={loadingAddRoleToUser || value.disable}
                     onClick={() => onCheckRole(value.name)}
                   >
                     <ListItemIcon>{value.icon}</ListItemIcon>

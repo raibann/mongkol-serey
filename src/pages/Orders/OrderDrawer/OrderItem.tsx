@@ -176,50 +176,16 @@ const OrderItem = ({
             render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label=''>
-                  <StyledOutlinedTextField
-                    size='small'
-                    type='number'
-                    label='Quantity'
-                    error={Boolean(error)}
-                    helperText={error?.message}
-                    onKeyUp={() => {
-                      if (unitPrice && quantity) {
-                        if (!isNaN(+unitPrice * quantity)) {
-                          setValue(
-                            `listMenu.${index}.price`,
-                            +(+unitPrice * quantity).toFixed(2)
-                          );
-                        } else {
-                          setValue(`listMenu.${index}.price`, '');
-                        }
-                      } else {
-                        setValue(`listMenu.${index}.price`, 0);
-                      }
+                  <Stack
+                    direction='row'
+                    sx={{
+                      position: 'relative',
                     }}
-                    {...field}
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
-
-          <LabelTextField label=''>
-            <Stack
-              direction='row'
-              sx={{
-                position: 'relative',
-              }}
-            >
-              <Controller
-                control={control}
-                name={`listMenu.${index}.unitPrice`}
-                defaultValue=''
-                render={({ field, fieldState: { error } }) => {
-                  return (
+                  >
                     <StyledOutlinedTextField
                       size='small'
                       type='number'
-                      label='Price'
+                      label='Quantity'
                       error={Boolean(error)}
                       helperText={error?.message}
                       onKeyUp={() => {
@@ -233,51 +199,85 @@ const OrderItem = ({
                             setValue(`listMenu.${index}.price`, '');
                           }
                         } else {
-                          setValue(`listMenu.${index}.price`, '');
+                          setValue(`listMenu.${index}.price`, 0);
                         }
                       }}
                       {...field}
                     />
-                  );
-                }}
-              />
-              <Button
-                onClick={handleClick}
-                color='inherit'
-                sx={{
-                  background: '#fff',
-                  position: 'absolute',
-                  right: 2,
-                  top: 2,
-                  bottom: 2,
-                  borderRadius: 2,
-                  color: '#000',
-                  width: 'auto',
-                  minWidth: 0,
-                  px: 1,
-                  '&.css-1lskwbk-MuiButtonBase-root-MuiButton-root': {
-                    p: 0,
-                  },
-                }}
-              >
-                /{watch(`listMenu.${index}.unit`) || 'តុ'}
-              </Button>
-              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                {unitList.map((e) => {
-                  return (
-                    <MenuItem
-                      key={e}
-                      onClick={() => {
-                        setValue(`listMenu.${index}.unit`, e);
-                        handleClose();
+                    <Button
+                      onClick={handleClick}
+                      color='inherit'
+                      sx={{
+                        background: '#fff',
+                        position: 'absolute',
+                        right: 2,
+                        top: 2,
+                        bottom: 2,
+                        borderRadius: 2,
+                        color: '#000',
+                        width: 'auto',
+                        minWidth: 0,
+                        px: 1,
+                        '&.css-1lskwbk-MuiButtonBase-root-MuiButton-root': {
+                          p: 0,
+                        },
                       }}
                     >
-                      {e}
-                    </MenuItem>
-                  );
-                })}
-              </Menu>
-            </Stack>
+                      {watch(`listMenu.${index}.unit`) || 'តុ'}
+                    </Button>
+                    <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                      {unitList.map((e) => {
+                        return (
+                          <MenuItem
+                            key={e}
+                            onClick={() => {
+                              setValue(`listMenu.${index}.unit`, e);
+                              handleClose();
+                            }}
+                          >
+                            {e}
+                          </MenuItem>
+                        );
+                      })}
+                    </Menu>
+                  </Stack>
+                </LabelTextField>
+              );
+            }}
+          />
+
+          <LabelTextField label=''>
+            <Controller
+              control={control}
+              name={`listMenu.${index}.unitPrice`}
+              defaultValue=''
+              render={({ field, fieldState: { error } }) => {
+                return (
+                  <StyledOutlinedTextField
+                    size='small'
+                    type='number'
+                    label='Price'
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    onKeyUp={() => {
+                      if (unitPrice && quantity) {
+                        if (!isNaN(+unitPrice * quantity)) {
+                          setValue(
+                            `listMenu.${index}.price`,
+                            +(+unitPrice * quantity).toFixed(2)
+                          );
+                        } else {
+                          setValue(`listMenu.${index}.price`, '');
+                        }
+                      } else {
+                        setValue(`listMenu.${index}.price`, '');
+                      }
+                    }}
+                    {...field}
+                  />
+                );
+              }}
+            />
           </LabelTextField>
 
           <Controller

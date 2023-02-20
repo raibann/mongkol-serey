@@ -105,6 +105,12 @@ export default function Expense() {
     (i: number) => setOpenDialogs(expenseList![i]),
     [expenseList]
   );
+  const onClearFilter = () => {
+    setValue('from', null);
+    setValue('to', null);
+    setValue('eventType', '');
+    setValue('type', 'event');
+  };
   const handleSubmitFilter = (data: IFilterSearch) => {
     setSearch('');
     setPage(1);
@@ -156,6 +162,7 @@ export default function Expense() {
               if (value !== null) {
                 setToggleValue(value);
                 setPage(1);
+                onClearFilter();
               }
             }}
             sx={{
@@ -474,10 +481,7 @@ export default function Expense() {
               <IconButton
                 color='primary'
                 onClick={() => {
-                  setValue('from', null);
-                  setValue('to', null);
-                  setValue('eventType', '');
-                  setValue('type', 'event');
+                  onClearFilter();
                   expenseListReq.run({
                     page: page - 1,
                     status: toggleValue,

@@ -97,7 +97,9 @@ export const UserTableBody = ({
               <CusIconButton
                 color='info'
                 sx={{ p: 0.5, mx: 0.5 }}
-                disabled={loading}
+                disabled={
+                  loading || props.roles?.findIndex((e) => e.id === 1) !== -1
+                }
                 onClick={() => setOpen(true)}
               >
                 <Trash size={18} color='#FF8A65' />

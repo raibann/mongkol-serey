@@ -167,6 +167,12 @@ const Orders = () => {
     (i: number) => setOrderDetail(orderList!.data![i]),
     [orderList]
   );
+  const onClearFilter = () => {
+    setValue('from', null);
+    setValue('to', null);
+    setValue('eventType', '');
+    setValue('type', 'event');
+  };
   const handleSubmitFilter = (data: IFilterSearch) => {
     setSearchData('');
     setPage(1);
@@ -303,6 +309,7 @@ const Orders = () => {
                   onChange={(e) => {
                     setSearchData(e.currentTarget.value);
                     setPage(1);
+                    onClearFilter();
                   }}
                   onKeyUp={(e) => {
                     if (e.key === 'Enter') {
@@ -583,10 +590,7 @@ const Orders = () => {
               <IconButton
                 color='primary'
                 onClick={() => {
-                  setValue('from', null);
-                  setValue('to', null);
-                  setValue('eventType', '');
-                  setValue('type', 'event');
+                  onClearFilter();
                   fetchOrderList({
                     page: `${page - 1}`,
                     status: toggleValue,
