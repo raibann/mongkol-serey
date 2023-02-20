@@ -210,6 +210,7 @@ const DashboardHeader = ({
           disablePadding
           sx={{
             width: 350,
+            px: 2,
             pb: 2,
           }}
         >
@@ -221,7 +222,6 @@ const DashboardHeader = ({
             }}
           >
             <Typography
-              px={2}
               variant='subtitle1'
               fontWeight={theme.typography.fontWeightBold}
             >
@@ -248,7 +248,8 @@ const DashboardHeader = ({
                     <ListItem
                       key={data.id}
                       sx={{
-                        p: 0,
+                        px: 1,
+                        py: 0,
                       }}
                       secondaryAction={
                         <Typography
