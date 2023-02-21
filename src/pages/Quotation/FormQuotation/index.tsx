@@ -120,7 +120,7 @@ export default function FormQuotation({
             />
           </LabelTextField>
         </Grid>
-        {!isSmDown && listItem.length !== 0 && (
+        {!isSmDown && listItem.length > 0 && (
           <>
             <Grid item xs={3}>
               Name
