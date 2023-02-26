@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Badge,
   Button,
   List,
   ListItem,
@@ -15,10 +14,10 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { CusIconButton } from 'components/CusIconButton';
-import { BoxRemove, Calendar2, User } from 'iconsax-react';
-import { Notification } from 'iconsax-react';
+import { BoxRemove, Calendar2, Printer, User } from 'iconsax-react';
+// import { Notification } from 'iconsax-react';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -35,6 +34,9 @@ import useResponsive from 'hook/useResponsive';
 import THEME_UTIL from 'utils/theme-util';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
+import ReactToPrint from 'react-to-print';
+import { pageStyle } from 'utils/validate-util';
+import ExportReport from 'components/ComToPrint/ExportReport';
 
 interface IDateRange {
   startDate: string;
@@ -42,10 +44,17 @@ interface IDateRange {
 }
 
 const DashboardHeader = ({
+  dateRange,
+  dashTotal,
   setDateRange,
   toggleValue,
   setToggleValue,
 }: {
+  dateRange: {
+    startDate: string;
+    endDate: string;
+  };
+  dashTotal?: IDashboard.IDashboardData;
   toggleValue: string | null;
   setToggleValue: React.Dispatch<React.SetStateAction<string | null>>;
   setDateRange: React.Dispatch<
@@ -97,9 +106,9 @@ const DashboardHeader = ({
     setToggleValue(null);
   };
   // notification
-  const handleClickNoti = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorElNotification(event.currentTarget);
-  };
+  // const handleClickNoti = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setAnchorElNotification(event.currentTarget);
+  // };
   // datepicker
   const handleClickDatepicker = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -124,6 +133,7 @@ const DashboardHeader = ({
   const { isSmDown } = useResponsive();
   const theme = useTheme();
   const navigate = useNavigate();
+  const compToPrint = useRef(null);
 
   return (
     <>
@@ -131,15 +141,16 @@ const DashboardHeader = ({
         pageTitle='Dashboard'
         endComponent={
           <>
-            <Badge color='error' badgeContent={temp?.length}>
-              <CusIconButton
-                color='primary'
-                onClick={handleClickNoti}
-                sx={{ height: 40 }}
-              >
-                <Notification size='24' variant='Bold' />
-              </CusIconButton>
-            </Badge>
+            <ReactToPrint
+              pageStyle={pageStyle}
+              documentTitle={'All Reports'}
+              trigger={() => (
+                <CusIconButton color='primary' sx={{ height: 40 }}>
+                  <Printer size='24' variant='Outline' />
+                </CusIconButton>
+              )}
+              content={() => compToPrint.current}
+            />
           </>
         }
       >
@@ -181,30 +192,16 @@ const DashboardHeader = ({
           >
             <Calendar2 size='24' variant='Outline' />
           </CusIconButton>
-          <Badge
-            color='error'
-            badgeContent={temp?.length}
-            sx={{
-              display: {
-                xs: 'none',
-                md: 'block',
-              },
-            }}
-          >
-            <CusIconButton
-              color='primary'
-              onClick={handleClickNoti}
-              sx={{
-                display: {
-                  xs: 'none',
-                  md: 'block',
-                },
-                height: 40,
-              }}
-            >
-              <Notification size='24' variant='Bold' />
-            </CusIconButton>
-          </Badge>
+          <ReactToPrint
+            pageStyle={pageStyle}
+            documentTitle={'All Reports'}
+            trigger={() => (
+              <CusIconButton color='primary' sx={{ height: 40 }}>
+                <Printer size='24' variant='Outline' />
+              </CusIconButton>
+            )}
+            content={() => compToPrint.current}
+          />
         </Stack>
       </PageHeader>
       <Menu
@@ -392,6 +389,13 @@ const DashboardHeader = ({
           </Stack>
         </form>
       </Popover>
+      <div style={{ display: 'none' }}>
+        <ExportReport
+          ref={compToPrint}
+          dateRange={dateRange}
+          dashTotal={dashTotal}
+        />
+      </div>
     </>
   );
 };

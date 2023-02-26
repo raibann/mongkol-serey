@@ -136,10 +136,19 @@ const Dashboard = () => {
     return null;
   };
 
+  // console.log('dateRange', dateRange);
+
   return (
     <>
       <DashboardHeader
-        {...{ setDateRange, fetchDashTotal, setToggleValue, toggleValue }}
+        {...{
+          setDateRange,
+          fetchDashTotal,
+          setToggleValue,
+          toggleValue,
+          dashTotal,
+          dateRange,
+        }}
       />
       {isDashLoading && isLoadingChart ? (
         <Stack
