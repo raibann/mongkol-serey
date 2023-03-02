@@ -75,7 +75,7 @@ export default function FormUser({
           alignItems='center'
           py={3}
         >
-          <Typography variant='h4' color='secondary.main' fontWeight='bold'>
+          <Typography variant='h5' color='secondary.main' fontWeight='bold'>
             {openDrawer === 'add' ? 'Add New user' : 'Edit User'}
           </Typography>
           <CusIconButton color='error' onClick={() => setOpenDrawer(undefined)}>

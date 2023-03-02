@@ -6,6 +6,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import useResponsive from 'hook/useResponsive';
 import { EmojiSad } from 'iconsax-react';
 import theme from 'theme/theme';
 
@@ -17,6 +18,8 @@ interface IErrorDialog extends DialogProps {
 const ErrorDialog = (props: IErrorDialog) => {
   const { open, errorMessage, errorTitle, onCloseDialog, onClose, ...rest } =
     props;
+
+  const { isSmDown } = useResponsive();
   return (
     <Dialog
       open={open}
@@ -28,12 +31,13 @@ const ErrorDialog = (props: IErrorDialog) => {
       <DialogContent>
         <Stack alignItems={'center'} sx={{ px: 4 }} spacing={2}>
           <EmojiSad
-            size='80'
+            size={isSmDown ? '40' : '80'}
             color={theme.palette.primary.main}
             variant='Bulk'
           />
           <Typography
-            variant='h5'
+            variant={isSmDown ? 'subtitle1' : 'h5'}
+            noWrap
             sx={{ fontWeight: (theme) => theme.typography.fontWeightBold }}
           >
             {errorTitle || 'NOOB!'}
@@ -41,6 +45,7 @@ const ErrorDialog = (props: IErrorDialog) => {
           <Typography
             sx={{ color: (theme) => theme.palette.error.main }}
             textAlign='center'
+            variant={isSmDown ? 'caption' : 'h5'}
           >
             {errorMessage}
           </Typography>

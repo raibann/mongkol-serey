@@ -10,7 +10,6 @@ import {
   Box,
   Dialog,
   DialogTitle,
-  DialogContent,
   Typography,
   DialogActions,
   Checkbox,
@@ -179,7 +178,9 @@ export default function Users() {
         open={!!openDrawer}
         onClose={() => setOpenDrawer(undefined)}
         anchor={'right'}
-        PaperProps={{ sx: { borderRadius: 0, width: '50vw' } }}
+        PaperProps={{
+          sx: { borderRadius: 0, width: isMdDown ? '100vw' : '50vw' },
+        }}
       >
         <FormUser
           {...{ setOpenDrawer, openDrawer }}
@@ -197,7 +198,7 @@ export default function Users() {
             px: 2,
           }}
         >
-          <Typography variant='h6'>User Roles</Typography>
+          <Typography variant='h6'>Roles</Typography>
           <Button
             disabled={
               openRole !== -1 &&
@@ -219,46 +220,51 @@ export default function Users() {
             startIcon={<GiGearHammer />}
             sx={{ textTransform: 'none' }}
           >
-            Banned Account
+            Banned
           </Button>
         </DialogTitle>
-        <DialogContent sx={{ width: 500, px: 0 }}>
-          <List sx={{ width: '100%' }}>
-            {role.map((value) => {
-              return (
-                <ListItem
-                  key={value.id}
-                  secondaryAction={
-                    <Checkbox
-                      edge='start'
-                      disabled={loadingAddRoleToUser || value.disable}
-                      onClick={() => onCheckRole(value.name)}
-                      checked={
-                        userListResponse && userListResponse[openRole]
-                          ? userListResponse[openRole].roles?.findIndex(
-                              (e) => e.name === value.name
-                            ) !== -1
-                          : false
-                      }
-                    />
-                  }
-                  disablePadding
-                >
-                  <ListItemButton
+        <List sx={{ width: '100%' }}>
+          {role.map((value) => {
+            return (
+              <ListItem
+                key={value.id}
+                secondaryAction={
+                  <Checkbox
+                    edge='start'
                     disabled={loadingAddRoleToUser || value.disable}
                     onClick={() => onCheckRole(value.name)}
-                  >
-                    <ListItemIcon>{value.icon}</ListItemIcon>
-                    <ListItemText
-                      primary={value.name}
-                      secondary={value.description}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
-        </DialogContent>
+                    checked={
+                      userListResponse && userListResponse[openRole]
+                        ? userListResponse[openRole].roles?.findIndex(
+                            (e) => e.name === value.name
+                          ) !== -1
+                        : false
+                    }
+                  />
+                }
+                disablePadding
+              >
+                <ListItemButton
+                  disabled={loadingAddRoleToUser || value.disable}
+                  onClick={() => onCheckRole(value.name)}
+                >
+                  <ListItemIcon>{value.icon}</ListItemIcon>
+                  <ListItemText
+                    sx={{
+                      mr: {
+                        xs: 0,
+                        sm: 2,
+                        md: 2,
+                      },
+                    }}
+                    primary={value.name}
+                    secondary={value.description}
+                  />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
         <DialogActions>
           <Button
             onClick={() => setOpenRole(-1)}

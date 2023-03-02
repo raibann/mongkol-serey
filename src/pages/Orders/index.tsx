@@ -50,7 +50,7 @@ import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRequest } from 'ahooks';
+import { useDebounce, useRequest } from 'ahooks';
 import useRouter from 'hook/useRouter';
 import { ROUTE_PATH } from 'utils/route-util';
 import { getPersistedState } from 'utils/persist-util';
@@ -98,45 +98,33 @@ const Orders = () => {
   const {
     data: orderList,
     run: fetchOrderList,
-    runAsync: fetchOrderListAsync,
     loading: isLoadingOrderList,
     refresh: refreshGetOrderList,
   } = useRequest(ORDER_API.getOrdersList, {
     manual: true,
-    loadingDelay: 1000,
-    onSuccess: () => setLoadingChangingState(false),
-    onError: () => setLoadingChangingState(false),
-  });
-  const { run: searchOrderList } = useRequest(fetchOrderListAsync, {
-    manual: true,
-    debounceWait: 500,
+    // loadingDelay: 1000,
     onSuccess: (data) => {
+      setLoadingChangingState(false);
       if (orderId) {
         const selectedOrder = data.data.find((e) => e.id === +orderId);
         setPrinter(selectedOrder);
       }
     },
+    onError: () => setLoadingChangingState(false),
   });
 
+  const debouncedValue = useDebounce(searchData, { wait: 500 });
   // useEffects
   useEffect(() => {
-    if (searchData !== '') {
-      searchOrderList({
-        page: `${page - 1}`,
-        status: toggleValue,
-        search: searchData,
-      });
-      return;
-    }
-
     setLoadingChangingState(true);
     fetchOrderList({
       page: `${page - 1}`,
       status: toggleValue,
+      search: debouncedValue,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggleValue, page, searchData]);
+  }, [toggleValue, page, debouncedValue]);
 
   useEffect(() => {
     if (orderId) {
@@ -310,15 +298,6 @@ const Orders = () => {
                     setSearchData(e.currentTarget.value);
                     setPage(1);
                     onClearFilter();
-                  }}
-                  onKeyUp={(e) => {
-                    if (e.key === 'Enter') {
-                      searchOrderList({
-                        page: `${page - 1}`,
-                        status: toggleValue,
-                        search: searchData,
-                      });
-                    }
                   }}
                   InputProps={{
                     endAdornment: (

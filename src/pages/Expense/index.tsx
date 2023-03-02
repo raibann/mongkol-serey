@@ -36,7 +36,7 @@ import EXPENSE_API from 'api/expense';
 import OrderTable, { OrderTableHead } from 'pages/Orders/OrderTable';
 import ExpenseDialogs from './ExpenseDialogs';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRequest } from 'ahooks';
+import { useDebounce, useRequest } from 'ahooks';
 import { Controller, useForm } from 'react-hook-form';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -56,11 +56,7 @@ export default function Expense() {
   // useRequests
   const expenseListReq = useRequest(EXPENSE_API.getExpense, {
     manual: true,
-    loadingDelay: 1000,
-  });
-  const expenseSearchReq = useRequest(expenseListReq.runAsync, {
-    manual: true,
-    debounceWait: 500,
+    // loadingDelay: 1000,
   });
 
   // Variable
@@ -77,25 +73,16 @@ export default function Expense() {
   const [search, setSearch] = useState('');
   const [openDialogs, setOpenDialogs] = useState<IOrder.Order>();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
+  const debouncedValue = useDebounce(search, { wait: 500 });
   // useEffects
   useEffect(() => {
-    if (search !== '') {
-      expenseSearchReq.run({
-        page: page - 1,
-        status: toggleValue,
-        search: search,
-      });
-      return;
-    }
-
     expenseListReq.run({
       page: page - 1,
       status: toggleValue,
-      search: '',
+      search: debouncedValue,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggleValue, page, search]);
+  }, [toggleValue, page, debouncedValue]);
 
   // Methods
   const handleChangePage = (_: React.ChangeEvent<unknown>, value: number) => {

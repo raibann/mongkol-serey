@@ -49,7 +49,7 @@ const PageHeader = ({
                 </CusIconButton>
               </Grid>
               <Grid item xs>
-                <Typography variant='h4' fontWeight='bolder'>
+                <Typography variant='h5' fontWeight='bolder'>
                   {pageTitle}
                 </Typography>
               </Grid>

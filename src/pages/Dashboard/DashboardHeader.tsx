@@ -130,7 +130,7 @@ const DashboardHeader = ({
     (el) => moment().diff(el.date, 'years') === 1
   );
 
-  const { isSmDown } = useResponsive();
+  const { isSmDown, isMdDown } = useResponsive();
   const theme = useTheme();
   const navigate = useNavigate();
   const compToPrint = useRef(null);
@@ -192,16 +192,19 @@ const DashboardHeader = ({
           >
             <Calendar2 size='24' variant='Outline' />
           </CusIconButton>
-          <ReactToPrint
-            pageStyle={pageStyle}
-            documentTitle={'All Reports'}
-            trigger={() => (
-              <CusIconButton color='primary' sx={{ height: 40 }}>
-                <Printer size='24' variant='Outline' />
-              </CusIconButton>
-            )}
-            content={() => compToPrint.current}
-          />
+
+          {!isMdDown && (
+            <ReactToPrint
+              pageStyle={pageStyle}
+              documentTitle={'All Reports'}
+              trigger={() => (
+                <CusIconButton color='primary' sx={{ height: 40 }}>
+                  <Printer size='24' variant='Outline' />
+                </CusIconButton>
+              )}
+              content={() => compToPrint.current}
+            />
+          )}
         </Stack>
       </PageHeader>
       <Menu
