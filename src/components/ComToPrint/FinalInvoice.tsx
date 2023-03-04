@@ -253,7 +253,17 @@ const FinalInvoice = React.forwardRef<HTMLInputElement, IFinalInvoice>(
             fontSize={18}
             lineHeight={1.8}
           >
-            អតិថិជន​អាចទូទាត់ប្រាក់តាមគណនេយ្យធនាគារដូចខាងក្រោម ៖
+            ១. អតិថិជនត្រូវទូទាត់ប្រាក់សេវាកម្មទាំងអស់យ៉ាងយូរ ត្រឹមម៉ោង
+            11ថ្ងៃត្រង់ បន្ទាប់ពីកម្មវិធីរួចកាលពីយប់
+            ក្នុងករណីអតិថិជនទូទាត់ប្រាក់យឺតត្រូវបង់ប្រាក់ពិន័យ យឺត1ថ្ងៃ 100$ ឬ
+            3ថ្ងៃ 500$។
+          </Typography>
+          <Typography
+            fontFamily='Khmer Busra high'
+            fontSize={18}
+            lineHeight={1.8}
+          >
+            ២. អតិថិជន​អាចទូទាត់ប្រាក់តាមគណនេយ្យធនាគារដូចខាងក្រោម ៖
           </Typography>
           <Grid container columnSpacing={2} rowSpacing={1} sx={{ px: 4 }}>
             <Grid item xs={6}>
