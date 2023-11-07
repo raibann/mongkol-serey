@@ -5,6 +5,7 @@ import {
   Avatar,
   ListItemText,
   ListItemButton,
+  Box,
 } from '@mui/material';
 import { User } from 'iconsax-react';
 import theme from 'theme/theme';
@@ -65,7 +66,12 @@ const AnniversaryItem = ({
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={`Order ID: ${invoiceId} ~ ${eventType}`}
+            primary={
+              <Box sx={{ display: 'flex', flexDirection: ['column', 'row'] }}>
+                <Typography>Order ID: {invoiceId}</Typography>
+                <Typography>~ {eventType}</Typography>
+              </Box>
+            }
             secondary={name}
           />
         </ListItem>

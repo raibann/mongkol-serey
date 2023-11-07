@@ -6,6 +6,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import useResponsive from 'hook/useResponsive';
 import { EmojiSad } from 'iconsax-react';
 import theme from 'theme/theme';
 
@@ -15,30 +16,41 @@ interface IErrorDialog extends DialogProps {
   onCloseDialog: () => void;
 }
 const ErrorDialog = (props: IErrorDialog) => {
-  const { open, ...rest } = props;
+  const { open, errorMessage, errorTitle, onCloseDialog, onClose, ...rest } =
+    props;
+
+  const { isSmDown } = useResponsive();
   return (
-    <Dialog open={open} fullWidth maxWidth='xs' {...rest}>
+    <Dialog
+      open={open}
+      fullWidth
+      maxWidth='xs'
+      onClose={onCloseDialog}
+      {...rest}
+    >
       <DialogContent>
         <Stack alignItems={'center'} sx={{ px: 4 }} spacing={2}>
           <EmojiSad
-            size='80'
+            size={isSmDown ? '40' : '80'}
             color={theme.palette.primary.main}
             variant='Bulk'
           />
           <Typography
-            variant='h5'
+            variant={isSmDown ? 'subtitle1' : 'h5'}
+            noWrap
             sx={{ fontWeight: (theme) => theme.typography.fontWeightBold }}
           >
-            {props.errorTitle || 'NOOB!'}
+            {errorTitle || 'NOOB!'}
           </Typography>
           <Typography
             sx={{ color: (theme) => theme.palette.error.main }}
             textAlign='center'
+            variant={isSmDown ? 'caption' : 'h5'}
           >
-            {props.errorMessage}
+            {errorMessage}
           </Typography>
           <Button
-            onClick={props.onCloseDialog}
+            onClick={onCloseDialog}
             variant='contained'
             sx={{ borderRadius: 3, px: 3, boxShadow: 0 }}
           >

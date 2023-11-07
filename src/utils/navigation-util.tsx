@@ -2,11 +2,9 @@ import {
   Notification,
   MoneySend,
   Profile2User,
-  Box,
   Chart,
   NoteFavorite,
-  // LogoutCurve,
-  // SecurityUser,
+  SecurityUser,
 } from 'iconsax-react';
 import React from 'react';
 import { ROUTE_PATH } from './route-util';
@@ -49,11 +47,11 @@ const navigationUtil: Navigation = [
   //   toUrl: ROUTE_PATH.stocks,
   //   icon: <Box size='24' variant='Bold' />,
   // },
-  // {
-  //   title: 'Manage Users',
-  // toUrl: ROUTE_PATH.manageusers,
-  //   icon: <SecurityUser size='24' />,
-  // },
+  {
+    title: 'Users',
+    toUrl: ROUTE_PATH.manageusers,
+    icon: <SecurityUser variant='Bold' size='24' />,
+  },
 ];
 
 export default navigationUtil;

@@ -136,10 +136,19 @@ const Dashboard = () => {
     return null;
   };
 
+  // console.log('dateRange', dateRange);
+
   return (
     <>
       <DashboardHeader
-        {...{ setDateRange, fetchDashTotal, setToggleValue, toggleValue }}
+        {...{
+          setDateRange,
+          fetchDashTotal,
+          setToggleValue,
+          toggleValue,
+          dashTotal,
+          dateRange,
+        }}
       />
       {isDashLoading && isLoadingChart ? (
         <Stack
@@ -422,7 +431,7 @@ const Dashboard = () => {
               elevation={1}
               sx={{
                 width: { xs: '100%', md: '60%' },
-                height: { xs: 800, md: 'auto' },
+                height: { xs: 'auto', md: 'auto' },
                 py: 3,
                 pr: 5,
               }}
@@ -445,33 +454,15 @@ const Dashboard = () => {
                       }`}
                 </Typography>
               </Stack>
-              <ResponsiveContainer width='100%' height='90%'>
-                <BarChart
-                  data={CHART2_DATA}
-                  barSize={15}
-                  layout={isMdDown ? 'vertical' : 'horizontal'}
-                >
+              <ResponsiveContainer width='100%' height={isMdDown ? 400 : '85%'}>
+                <BarChart data={CHART2_DATA} barSize={15} layout='horizontal'>
                   <CartesianGrid vertical={false} />
-                  {isMdDown ? (
-                    <>
-                      <XAxis type='number' domain={[0, 100000]} />
-                      <YAxis
-                        dataKey='name'
-                        type='category'
-                        tickFormatter={DataFormater}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <XAxis dataKey='name' />
-                      <YAxis
-                        type='number'
-                        domain={[0, 100000]}
-                        tickFormatter={DataFormater}
-                      />
-                      <Tooltip />
-                    </>
-                  )}
+                  <XAxis dataKey='name' />
+                  <YAxis
+                    type='number'
+                    domain={[0, 100000]}
+                    tickFormatter={DataFormater}
+                  />
                   <Tooltip />
                   <Legend />
                   <Bar dataKey='Sales' fill={theme.palette.success.main} />

@@ -6,6 +6,8 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { IFormQuotation, ListProduct } from '..';
 import FormItems from './FormItems';
 import useResponsive from 'hook/useResponsive';
+import { useRequest } from 'ahooks';
+import ORDER_API from 'api/order';
 
 export default function FormQuotation({
   listItem,
@@ -14,6 +16,9 @@ export default function FormQuotation({
   setListItem: React.Dispatch<React.SetStateAction<ListProduct[]>>;
   listItem: ListProduct[];
 }) {
+  // ah0oks
+  const menuListReq = useRequest(ORDER_API.getCategoryAndMenu);
+
   const { control, watch, setValue } = useFormContext<IFormQuotation>();
   const handleDelete = (id: number) => {
     let temp = listItem.filter((e, index) => {
@@ -21,6 +26,7 @@ export default function FormQuotation({
     });
     setListItem(temp);
   };
+
   // generate total
   let getList = watch('list') || [];
   let sum = getList.reduce((accumulator, object) => {
@@ -114,7 +120,7 @@ export default function FormQuotation({
             />
           </LabelTextField>
         </Grid>
-        {!isSmDown && (
+        {!isSmDown && listItem.length > 0 && (
           <>
             <Grid item xs={3}>
               Name
@@ -135,7 +141,10 @@ export default function FormQuotation({
         )}
 
         {listItem.map((data, index) => (
-          <FormItems {...{ data, index, handleDelete }} key={index} />
+          <FormItems
+            {...{ data, index, handleDelete, menuListReq }}
+            key={index}
+          />
         ))}
         <Grid item xs={12}>
           <LabelTextField label='Total'>

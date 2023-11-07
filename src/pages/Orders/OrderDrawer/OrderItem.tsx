@@ -9,13 +9,14 @@ import {
   Autocomplete,
   alpha,
 } from '@mui/material';
+import { Result } from 'ahooks/lib/useRequest/src/types';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import LabelTextField from 'components/LabelTextField';
 import { Trash } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
-import { foodList, unitList } from 'utils/data-util';
+import { unitList } from 'utils/data-util';
 import { validatePatterns } from 'utils/validate-util';
 import { IOrderForm } from '.';
 
@@ -25,10 +26,18 @@ interface IMenuItems {
 }
 
 const OrderItem = ({
+  menuListReq,
   menuItemsP,
-  onRemoveOrder,
   index,
+  onRemoveOrder,
 }: {
+  menuListReq: Result<
+    {
+      resMenu: IMenuList.IMenuItem[];
+      resCategory: IMenuList.IMenuCategory[];
+    },
+    []
+  >;
   menuItemsP: IMenuItems[];
   index: number;
   onRemoveOrder: () => void;
@@ -37,6 +46,7 @@ const OrderItem = ({
   const unitPrice = watch(`listMenu.${index}.unitPrice`);
   const quantity = watch(`listMenu.${index}.quantity`);
   const price = watch(`listMenu.${index}.price`);
+  const { resCategory, resMenu } = menuListReq.data || {};
 
   const [menuItems, setMenuItems] = useState<IMenuItems[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -112,15 +122,41 @@ const OrderItem = ({
             rules={{
               required: { value: true, message: 'Title is Required' },
             }}
-            render={({ field, fieldState: { error } }) => {
+            render={({
+              field: { onChange, ...rest },
+              fieldState: { error },
+            }) => {
               return (
                 <LabelTextField label=''>
-                  <StyledOutlinedTextField
+                  <Autocomplete
+                    componentsProps={{
+                      paper: {
+                        sx: {
+                          minWidth: 250,
+                        },
+                      },
+                    }}
+                    freeSolo
+                    disableClearable
+                    openOnFocus
+                    loading={menuListReq.loading}
+                    loadingText='Loading...'
+                    id='categoryList'
                     size='small'
-                    label='Title'
-                    error={Boolean(error)}
-                    helperText={error?.message}
-                    {...field}
+                    sx={{ width: '100%' }}
+                    onInputChange={(e, value) => {
+                      setValue(`listMenu.${index}.title`, value);
+                    }}
+                    {...rest}
+                    renderInput={(params) => (
+                      <StyledOutlinedTextField
+                        label='Category'
+                        error={Boolean(error)}
+                        helperText={error?.message}
+                        {...params}
+                      />
+                    )}
+                    options={resCategory?.map((data) => data.title) || []}
                   />
                 </LabelTextField>
               );
@@ -140,50 +176,16 @@ const OrderItem = ({
             render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label=''>
-                  <StyledOutlinedTextField
-                    size='small'
-                    type='number'
-                    label='Quantity'
-                    error={Boolean(error)}
-                    helperText={error?.message}
-                    onKeyUp={() => {
-                      if (unitPrice && quantity) {
-                        if (!isNaN(+unitPrice * quantity)) {
-                          setValue(
-                            `listMenu.${index}.price`,
-                            +(+unitPrice * quantity).toFixed(2)
-                          );
-                        } else {
-                          setValue(`listMenu.${index}.price`, '');
-                        }
-                      } else {
-                        setValue(`listMenu.${index}.price`, 0);
-                      }
+                  <Stack
+                    direction='row'
+                    sx={{
+                      position: 'relative',
                     }}
-                    {...field}
-                  />
-                </LabelTextField>
-              );
-            }}
-          />
-
-          <LabelTextField label=''>
-            <Stack
-              direction='row'
-              sx={{
-                position: 'relative',
-              }}
-            >
-              <Controller
-                control={control}
-                name={`listMenu.${index}.unitPrice`}
-                defaultValue=''
-                render={({ field, fieldState: { error } }) => {
-                  return (
+                  >
                     <StyledOutlinedTextField
                       size='small'
                       type='number'
-                      label='Price'
+                      label='Quantity'
                       error={Boolean(error)}
                       helperText={error?.message}
                       onKeyUp={() => {
@@ -197,51 +199,85 @@ const OrderItem = ({
                             setValue(`listMenu.${index}.price`, '');
                           }
                         } else {
-                          setValue(`listMenu.${index}.price`, '');
+                          setValue(`listMenu.${index}.price`, 0);
                         }
                       }}
                       {...field}
                     />
-                  );
-                }}
-              />
-              <Button
-                onClick={handleClick}
-                color='inherit'
-                sx={{
-                  background: '#fff',
-                  position: 'absolute',
-                  right: 2,
-                  top: 2,
-                  bottom: 2,
-                  borderRadius: 2,
-                  color: '#000',
-                  width: 'auto',
-                  minWidth: 0,
-                  px: 1,
-                  '&.css-1lskwbk-MuiButtonBase-root-MuiButton-root': {
-                    p: 0,
-                  },
-                }}
-              >
-                /{watch(`listMenu.${index}.unit`) || 'តុ'}
-              </Button>
-              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                {unitList.map((e) => {
-                  return (
-                    <MenuItem
-                      key={e}
-                      onClick={() => {
-                        setValue(`listMenu.${index}.unit`, e);
-                        handleClose();
+                    <Button
+                      onClick={handleClick}
+                      color='inherit'
+                      sx={{
+                        background: '#fff',
+                        position: 'absolute',
+                        right: 2,
+                        top: 2,
+                        bottom: 2,
+                        borderRadius: 2,
+                        color: '#000',
+                        width: 'auto',
+                        minWidth: 0,
+                        px: 1,
+                        '&.css-1lskwbk-MuiButtonBase-root-MuiButton-root': {
+                          p: 0,
+                        },
                       }}
                     >
-                      {e}
-                    </MenuItem>
-                  );
-                })}
-              </Menu>
-            </Stack>
+                      {watch(`listMenu.${index}.unit`) || 'តុ'}
+                    </Button>
+                    <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                      {unitList.map((e) => {
+                        return (
+                          <MenuItem
+                            key={e}
+                            onClick={() => {
+                              setValue(`listMenu.${index}.unit`, e);
+                              handleClose();
+                            }}
+                          >
+                            {e}
+                          </MenuItem>
+                        );
+                      })}
+                    </Menu>
+                  </Stack>
+                </LabelTextField>
+              );
+            }}
+          />
+
+          <LabelTextField label=''>
+            <Controller
+              control={control}
+              name={`listMenu.${index}.unitPrice`}
+              defaultValue=''
+              render={({ field, fieldState: { error } }) => {
+                return (
+                  <StyledOutlinedTextField
+                    size='small'
+                    type='number'
+                    label='Price'
+                    error={Boolean(error)}
+                    helperText={error?.message}
+                    onKeyUp={() => {
+                      if (unitPrice && quantity) {
+                        if (!isNaN(+unitPrice * quantity)) {
+                          setValue(
+                            `listMenu.${index}.price`,
+                            +(+unitPrice * quantity).toFixed(2)
+                          );
+                        } else {
+                          setValue(`listMenu.${index}.price`, '');
+                        }
+                      } else {
+                        setValue(`listMenu.${index}.price`, '');
+                      }
+                    }}
+                    {...field}
+                  />
+                );
+              }}
+            />
           </LabelTextField>
 
           <Controller
@@ -317,6 +353,8 @@ const OrderItem = ({
                         freeSolo
                         disableClearable
                         openOnFocus
+                        loading={menuListReq.loading}
+                        loadingText='Loading...'
                         id='foodList'
                         size='small'
                         sx={{ width: '100%' }}
@@ -340,7 +378,7 @@ const OrderItem = ({
                             {...params}
                           />
                         )}
-                        options={foodList.map((data) => data)}
+                        options={resMenu?.map((data) => data.title) || []}
                       />
                     );
                   }}

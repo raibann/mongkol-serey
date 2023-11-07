@@ -18,6 +18,8 @@ export const ROUTE_API = {
   ordersList: '/api/orders/v1/list',
   orderAction: '/api/orders/v1/action',
   deleteOrder: '/api/orders/v1/delete/:id',
+  menuList: '/api/v2/menu_list',
+  categoryList: '/api/v2/category',
 
   customersList: '/api/customer/v1/list',
   customerDetails: '/api/customer/v1/:id',
@@ -35,4 +37,11 @@ export const ROUTE_API = {
   stockList: '/api/stock/v1/list',
   addStock: '/api/stock/v1/action',
   deleteStock: '/api/stock/v1/delete/:id',
+
+  userList: '/api/auth/v1/users',
+  addNewUser: '/api/auth/v1/user/save',
+  updateUser: '/api/auth/v1/user/update/:id',
+  deleteUser: '/api/auth/v1/user/delete/:id',
+  saveRole: '/api/auth/v1/role/save',
+  addRoleToUser: '/api/auth/v1/role/adduser',
 };

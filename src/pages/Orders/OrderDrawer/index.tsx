@@ -7,6 +7,9 @@ import {
   Typography,
   IconButton,
   Tooltip,
+  Popover,
+  List,
+  Box,
 } from '@mui/material';
 import {
   Controller,
@@ -42,8 +45,9 @@ import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { LoadingButton } from '@mui/lab';
 import { persistState, removePersistedState } from 'utils/persist-util';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRequest } from 'ahooks';
+import { useDebounce, useRequest } from 'ahooks';
 import { HiOutlineFolderRemove } from 'react-icons/hi';
+import { CusLoading } from 'components/CusLoading';
 
 export interface IOrderForm {
   orderId?: number;
@@ -97,6 +101,18 @@ const OrderDrawer = ({
   draft?: Draft;
   onSaveDraft: (draft?: Draft) => void;
 }) => {
+  // states
+  const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
+  const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
+  const [alertDialog, setAlertDialog] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState(false);
+  const [customerAnchorEl, setCustomerAnchorEl] = useState<HTMLElement | null>(
+    null
+  );
+  const [searchCustomer, setSearchCustomer] = useState('');
+  const [selectedCustomer, setSelectedCustomer] =
+    useState<ICustomer.Customer>();
+
   // useRequests
   const orderActionReq = useRequest(ORDER_API.orderAction, {
     manual: true,
@@ -109,13 +125,22 @@ const OrderDrawer = ({
     },
     onError: () => setAlertDialog(true),
   });
+  const menuListReq = useRequest(ORDER_API.getCategoryAndMenu);
   const expenseActionReq = useRequest(EXPENSE_API.addExpense, {
     manual: true,
     onSuccess: () => onActionSuccess(),
     onError: () => setAlertDialog(true),
   });
-  const customerListReq = useRequest(() =>
-    CUSTOMER_API.getCustomerList({ size: 1000 })
+  const debounceSearchCustomer = useDebounce(searchCustomer, { wait: 500 });
+  const customerListReq = useRequest(
+    () =>
+      CUSTOMER_API.getCustomerList({
+        size: 5,
+        search: debounceSearchCustomer,
+      }),
+    {
+      refreshDeps: [debounceSearchCustomer],
+    }
   );
   const deleteOrderReq = useRequest(ORDER_API.deleteOrder, {
     manual: true,
@@ -130,17 +155,9 @@ const OrderDrawer = ({
   const methods = useForm<IOrderForm & CustomerInput & FinalInvoiceInput>();
   const { setValue, handleSubmit, getValues } = methods;
 
-  // states
-  const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
-  const [listMenu, setListMenu] = useState<IlistMenu[]>([]);
-  const [alertDialog, setAlertDialog] = useState(false);
-  const [confirmDialog, setConfirmDialog] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] =
-    useState<ICustomer.Customer>();
-
   // Variables
   let orderItemId = 0;
-  let customerRef = useRef(orderDetail?.customer || draft?.customer);
+  const selectCustomerWidth = useRef(0);
 
   const onSubmit: SubmitHandler<
     IOrderForm & CustomerInput & FinalInvoiceInput
@@ -353,6 +370,19 @@ const OrderDrawer = ({
     setSelectedCustomer(undefined);
   };
 
+  if ((!customerListReq.data && customerListReq.loading) || menuListReq.loading)
+    return (
+      <Box
+        sx={{
+          height: '100%',
+          display: 'grid',
+          placeItems: 'center',
+        }}
+      >
+        <CusLoading />
+      </Box>
+    );
+
   return (
     <>
       <ErrorDialog
@@ -366,6 +396,62 @@ const OrderDrawer = ({
         }
         onCloseDialog={() => setAlertDialog(false)}
       />
+
+      <Popover
+        anchorEl={customerAnchorEl}
+        open={!!customerAnchorEl}
+        onClose={() => setCustomerAnchorEl(null)}
+        sx={{
+          '& .MuiPaper-root': {
+            p: 2,
+            width: selectCustomerWidth.current || undefined,
+          },
+        }}
+      >
+        <StyledOutlinedTextField
+          placeholder='Search Customer Name'
+          value={searchCustomer}
+          onChange={(e) => setSearchCustomer(e.target.value)}
+          fullWidth
+          sx={{ mb: 2 }}
+        />
+
+        {customerListReq.loading ? (
+          <Box
+            sx={{
+              height: 300,
+              display: 'grid',
+              placeItems: 'center',
+            }}
+          >
+            <CusLoading />
+          </Box>
+        ) : (
+          <List
+            disablePadding
+            sx={{
+              borderTop: `solid 1px ${theme.palette.divider}`,
+            }}
+          >
+            {customerListReq.data?.data?.map((e) => (
+              <MenuItem
+                divider
+                key={e.id}
+                selected={e.id === selectedCustomer?.id}
+                onClick={() => {
+                  setSelectedCustomer(e);
+                  setCustomerAnchorEl(null);
+                }}
+              >
+                <Stack>
+                  <Typography>ID: {e.id}</Typography>
+                  <Typography>Name: {e.customer_name}</Typography>
+                </Stack>
+              </MenuItem>
+            ))}
+          </List>
+        )}
+      </Popover>
 
       <Stack
         p={3}
@@ -402,32 +488,22 @@ const OrderDrawer = ({
           <Stack px={3} spacing={4}>
             <Stack spacing={4} direction='row'>
               <LabelTextField label='Customer'>
-                <Autocomplete
-                  disableClearable
-                  openOnFocus
-                  loading={customerListReq.loading}
-                  defaultValue={customerRef.current}
-                  onChange={(e, value) => {
-                    setSelectedCustomer(value);
+                <Button
+                  variant='outlined'
+                  color='inherit'
+                  onClick={(e) => {
+                    setCustomerAnchorEl(e.currentTarget);
+                    selectCustomerWidth.current = e.currentTarget.clientWidth;
                   }}
-                  renderInput={(params) => (
-                    <StyledOutlinedTextField
-                      placeholder='Select Customer'
-                      {...params}
-                    />
-                  )}
-                  getOptionLabel={(option) => option?.customer_name || ''}
-                  renderOption={(props, option) => {
-                    return (
-                      option && (
-                        <MenuItem {...props} key={option.id}>
-                          {`${option?.id}. ${option?.customer_name}`}
-                        </MenuItem>
-                      )
-                    );
+                  sx={{
+                    height: 56,
+                    borderRadius: 2,
+                    borderColor: 'rgba(0, 0, 0, 0.23)',
+                    fontSize: 16,
                   }}
-                  options={customerListReq.data?.data || []}
-                />
+                >
+                  {selectedCustomer?.customer_name || 'Select Customer'}
+                </Button>
               </LabelTextField>
             </Stack>
 
@@ -761,6 +837,7 @@ const OrderDrawer = ({
                   >
                     <OrderItem
                       index={i}
+                      menuListReq={menuListReq}
                       menuItemsP={menu.menuItem}
                       onRemoveOrder={() => deleteListOrderHandler(i)}
                     />
@@ -925,6 +1002,7 @@ const OrderDrawer = ({
               variant='contained'
               fullWidth
               disableElevation
+              disabled={!!orderDetail?.customer?.deletedAt}
               loading={orderActionReq.loading || expenseActionReq.loading}
               sx={{
                 fontSize: 18,
@@ -937,7 +1015,11 @@ const OrderDrawer = ({
                 color: '#fff',
               }}
             >
-              {!orderDetail ? 'Upload' : 'Update'}
+              {!orderDetail
+                ? 'Upload'
+                : !!orderDetail?.customer?.deletedAt
+                ? `This order can't be updated any more`
+                : 'Update'}
             </LoadingButton>
             {orderDetail && (
               <>

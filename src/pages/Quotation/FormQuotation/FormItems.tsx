@@ -1,4 +1,5 @@
 import { alpha, Autocomplete, Grid, InputAdornment } from '@mui/material';
+import { Result } from 'ahooks/lib/useRequest/src/types';
 import { CusIconButton } from 'components/CusIconButton';
 import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
 import { Trash } from 'iconsax-react';
@@ -12,15 +13,24 @@ export default function FormItems({
   data,
   index,
   handleDelete,
+  menuListReq,
 }: {
   data: ListProduct;
   index: number;
   handleDelete: (id: number) => void;
+  menuListReq: Result<
+    {
+      resMenu: IMenuList.IMenuItem[];
+      resCategory: IMenuList.IMenuCategory[];
+    },
+    []
+  >;
 }) {
   const { control, setValue, watch } = useFormContext<IFormQuotation>();
   const qtyValue = watch(`list.${index}.qty`);
   const price = watch(`list.${index}.price`);
   let subTotal = +qtyValue * +price;
+  const { resCategory } = menuListReq.data || {};
 
   useEffect(() => {
     if (isNaN(subTotal)) {
@@ -38,15 +48,35 @@ export default function FormItems({
           control={control}
           name={`list.${index}.productName`}
           defaultValue={data.productName}
-          // rules={{
-          //   required: true,
-          // }}
-          render={({ field, fieldState: { error } }) => (
-            <StyledOutlinedTextField
-              placeholder='Product Name'
+          render={({ field: { onChange, ...rest }, fieldState: { error } }) => (
+            <Autocomplete
+              componentsProps={{
+                paper: {
+                  sx: {
+                    minWidth: 250,
+                  },
+                },
+              }}
+              freeSolo
+              disableClearable
+              openOnFocus
+              loading={menuListReq.loading}
+              loadingText='Loading...'
               size='small'
-              error={Boolean(error)}
-              {...field}
+              sx={{ width: '100%' }}
+              onInputChange={(e, value) => {
+                setValue(`list.${index}.productName`, value);
+              }}
+              {...rest}
+              renderInput={(params) => (
+                <StyledOutlinedTextField
+                  label='Category'
+                  error={Boolean(error)}
+                  helperText={error?.message}
+                  {...params}
+                />
+              )}
+              options={resCategory?.map((data) => data.title) || []}
             />
           )}
         />

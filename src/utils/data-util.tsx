@@ -1,4 +1,7 @@
 import { IExpenseRow } from 'pages/Expense/ExpenseDialogs';
+import { GrUserAdmin } from 'react-icons/gr';
+import { MdOutlineAdminPanelSettings } from 'react-icons/md';
+import theme from 'theme/theme';
 
 const listTitle: IExpenseRow[] = [
   {
@@ -240,6 +243,7 @@ const listTitle: IExpenseRow[] = [
     other: '',
   },
 ];
+
 const paidBy = [
   'ACLEDA',
   'ABA',
@@ -358,38 +362,35 @@ const eventList = [
 
 export { paidBy, paidByColor, listTitle, foodList, unitList, eventList };
 
-export interface IUser {
-  id: number;
-  username: string;
-  password: string;
-  role: string;
-  status: number;
-}
-export const UserData: IUser[] = [
+export const role = [
   {
     id: 1,
-    username: 'Ma Raibann',
-    password: '1234',
-    role: 'Admin',
-    status: 1,
+    name: 'ROLE_SUPER_ADMIN',
+    description: 'Has access to everything',
+    icon: (
+      <GrUserAdmin
+        size={24}
+        style={{
+          position: 'relative',
+          left: 2,
+        }}
+      />
+    ),
+    disable: true,
   },
   {
     id: 2,
-    username: 'មាស សៅមិនា',
-    password: '1234',
-    role: 'Admin',
-    status: 0,
-  },
-  {
-    id: 3,
-    username: 'Rem Brosna',
-    password: '1234',
-    role: 'Admin',
-    status: 0,
+    name: 'ROLE_ADMIN',
+    description: 'No access to user management',
+    icon: (
+      <MdOutlineAdminPanelSettings
+        size={28}
+        color={theme.palette.common.black}
+      />
+    ),
+    disable: false,
   },
 ];
-
-export const role = ['Admin', 'Manager', 'Staff'];
 
 export enum MonthRanks {
   'Jan' = 1,

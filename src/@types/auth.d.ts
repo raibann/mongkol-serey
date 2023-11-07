@@ -10,16 +10,18 @@ declare namespace IAuth {
   }
 
   interface User {
-    id: number;
+    id?: number;
     name: string;
     username: string;
-    roles: Role[];
+    password: string;
+    roles?: Role[];
   }
 
   interface Role {
     id: number;
     name: string;
   }
+
   interface IAuthBody {
     username: string;
     password: string;

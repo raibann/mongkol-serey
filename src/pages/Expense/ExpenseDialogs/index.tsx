@@ -382,7 +382,7 @@ function ExpenseDialogs({
 
                 <Stack spacing={2} sx={{ py: 2 }}>
                   <>
-                    {listExpense.map((data, i) => (
+                    {listExpense?.map((data, i) => (
                       <FormExpense
                         defaultTitle={data.title}
                         key={i}

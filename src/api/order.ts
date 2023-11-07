@@ -6,16 +6,28 @@ const ORDER_API = {
     page,
     status,
     search,
+    startDate,
+    endDate,
+    eventType,
+    dateType,
   }: {
     page: string;
     status: string;
     search?: string;
+    startDate?: string;
+    endDate?: string;
+    eventType?: string;
+    dateType?: string;
   }) => {
     const res: IOrder.IOrderRes = await HttpUtil.get(ROUTE_API.ordersList, {
       params: {
         page: page,
         status: status,
         search: search,
+        startDate: startDate,
+        endDate: endDate,
+        eventType: eventType,
+        dateType: dateType,
       },
     });
     return res;
@@ -34,6 +46,16 @@ const ORDER_API = {
       ROUTE_API.deleteOrder.replace(':id', req.orderId)
     );
     return res;
+  },
+  getCategoryAndMenu: async () => {
+    const resMenu: IMenuList.IMenuItem[] = await HttpUtil.get(
+      ROUTE_API.menuList
+    );
+    const resCategory: IMenuList.IMenuCategory[] = await HttpUtil.get(
+      ROUTE_API.categoryList
+    );
+
+    return { resMenu, resCategory };
   },
 };
 export default ORDER_API;

@@ -6,11 +6,16 @@ import {
   DialogTitle,
   Divider,
   Drawer,
+  FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
+  MenuItem,
   Pagination,
   Paper,
+  Popover,
+  Radio,
+  RadioGroup,
   Stack,
   Table,
   TableBody,
@@ -35,18 +40,35 @@ import {
   ArrowLeft2,
   BoxRemove,
   Calculator,
+  FilterRemove,
+  FilterSearch,
   NoteFavorite,
   Printer,
-  SearchNormal1,
+  TickCircle,
 } from 'iconsax-react';
 import { CusLoading } from 'components/CusLoading';
 import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRequest } from 'ahooks';
+import { useDebounce, useRequest } from 'ahooks';
 import useRouter from 'hook/useRouter';
 import { ROUTE_PATH } from 'utils/route-util';
 import { getPersistedState } from 'utils/persist-util';
+import { eventList } from 'utils/data-util';
+
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers';
+import LabelTextField from 'components/LabelTextField';
+import { Controller, useForm } from 'react-hook-form';
+import moment from 'moment';
+
+interface IFilterSearch {
+  eventType: string;
+  type: string;
+  from: string | null;
+  to: string | null;
+}
 
 const Orders = () => {
   // Variables
@@ -58,60 +80,51 @@ const Orders = () => {
   const { navigate } = useRouter();
 
   // States
-  const [ToggleValue, setToggleValue] = useState('pending');
+  const [toggleValue, setToggleValue] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
   const [loadingChangingState, setLoadingChangingState] = useState(false);
   const [printer, setPrinter] = useState<IOrder.Order>();
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [searchData, setSearchData] = useState('');
   const [draft, setDraft] = useState<Draft | undefined>(
     getPersistedState(`${process.env.REACT_APP_PERSIST_DRAFT}`)
   );
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const { handleSubmit, control, clearErrors, setValue } =
+    useForm<IFilterSearch>();
 
   // useRequests
   const {
     data: orderList,
     run: fetchOrderList,
-    runAsync: fetchOrderListAsync,
     loading: isLoadingOrderList,
     refresh: refreshGetOrderList,
   } = useRequest(ORDER_API.getOrdersList, {
     manual: true,
-    onSuccess: () => setLoadingChangingState(false),
-    onError: () => setLoadingChangingState(false),
-  });
-  const { run: searchOrderList } = useRequest(fetchOrderListAsync, {
-    manual: true,
-    debounceWait: 500,
+    // loadingDelay: 1000,
     onSuccess: (data) => {
+      setLoadingChangingState(false);
       if (orderId) {
         const selectedOrder = data.data.find((e) => e.id === +orderId);
         setPrinter(selectedOrder);
       }
     },
+    onError: () => setLoadingChangingState(false),
   });
 
+  const debouncedValue = useDebounce(searchData, { wait: 500 });
   // useEffects
   useEffect(() => {
-    if (searchData !== '') {
-      searchOrderList({
-        page: `${page - 1}`,
-        status: ToggleValue,
-        search: searchData,
-      });
-      return;
-    }
-
     setLoadingChangingState(true);
     fetchOrderList({
       page: `${page - 1}`,
-      status: ToggleValue,
-      search: '',
+      status: toggleValue,
+      search: debouncedValue,
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ToggleValue, page, searchData]);
+  }, [toggleValue, page, debouncedValue]);
 
   useEffect(() => {
     if (orderId) {
@@ -142,6 +155,27 @@ const Orders = () => {
     (i: number) => setOrderDetail(orderList!.data![i]),
     [orderList]
   );
+  const onClearFilter = () => {
+    setValue('from', null);
+    setValue('to', null);
+    setValue('eventType', '');
+    setValue('type', 'event');
+  };
+  const handleSubmitFilter = (data: IFilterSearch) => {
+    setSearchData('');
+    setPage(1);
+    setAnchorEl(null);
+    clearErrors();
+    fetchOrderList({
+      page: '0',
+      status: toggleValue,
+      search: '',
+      dateType: data.type,
+      startDate: moment(data.from).format('YYYY-MM-DD'),
+      endDate: moment(data.to).format('YYYY-MM-DD'),
+      eventType: data.eventType,
+    });
+  };
 
   return (
     <>
@@ -162,7 +196,7 @@ const Orders = () => {
         <Grid container p={2} rowSpacing={2}>
           <Grid item xs={12} sm={12} md={4}>
             <ToggleButtonGroup
-              value={ToggleValue}
+              value={toggleValue}
               exclusive
               fullWidth
               size='small'
@@ -180,7 +214,7 @@ const Orders = () => {
           </Grid>
           <Grid item xs={12} sm={12} md={8}>
             <Grid container columnSpacing={2} alignItems='center'>
-              <Grid item xs={4} sm={6} md={8} lg={8} xl={10}>
+              <Grid item xs={4} sm={6} md={8} lg={8} xl={9}>
                 <Stack
                   direction={'row'}
                   spacing={2}
@@ -255,7 +289,7 @@ const Orders = () => {
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={8} sm={6} md={4} lg={4} xl={2}>
+              <Grid item xs={8} sm={6} md={4} lg={4} xl={3}>
                 <CusTextField
                   placeholder='Search...'
                   size='small'
@@ -263,23 +297,20 @@ const Orders = () => {
                   onChange={(e) => {
                     setSearchData(e.currentTarget.value);
                     setPage(1);
-                  }}
-                  onKeyUp={(e) => {
-                    if (e.key === 'Enter') {
-                      searchOrderList({
-                        page: `${page - 1}`,
-                        status: ToggleValue,
-                        search: searchData,
-                      });
-                    }
+                    onClearFilter();
                   }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position='end'>
-                        <SearchNormal1
-                          size='20'
-                          color={theme.palette.primary.main}
-                        />
+                        <IconButton
+                          onClick={(e) => setAnchorEl(e.currentTarget)}
+                          sx={{ mr: -1 }}
+                        >
+                          <FilterSearch
+                            size='20'
+                            color={theme.palette.primary.main}
+                          />
+                        </IconButton>
                       </InputAdornment>
                     ),
                   }}
@@ -390,11 +421,173 @@ const Orders = () => {
         </Stack>
       </Paper>
 
+      <Popover
+        id='filter-order'
+        open={!!anchorEl}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        PaperProps={{
+          sx: {
+            p: 2,
+          },
+        }}
+      >
+        <form onSubmit={handleSubmit(handleSubmitFilter)}>
+          <Stack direction={'column'} spacing={2}>
+            <Controller
+              control={control}
+              name='eventType'
+              defaultValue=''
+              render={({ field, fieldState: { error } }) => (
+                <CusTextField
+                  select
+                  defaultValue={''}
+                  SelectProps={{
+                    displayEmpty: true,
+                  }}
+                  fullWidth
+                  placeholder='Event Type'
+                  size='small'
+                  error={Boolean(error)}
+                  {...field}
+                >
+                  <MenuItem value=''>All Event Type</MenuItem>
+                  {eventList.map((d, i) => (
+                    <MenuItem key={i} value={d}>
+                      {d}
+                    </MenuItem>
+                  ))}
+                </CusTextField>
+              )}
+            />
+            <Controller
+              control={control}
+              name='type'
+              defaultValue='event'
+              rules={{
+                required: true,
+              }}
+              render={({ field }) => (
+                <RadioGroup row {...field}>
+                  <FormControlLabel
+                    value='event'
+                    control={<Radio />}
+                    label='Event'
+                  />
+                  <FormControlLabel
+                    value='booking'
+                    control={<Radio />}
+                    label='Booking'
+                  />
+                </RadioGroup>
+              )}
+            />
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Controller
+                control={control}
+                name='from'
+                defaultValue={null}
+                rules={{
+                  required: true,
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <LabelTextField label='From'>
+                    <DatePicker
+                      openTo='day'
+                      views={['year', 'month', 'day']}
+                      renderInput={(params) => (
+                        <CusTextField
+                          size='small'
+                          error={Boolean(error)}
+                          {...params}
+                        />
+                      )}
+                      onChange={(date) => {
+                        field.onChange(date);
+                      }}
+                      value={field.value}
+                    />
+                  </LabelTextField>
+                )}
+              />
+              <Controller
+                control={control}
+                name='to'
+                defaultValue={null}
+                rules={{
+                  required: true,
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <LabelTextField label='To'>
+                    <DatePicker
+                      openTo='day'
+                      views={['year', 'month', 'day']}
+                      renderInput={(params) => (
+                        <CusTextField
+                          size='small'
+                          error={Boolean(error)}
+                          {...params}
+                        />
+                      )}
+                      onChange={(date) => {
+                        field.onChange(date);
+                      }}
+                      value={field.value}
+                    />
+                  </LabelTextField>
+                )}
+              />
+            </LocalizationProvider>
+            <Stack direction='row' spacing={2}>
+              <Button
+                variant='contained'
+                type='submit'
+                sx={{
+                  color: theme.palette.common.white,
+                  boxShadow: theme.shadows[1],
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  height: 40,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  zIndex: 2,
+                  flexGrow: 1,
+                }}
+                startIcon={<TickCircle variant='Bold' size={16} />}
+              >
+                Confirm
+              </Button>
+              <IconButton
+                color='primary'
+                onClick={() => {
+                  onClearFilter();
+                  fetchOrderList({
+                    page: `${page - 1}`,
+                    status: toggleValue,
+                  });
+                }}
+              >
+                <FilterRemove />
+              </IconButton>
+            </Stack>
+          </Stack>
+        </form>
+      </Popover>
+
       <Drawer
         open={newOrder || orderDetail !== undefined}
         anchor={'right'}
         PaperProps={{
-          sx: { borderRadius: 0, width: { xs: '100vw', md: '50vw' } },
+          sx: { borderRadius: 0, width: { xs: '100vw', md: '70vw' } },
         }}
       >
         <OrderDrawer
