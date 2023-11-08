@@ -25,7 +25,7 @@ import { useEffect, useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import theme from 'theme/theme';
 import { validatePatterns } from 'utils/validate-util';
-import FormStock from './FormStock';
+import FormStock from './FormAddInventory';
 import { StockTableBody, StockTableHead } from './stockTable';
 export interface IStockInput {
   note: string;

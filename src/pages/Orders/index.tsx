@@ -230,7 +230,7 @@ const Orders = () => {
                             background: (theme) => theme.palette.secondary.main,
                             height: '100%',
                           }}
-                          onClick={() => navigate(ROUTE_PATH.quotation)}
+                          onClick={() => navigate(ROUTE_PATH.orders.quotations)}
                         >
                           <Calculator variant='Bold' size='16' />
                         </IconButton>
@@ -264,7 +264,7 @@ const Orders = () => {
                         }}
                         color='secondary'
                         startIcon={<Calculator variant='Bold' size='16' />}
-                        onClick={() => navigate(ROUTE_PATH.quotation)}
+                        onClick={() => navigate(ROUTE_PATH.orders.quotations)}
                       >
                         Quotation
                       </Button>

@@ -3,18 +3,26 @@ import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import { useAuthContext } from 'context/AuthContext';
-import Users from 'pages/Users';
+
+/* Parent Page */
 const Login = lazy(() => import('pages/Login'));
 const Dashboard = lazy(() => import('pages/Dashboard'));
 const Orders = lazy(() => import('pages/Orders'));
-const Expense = lazy(() => import('pages/Expense'));
-const Stocks = lazy(() => import('pages/Stocks'));
-const Customer = lazy(() => import('pages/Customer'));
-const Reminder = lazy(() => import('pages/Reminder'));
-const Quotation = lazy(() => import('pages/Quotation'));
+const Expense = lazy(() => import('pages/Expenses'));
+const Customer = lazy(() => import('pages/Customers'));
+const Notifications = lazy(() => import('pages/Notifications'));
+const Menus = lazy(() => import('pages/Menus'));
+const PrepareGrocery = lazy(() => import('pages/PrepareGrocery'));
+const Inventories = lazy(() => import('pages/Inventories'));
+const Suppliers = lazy(() => import('pages/Suppliers'));
+const Users = lazy(() => import('pages/Users'));
+const Setting = lazy(() => import('pages/Setting'));
+/* Children Page */
+const Quotation = lazy(() => import('pages/Orders/Quotation'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
+
   return (
     <Routes>
       <Route
@@ -32,7 +40,7 @@ export default function AllRoutes() {
           }
         />
         <Route
-          path={ROUTE_PATH.orders}
+          path={ROUTE_PATH.orders.root}
           element={
             <Suspense>
               <Orders />
@@ -40,23 +48,23 @@ export default function AllRoutes() {
           }
         />
         <Route
-          path={ROUTE_PATH.stocks}
+          path={ROUTE_PATH.inventories.root}
           element={
             <Suspense>
-              <Stocks />
+              <Inventories />
             </Suspense>
           }
         />
         <Route
-          path={ROUTE_PATH.reminder}
+          path={ROUTE_PATH.notification}
           element={
             <Suspense>
-              <Reminder />
+              <Notifications />
             </Suspense>
           }
         />
         <Route
-          path={ROUTE_PATH.customers}
+          path={ROUTE_PATH.customers.root}
           element={
             <Suspense>
               <Customer />
@@ -64,7 +72,7 @@ export default function AllRoutes() {
           }
         />
         <Route
-          path={ROUTE_PATH.expense}
+          path={ROUTE_PATH.expenses.root}
           element={
             <Suspense>
               <Expense />
@@ -72,7 +80,7 @@ export default function AllRoutes() {
           }
         />
         <Route
-          path={ROUTE_PATH.quotation}
+          path={ROUTE_PATH.orders.quotations}
           element={
             <Suspense>
               <Quotation />
@@ -80,13 +88,46 @@ export default function AllRoutes() {
           }
         />
         <Route
-          path={ROUTE_PATH.manageusers}
+          path={ROUTE_PATH.users.root}
           element={
             <Suspense>
               <Users />
             </Suspense>
           }
         />
+        <Route
+          path={ROUTE_PATH.menus.root}
+          element={
+            <Suspense>
+              <Menus />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.prepareGrocery.root}
+          element={
+            <Suspense>
+              <PrepareGrocery />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.suppliers.root}
+          element={
+            <Suspense>
+              <Suppliers />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.setting.root}
+          element={
+            <Suspense>
+              <Setting />
+            </Suspense>
+          }
+        />
+
         <Route
           path={ROUTE_PATH.root}
           element={<Navigate to={ROUTE_PATH.dashboard} />}

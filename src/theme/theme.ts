@@ -3,9 +3,10 @@ import { createTheme } from '@mui/material/styles';
 let theme = createTheme({
   typography: {
     fontFamily: [
+      'SF Pro Display',
+      'Roboto',
       'Poppins',
       'Khmer Busra high',
-      'Roboto',
       '-apple-system',
       'Raleway',
       'BlinkMacSystemFont',

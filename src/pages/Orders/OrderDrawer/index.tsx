@@ -17,7 +17,7 @@ import {
   SubmitHandler,
   useForm,
 } from 'react-hook-form';
-import { CustomerInput } from 'pages/Customer/CustForm/CustomerForm';
+import { CustomerInput } from 'pages/Customers/CustForm/CustomerForm';
 import { BsPlus } from 'react-icons/bs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { useEffect, useRef, useState } from 'react';

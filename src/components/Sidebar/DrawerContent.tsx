@@ -73,7 +73,7 @@ const DrawerContent = () => {
                       bottom: 0,
                       background: THEME_UTIL.goldGradientMain,
                       zIndex: 0,
-                      borderRadius: 2,
+                      borderRadius: 2.5,
                     }}
                     component={motion.div}
                     layoutId='selectedNav'
@@ -83,9 +83,7 @@ const DrawerContent = () => {
                   sx={{
                     minWidth: collapse ? 0 : undefined,
                     zIndex: 2,
-                    color: location.pathname.includes(nav.toUrl)
-                      ? theme.palette.secondary.main
-                      : theme.palette.primary.main,
+                    color: theme.palette.secondary.main,
                   }}
                 >
                   {nav.icon}
@@ -95,23 +93,28 @@ const DrawerContent = () => {
                     !collapse && (
                       <Stack direction={'row'} justifyContent='space-between'>
                         <Typography
-                          color={theme.palette.secondary.light}
-                          fontWeight={'medium'}
+                          color={theme.palette.secondary.main}
+                          fontWeight={
+                            location.pathname.includes(nav.toUrl)
+                              ? 'medium'
+                              : 'regular'
+                          }
                         >
                           {nav.title}
                         </Typography>
-                        {nav.toUrl === ROUTE_PATH.reminder && reminderList && (
-                          <Box
-                            sx={{
-                              bgcolor: theme.palette.error.main,
-                              color: theme.palette.common.white,
-                              px: 1,
-                              borderRadius: 1,
-                            }}
-                          >
-                            {reminderList?.length}
-                          </Box>
-                        )}
+                        {nav.toUrl === ROUTE_PATH.notification &&
+                          reminderList && (
+                            <Box
+                              sx={{
+                                bgcolor: theme.palette.error.main,
+                                color: theme.palette.common.white,
+                                px: 1,
+                                borderRadius: 1,
+                              }}
+                            >
+                              {reminderList?.length}
+                            </Box>
+                          )}
                       </Stack>
                     )
                   }
