@@ -1,23 +1,32 @@
 import {
   Avatar,
+  Badge,
   Box,
+  Collapse,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Stack,
   Typography,
+  alpha,
+  useTheme,
 } from '@mui/material';
-import { ArrowLeft2, LogoutCurve } from 'iconsax-react';
+import {
+  ArrowDown2,
+  ArrowLeft2,
+  ArrowUp2,
+  Component,
+  LogoutCurve,
+} from 'iconsax-react';
 import { useDrawerContext } from 'context/DrawerContext';
 import { useReminderContext } from 'context/ReminderContext';
 import { motion } from 'framer-motion';
 import { useAuthContext } from 'context/AuthContext';
-import theme from 'theme/theme';
 import useRouter, { ROUTE_PATH } from 'hook/useRouter';
 import navigationUtil from 'utils/navigation-util';
 import THEME_UTIL from 'utils/theme-util';
+import React from 'react';
 
 const DrawerContent = () => {
   const { location, navigate } = useRouter();
@@ -25,6 +34,7 @@ const DrawerContent = () => {
     useDrawerContext();
   const { reminderList } = useReminderContext();
   const { logout } = useAuthContext();
+  const theme = useTheme();
 
   return (
     <>
@@ -39,97 +49,172 @@ const DrawerContent = () => {
         }}
         sx={{
           mx: 'auto',
-          width: collapse ? 0 : 200,
-          height: collapse ? 0 : 200,
+          width: collapse ? 60 : 150,
+          height: collapse ? 60 : 150,
         }}
       />
       <List
         sx={{
-          height: `calc(100vh - ${collapse ? '0px' : '200px'})`,
+          height: collapse ? `calc(100vh -  200px)` : 'auto',
           display: 'flex',
           flexDirection: 'column',
         }}
+        disablePadding
       >
         {navigationUtil.map((nav) => {
           return (
-            <ListItem key={nav.title} sx={{ py: 0.5 }}>
-              <ListItemButton
+            <React.Fragment key={nav.title}>
+              <ListItem
                 sx={{
-                  position: 'relative',
-                  borderRadius: 2,
-                }}
-                onClick={() => {
-                  navigate(`${nav.toUrl}`);
-                  openDrawer && setOpenDrawer(false);
+                  py: 0.5,
+                  px: collapse ? 1 : 2,
                 }}
               >
-                {location.pathname.includes(nav.toUrl) && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      background: THEME_UTIL.goldGradientMain,
-                      zIndex: 0,
-                      borderRadius: 2.5,
-                    }}
-                    component={motion.div}
-                    layoutId='selectedNav'
-                  />
-                )}
-                <ListItemIcon
+                <ListItemButton
                   sx={{
-                    minWidth: collapse ? 0 : undefined,
-                    zIndex: 2,
-                    color: theme.palette.secondary.main,
+                    position: 'relative',
+                    borderRadius: 2.5,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onClick={() => {
+                    navigate(`${nav.toUrl}`);
+                    openDrawer && setOpenDrawer(false);
                   }}
                 >
-                  {nav.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    !collapse && (
-                      <Stack direction={'row'} justifyContent='space-between'>
+                  {location.pathname === nav.toUrl && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: THEME_UTIL.goldGradientMain,
+                        zIndex: 0,
+                        borderRadius: 2.5,
+                      }}
+                      component={motion.div}
+                      layoutId='selectedNav'
+                    />
+                  )}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: collapse ? 0 : undefined,
+                      zIndex: 2,
+                      color: theme.palette.secondary.main,
+                    }}
+                  >
+                    {location.pathname.includes(nav.toUrl) ? (
+                      nav.selectedIcon
+                    ) : nav.toUrl === ROUTE_PATH.notification.root ? (
+                      <Badge color='error' variant='dot' overlap='circular'>
+                        {nav.icon}
+                      </Badge>
+                    ) : (
+                      nav.icon
+                    )}
+                  </ListItemIcon>
+                  <ListItemText
+                    hidden={collapse ? true : false}
+                    primary={
+                      !collapse && (
                         <Typography
                           color={theme.palette.secondary.main}
                           fontWeight={
                             location.pathname.includes(nav.toUrl)
-                              ? 'medium'
+                              ? 'bold'
                               : 'regular'
                           }
                         >
                           {nav.title}
                         </Typography>
-                        {nav.toUrl === ROUTE_PATH.notification &&
-                          reminderList && (
-                            <Box
+                      )
+                    }
+                    primaryTypographyProps={{
+                      fontWeight: 500,
+                      color: location.pathname.includes(nav.toUrl)
+                        ? 'common.white'
+                        : 'secondary.main',
+                    }}
+                    sx={{
+                      zIndex: 1,
+                    }}
+                  />
+                  {nav.children.length > 0 &&
+                    (location.pathname.includes(nav.toUrl) ? (
+                      <ArrowUp2
+                        size='18'
+                        style={{
+                          zIndex: 2,
+                        }}
+                        color={theme.palette.secondary.main}
+                      />
+                    ) : (
+                      <ArrowDown2 size='18' />
+                    ))}
+                </ListItemButton>
+              </ListItem>
+              {!collapse &&
+                nav.children.length > 0 &&
+                location.pathname.includes(nav.toUrl) && (
+                  <Collapse
+                    in={location.pathname.includes(nav.toUrl)}
+                    timeout='auto'
+                    unmountOnExit
+                  >
+                    <List component='div' disablePadding>
+                      {nav.children.map((child, index) => {
+                        return (
+                          <ListItem key={index} sx={{ py: 0 }}>
+                            <ListItemButton
                               sx={{
-                                bgcolor: theme.palette.error.main,
-                                color: theme.palette.common.white,
-                                px: 1,
-                                borderRadius: 1,
+                                pl: 4,
+                                background: location.pathname.includes(
+                                  child.toUrl
+                                )
+                                  ? alpha(theme.palette.primary.main, 0.1)
+                                  : theme.palette.common.white,
+                                borderRadius: 2.5,
+                              }}
+                              onClick={() => {
+                                navigate(`${child.toUrl}`);
+                                openDrawer && setOpenDrawer(false);
                               }}
                             >
-                              {reminderList?.length}
-                            </Box>
-                          )}
-                      </Stack>
-                    )
-                  }
-                  primaryTypographyProps={{
-                    fontWeight: 500,
-                    color: location.pathname.includes(nav.toUrl)
-                      ? 'common.white'
-                      : 'secondary.main',
-                  }}
-                  sx={{
-                    zIndex: 1,
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
+                              <ListItemIcon sx={{ pl: 2 }}>
+                                <Component
+                                  size='14'
+                                  variant='Bold'
+                                  color={
+                                    location.pathname.includes(child.toUrl)
+                                      ? theme.palette.primary.main
+                                      : theme.palette.secondary.main
+                                  }
+                                />
+                              </ListItemIcon>
+                              <ListItemText
+                                primary={child.title}
+                                primaryTypographyProps={{
+                                  color: location.pathname.includes(child.toUrl)
+                                    ? theme.palette.primary.main
+                                    : theme.palette.secondary.main,
+                                  fontWeight: location.pathname.includes(
+                                    child.toUrl
+                                  )
+                                    ? 'bold'
+                                    : 'medium',
+                                }}
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                        );
+                      })}
+                    </List>
+                  </Collapse>
+                )}
+            </React.Fragment>
           );
         })}
 
@@ -148,7 +233,7 @@ const DrawerContent = () => {
               sx={{
                 minWidth: collapse ? 0 : undefined,
                 zIndex: 2,
-                color: theme.palette.primary.main,
+                color: theme.palette.error.main,
               }}
             >
               <LogoutCurve
@@ -162,7 +247,7 @@ const DrawerContent = () => {
                 !collapse && (
                   <Typography
                     fontWeight={'medium'}
-                    color={theme.palette.secondary.light}
+                    color={theme.palette.error.main}
                   >
                     Exit
                   </Typography>
@@ -178,9 +263,7 @@ const DrawerContent = () => {
             />
           </ListItemButton>
         </ListItem>
-
         <Box flexGrow={1} />
-
         <ListItem sx={{ py: 0.5 }}>
           <ListItemButton
             sx={{

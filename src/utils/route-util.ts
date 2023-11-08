@@ -4,7 +4,11 @@ export const ROUTE_PATH = {
   login: '/login',
   dashboard: '/dashboard',
   error: '/page-not-found',
-  notification: '/notification',
+  notification: {
+    root: '/notifications',
+    anniversary: '/notifications/aniversaries',
+    upcomings: '/notifications/upcoming',
+  },
   orders: {
     root: '/orders',
     quotations: '/orders/quotations',

@@ -11,7 +11,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { IFormQuotation } from 'pages/Orders/Quotation';
+import { IFormQuotation } from 'pages/Orders/Quotations';
 import { forwardRef } from 'react';
 interface IQuotation {
   quotData?: IFormQuotation;

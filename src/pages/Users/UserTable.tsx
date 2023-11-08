@@ -76,34 +76,41 @@ export const UserTableBody = ({
         <TableCell>
           <Stack direction={'row'} spacing={1}>
             <Tooltip title='Role' arrow>
-              <CusIconButton
-                color='primary'
-                sx={{ p: 0.5, mx: 0.5 }}
-                onClick={onAddRole}
-              >
-                <SecurityUser size={18} />
-              </CusIconButton>
+              <>
+                <CusIconButton
+                  color='primary'
+                  sx={{ p: 0.5, mx: 0.5 }}
+                  onClick={onAddRole}
+                >
+                  <SecurityUser size={18} />
+                </CusIconButton>
+              </>
             </Tooltip>
+
             <Tooltip title='Edit' arrow>
-              <CusIconButton
-                color='info'
-                sx={{ p: 0.5, mx: 0.5 }}
-                onClick={onEdit}
-              >
-                <Edit size={18} />
-              </CusIconButton>
+              <>
+                <CusIconButton
+                  color='info'
+                  sx={{ p: 0.5, mx: 0.5 }}
+                  onClick={onEdit}
+                >
+                  <Edit size={18} />
+                </CusIconButton>
+              </>
             </Tooltip>
             <Tooltip title='Delete' arrow>
-              <CusIconButton
-                color='info'
-                sx={{ p: 0.5, mx: 0.5 }}
-                disabled={
-                  loading || props.roles?.findIndex((e) => e.id === 1) !== -1
-                }
-                onClick={() => setOpen(true)}
-              >
-                <Trash size={18} color='#FF8A65' />
-              </CusIconButton>
+              <>
+                <CusIconButton
+                  color='info'
+                  sx={{ p: 0.5, mx: 0.5 }}
+                  disabled={
+                    loading || props.roles?.findIndex((e) => e.id === 1) !== -1
+                  }
+                  onClick={() => setOpen(true)}
+                >
+                  <Trash size={18} color='#FF8A65' />
+                </CusIconButton>
+              </>
             </Tooltip>
           </Stack>
         </TableCell>

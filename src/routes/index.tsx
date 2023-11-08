@@ -18,8 +18,15 @@ const Suppliers = lazy(() => import('pages/Suppliers'));
 const Users = lazy(() => import('pages/Users'));
 const Setting = lazy(() => import('pages/Setting'));
 /* Children Page */
-const Quotation = lazy(() => import('pages/Orders/Quotation'));
-
+const Quotation = lazy(() => import('pages/Orders/Quotations'));
+const Payments = lazy(() => import('pages/Orders/Payments'));
+const Potentials = lazy(() => import('pages/Customers/Potentials'));
+const Anniversaries = lazy(() => import('pages/Notifications/Aniversaries'));
+const Upcomings = lazy(() => import('pages/Notifications/Upcomings'));
+const InventoryUnit = lazy(() => import('pages/Inventories/Units'));
+const InventoryCategory = lazy(() => import('pages/Inventories/Categories'));
+const InventoryReport = lazy(() => import('pages/Inventories/Reports'));
+const Departments = lazy(() => import('pages/Users/Departments'));
 export default function AllRoutes() {
   const { authState } = useAuthContext();
 
@@ -31,6 +38,7 @@ export default function AllRoutes() {
           authState.authed ? <Layout /> : <Navigate to={ROUTE_PATH.login} />
         }
       >
+        {/* Dashboard */}
         <Route
           path={ROUTE_PATH.dashboard}
           element={
@@ -39,43 +47,12 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        {/* Orders */}
         <Route
           path={ROUTE_PATH.orders.root}
           element={
             <Suspense>
               <Orders />
-            </Suspense>
-          }
-        />
-        <Route
-          path={ROUTE_PATH.inventories.root}
-          element={
-            <Suspense>
-              <Inventories />
-            </Suspense>
-          }
-        />
-        <Route
-          path={ROUTE_PATH.notification}
-          element={
-            <Suspense>
-              <Notifications />
-            </Suspense>
-          }
-        />
-        <Route
-          path={ROUTE_PATH.customers.root}
-          element={
-            <Suspense>
-              <Customer />
-            </Suspense>
-          }
-        />
-        <Route
-          path={ROUTE_PATH.expenses.root}
-          element={
-            <Suspense>
-              <Expense />
             </Suspense>
           }
         />
@@ -88,13 +65,65 @@ export default function AllRoutes() {
           }
         />
         <Route
-          path={ROUTE_PATH.users.root}
+          path={ROUTE_PATH.orders.payments}
           element={
             <Suspense>
-              <Users />
+              <Payments />
             </Suspense>
           }
         />
+        {/* Expenses */}
+        <Route
+          path={ROUTE_PATH.expenses.root}
+          element={
+            <Suspense>
+              <Expense />
+            </Suspense>
+          }
+        />
+        {/* Customers */}
+        <Route
+          path={ROUTE_PATH.customers.root}
+          element={
+            <Suspense>
+              <Customer />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.customers.potentialCustomers}
+          element={
+            <Suspense>
+              <Potentials />
+            </Suspense>
+          }
+        />
+        {/* Notification */}
+        <Route
+          path={ROUTE_PATH.notification.root}
+          element={
+            <Suspense>
+              <Notifications />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.notification.anniversary}
+          element={
+            <Suspense>
+              <Anniversaries />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.notification.upcomings}
+          element={
+            <Suspense>
+              <Upcomings />
+            </Suspense>
+          }
+        />
+        {/* Menus */}
         <Route
           path={ROUTE_PATH.menus.root}
           element={
@@ -103,6 +132,7 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        {/* Prepare Grocery */}
         <Route
           path={ROUTE_PATH.prepareGrocery.root}
           element={
@@ -111,6 +141,40 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        {/* Inventory */}
+        <Route
+          path={ROUTE_PATH.inventories.root}
+          element={
+            <Suspense>
+              <Inventories />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.inventories.units}
+          element={
+            <Suspense>
+              <InventoryUnit />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.inventories.categories}
+          element={
+            <Suspense>
+              <InventoryCategory />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.inventories.inventoryReport}
+          element={
+            <Suspense>
+              <InventoryReport />
+            </Suspense>
+          }
+        />
+        {/* Suppliers */}
         <Route
           path={ROUTE_PATH.suppliers.root}
           element={
@@ -119,6 +183,25 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+
+        {/* Users */}
+        <Route
+          path={ROUTE_PATH.users.root}
+          element={
+            <Suspense>
+              <Users />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.users.departments}
+          element={
+            <Suspense>
+              <Departments />
+            </Suspense>
+          }
+        />
+        {/* Setting */}
         <Route
           path={ROUTE_PATH.setting.root}
           element={
@@ -127,7 +210,7 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
-
+        {/* Root Page */}
         <Route
           path={ROUTE_PATH.root}
           element={<Navigate to={ROUTE_PATH.dashboard} />}
