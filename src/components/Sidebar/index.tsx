@@ -18,7 +18,7 @@ const Sidebar = ({ drawerWidth }: { drawerWidth: string }) => {
           '& .MuiDrawer-paper': {
             width: collapse
               ? 'auto'
-              : { xs: '100vw', sm: '40vw', md: drawerWidth },
+              : { xs: '100vw', sm: '40vw', md: '25vw', lg: drawerWidth },
             border: 'none',
             background: theme.palette.common.white,
             borderRadius: 0,

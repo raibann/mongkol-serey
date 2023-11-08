@@ -7,7 +7,7 @@ const Sidebar = lazy(() => import('components/Sidebar'));
 
 export default function Home() {
   const { collapse } = useDrawerContext();
-  const drawerWidth = !collapse ? '20vw' : '88px';
+  const drawerWidth = !collapse ? '17vw' : '88px';
   return (
     <>
       <Sidebar {...{ drawerWidth }} />
@@ -17,7 +17,7 @@ export default function Home() {
         flexGrow={1}
         sx={{
           background: theme.palette.background.paper,
-          ml: { xs: 0, md: `${drawerWidth}` },
+          ml: { xs: 0, md: '25vw', lg: `${drawerWidth}` },
           height: '100vh',
           overflow: 'auto',
         }}

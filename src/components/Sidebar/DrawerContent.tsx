@@ -3,11 +3,14 @@ import {
   Badge,
   Box,
   Collapse,
+  Fade,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Paper,
+  Popper,
   Typography,
   alpha,
   useTheme,
@@ -35,7 +38,15 @@ const DrawerContent = () => {
   const { reminderList } = useReminderContext();
   const { logout } = useAuthContext();
   const theme = useTheme();
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
+  const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <>
       <Avatar
@@ -49,13 +60,13 @@ const DrawerContent = () => {
         }}
         sx={{
           mx: 'auto',
-          width: collapse ? 60 : 150,
-          height: collapse ? 60 : 150,
+          width: collapse ? 60 : 100,
+          height: collapse ? 60 : 100,
         }}
       />
       <List
         sx={{
-          height: collapse ? `calc(100vh -  200px)` : 'auto',
+          height: collapse ? `calc(100vh - 60px)` : '100%',
           display: 'flex',
           flexDirection: 'column',
         }}
@@ -78,9 +89,11 @@ const DrawerContent = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
-                  onClick={() => {
+                  onMouseEnter={handlePopoverClose}
+                  onClick={(e) => {
                     navigate(`${nav.toUrl}`);
                     openDrawer && setOpenDrawer(false);
+                    handlePopoverOpen(e);
                   }}
                 >
                   {location.pathname === nav.toUrl && (
@@ -122,6 +135,7 @@ const DrawerContent = () => {
                       !collapse && (
                         <Typography
                           color={theme.palette.secondary.main}
+                          variant='body2'
                           fontWeight={
                             location.pathname.includes(nav.toUrl)
                               ? 'bold'
@@ -142,20 +156,95 @@ const DrawerContent = () => {
                       zIndex: 1,
                     }}
                   />
-                  {nav.children.length > 0 &&
+
+                  {!collapse &&
+                    nav.children.length > 0 &&
                     (location.pathname.includes(nav.toUrl) ? (
                       <ArrowUp2
-                        size='18'
+                        size='16'
                         style={{
                           zIndex: 2,
                         }}
                         color={theme.palette.secondary.main}
                       />
                     ) : (
-                      <ArrowDown2 size='18' />
+                      <ArrowDown2 size='16' />
                     ))}
                 </ListItemButton>
               </ListItem>
+              {collapse &&
+                nav.children.length > 0 &&
+                location.pathname.includes(nav.toUrl) && (
+                  <Popper
+                    open={Boolean(anchorEl)}
+                    anchorEl={anchorEl}
+                    placement={'right'}
+                    transition
+                    sx={{
+                      zIndex: theme.zIndex.fab,
+                      pl: 1.5,
+                      '&> .css-1a2qywp-MuiPaper-root': {
+                        boxShadow: theme.shadows[0],
+                        borderRadius: 2.5,
+                      },
+                    }}
+                    disablePortal={false}
+                  >
+                    {({ TransitionProps }) => (
+                      <Fade {...TransitionProps} timeout={350}>
+                        <Paper
+                          sx={{
+                            height: 'auto',
+                            border: `1px solid ${theme.palette.primary.main}`,
+                            transition: 'border-color 2s ease-in-out',
+                          }}
+                        >
+                          <List component='div' disablePadding>
+                            {nav.children.map((child, index) => {
+                              return (
+                                <ListItem key={index} disablePadding>
+                                  <ListItemButton
+                                    sx={{
+                                      background: location.pathname.includes(
+                                        child.toUrl
+                                      )
+                                        ? alpha(theme.palette.primary.main, 0.1)
+                                        : theme.palette.common.white,
+                                      borderRadius: 2.5,
+                                    }}
+                                    onClick={() => {
+                                      navigate(`${child.toUrl}`);
+                                      openDrawer && setOpenDrawer(false);
+                                      handlePopoverClose();
+                                    }}
+                                  >
+                                    <ListItemText
+                                      primary={child.title}
+                                      primaryTypographyProps={{
+                                        color: location.pathname.includes(
+                                          child.toUrl
+                                        )
+                                          ? theme.palette.primary.main
+                                          : theme.palette.secondary.main,
+                                        fontWeight: location.pathname.includes(
+                                          child.toUrl
+                                        )
+                                          ? 'bold'
+                                          : 'medium',
+                                        fontSize: 14,
+                                      }}
+                                    />
+                                  </ListItemButton>
+                                </ListItem>
+                              );
+                            })}
+                          </List>
+                        </Paper>
+                      </Fade>
+                    )}
+                  </Popper>
+                )}
+
               {!collapse &&
                 nav.children.length > 0 &&
                 location.pathname.includes(nav.toUrl) && (
@@ -185,7 +274,7 @@ const DrawerContent = () => {
                             >
                               <ListItemIcon sx={{ pl: 2 }}>
                                 <Component
-                                  size='14'
+                                  size='12'
                                   variant='Bold'
                                   color={
                                     location.pathname.includes(child.toUrl)
@@ -205,6 +294,7 @@ const DrawerContent = () => {
                                   )
                                     ? 'bold'
                                     : 'medium',
+                                  fontSize: 14,
                                 }}
                               />
                             </ListItemButton>
@@ -264,7 +354,7 @@ const DrawerContent = () => {
           </ListItemButton>
         </ListItem>
         <Box flexGrow={1} />
-        <ListItem sx={{ py: 0.5 }}>
+        <ListItem sx={{ py: 0.5, display: { sm: 'none', md: 'block' } }}>
           <ListItemButton
             sx={{
               position: 'relative',

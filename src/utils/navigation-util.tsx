@@ -32,15 +32,15 @@ const navigationUtil: Navigation = [
   {
     title: 'Dashboard',
     toUrl: ROUTE_PATH.dashboard,
-    icon: <Chart size='24' />,
-    selectedIcon: <Chart size='24' variant='Bold' />,
+    icon: <Chart size='18' />,
+    selectedIcon: <Chart size='18' variant='Bold' />,
     children: [],
   },
   {
     title: 'Orders',
     toUrl: ROUTE_PATH.orders.root,
-    icon: <NoteFavorite size='24' />,
-    selectedIcon: <NoteFavorite size='24' variant='Bold' />,
+    icon: <NoteFavorite size='18' />,
+    selectedIcon: <NoteFavorite size='18' variant='Bold' />,
     children: [
       {
         title: 'Quotations',
@@ -55,15 +55,15 @@ const navigationUtil: Navigation = [
   {
     title: 'Expenses',
     toUrl: ROUTE_PATH.expenses.root,
-    icon: <MoneySend size='24' />,
-    selectedIcon: <MoneySend size='24' variant='Bold' />,
+    icon: <MoneySend size='18' />,
+    selectedIcon: <MoneySend size='18' variant='Bold' />,
     children: [],
   },
   {
     title: 'Customers',
     toUrl: ROUTE_PATH.customers.root,
-    icon: <Profile2User size='24' />,
-    selectedIcon: <Profile2User size='24' variant='Bold' />,
+    icon: <Profile2User size='18' />,
+    selectedIcon: <Profile2User size='18' variant='Bold' />,
 
     children: [
       {
@@ -76,8 +76,8 @@ const navigationUtil: Navigation = [
   {
     title: 'Notifications',
     toUrl: ROUTE_PATH.notification.root,
-    icon: <Notification size='24' />,
-    selectedIcon: <Notification size='24' variant='Bold' />,
+    icon: <Notification size='18' />,
+    selectedIcon: <Notification size='18' variant='Bold' />,
     children: [
       {
         title: 'Anniversaries',
@@ -92,22 +92,22 @@ const navigationUtil: Navigation = [
   {
     title: 'Menus',
     toUrl: ROUTE_PATH.menus.root,
-    icon: <Category size='24' />,
-    selectedIcon: <Category size='24' variant='Bold' />,
+    icon: <Category size='18' />,
+    selectedIcon: <Category size='18' variant='Bold' />,
     children: [],
   },
   {
     title: 'Prepare Grocery',
     toUrl: ROUTE_PATH.prepareGrocery.root,
-    icon: <MenuBoard size='24' />,
-    selectedIcon: <MenuBoard size='24' variant='Bold' />,
+    icon: <MenuBoard size='18' />,
+    selectedIcon: <MenuBoard size='18' variant='Bold' />,
     children: [],
   },
   {
     title: 'Inventories',
     toUrl: ROUTE_PATH.inventories.root,
-    icon: <Box size='24' />,
-    selectedIcon: <Box size='24' variant='Bold' />,
+    icon: <Box size='18' />,
+    selectedIcon: <Box size='18' variant='Bold' />,
     children: [
       {
         title: 'Units',
@@ -126,15 +126,15 @@ const navigationUtil: Navigation = [
   {
     title: 'Suppliers',
     toUrl: ROUTE_PATH.suppliers.root,
-    icon: <TruckTick size='24' />,
-    selectedIcon: <TruckTick size='24' variant='Bold' />,
+    icon: <TruckTick size='18' />,
+    selectedIcon: <TruckTick size='18' variant='Bold' />,
     children: [],
   },
   {
     title: 'Users',
     toUrl: ROUTE_PATH.users.root,
-    icon: <UserSquare size='24' />,
-    selectedIcon: <UserSquare size='24' variant='Bold' />,
+    icon: <UserSquare size='18' />,
+    selectedIcon: <UserSquare size='18' variant='Bold' />,
     children: [
       {
         title: 'Departments',
@@ -145,8 +145,8 @@ const navigationUtil: Navigation = [
   {
     title: 'Setting',
     toUrl: ROUTE_PATH.setting.root,
-    icon: <Setting3 size='24' />,
-    selectedIcon: <Setting3 size='24' variant='Bold' />,
+    icon: <Setting3 size='18' />,
+    selectedIcon: <Setting3 size='18' variant='Bold' />,
     children: [],
   },
 ];
