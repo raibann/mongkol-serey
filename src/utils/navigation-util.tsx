@@ -1,6 +1,5 @@
 import {
   Notification,
-  MoneySend,
   Profile2User,
   Chart,
   NoteFavorite,
@@ -10,6 +9,7 @@ import {
   TruckTick,
   UserSquare,
   Setting3,
+  WalletMoney,
 } from 'iconsax-react';
 import React from 'react';
 import { ROUTE_PATH } from './route-util';
@@ -55,8 +55,8 @@ const navigationUtil: Navigation = [
   {
     title: 'Expenses',
     toUrl: ROUTE_PATH.expenses.root,
-    icon: <MoneySend size='18' />,
-    selectedIcon: <MoneySend size='18' variant='Bold' />,
+    icon: <WalletMoney size='18' />,
+    selectedIcon: <WalletMoney size='18' variant='Bold' />,
     children: [],
   },
   {

@@ -29,6 +29,7 @@ const InventoryReport = lazy(() => import('pages/Inventories/Reports'));
 const Departments = lazy(() => import('pages/Users/Departments'));
 export default function AllRoutes() {
   const { authState } = useAuthContext();
+  /* Allow to use without api */
   authState.authed = true;
 
   return (
