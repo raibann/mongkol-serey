@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material';
 import { styled } from '@mui/material';
 
-const StyledOutlinedTextField = styled(TextField)(({ theme }) => ({
+const CusOutlineInput = styled(TextField)(({ theme }) => ({
   width: '100%',
   '& .MuiOutlinedInput-root': {
     borderRadius: theme.spacing(1),
@@ -10,4 +10,4 @@ const StyledOutlinedTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-export default StyledOutlinedTextField;
+export default CusOutlineInput;

@@ -1,5 +1,5 @@
 import { Box, IconButton, Stack } from '@mui/material';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import { Trash } from 'iconsax-react';
 import { Controller, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
@@ -49,7 +49,7 @@ const FinalInvoiceForm = ({
           }}
           render={({ field, fieldState: { error } }) => {
             return (
-              <StyledOutlinedTextField
+              <CusOutlineInput
                 size='small'
                 placeholder='Title'
                 error={Boolean(error)}
@@ -72,7 +72,7 @@ const FinalInvoiceForm = ({
           }}
           render={({ field, fieldState: { error } }) => {
             return (
-              <StyledOutlinedTextField
+              <CusOutlineInput
                 type='number'
                 size='small'
                 placeholder='Quantity'
@@ -92,7 +92,7 @@ const FinalInvoiceForm = ({
           }}
           render={({ field, fieldState: { error } }) => {
             return (
-              <StyledOutlinedTextField
+              <CusOutlineInput
                 size='small'
                 placeholder='Unit'
                 error={Boolean(error)}
@@ -115,7 +115,7 @@ const FinalInvoiceForm = ({
           }}
           render={({ field, fieldState: { error } }) => {
             return (
-              <StyledOutlinedTextField
+              <CusOutlineInput
                 size='small'
                 type='number'
                 placeholder='Price'

@@ -1,5 +1,5 @@
 import { Grid, Button, InputAdornment } from '@mui/material';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import LabelTextField from 'components/LabelTextField';
 import React, { useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -59,7 +59,7 @@ export default function FormQuotation({
               name={'customerName'}
               defaultValue={''}
               render={({ field, fieldState: { error } }) => (
-                <StyledOutlinedTextField
+                <CusOutlineInput
                   placeholder='Customer Name'
                   size='small'
                   error={Boolean(error)}
@@ -76,7 +76,7 @@ export default function FormQuotation({
               name={'phoneNumber'}
               defaultValue={''}
               render={({ field, fieldState: { error } }) => (
-                <StyledOutlinedTextField
+                <CusOutlineInput
                   placeholder='Phone Number'
                   size='small'
                   error={Boolean(error)}
@@ -93,7 +93,7 @@ export default function FormQuotation({
               name={'event'}
               defaultValue={''}
               render={({ field, fieldState: { error } }) => (
-                <StyledOutlinedTextField
+                <CusOutlineInput
                   placeholder='Title'
                   size='small'
                   error={Boolean(error)}
@@ -110,7 +110,7 @@ export default function FormQuotation({
               name={'location'}
               defaultValue={''}
               render={({ field, fieldState: { error } }) => (
-                <StyledOutlinedTextField
+                <CusOutlineInput
                   placeholder='Location'
                   size='small'
                   error={Boolean(error)}
@@ -153,7 +153,7 @@ export default function FormQuotation({
               name={'total'}
               defaultValue={0}
               render={({ field }) => (
-                <StyledOutlinedTextField
+                <CusOutlineInput
                   placeholder='Total'
                   size='small'
                   InputProps={{

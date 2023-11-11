@@ -327,7 +327,7 @@ const Orders = () => {
             overflow: 'auto',
           }}
         >
-          {isLoadingOrderList && loadingChangingState && !orderList ? (
+          {isLoadingOrderList && loadingChangingState ? (
             <Stack
               direction={'column'}
               alignItems={'center'}
@@ -340,46 +340,12 @@ const Orders = () => {
             <>
               <Table sx={{ minWidth: 1000 }}>
                 <OrderTableHead />
-                <TableBody>
-                  <AnimatePresence exitBeforeEnter>
-                    {isLoadingOrderList && (
-                      <TableRow
-                        component={motion.tr}
-                        layout
-                        initial={{
-                          scale: 0,
-                          opacity: 0,
-                        }}
-                        animate={{
-                          scale: 1,
-                          opacity: 1,
-                          transition: {
-                            delay: 0.3,
-                            ease: 'easeInOut',
-                          },
-                        }}
-                        exit={{
-                          scale: 0,
-                          opacity: 0,
-                          transition: {
-                            delay: 0,
-                            ease: 'easeInOut',
-                          },
-                        }}
-                      >
-                        <TableCell colSpan={8} sx={{ textAlign: 'center' }}>
-                          <CusLoading />
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </AnimatePresence>
-                  <OrderTableBody
-                    data={isLoadingOrderList ? [] : orderList.data}
-                    onPrintClick={onPrintClick}
-                    onEditClick={onEditClick}
-                    isExpense={false}
-                  />
-                </TableBody>
+                <OrderTableBody
+                  data={orderList.data}
+                  onPrintClick={onPrintClick}
+                  onEditClick={onEditClick}
+                  isExpense={false}
+                />
               </Table>
             </>
           ) : (

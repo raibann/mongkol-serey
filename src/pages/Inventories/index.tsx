@@ -17,7 +17,7 @@ import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
 import { CusLoading } from 'components/CusLoading';
 import CusTextField from 'components/CusTextField';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import { BoxAdd, BoxRemove, SearchNormal1 } from 'iconsax-react';
@@ -317,7 +317,7 @@ const Stocks = () => {
                     render={({ field, fieldState: { error } }) => {
                       return (
                         <Stack direction={'column'}>
-                          <StyledOutlinedTextField
+                          <CusOutlineInput
                             placeholder='Enter value'
                             error={Boolean(error) || !!smsOverStock}
                             {...field}

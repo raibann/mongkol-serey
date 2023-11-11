@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { Container } from '@mui/system';
 import { CusIconButton } from 'components/CusIconButton';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import LabelTextField from 'components/LabelTextField';
 import useResponsive from 'hook/useResponsive';
 import { Controller, UseFormReturn } from 'react-hook-form';
@@ -78,7 +78,7 @@ export default function FormStock({
                 render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Product Name'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter product name'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -103,7 +103,7 @@ export default function FormStock({
                 render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Price'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter price'
                         {...field}
                         error={Boolean(error)}
@@ -155,7 +155,7 @@ export default function FormStock({
                 render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Quantity'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter quantity'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -175,7 +175,7 @@ export default function FormStock({
                 render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Unit'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter unit'
                         {...field}
                         error={Boolean(error)}
@@ -195,7 +195,7 @@ export default function FormStock({
                 render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Shop Name'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter shop name'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -228,7 +228,7 @@ export default function FormStock({
                           setValue('paidBy', value);
                         }}
                         renderInput={(params) => (
-                          <StyledOutlinedTextField
+                          <CusOutlineInput
                             {...params}
                             error={Boolean(error)}
                             helperText={error?.message}
@@ -250,7 +250,7 @@ export default function FormStock({
                 render={({ field }) => {
                   return (
                     <LabelTextField label='Note'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Type something here...'
                         {...field}
                         multiline
