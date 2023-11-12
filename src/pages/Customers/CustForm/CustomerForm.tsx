@@ -1,5 +1,5 @@
 import { Stack, InputAdornment, MenuItem, Autocomplete } from '@mui/material';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import LabelTextField from 'components/LabelTextField';
 import { Facebook } from 'iconsax-react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -76,7 +76,7 @@ const CustomerForm = () => {
             render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Customer Name'>
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     placeholder='Enter Customer Name'
                     error={Boolean(error)}
                     helperText={error?.message}
@@ -101,7 +101,7 @@ const CustomerForm = () => {
             render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label='Contact Number'>
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     placeholder='Enter Contact Number'
                     error={Boolean(error)}
                     helperText={error?.message}
@@ -120,7 +120,7 @@ const CustomerForm = () => {
             render={({ field }) => {
               return (
                 <LabelTextField label='Facebook'>
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     placeholder='Facebook'
                     InputProps={{
                       startAdornment: (
@@ -146,7 +146,7 @@ const CustomerForm = () => {
             render={({ field }) => {
               return (
                 <LabelTextField label='Telegram'>
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     placeholder='Telegram'
                     InputProps={{
                       startAdornment: (
@@ -173,7 +173,7 @@ const CustomerForm = () => {
             render={({ field }) => {
               return (
                 <LabelTextField label='House Number'>
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     placeholder='Enter House Number'
                     {...field}
                   />
@@ -189,7 +189,7 @@ const CustomerForm = () => {
             render={({ field }) => {
               return (
                 <LabelTextField label='Street Number'>
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     placeholder='Enter Street Number'
                     {...field}
                   />
@@ -236,7 +236,7 @@ const CustomerForm = () => {
                       </MenuItem>
                     )}
                     renderInput={(params) => (
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter Province'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -293,7 +293,7 @@ const CustomerForm = () => {
                       setValue('district', val);
                     }}
                     renderInput={(params) => (
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter District'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -349,7 +349,7 @@ const CustomerForm = () => {
                       </MenuItem>
                     )}
                     renderInput={(params) => (
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter Commune'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -373,10 +373,7 @@ const CustomerForm = () => {
             render={({ field }) => {
               return (
                 <LabelTextField label='Location'>
-                  <StyledOutlinedTextField
-                    placeholder='Enter Location'
-                    {...field}
-                  />
+                  <CusOutlineInput placeholder='Enter Location' {...field} />
                 </LabelTextField>
               );
             }}

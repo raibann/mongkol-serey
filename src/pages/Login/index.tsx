@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import React from 'react';
 import theme from 'theme/theme';
 import THEME_UTIL from 'utils/theme-util';
@@ -97,7 +97,7 @@ export default function Login() {
                           },
                         }}
                         render={({ field, fieldState: { error } }) => (
-                          <StyledOutlinedTextField
+                          <CusOutlineInput
                             {...field}
                             error={Boolean(error)}
                             placeholder='Username'
@@ -127,7 +127,7 @@ export default function Login() {
                           },
                         }}
                         render={({ field, fieldState: { error } }) => (
-                          <StyledOutlinedTextField
+                          <CusOutlineInput
                             {...field}
                             error={Boolean(error)}
                             placeholder='Must be at least 6 characters'

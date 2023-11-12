@@ -26,7 +26,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { CusIconButton } from 'components/CusIconButton';
 import { MdClose } from 'react-icons/md';
 import { validatePatterns } from 'utils/validate-util';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import LabelTextField from 'components/LabelTextField';
 import OrderItem from './OrderItem';
 import THEME_UTIL from 'utils/theme-util';
@@ -408,7 +408,7 @@ const OrderDrawer = ({
           },
         }}
       >
-        <StyledOutlinedTextField
+        <CusOutlineInput
           placeholder='Search Customer Name'
           value={searchCustomer}
           onChange={(e) => setSearchCustomer(e.target.value)}
@@ -534,7 +534,7 @@ const OrderDrawer = ({
                           setValue('eventType', value);
                         }}
                         renderInput={(params) => (
-                          <StyledOutlinedTextField
+                          <CusOutlineInput
                             placeholder='Enter Event Type'
                             error={Boolean(error)}
                             helperText={error?.message}
@@ -565,7 +565,7 @@ const OrderDrawer = ({
                 render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Quantity'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Quantity'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -603,7 +603,7 @@ const OrderDrawer = ({
                             },
                           }}
                           renderInput={(params) => (
-                            <StyledOutlinedTextField
+                            <CusOutlineInput
                               placeholder='Enter Event Date'
                               error={Boolean(error)}
                               helperText={error?.message}
@@ -654,7 +654,7 @@ const OrderDrawer = ({
                             },
                           }}
                           renderInput={(params) => (
-                            <StyledOutlinedTextField
+                            <CusOutlineInput
                               placeholder='Enter Booking Date'
                               error={Boolean(error)}
                               helperText={error?.message}
@@ -695,7 +695,7 @@ const OrderDrawer = ({
                 render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Deposit'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         type='number'
                         placeholder='Enter Deposit'
                         error={Boolean(error)}
@@ -714,7 +714,7 @@ const OrderDrawer = ({
                 render={({ field }) => {
                   return (
                     <LabelTextField label='Amount in Khmer'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter Amount in Khmer'
                         {...field}
                       />
@@ -737,7 +737,7 @@ const OrderDrawer = ({
                 render={({ field, fieldState: { error } }) => {
                   return (
                     <LabelTextField label='Event Location'>
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         placeholder='Enter Event Location'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -771,7 +771,7 @@ const OrderDrawer = ({
                           setValue('paidBy', value);
                         }}
                         renderInput={(params) => (
-                          <StyledOutlinedTextField
+                          <CusOutlineInput
                             placeholder='Enter paid by'
                             error={Boolean(error)}
                             helperText={error?.message}

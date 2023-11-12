@@ -38,6 +38,6 @@ code {
   src: url('/public/fonts/SFPRODISPLAYMEDIUM.OTF');
   src: url('/public/fonts/SFPRODISPLAYREGULAR.OTF');
 }
-input[type='number']::-webkit-inner-spin-button {
+/* input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
-}
+} */

@@ -1,17 +1,28 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack, TextFieldProps, Typography } from '@mui/material';
+import CusTextField from 'components/CusTextField';
 import React from 'react';
+import { ControllerFieldState } from 'react-hook-form';
 
 const LabelTextField = ({
   label,
   children,
+  fieldState,
+  ...rest
 }: {
   label: string;
-  children: React.ReactNode;
-}) => {
+  children?: React.ReactNode;
+  fieldState?: ControllerFieldState;
+} & TextFieldProps) => {
   return (
     <Stack spacing={1} width='100%'>
       <Typography fontSize={14}>{label}</Typography>
-      {children}
+      {children ?? (
+        <CusTextField
+          {...rest}
+          error={Boolean(fieldState?.error)}
+          helperText={fieldState?.error?.message}
+        />
+      )}
     </Stack>
   );
 };

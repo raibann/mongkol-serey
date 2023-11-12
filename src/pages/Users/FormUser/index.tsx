@@ -4,7 +4,7 @@ import { useRequest } from 'ahooks';
 import USER_API from 'api/user';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { CusIconButton } from 'components/CusIconButton';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import LabelTextField from 'components/LabelTextField';
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -97,7 +97,7 @@ export default function FormUser({
               }) => {
                 return (
                   <LabelTextField label='Full Name'>
-                    <StyledOutlinedTextField
+                    <CusOutlineInput
                       placeholder='Enter Full Name'
                       onChange={(e) => {
                         onChange(e);
@@ -124,7 +124,7 @@ export default function FormUser({
               render={({ field, fieldState: { error } }) => {
                 return (
                   <LabelTextField label='Username'>
-                    <StyledOutlinedTextField
+                    <CusOutlineInput
                       placeholder='Enter username'
                       error={Boolean(error)}
                       helperText={error?.message}
@@ -148,7 +148,7 @@ export default function FormUser({
               render={({ field, fieldState: { error } }) => {
                 return (
                   <LabelTextField label='Password'>
-                    <StyledOutlinedTextField
+                    <CusOutlineInput
                       type='password'
                       placeholder='Enter password'
                       error={Boolean(error)}
@@ -177,7 +177,7 @@ export default function FormUser({
               render={({ field, fieldState: { error } }) => {
                 return (
                   <LabelTextField label='Confirm password'>
-                    <StyledOutlinedTextField
+                    <CusOutlineInput
                       type='password'
                       placeholder='Enter confirm password'
                       error={Boolean(error)}

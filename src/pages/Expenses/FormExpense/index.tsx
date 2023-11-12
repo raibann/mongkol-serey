@@ -1,4 +1,4 @@
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import useResponsive from 'hook/useResponsive';
 import theme from 'theme/theme';
 import { Stack, Autocomplete, alpha, InputAdornment } from '@mui/material';
@@ -31,7 +31,7 @@ function FormExpense({
           defaultValue={defaultTitle}
           render={({ field, fieldState: { error } }) => {
             return (
-              <StyledOutlinedTextField
+              <CusOutlineInput
                 placeholder='Title'
                 size='small'
                 error={Boolean(error)}
@@ -54,7 +54,7 @@ function FormExpense({
           }}
           render={({ field, fieldState: { error } }) => {
             return (
-              <StyledOutlinedTextField
+              <CusOutlineInput
                 placeholder='Total price'
                 size='small'
                 error={Boolean(error)}
@@ -90,7 +90,7 @@ function FormExpense({
                   setValue(`expenseRowData.${index}.paidBy`, value);
                 }}
                 renderInput={(params) => (
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     {...params}
                     placeholder='Paid by'
                     size='small'
@@ -123,11 +123,7 @@ function FormExpense({
           defaultValue=''
           render={({ field }) => {
             return (
-              <StyledOutlinedTextField
-                placeholder='Other'
-                {...field}
-                size='small'
-              />
+              <CusOutlineInput placeholder='Other' {...field} size='small' />
             );
           }}
         />

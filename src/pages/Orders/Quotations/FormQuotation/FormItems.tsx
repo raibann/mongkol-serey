@@ -1,7 +1,7 @@
 import { alpha, Autocomplete, Grid, InputAdornment } from '@mui/material';
 import { Result } from 'ahooks/lib/useRequest/src/types';
 import { CusIconButton } from 'components/CusIconButton';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import { Trash } from 'iconsax-react';
 import React, { useEffect } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
@@ -69,7 +69,7 @@ export default function FormItems({
               }}
               {...rest}
               renderInput={(params) => (
-                <StyledOutlinedTextField
+                <CusOutlineInput
                   label='Category'
                   error={Boolean(error)}
                   helperText={error?.message}
@@ -94,7 +94,7 @@ export default function FormItems({
           // }}
           defaultValue={data.qty}
           render={({ field, fieldState: { error } }) => (
-            <StyledOutlinedTextField
+            <CusOutlineInput
               size='small'
               placeholder='Qty'
               error={Boolean(error)}
@@ -125,7 +125,7 @@ export default function FormItems({
                   setValue(`list.${index}.unit`, value);
                 }}
                 renderInput={(params) => (
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     {...params}
                     error={Boolean(error)}
                     helperText={error?.message}
@@ -152,7 +152,7 @@ export default function FormItems({
           //   },
           // }}
           render={({ field, fieldState: { error } }) => (
-            <StyledOutlinedTextField
+            <CusOutlineInput
               placeholder='Price'
               error={Boolean(error)}
               helperText={error?.message}
@@ -173,7 +173,7 @@ export default function FormItems({
           name={`list.${index}.subTotal`}
           defaultValue={data.subTotal}
           render={({ field }) => (
-            <StyledOutlinedTextField
+            <CusOutlineInput
               placeholder='Subtotal'
               size='small'
               InputProps={{

@@ -10,7 +10,7 @@ import {
   alpha,
 } from '@mui/material';
 import { Result } from 'ahooks/lib/useRequest/src/types';
-import StyledOutlinedTextField from 'components/CusTextField/StyledOutlinedTextField';
+import CusOutlineInput from 'components/CusTextField/CusOutlineInput';
 import LabelTextField from 'components/LabelTextField';
 import { Trash } from 'iconsax-react';
 import { useEffect, useState } from 'react';
@@ -149,7 +149,7 @@ const OrderItem = ({
                     }}
                     {...rest}
                     renderInput={(params) => (
-                      <StyledOutlinedTextField
+                      <CusOutlineInput
                         label='Category'
                         error={Boolean(error)}
                         helperText={error?.message}
@@ -182,7 +182,7 @@ const OrderItem = ({
                       position: 'relative',
                     }}
                   >
-                    <StyledOutlinedTextField
+                    <CusOutlineInput
                       size='small'
                       type='number'
                       label='Quantity'
@@ -253,7 +253,7 @@ const OrderItem = ({
               defaultValue=''
               render={({ field, fieldState: { error } }) => {
                 return (
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     size='small'
                     type='number'
                     label='Price'
@@ -294,7 +294,7 @@ const OrderItem = ({
             render={({ field, fieldState: { error } }) => {
               return (
                 <LabelTextField label=''>
-                  <StyledOutlinedTextField
+                  <CusOutlineInput
                     size='small'
                     type='number'
                     label='Total Price'
