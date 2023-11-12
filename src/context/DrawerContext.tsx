@@ -1,3 +1,4 @@
+import useResponsive from 'hook/useResponsive';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getPersistedState, persistState } from 'utils/persist-util';
 
@@ -24,10 +25,14 @@ export function DrawerWrapper({ children }: IAppWrapper) {
   const [collapse, setCollapse] = useState(
     getPersistedState('collapse') || false
   );
-
+  const { isMdDown } = useResponsive();
   useEffect(() => {
     persistState('collapse', collapse);
   }, [collapse]);
+
+  useEffect(() => {
+    isMdDown && setCollapse(false);
+  }, [isMdDown]);
 
   return (
     <DrawerContext.Provider

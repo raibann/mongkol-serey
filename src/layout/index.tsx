@@ -20,7 +20,11 @@ export default function Home() {
           flexGrow={1}
           sx={{
             background: theme.palette.background.paper,
-            ml: { xs: 0, md: '25vw', lg: `${drawerWidth}` },
+            ml: {
+              xs: 0,
+              md: !collapse ? '25vw' : drawerWidth,
+              lg: `${drawerWidth}`,
+            },
             height: '100vh',
             overflow: 'auto',
           }}

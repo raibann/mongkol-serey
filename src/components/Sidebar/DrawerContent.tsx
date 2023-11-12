@@ -18,7 +18,7 @@ import {
 import {
   ArrowDown2,
   ArrowLeft2,
-  ArrowUp2,
+  ArrowRight2,
   Component,
   LogoutCurve,
 } from 'iconsax-react';
@@ -29,7 +29,8 @@ import { useAuthContext } from 'context/AuthContext';
 import useRouter, { ROUTE_PATH } from 'hook/useRouter';
 import navigationUtil from 'utils/navigation-util';
 import THEME_UTIL from 'utils/theme-util';
-import React from 'react';
+import React, { useState } from 'react';
+import { CusIconButton } from 'components/CusIconButton';
 
 const DrawerContent = () => {
   const { location, navigate } = useRouter();
@@ -39,6 +40,7 @@ const DrawerContent = () => {
   const { logout } = useAuthContext();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [collapseMenu, setCollapseMenu] = useState(false);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -78,8 +80,34 @@ const DrawerContent = () => {
               <ListItem
                 sx={{
                   py: 0.5,
-                  px: collapse ? 1 : 2,
+                  px: 2,
                 }}
+                secondaryAction={
+                  !collapse &&
+                  nav.children.length > 0 &&
+                  (location.pathname.includes(nav.toUrl) ? (
+                    <CusIconButton
+                      sx={{ boxShadow: 0, background: 'transparent' }}
+                      onClick={() => {
+                        setCollapseMenu(!collapseMenu);
+                      }}
+                    >
+                      <ArrowDown2
+                        size='16'
+                        style={{
+                          zIndex: 2,
+                        }}
+                        color={theme.palette.secondary.main}
+                      />
+                    </CusIconButton>
+                  ) : (
+                    <CusIconButton
+                      sx={{ boxShadow: 0, background: 'transparent' }}
+                    >
+                      <ArrowRight2 size='16' />
+                    </CusIconButton>
+                  ))
+                }
               >
                 <ListItemButton
                   sx={{
@@ -156,20 +184,6 @@ const DrawerContent = () => {
                       zIndex: 1,
                     }}
                   />
-
-                  {!collapse &&
-                    nav.children.length > 0 &&
-                    (location.pathname.includes(nav.toUrl) ? (
-                      <ArrowUp2
-                        size='16'
-                        style={{
-                          zIndex: 2,
-                        }}
-                        color={theme.palette.secondary.main}
-                      />
-                    ) : (
-                      <ArrowDown2 size='16' />
-                    ))}
                 </ListItemButton>
               </ListItem>
               {collapse &&
@@ -181,8 +195,8 @@ const DrawerContent = () => {
                     placement={'right'}
                     transition
                     sx={{
-                      zIndex: theme.zIndex.fab,
-                      pl: 1.5,
+                      zIndex: (theme) => theme.zIndex.drawer + 1,
+                      pl: 2,
                       '&> .css-1a2qywp-MuiPaper-root': {
                         boxShadow: theme.shadows[0],
                         borderRadius: 2.5,
@@ -247,7 +261,8 @@ const DrawerContent = () => {
 
               {!collapse &&
                 nav.children.length > 0 &&
-                location.pathname.includes(nav.toUrl) && (
+                location.pathname.includes(nav.toUrl) &&
+                collapseMenu && (
                   <Collapse
                     in={location.pathname.includes(nav.toUrl)}
                     timeout='auto'

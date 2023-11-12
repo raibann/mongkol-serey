@@ -52,12 +52,14 @@ let theme = createTheme({
       disabled: '#2E22001F',
     },
     background: {
-      paper: '#F5F6FA',
+      // paper: '#F5F6FA',
+      paper: '#FAFAFB',
     },
     divider: '#E0E0E0',
   },
 });
 theme.shadows[1] = '0px 1px 4px #15223214';
+theme.shadows[2] = '0px 1px 1px #15223214';
 theme.components = {
   MuiTypography: {
     defaultProps: {
