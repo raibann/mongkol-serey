@@ -1,9 +1,7 @@
 import { AppBar, Toolbar, Grid, Typography } from '@mui/material';
-import { CusIconButton } from 'components/CusIconButton';
 import React from 'react';
-import { HambergerMenu } from 'iconsax-react';
+
 import useResponsive from 'hook/useResponsive';
-import { useDrawerContext } from 'context/DrawerContext';
 
 const PageHeader = ({
   children,
@@ -14,55 +12,32 @@ const PageHeader = ({
   endComponent?: React.ReactNode;
   pageTitle: string;
 }) => {
-  const { isMdDown } = useResponsive();
-  const { openDrawer, setOpenDrawer } = useDrawerContext();
+  const { isSmDown, isXsDown } = useResponsive();
 
   return (
     <AppBar
       position='sticky'
       sx={{
-        bgcolor: isMdDown
-          ? (theme) => theme.palette.common.white
-          : 'background.paper',
+        bgcolor: 'background.paper',
         boxShadow: 'none',
         borderRadius: 0,
         mb: 1,
       }}
     >
       <Toolbar sx={{ py: 2, px: { sm: 0 } }}>
-        <Grid container px={3}>
-          <Grid item xs={12} md='auto'>
-            <Grid container>
-              <Grid item xs>
-                <CusIconButton
-                  onClick={() => setOpenDrawer(!openDrawer)}
-                  color='primary'
-                  sx={{
-                    height: 40,
-                    display: {
-                      xs: 'block',
-                      md: 'none',
-                    },
-                  }}
-                >
-                  <HambergerMenu size='24' variant='Outline' />
-                </CusIconButton>
-              </Grid>
-              <Grid item xs>
-                <Typography variant='h5' fontWeight='bolder'>
-                  {pageTitle}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs
-                sx={{ display: 'flex', justifyContent: 'flex-end' }}
-              >
-                {isMdDown && endComponent}
-              </Grid>
-            </Grid>
+        <Grid container px={isSmDown ? 0 : 3} rowGap={isSmDown ? 2 : 0}>
+          <Grid item xs={6} md='auto'>
+            <Typography variant='h5' fontWeight='bolder'>
+              {pageTitle}
+            </Typography>
           </Grid>
-          <Grid item xs={12} md>
+          <Grid
+            item
+            xs={6}
+            md
+            display='flex'
+            sx={{ justifyContent: 'flex-end' }}
+          >
             {children}
           </Grid>
         </Grid>

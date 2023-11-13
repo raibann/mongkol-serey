@@ -338,7 +338,7 @@ const Orders = () => {
             </Stack>
           ) : orderList && orderList.data.length > 0 ? (
             <>
-              <Table sx={{ minWidth: 1000 }}>
+              <Table sx={{ minWidth: '50vw' }}>
                 <OrderTableHead />
                 <OrderTableBody
                   data={orderList.data}

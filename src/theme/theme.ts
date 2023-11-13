@@ -42,7 +42,7 @@ let theme = createTheme({
       dark: '#C06800',
     },
     info: {
-      main: '#57B8FF',
+      main: '#2962ff',
       light: '#91EAFF',
       dark: '#0088CB',
     },
@@ -71,6 +71,13 @@ theme.components = {
       root: {
         background: theme.palette.common.white,
         borderRadius: 12,
+      },
+    },
+  },
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        borderRadius: 8,
       },
     },
   },
