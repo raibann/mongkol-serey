@@ -6,13 +6,12 @@ import useResponsive from 'hook/useResponsive';
 const PageHeader = ({
   children,
   pageTitle,
-  endComponent,
 }: {
   children?: React.ReactNode;
   endComponent?: React.ReactNode;
   pageTitle: string;
 }) => {
-  const { isSmDown, isXsDown } = useResponsive();
+  const { isSmDown } = useResponsive();
 
   return (
     <AppBar

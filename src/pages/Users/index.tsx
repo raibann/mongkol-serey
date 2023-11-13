@@ -1,5 +1,4 @@
 import {
-  Paper,
   Stack,
   Button,
   InputAdornment,
@@ -18,13 +17,25 @@ import {
   ListItemButton,
   ListItemText,
   ListItemIcon,
+  Container,
+  TableCell,
+  TableRow,
+  alpha,
+  Avatar,
+  Chip,
 } from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
-import { SearchNormal1, UserAdd } from 'iconsax-react';
+import {
+  Add,
+  ArrowDown2,
+  Edit2,
+  More,
+  SearchNormal1,
+  Trash,
+} from 'iconsax-react';
 import { useState } from 'react';
 import theme from 'theme/theme';
-import { UserTableBody, UserTableHead } from './UserTable';
 import FormUser from './FormUser';
 import useResponsive from 'hook/useResponsive';
 import { useRequest } from 'ahooks';
@@ -33,6 +44,11 @@ import { CusLoading } from 'components/CusLoading';
 import { role } from 'utils/data-util';
 import { GiGearHammer } from 'react-icons/gi';
 import Unauthorized from 'components/Unauthorized';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
+import { CusIconButton } from 'components/CusIconButton';
+import { UserTableBody, UserTableHead } from './userTable';
+import { HiDotsHorizontal } from 'react-icons/hi';
 
 export default function Users() {
   // Varaibles
@@ -57,7 +73,8 @@ export default function Users() {
       onSuccess: refreshUserList,
     }
   );
-
+  const { isSmDown } = useResponsive();
+  const navigate = useNavigate();
   // Response Variables
   const userList = userListResponse?.filter(
     (e) =>
@@ -76,63 +93,38 @@ export default function Users() {
 
   return (
     <>
-      <PageHeader pageTitle='Users' />
-
-      {errorGetUserList ? (
-        <Unauthorized />
-      ) : (
-        <Paper
-          elevation={1}
+      <PageHeader pageTitle='Users'>
+        <CusTextField
+          fullWidth={isSmDown ? true : false}
+          placeholder='Search...'
+          size='small'
+          sx={{ bgcolor: 'common.white', mr: 2 }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <SearchNormal1 size={18} />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          onClick={() => navigate(ROUTE_PATH.users.root)}
+          variant='contained'
+          size='small'
+          disableElevation
           sx={{
-            mx: 2,
-            borderRadius: 4,
-            height: 'calc(100vh - 100px)',
-            maxWidth: '100%',
-            overflow: 'hidden',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
+            color: 'common.white',
+            minWidth: 0,
           }}
         >
-          <Stack
-            direction='row'
-            justifyContent='space-between'
-            alignItems='center'
-            sx={{ width: '100%', p: 2 }}
-            spacing={2}
-          >
-            <Button
-              variant='contained'
-              startIcon={<UserAdd />}
-              sx={{
-                color: theme.palette.common.white,
-                boxShadow: theme.shadows[1],
-                borderRadius: 2,
-                whiteSpace: 'nowrap',
-                height: 40,
-              }}
-              onClick={() => setOpenDrawer('add')}
-            >
-              {isMdDown ? 'New' : 'Add New'}
-            </Button>
-            <CusTextField
-              value={search}
-              onChange={(e) => setSearch(e.target.value?.toLowerCase())}
-              placeholder='Search...'
-              size='small'
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    <SearchNormal1
-                      size='20'
-                      color={theme.palette.primary.main}
-                    />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Stack>
+          <Add />
+        </Button>
+      </PageHeader>
 
+      {!errorGetUserList ? (
+        <Unauthorized />
+      ) : (
+        <Container maxWidth='xl'>
           {loadingGetUserList ? (
             <Box flexGrow={1} display='grid' sx={{ placeItems: 'center' }}>
               <CusLoading />
@@ -152,6 +144,9 @@ export default function Users() {
                     fontWeight: '600',
                     whiteSpace: 'nowrap',
                   },
+                  minWidth: '100%',
+                  borderCollapse: 'separate',
+                  borderSpacing: `0px 12px`,
                 }}
               >
                 <UserTableHead />
@@ -171,7 +166,7 @@ export default function Users() {
               </Table>
             </TableContainer>
           )}
-        </Paper>
+        </Container>
       )}
 
       <Drawer

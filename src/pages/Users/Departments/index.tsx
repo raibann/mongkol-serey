@@ -95,10 +95,6 @@ export default function Departments() {
                     key={i}
                     sx={{
                       background: (theme) => theme.palette.common.white,
-                      pb: 10,
-                      '&> td': {
-                        // borderBottom: `5px solid ${theme.palette.background.paper}`,
-                      },
                       '&> td:first-of-type': {
                         borderTopLeftRadius: '10px',
                         borderBottomLeftRadius: '10px',
