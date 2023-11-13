@@ -15,12 +15,14 @@ const Sidebar = () => {
         anchor='left'
         sx={{
           width: collapse ? '88px' : '300px',
+          transition: 'width ease-out 200ms',
           '& .MuiDrawer-paper': {
             width: collapse ? '88px' : '300px',
             border: 'none',
-            background: (theme) => theme.palette.common.white,
+            bgcolor: 'common.white',
             borderRadius: 0,
             boxShadow: '5px 0px 10px  #15223214',
+            transition: 'width ease-out 200ms',
           },
         }}
       >
