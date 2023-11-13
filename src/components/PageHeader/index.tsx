@@ -30,7 +30,7 @@ const PageHeader = ({
       }}
     >
       <Toolbar sx={{ py: 2, px: { sm: 0 } }}>
-        <Grid container px={2}>
+        <Grid container px={3}>
           <Grid item xs={12} md='auto'>
             <Grid container>
               <Grid item xs>
