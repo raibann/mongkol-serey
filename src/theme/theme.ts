@@ -72,6 +72,13 @@ theme.components = {
       },
     },
   },
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        borderRadius: 8,
+      },
+    },
+  },
 };
 
 export default theme;

@@ -27,6 +27,8 @@ const InventoryUnit = lazy(() => import('pages/Inventories/Units'));
 const InventoryCategory = lazy(() => import('pages/Inventories/Categories'));
 const InventoryReport = lazy(() => import('pages/Inventories/Reports'));
 const Departments = lazy(() => import('pages/Users/Departments'));
+const MenuForm = lazy(() => import('pages/Menus/pages/MenuForm'));
+
 export default function AllRoutes() {
   const { authState } = useAuthContext();
   /* Allow to use without api */
@@ -131,6 +133,22 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Menus />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.menus.createMenuPackage}
+          element={
+            <Suspense>
+              <MenuForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.menus.updateMenuPackage}
+          element={
+            <Suspense>
+              <MenuForm />
             </Suspense>
           }
         />

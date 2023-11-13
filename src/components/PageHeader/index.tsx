@@ -21,16 +21,14 @@ const PageHeader = ({
     <AppBar
       position='sticky'
       sx={{
-        bgcolor: isMdDown
-          ? (theme) => theme.palette.common.white
-          : 'background.paper',
+        bgcolor: isMdDown ? 'common.white' : 'background.paper',
         boxShadow: 'none',
         borderRadius: 0,
         mb: 1,
       }}
     >
-      <Toolbar sx={{ py: 2, px: { sm: 0 } }}>
-        <Grid container px={2}>
+      <Toolbar sx={{ px: { sm: 0 } }}>
+        <Grid container px={3}>
           <Grid item xs={12} md='auto'>
             <Grid container>
               <Grid item xs>
@@ -62,7 +60,13 @@ const PageHeader = ({
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} md>
+          <Grid
+            item
+            xs={12}
+            md
+            display='flex'
+            sx={{ justifyContent: { xs: 'center', md: 'flex-end' } }}
+          >
             {children}
           </Grid>
         </Grid>
