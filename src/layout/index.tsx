@@ -1,38 +1,24 @@
-import { Box, Toolbar } from '@mui/material';
+import { Paper, Box } from '@mui/material';
 import Navbar from 'components/Navbar';
-import { useDrawerContext } from 'context/DrawerContext';
-import { lazy } from 'react';
+import Sidebar from 'components/Sidebar';
 import { Outlet } from 'react-router-dom';
-import theme from 'theme/theme';
-const Sidebar = lazy(() => import('components/Sidebar'));
 
 export default function Home() {
-  const { collapse } = useDrawerContext();
-  const drawerWidth = !collapse ? '17vw' : '88px';
   return (
-    <>
-      <Box sx={{ display: 'flex' }}>
-        <Sidebar {...{ drawerWidth }} />
-        <Navbar {...{ drawerWidth }} />
-        <Box
-          component='main'
-          id='main'
-          flexGrow={1}
-          sx={{
-            background: theme.palette.background.paper,
-            ml: {
-              xs: 0,
-              md: !collapse ? '25vw' : drawerWidth,
-              lg: `${drawerWidth}`,
-            },
-            height: '100vh',
-            overflow: 'auto',
-          }}
-        >
-          <Toolbar />
-          <Outlet />
-        </Box>
-      </Box>
-    </>
+    <Box component={Paper} display='flex'>
+      <Sidebar />
+      <Paper
+        component='main'
+        sx={{
+          flexGrow: 1,
+          bgcolor: 'background.paper',
+          height: '100vh',
+          overflow: 'auto',
+        }}
+      >
+        <Navbar />
+        <Outlet />
+      </Paper>
+    </Box>
   );
 }

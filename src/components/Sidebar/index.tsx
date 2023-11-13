@@ -3,7 +3,7 @@ import { useDrawerContext } from 'context/DrawerContext';
 import useResponsive from 'hook/useResponsive';
 import DrawerContent from './DrawerContent';
 
-const Sidebar = ({ drawerWidth }: { drawerWidth: string }) => {
+const Sidebar = () => {
   const { isMdDown } = useResponsive();
   const { openDrawer, collapse } = useDrawerContext();
 
@@ -14,10 +14,9 @@ const Sidebar = ({ drawerWidth }: { drawerWidth: string }) => {
         open={openDrawer}
         anchor='left'
         sx={{
+          width: collapse ? '88px' : '300px',
           '& .MuiDrawer-paper': {
-            width: collapse
-              ? 'auto'
-              : { xs: '100vw', sm: '40vw', md: '25vw', lg: drawerWidth },
+            width: collapse ? '88px' : '300px',
             border: 'none',
             background: (theme) => theme.palette.common.white,
             borderRadius: 0,
