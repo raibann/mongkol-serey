@@ -15,15 +15,8 @@ import {
   alpha,
   useTheme,
 } from '@mui/material';
-import {
-  ArrowDown2,
-  ArrowLeft2,
-  ArrowRight2,
-  Component,
-  LogoutCurve,
-} from 'iconsax-react';
+import { ArrowDown2, ArrowRight2, Component, LogoutCurve } from 'iconsax-react';
 import { useDrawerContext } from 'context/DrawerContext';
-import { useReminderContext } from 'context/ReminderContext';
 import { motion } from 'framer-motion';
 import { useAuthContext } from 'context/AuthContext';
 import useRouter, { ROUTE_PATH } from 'hook/useRouter';
@@ -34,9 +27,7 @@ import { CusIconButton } from 'components/CusIconButton';
 
 const DrawerContent = () => {
   const { location, navigate } = useRouter();
-  const { openDrawer, setOpenDrawer, collapse, setCollapse } =
-    useDrawerContext();
-  const { reminderList } = useReminderContext();
+  const { openDrawer, setOpenDrawer, collapse } = useDrawerContext();
   const { logout } = useAuthContext();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
@@ -62,8 +53,8 @@ const DrawerContent = () => {
         }}
         sx={{
           mx: 'auto',
-          width: collapse ? 60 : 100,
-          height: collapse ? 60 : 100,
+          width: collapse ? 68 : 180,
+          height: collapse ? 68 : 180,
         }}
       />
       <List
@@ -355,49 +346,6 @@ const DrawerContent = () => {
                     color={theme.palette.error.main}
                   >
                     Exit
-                  </Typography>
-                )
-              }
-              primaryTypographyProps={{
-                fontWeight: 500,
-                color: 'secondary.main',
-              }}
-              sx={{
-                zIndex: 1,
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
-        <Box flexGrow={1} />
-        <ListItem sx={{ py: 0.5, display: { sm: 'none', md: 'block' } }}>
-          <ListItemButton
-            sx={{
-              position: 'relative',
-              borderRadius: 2,
-            }}
-            onClick={() => setCollapse(!collapse)}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: collapse ? 0 : undefined,
-                zIndex: 2,
-                color: theme.palette.primary.main,
-              }}
-            >
-              <ArrowLeft2
-                size='24'
-                variant='Bulk'
-                style={{ rotate: collapse ? '180deg' : '0deg' }}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary={
-                !collapse && (
-                  <Typography
-                    fontWeight={'medium'}
-                    color={theme.palette.secondary.light}
-                  >
-                    Collapse
                   </Typography>
                 )
               }

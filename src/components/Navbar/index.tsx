@@ -4,22 +4,18 @@ import { useDrawerContext } from 'context/DrawerContext';
 import useResponsive from 'hook/useResponsive';
 import { HiMenuAlt4 } from 'react-icons/hi';
 
-export default function Navbar({ drawerWidth }: { drawerWidth: string }) {
+export default function Navbar() {
   const { collapse, setCollapse, setOpenDrawer, openDrawer } =
     useDrawerContext();
   const { isMdDown } = useResponsive();
 
   return (
     <AppBar
-      position='fixed'
+      position='sticky'
       sx={{
-        zIndex: (theme) => theme.zIndex.drawer,
-        boxShadow: (theme) => theme.shadows[2],
-        width: {
-          md: !collapse ? `calc(100vw - 25vw)` : `calc(100vw - ${drawerWidth})`,
-          lg: `calc(100vw - ${drawerWidth})`,
-        },
         borderRadius: 0,
+        zIndex: (theme) => theme.zIndex.drawer - 1,
+        boxShadow: (theme) => theme.shadows[1],
         background: (theme) => theme.palette.common.white,
       }}
     >

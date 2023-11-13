@@ -39,7 +39,7 @@ export const ROUTE_PATH = {
   menus: {
     root: '/menus',
     createMenuPackage: '/menus/create-new-package',
-    updateMenuPackage: '/menus/update-new-package/:id',
+    updateMenuPackage: '/menus/update-package/:id',
   },
   prepareGrocery: {
     root: '/prepare-groceries',
