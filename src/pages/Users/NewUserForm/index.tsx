@@ -1,12 +1,9 @@
-import { Button, Container, MenuItem, Paper, Stack } from '@mui/material';
+import { Button, Container, Paper, Stack } from '@mui/material';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
-import useResponsive from 'hook/useResponsive';
-import React from 'react';
 
 export default function NewUserForm() {
-  const { isSmDown } = useResponsive();
   return (
     <>
       <SecondaryPageHeader title='Create New User' />
