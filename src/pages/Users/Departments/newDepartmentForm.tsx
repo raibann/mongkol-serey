@@ -30,7 +30,7 @@ export default function NewDepartmentForm() {
       >
         <Container maxWidth='sm'>
           <Stack direction={'column'} spacing={2}>
-            <LabelTextField label='Department' />
+            <LabelTextField label='Department' size='small' />
             <Stack direction={'row'} spacing={1}>
               <ShieldSecurity size='24' color={theme.palette.secondary.main} />
               <Typography

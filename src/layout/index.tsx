@@ -14,6 +14,7 @@ export default function Home() {
           bgcolor: 'background.paper',
           height: '100vh',
           overflow: 'auto',
+          borderRadius: 0,
         }}
       >
         <Navbar />

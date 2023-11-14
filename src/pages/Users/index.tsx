@@ -1,5 +1,4 @@
 import {
-  Stack,
   Button,
   InputAdornment,
   TableContainer,
@@ -18,24 +17,11 @@ import {
   ListItemText,
   ListItemIcon,
   Container,
-  TableCell,
-  TableRow,
-  alpha,
-  Avatar,
-  Chip,
 } from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
-import {
-  Add,
-  ArrowDown2,
-  Edit2,
-  More,
-  SearchNormal1,
-  Trash,
-} from 'iconsax-react';
+import { Add, SearchNormal1 } from 'iconsax-react';
 import { useState } from 'react';
-import theme from 'theme/theme';
 import FormUser from './FormUser';
 import useResponsive from 'hook/useResponsive';
 import { useRequest } from 'ahooks';
@@ -46,9 +32,7 @@ import { GiGearHammer } from 'react-icons/gi';
 import Unauthorized from 'components/Unauthorized';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
-import { CusIconButton } from 'components/CusIconButton';
 import { UserTableBody, UserTableHead } from './userTable';
-import { HiDotsHorizontal } from 'react-icons/hi';
 
 export default function Users() {
   // Varaibles
@@ -108,7 +92,7 @@ export default function Users() {
           }}
         />
         <Button
-          onClick={() => navigate(ROUTE_PATH.users.root)}
+          onClick={() => navigate(ROUTE_PATH.users.createNewUser)}
           variant='contained'
           size='small'
           disableElevation

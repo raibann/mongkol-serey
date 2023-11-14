@@ -28,9 +28,10 @@ const InventoryCategory = lazy(() => import('pages/Inventories/Categories'));
 const InventoryReport = lazy(() => import('pages/Inventories/Reports'));
 const Departments = lazy(() => import('pages/Users/Departments'));
 const NewDepartmentForm = lazy(
-  () => import('pages/Users/Departments/pages/newDepartmentForm')
+  () => import('pages/Users/Departments/newDepartmentForm')
 );
 const MenuForm = lazy(() => import('pages/Menus/pages/MenuForm'));
+const NewUserForm = lazy(() => import('pages/Users/NewUserForm'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -213,6 +214,14 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Users />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.users.createNewUser}
+          element={
+            <Suspense>
+              <NewUserForm />
             </Suspense>
           }
         />
