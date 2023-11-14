@@ -20,7 +20,7 @@ const Setting = lazy(() => import('pages/Setting'));
 /* Children Page */
 const Quotation = lazy(() => import('pages/Orders/Quotations'));
 const Payments = lazy(() => import('pages/Orders/Payments'));
-const Potentials = lazy(() => import('pages/Customers/Potentials'));
+const Potentials = lazy(() => import('pages/Customers/pages/potential'));
 const Anniversaries = lazy(() => import('pages/Notifications/Aniversaries'));
 const Upcomings = lazy(() => import('pages/Notifications/Upcomings'));
 const InventoryUnit = lazy(() => import('pages/Inventories/Units'));
@@ -34,6 +34,9 @@ const MenuForm = lazy(() => import('pages/Menus/pages/MenuForm'));
 const NewUserForm = lazy(() => import('pages/Users/pages/newUser'));
 const NewSupplierForm = lazy(() => import('pages/Suppliers/pages/newSupplier'));
 const NewCustomerForm = lazy(() => import('pages/Customers/pages/newCustomer'));
+const NewPotentialForm = lazy(
+  () => import('pages/Customers/pages/potential/newPotential')
+);
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -116,6 +119,15 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        <Route
+          path={ROUTE_PATH.customers.createPotentialCustomer}
+          element={
+            <Suspense>
+              <NewPotentialForm />
+            </Suspense>
+          }
+        />
+
         {/* Notification */}
         <Route
           path={ROUTE_PATH.notification.root}
