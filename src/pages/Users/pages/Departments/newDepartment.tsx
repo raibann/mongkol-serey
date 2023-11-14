@@ -15,7 +15,7 @@ import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import { ShieldSecurity } from 'iconsax-react';
 
-export default function NewDepartmentForm() {
+export default function NewDepartment() {
   const theme = useTheme();
   return (
     <>

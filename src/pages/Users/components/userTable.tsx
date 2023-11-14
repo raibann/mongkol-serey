@@ -4,7 +4,6 @@ import {
   TableHead,
   Stack,
   Avatar,
-  Tooltip,
   Typography,
   useTheme,
   Button,
@@ -15,10 +14,9 @@ import { useRequest } from 'ahooks';
 import USER_API from 'api/user';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import { CusIconButton } from 'components/CusIconButton';
-import { ArrowDown2, Edit, SecurityUser, Trash } from 'iconsax-react';
+import { ArrowDown2 } from 'iconsax-react';
 import { useState } from 'react';
 import { HiDotsHorizontal } from 'react-icons/hi';
-import { changeBackground } from 'utils/validate-util';
 
 export const UserTableBody = ({
   props,
@@ -82,13 +80,13 @@ export const UserTableBody = ({
                   src='/static/images/avatar/1.jpg'
                   variant='rounded'
                   sx={{
-                    height: 64,
-                    width: 64,
+                    height: 40,
+                    width: 40,
                     borderRadius: 2,
                   }}
                 />
                 <Stack direction={'column'}>
-                  <Typography>Name</Typography>
+                  <Typography variant='body2'>Name</Typography>
                   <Chip
                     label='User'
                     size='small'

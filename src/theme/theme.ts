@@ -52,8 +52,8 @@ let theme = createTheme({
       disabled: '#2E22001F',
     },
     background: {
-      // paper: '#F5F6FA',
-      paper: '#FAFAFB',
+      paper: '#F5F6FA',
+      // paper: '#FAFAFB',
     },
     divider: '#E0E0E0',
   },

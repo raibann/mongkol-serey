@@ -196,7 +196,7 @@ export default function Departments() {
     </>
   );
 }
-interface ITableStyle {
+export interface ITableStyle {
   row?: SxProps<Theme>;
   cell?: SxProps<Theme>;
 }

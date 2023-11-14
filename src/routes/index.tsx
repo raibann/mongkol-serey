@@ -26,12 +26,13 @@ const Upcomings = lazy(() => import('pages/Notifications/Upcomings'));
 const InventoryUnit = lazy(() => import('pages/Inventories/Units'));
 const InventoryCategory = lazy(() => import('pages/Inventories/Categories'));
 const InventoryReport = lazy(() => import('pages/Inventories/Reports'));
-const Departments = lazy(() => import('pages/Users/Departments'));
+const Departments = lazy(() => import('pages/Users/pages/Departments'));
 const NewDepartmentForm = lazy(
-  () => import('pages/Users/Departments/newDepartmentForm')
+  () => import('pages/Users/pages/Departments/newDepartment')
 );
 const MenuForm = lazy(() => import('pages/Menus/pages/MenuForm'));
-const NewUserForm = lazy(() => import('pages/Users/NewUserForm'));
+const NewUserForm = lazy(() => import('pages/Users/pages/newUser'));
+const NewSupplierForm = lazy(() => import('pages/Suppliers/pages/newSupplier'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -204,6 +205,14 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Suppliers />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.suppliers.createNewSupplier}
+          element={
+            <Suspense>
+              <NewSupplierForm />
             </Suspense>
           }
         />
