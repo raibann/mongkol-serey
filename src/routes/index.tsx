@@ -33,6 +33,7 @@ const NewDepartmentForm = lazy(
 const MenuForm = lazy(() => import('pages/Menus/pages/MenuForm'));
 const NewUserForm = lazy(() => import('pages/Users/pages/newUser'));
 const NewSupplierForm = lazy(() => import('pages/Suppliers/pages/newSupplier'));
+const NewCustomerForm = lazy(() => import('pages/Customers/pages/newCustomer'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -96,6 +97,14 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Customer />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.customers.createNewCustomer}
+          element={
+            <Suspense>
+              <NewCustomerForm />
             </Suspense>
           }
         />

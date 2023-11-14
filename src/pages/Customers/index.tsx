@@ -1,25 +1,14 @@
-import {
-  Box,
-  Button,
-  Grid,
-  InputAdornment,
-  Pagination,
-  Stack,
-  Typography,
-  Paper,
-} from '@mui/material';
+import { Button, InputAdornment, Stack, Typography } from '@mui/material';
 import { Container } from '@mui/system';
 import ResponsiveDrawer from 'components/CusDrawer/ResponsiveDrawer';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import { BoxRemove, SearchNormal1, UserAdd } from 'iconsax-react';
+import { Add, SearchNormal1 } from 'iconsax-react';
 import React, { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { MdClose } from 'react-icons/md';
-import theme from 'theme/theme';
-import CustCard from './CustCard';
 import CustomerDetails from './CustomerDetails';
 import CustomerForm, { CustomerInput } from './CustForm/CustomerForm';
 import { useDebounce, useRequest } from 'ahooks';
@@ -28,17 +17,25 @@ import { CusLoading } from 'components/CusLoading';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import { changeBackground } from 'utils/validate-util';
 import { LoadingButton } from '@mui/lab';
+import CustTable from './components/custTable';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
 
 export default function Customers() {
+  /* State */
   const [openDrawer, setOpenDrawer] = useState<'Add' | 'Edit' | 'Details' | ''>(
     ''
   );
   const [page, setPage] = useState(1);
   const [searchData, setSearchData] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<number>();
+
+  /* Hooks */
   const methods = useForm<CustomerInput>();
   const { handleSubmit, setValue } = methods;
   const { isSmDown } = useResponsive();
+  const navigate = useNavigate();
+
   // handle add and edit stock
   const handleOpenDrawer = (obj: 'Add' | 'Edit' | 'Details' | '') => {
     setOpenDrawer(obj);
@@ -105,42 +102,32 @@ export default function Customers() {
 
   return (
     <>
-      <PageHeader pageTitle={'Customers'}>
-        <Stack
-          direction={'row'}
-          alignItems={'center'}
-          justifyContent={isSmDown ? 'flex-start' : 'flex-end'}
-          spacing={2}
-          sx={{ mt: [2, 2, 0] }}
+      <PageHeader pageTitle='Customers'>
+        <CusTextField
+          fullWidth={isSmDown ? true : false}
+          placeholder='Search...'
+          size='small'
+          sx={{ bgcolor: 'common.white', mr: 2 }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <SearchNormal1 size={18} />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          onClick={() => navigate(ROUTE_PATH.customers.createNewCustomer)}
+          variant='contained'
+          size='small'
+          disableElevation
+          sx={{
+            color: 'common.white',
+            minWidth: 0,
+          }}
         >
-          <Button
-            variant='contained'
-            startIcon={<UserAdd />}
-            sx={{
-              color: theme.palette.common.white,
-              boxShadow: theme.shadows[1],
-              borderRadius: 2,
-              height: 40,
-              width: ['70%', 'auto', 'auto'],
-            }}
-            onClick={() => handleOpenDrawer('Add')}
-          >
-            {isMdDown ? 'New' : 'Add New'}
-          </Button>
-          <CusTextField
-            placeholder='Search...'
-            size='small'
-            onChange={(e) => setSearchData(e.currentTarget.value)}
-            sx={{ width: ['100%', '80%', 'auto'] }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <SearchNormal1 size='20' color={theme.palette.primary.main} />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Stack>
+          <Add />
+        </Button>
       </PageHeader>
 
       <Container
@@ -157,7 +144,8 @@ export default function Customers() {
           flexDirection: 'column',
         }}
       >
-        {isLoadingCustList ? (
+        <CustTable />
+        {/* {isLoadingCustList ? (
           <Stack
             alignItems={'center'}
             justifyContent={'center'}
@@ -238,7 +226,7 @@ export default function Customers() {
               }}
             />
           </Paper>
-        </Stack>
+        </Stack> */}
       </Container>
 
       <ResponsiveDrawer

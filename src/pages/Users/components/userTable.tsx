@@ -218,7 +218,14 @@ export const UserTableBody = ({
 export const UserTableHead = () => {
   return (
     <TableHead>
-      <TableRow>
+      <TableRow
+        sx={{
+          '&> th': {
+            pt: 0,
+            borderBottom: 0,
+          },
+        }}
+      >
         <TableCell align='left'>No.</TableCell>
         <TableCell align='left'>Profile</TableCell>
         <TableCell align='left'>Username</TableCell>

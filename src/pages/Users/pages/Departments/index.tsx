@@ -196,7 +196,7 @@ export default function Departments() {
     </>
   );
 }
-export interface ITableStyle {
+interface ITableStyle {
   row?: SxProps<Theme>;
   cell?: SxProps<Theme>;
 }
@@ -206,6 +206,7 @@ const custStyle: ITableStyle = {
     background: 'transparent',
     '&> th': {
       pt: 0,
+      borderBottom: 0,
     },
   },
   cell: {
