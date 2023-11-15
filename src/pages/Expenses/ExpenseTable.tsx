@@ -7,7 +7,7 @@ export const ExpenseTableHead = () => {
   return (
     <TableHead>
       <TableRow>
-        <TableCell>INVOICE</TableCell>
+        <TableCell>INVOICE ID</TableCell>
         <TableCell>CUSTOMER NAME</TableCell>
         <TableCell>EVENT DATE</TableCell>
         <TableCell>QUANTITY</TableCell>

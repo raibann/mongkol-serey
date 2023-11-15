@@ -1,4 +1,4 @@
-import { IExpenseRow } from 'pages/Expenses/ExpenseDialogs';
+import { IExpenseRow } from 'pages/Expenses/components/ExpenseDialogs';
 import { GrUserAdmin } from 'react-icons/gr';
 import { MdOutlineAdminPanelSettings } from 'react-icons/md';
 import theme from 'theme/theme';

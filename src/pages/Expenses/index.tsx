@@ -17,6 +17,7 @@ import {
   ToggleButtonGroup,
   Typography,
   Radio,
+  Container,
 } from '@mui/material';
 import {
   BoxRemove,
@@ -34,7 +35,7 @@ import theme from 'theme/theme';
 import ResponsiveDialog from 'components/CusDialog/ResponsiveDialog';
 import EXPENSE_API from 'api/expense';
 import OrderTable, { OrderTableHead } from 'pages/Orders/OrderTable';
-import ExpenseDialogs from './ExpenseDialogs';
+import ExpenseDialogs from './components/ExpenseDialogs';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDebounce, useRequest } from 'ahooks';
 import { Controller, useForm } from 'react-hook-form';
@@ -44,6 +45,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import LabelTextField from 'components/LabelTextField';
 import { eventList } from 'utils/data-util';
 import moment from 'moment';
+import ExpenseTable from './components/expenseTable';
 
 interface IFilterSearch {
   eventType: string;
@@ -116,8 +118,47 @@ export default function Expense() {
 
   return (
     <>
-      <PageHeader pageTitle={'Expense'} />
-      <Paper
+      <PageHeader pageTitle={'Expense'}>
+        <CusTextField
+          sx={{
+            background: (theme) => theme.palette.background.default,
+          }}
+          placeholder='Search...'
+          size='small'
+          fullWidth={isSmDown}
+          value={search}
+          onKeyUp={(e) => {
+            if (e.key === 'Enter') {
+              expenseListReq.run({
+                page: page - 1,
+                status: toggleValue,
+                search: search,
+              });
+            }
+          }}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton
+                  onClick={(e) => setAnchorEl(e.currentTarget)}
+                  sx={{ mr: -1 }}
+                >
+                  <FilterSearch size='20' color={theme.palette.primary.main} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      </PageHeader>
+      <Container maxWidth='xl'>
+        <ExpenseTable />
+      </Container>
+
+      {/* <Paper
         elevation={1}
         sx={{
           mx: 2,
@@ -297,7 +338,7 @@ export default function Expense() {
             }}
           />
         </Stack>
-      </Paper>
+      </Paper> */}
       <ResponsiveDialog
         onCloseDialog={() => {}}
         open={openDialogs !== undefined}
