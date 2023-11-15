@@ -23,9 +23,11 @@ const Payments = lazy(() => import('pages/Orders/Payments'));
 const Potentials = lazy(() => import('pages/Customers/pages/potential'));
 const Anniversaries = lazy(() => import('pages/Notifications/Aniversaries'));
 const Upcomings = lazy(() => import('pages/Notifications/Upcomings'));
-const InventoryUnit = lazy(() => import('pages/Inventories/Units'));
-const InventoryCategory = lazy(() => import('pages/Inventories/Categories'));
-const InventoryReport = lazy(() => import('pages/Inventories/Reports'));
+const InventoryUnit = lazy(() => import('pages/Inventories/pages/Units'));
+const InventoryCategory = lazy(
+  () => import('pages/Inventories/pages/Categories')
+);
+const InventoryReport = lazy(() => import('pages/Inventories/pages/Reports'));
 const Departments = lazy(() => import('pages/Users/pages/Departments'));
 const NewDepartmentForm = lazy(
   () => import('pages/Users/pages/Departments/NewDepartmentForm')

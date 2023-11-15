@@ -1,25 +1,27 @@
 import {
   Button,
   Chip,
+  Grid,
   IconButton,
   InputAdornment,
+  MenuItem,
+  Paper,
   Stack,
-  Table,
   TableCell,
-  TableContainer,
   TableRow,
+  TextField,
   Typography,
   alpha,
   useTheme,
 } from '@mui/material';
+import { CusIconButton } from 'components/CusIconButton';
 import CusTable from 'components/CusTable/CusTable';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import { Add, BoxAdd, SearchNormal1 } from 'iconsax-react';
+import { Add, Box, Convert3DCube, SearchNormal1 } from 'iconsax-react';
 import { useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
-import theme from 'theme/theme';
 
 const Stocks = () => {
   // Hooks
@@ -57,11 +59,77 @@ const Stocks = () => {
         </Button>
       </PageHeader>
 
+      <Stack direction='row' px={3} spacing={3}>
+        <Paper component={Stack} width='50%' p={2}>
+          <Box variant='Bulk' color={theme.palette.primary.main} size={32} />
+          <Grid container mt={2}>
+            <Grid item xs={6}>
+              <Typography>All Products</Typography>
+              <Typography variant='h6' fontWeight='600'>
+                350
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography>Active</Typography>
+              <Typography variant='h6' fontWeight='600'>
+                {'316 '}
+                <Typography variant='body2' component='span'>
+                  (86%)
+                </Typography>
+              </Typography>
+            </Grid>
+          </Grid>
+        </Paper>
+        <Paper component={Stack} width='50%' p={2}>
+          <Stack
+            direction='row'
+            justifyContent='space-between'
+            alignItems='flex-start'
+          >
+            <Convert3DCube
+              variant='Bulk'
+              color={theme.palette.primary.main}
+              size={32}
+            />
+            <TextField
+              size='small'
+              select
+              value='1'
+              sx={{
+                '& .MuiOutlinedInput-input': {
+                  p: 0,
+                },
+                '& fieldset': {
+                  border: 'none',
+                },
+              }}
+            >
+              <MenuItem value='1'>This week</MenuItem>
+              <MenuItem value='2'>This month</MenuItem>
+              <MenuItem value='3'>This year</MenuItem>
+            </TextField>
+          </Stack>
+          <Grid container mt={2}>
+            <Grid item xs={6}>
+              <Typography>Low Stock Alert</Typography>
+              <Typography variant='h6' fontWeight='600'>
+                30
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography>Expire</Typography>
+              <Typography variant='h6' fontWeight='600'>
+                3
+              </Typography>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Stack>
+
       <CusTable
         sx={{
           container: {
             p: 3,
-            pt: 0,
           },
         }}
         headers={[
@@ -96,8 +164,10 @@ const Stocks = () => {
             <TableCell>10ដប</TableCell>
             <TableCell>5ដប</TableCell>
             <TableCell>
-              <Typography variant='body2'>{`$ ${3.2 * 5}`}</Typography>
-              <Typography variant='body2'>{`៛ ${3.2 * 5 * 4100}`}</Typography>
+              <Typography variant='body2'>{`${(3.2 * 5).toFixed(
+                2
+              )}$`}</Typography>
+              <Typography variant='body2'>{`${3.2 * 5 * 4100}៛`}</Typography>
             </TableCell>
             <TableCell>
               <Chip
@@ -111,9 +181,9 @@ const Stocks = () => {
               />
             </TableCell>
             <TableCell>
-              <IconButton>
-                <BsThreeDots size={16} />
-              </IconButton>
+              <CusIconButton>
+                <BsThreeDots />
+              </CusIconButton>
             </TableCell>
           </TableRow>
         }
