@@ -1,14 +1,8 @@
 import {
   Avatar,
   Stack,
-  SxProps,
-  Table,
-  TableBody,
   TableCell,
-  TableContainer,
-  TableHead,
   TableRow,
-  Theme,
   Typography,
   alpha,
 } from '@mui/material';
