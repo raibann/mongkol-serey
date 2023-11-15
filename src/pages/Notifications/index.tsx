@@ -4,8 +4,8 @@ import PageHeader from 'components/PageHeader';
 import { useReminderContext } from 'context/ReminderContext';
 import { BoxRemove } from 'iconsax-react';
 import theme from 'theme/theme';
-import EventToday from './EventCard/today';
-import UpcomingEvent from './EventCard/upcoming';
+import EventToday from './EventCard/Today';
+import UpcomingEvent from './EventCard/Upcoming';
 
 export default function Reminder() {
   const { reminderList, reminderLoading } = useReminderContext();
