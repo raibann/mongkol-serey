@@ -1,42 +1,15 @@
-import {
-  InputAdornment,
-  Button,
-  Container,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  alpha,
-  SxProps,
-  Theme,
-  useTheme,
-  Typography,
-  Avatar,
-} from '@mui/material';
-import { CusIconButton } from 'components/CusIconButton';
+import { InputAdornment, Button, Container } from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import {
-  SearchNormal1,
-  Add,
-  Edit2,
-  Trash,
-  Location,
-  Send2,
-} from 'iconsax-react';
+import { SearchNormal1, Add } from 'iconsax-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
-import THEME_UTIL from 'utils/theme-util';
-import SupplierTable from './components/supplierTable';
+import SupplierTable from './components/SupplierTable';
 
 export default function Suppliers() {
   /* Hooks */
   const { isSmDown } = useResponsive();
-  const theme = useTheme();
   const navigate = useNavigate();
   return (
     <>
