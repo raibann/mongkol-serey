@@ -37,7 +37,7 @@ const NewSupplierForm = lazy(
 );
 const NewCustomerForm = lazy(() => import('pages/Customers/pages/newCustomer'));
 const NewPotentialForm = lazy(
-  () => import('pages/Customers/pages/potential/newPotential')
+  () => import('pages/Customers/pages/potential/NewPotentialForm')
 );
 
 export default function AllRoutes() {

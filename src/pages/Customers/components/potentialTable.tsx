@@ -1,7 +1,6 @@
 import { Avatar, Container, Grid, Stack, Typography } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import { Send2 } from 'iconsax-react';
-import React from 'react';
 import { HiDotsHorizontal } from 'react-icons/hi';
 import THEME_UTIL from 'utils/theme-util';
 

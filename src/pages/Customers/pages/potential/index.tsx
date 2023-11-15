@@ -1,13 +1,11 @@
-import { InputAdornment, Button, Grid, Typography, Stack } from '@mui/material';
+import { InputAdornment, Button } from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import { SearchNormal1, Add } from 'iconsax-react';
-import PotentialTable from 'pages/Customers/components/potentialTable';
-import React from 'react';
+import PotentialTable from 'pages/Customers/components/PotentialTable';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
-import NewPotential from './newPotential';
 
 export default function Potential() {
   /* Hooks */

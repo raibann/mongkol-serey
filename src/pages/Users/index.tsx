@@ -32,7 +32,7 @@ import { GiGearHammer } from 'react-icons/gi';
 import Unauthorized from 'components/Unauthorized';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
-import { UserTableBody, UserTableHead } from './components/userTable';
+import { UserTableBody, UserTableHead } from './components/UserTable';
 
 export default function Users() {
   // Varaibles

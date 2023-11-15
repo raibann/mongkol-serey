@@ -17,7 +17,7 @@ import { CusLoading } from 'components/CusLoading';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import { changeBackground } from 'utils/validate-util';
 import { LoadingButton } from '@mui/lab';
-import CustTable from './components/custTable';
+import CustTable from './components/CustTable';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 
@@ -145,88 +145,6 @@ export default function Customers() {
         }}
       >
         <CustTable />
-        {/* {isLoadingCustList ? (
-          <Stack
-            alignItems={'center'}
-            justifyContent={'center'}
-            sx={{
-              height: ['calc( 100vh - 138px)', 'calc( 100vh - 138px)', '100%'],
-            }}
-          >
-            <CusLoading />
-          </Stack>
-        ) : custList && custList.data.length === 0 ? (
-          <Stack
-            direction={'column'}
-            alignItems={'center'}
-            justifyContent='center'
-            sx={{
-              height: [
-                'calc( 100vh - 138px)',
-                'calc( 100vh - 138px)',
-                'calc( 100vh - 74px)',
-              ],
-            }}
-          >
-            <BoxRemove size='80' color={theme.palette.error.main} />
-            <Typography variant='h6' color='error'>
-              No customer
-            </Typography>
-          </Stack>
-        ) : (
-          <Box
-            className='hide-scrollbar'
-            sx={{ overflow: 'auto', flexGrow: 1 }}
-          >
-            <Grid container rowSpacing={4} columnSpacing={2} sx={{ mb: 10 }}>
-              <CustCard
-                {...{
-                  handleOpenDrawer,
-                  custList,
-                  fetchCustDetails,
-                  setConfirmDelete,
-                  changeBackground,
-                }}
-              />
-            </Grid>
-          </Box>
-        )}
-
-        <Stack
-          alignItems='center'
-          width='100%'
-          sx={{
-            position: 'absolute',
-            bottom: 12,
-            left: 0,
-            right: 0,
-            zIndex: (theme) => theme.zIndex.appBar,
-          }}
-        >
-          <Paper
-            sx={{
-              p: 1.5,
-              borderRadius: '50vh',
-              maxWidth: 'fit',
-              border: 'dashed 1px',
-              borderColor: 'divider',
-              bgcolor: (theme) => theme.palette.common.white,
-            }}
-          >
-            <Pagination
-              count={custList?.totalPage}
-              page={page}
-              onChange={handleChangePage}
-              color='primary'
-              variant='outlined'
-              sx={{
-                '& .MuiPaginationItem-root': {
-                  borderWidth: 0,
-                },
-              }}
-            />
-          </Paper>
-        </Stack> */}
       </Container>
 
       <ResponsiveDrawer
