@@ -42,8 +42,8 @@ let theme = createTheme({
       dark: '#C06800',
     },
     info: {
-      main: '#2962ff',
-      light: '#91EAFF',
+      main: '#57B8FF',
+      light: '#30C9EE',
       dark: '#0088CB',
     },
     text: {

@@ -9,7 +9,7 @@ import {
   Menu,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
-import CusTable, { custStyle } from 'components/CusTable/cusTable';
+import CusTable, { custStyle } from 'components/CusTable/CusTable';
 import { ArrowDown2, Edit2, Trash } from 'iconsax-react';
 import React, { useState } from 'react';
 
