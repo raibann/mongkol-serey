@@ -28,11 +28,13 @@ const InventoryCategory = lazy(() => import('pages/Inventories/Categories'));
 const InventoryReport = lazy(() => import('pages/Inventories/Reports'));
 const Departments = lazy(() => import('pages/Users/pages/Departments'));
 const NewDepartmentForm = lazy(
-  () => import('pages/Users/pages/Departments/newDepartment')
+  () => import('pages/Users/pages/Departments/NewDepartmentForm')
 );
 const MenuForm = lazy(() => import('pages/Menus/pages/MenuForm'));
-const NewUserForm = lazy(() => import('pages/Users/pages/newUser'));
-const NewSupplierForm = lazy(() => import('pages/Suppliers/pages/newSupplier'));
+const NewUserForm = lazy(() => import('pages/Users/pages/NewUserForm'));
+const NewSupplierForm = lazy(
+  () => import('pages/Suppliers/pages/NewSupplierForm')
+);
 const NewCustomerForm = lazy(() => import('pages/Customers/pages/newCustomer'));
 const NewPotentialForm = lazy(
   () => import('pages/Customers/pages/potential/newPotential')

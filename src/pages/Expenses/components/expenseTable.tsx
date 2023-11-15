@@ -1,149 +1,86 @@
 import {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
+  Chip,
   Stack,
-  Avatar,
+  TableCell,
+  TableRow,
   Typography,
   alpha,
-  SxProps,
-  Theme,
-  Chip,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
-import { Send2, Edit2, Trash, Location } from 'iconsax-react';
-import React from 'react';
+import CusTable, { custStyle } from 'components/CusTable/cusTable';
 import { HiDotsHorizontal } from 'react-icons/hi';
-import theme from 'theme/theme';
-import THEME_UTIL from 'utils/theme-util';
+
+const headers = [
+  'Invoice Id',
+  'Event',
+  'Paid',
+  'Due Amount',
+  'Total Expense',
+  'Total Income',
+  'Tolal Netincome',
+  'Status',
+  '',
+];
+
+const bodyRow = [
+  {
+    id: 1,
+    name: 'Hello',
+    event: 'Metaverse',
+    paid: 100,
+    dueAmount: 200,
+    tolalExpense: 100,
+    totalIncome: 100,
+    totalNetincome: 100,
+    status: 'Pending',
+  },
+];
 
 export default function ExpenseTable() {
   return (
     <>
-      <TableContainer>
-        <Table
-          sx={{
-            minWidth: '100%',
-            borderCollapse: 'separate',
-            borderSpacing: `0px 12px`,
-          }}
-        >
-          <TableHead>
-            <TableRow sx={custStyle.row}>
-              <TableCell sx={custStyle.cell}>Invoice Id</TableCell>
-              <TableCell align='left' sx={custStyle.cell}>
-                Event
+      <CusTable
+        headers={headers}
+        body={bodyRow.map((value) => {
+          return (
+            <TableRow sx={custStyle.bodyRow} key={value.id}>
+              <TableCell>{value.id}</TableCell>
+              <TableCell>
+                <Stack direction={'column'}>
+                  <Typography variant='body2'>{value.name}</Typography>
+                  <Typography variant='caption' noWrap color={'text.secondary'}>
+                    {value.event}
+                  </Typography>
+                </Stack>
               </TableCell>
-              <TableCell align='left' sx={custStyle.cell}>
-                Paid
-              </TableCell>
-              <TableCell align='left' sx={custStyle.cell}>
-                Due Amount
-              </TableCell>
-              <TableCell align='left' sx={custStyle.cell}>
-                Total Expense
-              </TableCell>
-              <TableCell align='left' sx={custStyle.cell}>
-                Total Income
-              </TableCell>
-              <TableCell align='left' sx={custStyle.cell}>
-                Total Netincome
-              </TableCell>
-              <TableCell align='left' sx={custStyle.cell}>
-                Status
-              </TableCell>
-              <TableCell align='right'></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Array(3)
-              .fill('')
-              .map((_, i) => (
-                <TableRow
-                  key={i}
+              <TableCell>{value.paid}</TableCell>
+              <TableCell>{value.dueAmount}</TableCell>
+              <TableCell>{value.tolalExpense}</TableCell>
+              <TableCell>{value.totalIncome}</TableCell>
+              <TableCell>{value.totalNetincome}</TableCell>
+              <TableCell>
+                <Chip
+                  label={value.status}
                   sx={{
-                    background: (theme) => theme.palette.common.white,
-                    '&> td:first-of-type': {
-                      borderTopLeftRadius: '10px',
-                      borderBottomLeftRadius: '10px',
-                    },
-                    '&> td:last-child': {
-                      borderTopRightRadius: '10px',
-                      borderBottomRightRadius: '10px',
-                    },
+                    background: (theme) => alpha(theme.palette.error.main, 0.2),
+                    color: (theme) => theme.palette.error.main,
+                  }}
+                />
+              </TableCell>
+              <TableCell>
+                <CusIconButton
+                  sx={{
+                    boxShadow: 0,
+                    color: (theme) => theme.palette.text.secondary,
                   }}
                 >
-                  <TableCell>{i + 1}</TableCell>
-                  <TableCell
-                    align='left'
-                    sx={{
-                      fontWeight: (theme) => theme.typography.fontWeightBold,
-                    }}
-                  >
-                    <Stack direction={'column'}>
-                      <Typography variant='body2'>Name</Typography>
-                      <Typography
-                        variant='caption'
-                        noWrap
-                        color={'text.secondary'}
-                      >
-                        Wedding
-                      </Typography>
-                    </Stack>
-                  </TableCell>
-                  <TableCell align='left'>012121212</TableCell>
-                  <TableCell align='left'>012121212</TableCell>
-                  <TableCell align='left'>012121212</TableCell>
-                  <TableCell align='left'>012121212</TableCell>
-                  <TableCell align='left'>012121212</TableCell>
-                  <TableCell align='left'>
-                    <Chip
-                      label='Pending'
-                      sx={{
-                        background: (theme) =>
-                          alpha(theme.palette.error.main, 0.2),
-                        color: (theme) => theme.palette.error.main,
-                      }}
-                    />
-                  </TableCell>
-
-                  <TableCell align='right'>
-                    <CusIconButton
-                      sx={{
-                        boxShadow: 0,
-                        color: (theme) => theme.palette.text.secondary,
-                      }}
-                    >
-                      <HiDotsHorizontal />
-                    </CusIconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  <HiDotsHorizontal />
+                </CusIconButton>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      />
     </>
   );
 }
-
-interface ITableStyle {
-  row?: SxProps<Theme>;
-  cell?: SxProps<Theme>;
-}
-
-const custStyle: ITableStyle = {
-  row: {
-    background: 'transparent',
-    '&> th': {
-      pt: 0,
-      borderBottom: 0,
-    },
-  },
-  cell: {
-    fontWeight: (theme) => theme.typography.fontWeightBold,
-    whiteSpace: 'nowrap',
-  },
-};
