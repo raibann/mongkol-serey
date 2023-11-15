@@ -78,16 +78,7 @@ const navigationUtil: Navigation = [
     toUrl: ROUTE_PATH.notification.root,
     icon: <Notification size='18' />,
     selectedIcon: <Notification size='18' variant='Bold' />,
-    children: [
-      {
-        title: 'Anniversaries',
-        toUrl: ROUTE_PATH.notification.anniversary,
-      },
-      {
-        title: 'Upcomings',
-        toUrl: ROUTE_PATH.notification.upcomings,
-      },
-    ],
+    children: [],
   },
   {
     title: 'Menus',

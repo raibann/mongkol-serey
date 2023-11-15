@@ -21,8 +21,6 @@ const Setting = lazy(() => import('pages/Setting'));
 const Quotation = lazy(() => import('pages/Orders/Quotations'));
 const Payments = lazy(() => import('pages/Orders/Payments'));
 const Potentials = lazy(() => import('pages/Customers/pages/potential'));
-const Anniversaries = lazy(() => import('pages/Notifications/Aniversaries'));
-const Upcomings = lazy(() => import('pages/Notifications/Upcomings'));
 const InventoryUnit = lazy(() => import('pages/Inventories/Units'));
 const InventoryCategory = lazy(() => import('pages/Inventories/Categories'));
 const InventoryReport = lazy(() => import('pages/Inventories/Reports'));
@@ -38,6 +36,9 @@ const NewSupplierForm = lazy(
 const NewCustomerForm = lazy(() => import('pages/Customers/pages/NewCustomer'));
 const NewPotentialForm = lazy(
   () => import('pages/Customers/pages/potential/NewPotentialForm')
+);
+const UpdateExpenseForm = lazy(
+  () => import('pages/Expenses/pages/UpdateExpenseForm')
 );
 
 export default function AllRoutes() {
@@ -96,6 +97,14 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        <Route
+          path={ROUTE_PATH.expenses.updateExpense}
+          element={
+            <Suspense>
+              <UpdateExpenseForm />
+            </Suspense>
+          }
+        />
         {/* Customers */}
         <Route
           path={ROUTE_PATH.customers.root}
@@ -139,22 +148,7 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
-        <Route
-          path={ROUTE_PATH.notification.anniversary}
-          element={
-            <Suspense>
-              <Anniversaries />
-            </Suspense>
-          }
-        />
-        <Route
-          path={ROUTE_PATH.notification.upcomings}
-          element={
-            <Suspense>
-              <Upcomings />
-            </Suspense>
-          }
-        />
+
         {/* Menus */}
         <Route
           path={ROUTE_PATH.menus.root}
