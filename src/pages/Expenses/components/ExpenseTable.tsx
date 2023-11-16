@@ -7,7 +7,7 @@ import {
   alpha,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
-import CusTable, { custStyle } from 'components/CusTable/cusTable';
+import CusTable, { custStyle } from 'components/CusTable';
 import { HiDotsHorizontal } from 'react-icons/hi';
 
 const headers = [

@@ -17,7 +17,7 @@ import { CusLoading } from 'components/CusLoading';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import { changeBackground } from 'utils/validate-util';
 import { LoadingButton } from '@mui/lab';
-import CustTable from './components/CustTable';
+import CustTable from './components/CustomerTable';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 

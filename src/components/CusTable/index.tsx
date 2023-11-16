@@ -31,7 +31,7 @@ export default function CusTable(props: ICusTable) {
       <TableContainer sx={{ ...props.sx?.container }}>
         <Table
           sx={{
-            minWidth: '100%',
+            width: '100%',
             borderCollapse: 'separate',
             borderSpacing: `0px 12px`,
             ...props.sx?.table,

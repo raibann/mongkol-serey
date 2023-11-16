@@ -7,7 +7,7 @@ import {
   alpha,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
-import CusTable, { custStyle } from 'components/CusTable/cusTable';
+import CusTable, { custStyle } from 'components/CusTable';
 import { Send2, Edit2, Trash, Location } from 'iconsax-react';
 import theme from 'theme/theme';
 import THEME_UTIL from 'utils/theme-util';
