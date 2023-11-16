@@ -1,35 +1,19 @@
 import {
-  Checkbox,
+  Avatar,
+  Box,
+  Button,
   Grid,
   Paper,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
+  Switch,
   Typography,
-  useTheme,
 } from '@mui/material';
-import { CusIconButton } from 'components/CusIconButton';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
-import { HiDotsVertical } from 'react-icons/hi';
-
-const headers = ['Supplier', 'Amount', 'Expense On', 'Status', ''];
-const data = [
-  {
-    id: 1,
-    supplier: 'Rabann',
-    amount: 100,
-    expenseOn: '12-Dec-23',
-    status: 'Pending',
-  },
-];
+import ExpensePreviewTable from '../components/ExpensePreviewTable';
+import LabelTextField from 'components/LabelTextField';
+import UploadButton from 'components/UploadButton';
 
 export default function UpdateExpenseForm() {
-  const theme = useTheme();
   return (
     <>
       <SecondaryPageHeader title='Update Expense' />
@@ -40,102 +24,84 @@ export default function UpdateExpenseForm() {
           p: 2,
         }}
       >
-        <Grid container>
-          <Grid item xs={12} sm={8}>
-            a
+        <Grid container sx={{ pb: 2 }}>
+          <Grid item xs={12} sm={7}>
+            <Stack direction={'column'} spacing={2}>
+              <Stack direction={'row'} spacing={2}>
+                <LabelTextField label='Category' size='small' />
+                <LabelTextField label='Product' size='small' />
+              </Stack>
+              <Stack direction={'row'} spacing={2}>
+                <LabelTextField label='Supplier' size='small' />
+                <LabelTextField label='Payment Methods' size='small' />
+              </Stack>
+              <Stack direction={'row'} spacing={2}>
+                <LabelTextField label='Unit' size='small' />
+                <Box sx={{ width: '100%', position: 'relative' }}>
+                  <LabelTextField label='Total' size='small' />
+                  <Stack
+                    direction={'row'}
+                    spacing={0.5}
+                    sx={{ position: 'absolute', right: 0, top: 0 }}
+                  >
+                    <Typography variant='subtitle2' color={'text.secondary'}>
+                      Paid
+                    </Typography>
+                    <Switch defaultChecked size='small' />
+                  </Stack>
+                </Box>
+              </Stack>
+              <Stack direction={'row'} spacing={2}>
+                <LabelTextField label='Date' size='small' />
+                <LabelTextField label='Remark' size='small' />
+              </Stack>
+              <Stack
+                direction={'row'}
+                justifyContent={'space-between'}
+                spacing={2}
+                py={2}
+              >
+                <Button variant='outlined' fullWidth>
+                  Reset
+                </Button>
+                <Button variant='contained' fullWidth>
+                  Create
+                </Button>
+              </Stack>
+            </Stack>
           </Grid>
-          <Grid item xs sm={4}>
-            a
+          <Grid item xs sm={5} sx={{ pl: 2, py: 2 }}>
+            <Stack direction={'row'} spacing={2}>
+              <UploadButton />
+            </Stack>
+            <Typography
+              variant='body1'
+              color={'text.primary'}
+              fontWeight={'bold'}
+            >
+              Payment Images
+            </Typography>
+            <Stack
+              direction={'row'}
+              spacing={2}
+              py={2}
+              sx={{ overflow: 'auto' }}
+            >
+              {Array(5)
+                .fill('')
+                .map((_, i) => {
+                  return (
+                    <Avatar
+                      key={i}
+                      variant='rounded'
+                      sx={{ height: 120, width: 120 }}
+                    />
+                  );
+                })}
+            </Stack>
           </Grid>
         </Grid>
-        <TableContainer>
-          <Table
-            sx={{
-              minWidth: '100%',
-            }}
-          >
-            <TableHead>
-              <TableRow
-                sx={{
-                  '&>.css-emzb0t-MuiTableCell-root': {
-                    borderBottom: `1px solid ${theme.palette.divider}`,
-                    borderTop: `1px solid ${theme.palette.divider}`,
-                  },
-                  '&>.css-emzb0t-MuiTableCell-root:first-of-type': {
-                    borderLeft: `1px solid ${theme.palette.divider}`,
-                  },
-                  '&>.css-emzb0t-MuiTableCell-root:last-child': {
-                    borderRight: `1px solid ${theme.palette.divider}`,
-                  },
-                }}
-              >
-                <TableCell>
-                  <Stack direction={'row'} alignItems={'center'} spacing={1}>
-                    <Checkbox defaultChecked />
-                    <Typography variant='subtitle2'>Id</Typography>
-                  </Stack>
-                </TableCell>
-                {headers.map((h, i) => {
-                  return <TableCell key={i}>{h}</TableCell>;
-                })}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map((d, i) => {
-                return (
-                  <TableRow
-                    key={d.id}
-                    sx={{
-                      '&>.css-82xwdw-MuiTableCell-root': {
-                        borderBottom: `1px solid ${theme.palette.divider}`,
-                        borderTop: `1px solid ${theme.palette.divider}`,
-                      },
-                      '&>.css-82xwdw-MuiTableCell-root:first-of-type': {
-                        borderLeft: `1px solid ${theme.palette.divider}`,
-                      },
-                      '&>.css-82xwdw-MuiTableCell-root:last-child': {
-                        borderRight: `1px solid ${theme.palette.divider}`,
-                      },
-                    }}
-                  >
-                    <TableCell>
-                      <Stack
-                        direction={'row'}
-                        alignItems={'center'}
-                        spacing={1}
-                      >
-                        <Checkbox defaultChecked />
-                        <Typography variant='subtitle2'>{d.id}</Typography>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>{d.supplier}</TableCell>
-                    <TableCell>{d.amount}</TableCell>
-                    <TableCell>{d.expenseOn}</TableCell>
-                    <TableCell>{d.status}</TableCell>
-                    <TableCell align='right'>
-                      <CusIconButton
-                        sx={{
-                          boxShadow: 0,
-                          color: (theme) => theme.palette.text.secondary,
-                        }}
-                      >
-                        <HiDotsVertical />
-                      </CusIconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-          <TablePagination
-            component='div'
-            count={100}
-            page={1}
-            onPageChange={() => {}}
-            rowsPerPage={10}
-            onRowsPerPageChange={() => {}}
-          />
-        </TableContainer>
+        <ExpensePreviewTable />
       </Paper>
     </>
   );

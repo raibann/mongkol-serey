@@ -9,6 +9,8 @@ import {
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable, { custStyle } from 'components/CusTable';
 import { HiDotsHorizontal } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
 
 const headers = [
   'Invoice Id',
@@ -37,6 +39,8 @@ const bodyRow = [
 ];
 
 export default function ExpenseTable() {
+  /* Hooks */
+  const navigate = useNavigate();
   return (
     <>
       <CusTable
@@ -69,6 +73,9 @@ export default function ExpenseTable() {
               </TableCell>
               <TableCell>
                 <CusIconButton
+                  onClick={() =>
+                    navigate(ROUTE_PATH.expenses.updateExpense + 1)
+                  }
                   sx={{
                     boxShadow: 0,
                     color: (theme) => theme.palette.text.secondary,
