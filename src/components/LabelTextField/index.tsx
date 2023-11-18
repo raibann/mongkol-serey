@@ -7,10 +7,12 @@ const LabelTextField = ({
   label,
   children,
   fieldState,
+  menutItems,
   ...rest
 }: {
   label: string;
   children?: React.ReactNode;
+  menutItems?: React.ReactNode[];
   fieldState?: ControllerFieldState;
 } & TextFieldProps) => {
   return (
@@ -19,6 +21,7 @@ const LabelTextField = ({
       {children ?? (
         <CusTextField
           {...rest}
+          children={menutItems}
           error={Boolean(fieldState?.error)}
           helperText={fieldState?.error?.message}
         />
