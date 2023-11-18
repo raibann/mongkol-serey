@@ -1,18 +1,44 @@
-import { alpha, Box, Container, Stack, Typography } from '@mui/material';
-import { CusLoading } from 'components/CusLoading';
-import PageHeader from 'components/PageHeader';
+import { Paper, Stack, Tab, Tabs } from '@mui/material';
 import { useReminderContext } from 'context/ReminderContext';
-import { BoxRemove } from 'iconsax-react';
-import theme from 'theme/theme';
+import { useState } from 'react';
 import EventToday from './EventCard/Today';
 import UpcomingEvent from './EventCard/Upcoming';
 
 export default function Reminder() {
+  /* Context */
   const { reminderList, reminderLoading } = useReminderContext();
+
+  /* State */
+  const [tabValue, setTabValue] = useState(0);
+
+  /* Methods */
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
   return (
     <>
-      <PageHeader pageTitle='Reminder' />
-      {reminderLoading ? (
+      <Stack p={3} spacing={3}>
+        <Tabs
+          value={tabValue}
+          onChange={handleChangeTab}
+          TabIndicatorProps={{ sx: { height: 5 } }}
+        >
+          <Tab
+            label='Upcoming Event'
+            sx={{ fontWeight: 600, fontSize: 18, textTransform: 'capitalize' }}
+          />
+          <Tab
+            label='Anniversary Event'
+            sx={{ fontWeight: 600, fontSize: 18, textTransform: 'capitalize' }}
+          />
+        </Tabs>
+
+        <Paper component={Stack} alignItems='center' p={2}>
+          {tabValue === 0 && <EventToday listItem={reminderList} />}
+          {tabValue === 1 && <UpcomingEvent listItem={reminderList} />}
+        </Paper>
+      </Stack>
+      {/* {reminderLoading ? (
         <Stack
           justifyContent={'center'}
           alignItems='center'
@@ -60,7 +86,7 @@ export default function Reminder() {
           <EventToday listItem={reminderList} />
           <UpcomingEvent listItem={reminderList} />
         </Container>
-      )}
+      )} */}
     </>
   );
 }
