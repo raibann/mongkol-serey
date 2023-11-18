@@ -52,6 +52,7 @@ export const ROUTE_PATH = {
     units: '/inventories/units',
     categories: '/inventories/categories',
     addInventory: '/inventories/add-new-inventory',
+    editInventory: '/inventories/edit-inventory/:id',
     inventoryReport: '/inventories/reports',
     createNewProduct: '/inventories/create-new-product',
     updateProduct: '/inventories/update-product/:id',

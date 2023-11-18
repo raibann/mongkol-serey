@@ -41,6 +41,9 @@ const NewCustomerForm = lazy(() => import('pages/Customers/pages/NewCustomer'));
 const NewPotentialForm = lazy(
   () => import('pages/Customers/pages/potential/NewPotentialForm')
 );
+const InventoryForm = lazy(
+  () => import('pages/Inventories/pages/InventoryForm')
+);
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -197,6 +200,22 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Inventories />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.inventories.addInventory}
+          element={
+            <Suspense>
+              <InventoryForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.inventories.editInventory}
+          element={
+            <Suspense>
+              <InventoryForm />
             </Suspense>
           }
         />

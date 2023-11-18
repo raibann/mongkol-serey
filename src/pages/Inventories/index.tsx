@@ -2,7 +2,6 @@ import {
   Button,
   Chip,
   Grid,
-  IconButton,
   InputAdornment,
   MenuItem,
   Paper,
@@ -22,10 +21,13 @@ import useResponsive from 'hook/useResponsive';
 import { Add, Box, Convert3DCube, SearchNormal1 } from 'iconsax-react';
 import { useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
 
 const Stocks = () => {
   // Hooks
   const { isMdDown } = useResponsive();
+  const navigate = useNavigate();
   const theme = useTheme();
 
   // States
@@ -47,6 +49,7 @@ const Stocks = () => {
           }}
         />
         <Button
+          onClick={() => navigate(ROUTE_PATH.inventories.addInventory)}
           variant='contained'
           size='small'
           disableElevation
