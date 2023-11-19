@@ -40,6 +40,7 @@ const DrawerContent = () => {
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
+  console.log(collapseMenu);
   return (
     <>
       <Avatar
@@ -76,12 +77,9 @@ const DrawerContent = () => {
                 secondaryAction={
                   !collapse &&
                   nav.children.length > 0 &&
-                  (location.pathname.includes(nav.toUrl) ? (
+                  (collapseMenu && location.pathname.includes(nav.toUrl) ? (
                     <CusIconButton
                       sx={{ boxShadow: 0, background: 'transparent' }}
-                      onClick={() => {
-                        setCollapseMenu(!collapseMenu);
-                      }}
                     >
                       <ArrowDown2
                         size='16'
@@ -113,9 +111,10 @@ const DrawerContent = () => {
                     navigate(`${nav.toUrl}`);
                     openDrawer && setOpenDrawer(false);
                     handlePopoverOpen(e);
+                    setCollapseMenu(!collapseMenu);
                   }}
                 >
-                  {location.pathname === nav.toUrl && (
+                  {location.pathname.includes(nav.toUrl) && (
                     <Box
                       sx={{
                         position: 'absolute',
@@ -250,66 +249,62 @@ const DrawerContent = () => {
                   </Popper>
                 )}
 
-              {!collapse &&
-                nav.children.length > 0 &&
-                location.pathname.includes(nav.toUrl) &&
-                collapseMenu && (
-                  <Collapse
-                    in={location.pathname.includes(nav.toUrl)}
-                    timeout='auto'
-                    unmountOnExit
-                  >
-                    <List component='div' disablePadding>
-                      {nav.children.map((child, index) => {
-                        return (
-                          <ListItem key={index} sx={{ py: 0 }}>
-                            <ListItemButton
-                              sx={{
-                                pl: 4,
-                                background: location.pathname.includes(
-                                  child.toUrl
-                                )
+              {!collapse && nav.children.length > 0 && collapseMenu && (
+                <Collapse
+                  in={location.pathname.includes(nav.toUrl)}
+                  timeout='auto'
+                  unmountOnExit
+                >
+                  <List component='div' disablePadding>
+                    {nav.children.map((child, index) => {
+                      return (
+                        <ListItem key={index} sx={{ py: 0 }}>
+                          <ListItemButton
+                            sx={{
+                              pl: 4,
+                              background:
+                                location.pathname === child.toUrl
                                   ? alpha(theme.palette.primary.main, 0.1)
                                   : theme.palette.common.white,
-                                borderRadius: 2.5,
-                              }}
-                              onClick={() => {
-                                navigate(`${child.toUrl}`);
-                                openDrawer && setOpenDrawer(false);
-                              }}
-                            >
-                              <ListItemIcon sx={{ pl: 2 }}>
-                                <Component
-                                  size='12'
-                                  variant='Bold'
-                                  color={
-                                    location.pathname.includes(child.toUrl)
-                                      ? theme.palette.primary.main
-                                      : theme.palette.secondary.main
-                                  }
-                                />
-                              </ListItemIcon>
-                              <ListItemText
-                                primary={child.title}
-                                primaryTypographyProps={{
-                                  color: location.pathname.includes(child.toUrl)
+                              borderRadius: 2.5,
+                            }}
+                            onClick={() => {
+                              navigate(`${child.toUrl}`);
+                              openDrawer && setOpenDrawer(false);
+                            }}
+                          >
+                            <ListItemIcon sx={{ pl: 2 }}>
+                              <Component
+                                size='12'
+                                variant='Bold'
+                                color={
+                                  location.pathname === child.toUrl
+                                    ? theme.palette.primary.main
+                                    : theme.palette.secondary.main
+                                }
+                              />
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={child.title}
+                              primaryTypographyProps={{
+                                color:
+                                  location.pathname === child.toUrl
                                     ? theme.palette.primary.main
                                     : theme.palette.secondary.main,
-                                  fontWeight: location.pathname.includes(
-                                    child.toUrl
-                                  )
+                                fontWeight:
+                                  location.pathname === child.toUrl
                                     ? 'bold'
                                     : 'medium',
-                                  fontSize: 14,
-                                }}
-                              />
-                            </ListItemButton>
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </Collapse>
-                )}
+                                fontSize: 14,
+                              }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                </Collapse>
+              )}
             </React.Fragment>
           );
         })}

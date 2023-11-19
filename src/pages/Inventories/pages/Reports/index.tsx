@@ -14,7 +14,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
-import CusTable from 'components/CusTable/CusTable';
+import CusTable from 'components/CusTable';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
