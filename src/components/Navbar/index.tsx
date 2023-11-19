@@ -5,10 +5,10 @@ import useResponsive from 'hook/useResponsive';
 import { HiMenuAlt4 } from 'react-icons/hi';
 
 export default function Navbar() {
+  /* Context */
   const { collapse, setCollapse, setOpenDrawer, openDrawer } =
     useDrawerContext();
   const { isMdDown } = useResponsive();
-
   return (
     <AppBar
       position='sticky'
