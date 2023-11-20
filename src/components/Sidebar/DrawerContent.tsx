@@ -45,7 +45,6 @@ const DrawerContent = () => {
     setAnchorEl(null);
   };
 
-  console.log(collapseMenu);
   return (
     <>
       <Avatar
