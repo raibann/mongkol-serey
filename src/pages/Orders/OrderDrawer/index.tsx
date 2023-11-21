@@ -17,7 +17,6 @@ import {
   SubmitHandler,
   useForm,
 } from 'react-hook-form';
-import { CustomerInput } from 'pages/Customers/CustForm/CustomerForm';
 import { BsPlus } from 'react-icons/bs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { useEffect, useRef, useState } from 'react';
@@ -152,16 +151,14 @@ const OrderDrawer = ({
   });
 
   // react-hooks-form
-  const methods = useForm<IOrderForm & CustomerInput & FinalInvoiceInput>();
+  const methods = useForm<IOrderForm & FinalInvoiceInput>();
   const { setValue, handleSubmit, getValues } = methods;
 
   // Variables
   let orderItemId = 0;
   const selectCustomerWidth = useRef(0);
 
-  const onSubmit: SubmitHandler<
-    IOrderForm & CustomerInput & FinalInvoiceInput
-  > = (data) => {
+  const onSubmit: SubmitHandler<IOrderForm & FinalInvoiceInput> = (data) => {
     orderActionReq.run(
       {
         id: data.orderId || undefined,

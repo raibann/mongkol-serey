@@ -35,7 +35,9 @@ const NewUserForm = lazy(() => import('pages/Users/pages/NewUserForm'));
 const NewSupplierForm = lazy(
   () => import('pages/Suppliers/pages/NewSupplierForm')
 );
-const NewCustomerForm = lazy(() => import('pages/Customers/pages/NewCustomer'));
+const NewCustomerForm = lazy(
+  () => import('pages/Customers/pages/NewCustomerForm')
+);
 const NewPotentialForm = lazy(
   () => import('pages/Customers/pages/potential/NewPotentialForm')
 );
