@@ -1,9 +1,29 @@
+import { LoadingButton } from '@mui/lab';
 import { Paper, Container, Stack, MenuItem, Button } from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
+import { Controller, useForm } from 'react-hook-form';
+
+interface INewPotentialInput {
+  id?: string | number;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  gender: string;
+  social: string;
+  socialType: string;
+  note: string;
+}
 
 export default function NewPotential() {
+  /* Hooks */
+  const { control, handleSubmit } = useForm<INewPotentialInput>();
+
+  /* Methods */
+  const onSubmit = (data: INewPotentialInput) => {
+    console.log(data);
+  };
   return (
     <>
       <SecondaryPageHeader title='Create New Potential' />
@@ -14,50 +34,135 @@ export default function NewPotential() {
           p: 2,
         }}
       >
-        <Container maxWidth='sm'>
+        <Container
+          maxWidth='sm'
+          component={'form'}
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <Stack direction={'column'} spacing={2}>
             <Stack direction={'row'} spacing={2}>
-              <LabelTextField label='First Name' size='small' />
-              <LabelTextField label='Last Name' size='small' />
+              <Controller
+                defaultValue=''
+                control={control}
+                name='firstName'
+                render={({ field, fieldState }) => {
+                  return (
+                    <LabelTextField
+                      label='Frist Name'
+                      size='small'
+                      fieldState={fieldState}
+                      {...field}
+                    />
+                  );
+                }}
+              />
+              <Controller
+                defaultValue=''
+                control={control}
+                name='lastName'
+                render={({ field, fieldState }) => {
+                  return (
+                    <LabelTextField
+                      label='Last Name'
+                      size='small'
+                      fieldState={fieldState}
+                      {...field}
+                    />
+                  );
+                }}
+              />
             </Stack>
             <Stack direction={'row'} spacing={2}>
-              <LabelTextField label='Phone Number' size='small' />
-              <LabelTextField
-                label='Gender'
-                size='small'
-                select
-                defaultValue={''}
-              ></LabelTextField>
+              <Controller
+                defaultValue=''
+                control={control}
+                name='phoneNumber'
+                render={({ field, fieldState }) => {
+                  return (
+                    <LabelTextField
+                      label='Phone Number'
+                      size='small'
+                      fieldState={fieldState}
+                      {...field}
+                    />
+                  );
+                }}
+              />
+              <Controller
+                defaultValue=''
+                control={control}
+                name='gender'
+                render={({ field, fieldState }) => {
+                  return (
+                    <LabelTextField label='Gender' fieldState={fieldState}>
+                      <CusTextField
+                        select
+                        defaultValue={'Male'}
+                        SelectProps={{
+                          displayEmpty: true,
+                        }}
+                        size='small'
+                        {...field}
+                      >
+                        <MenuItem value='Male'>Male</MenuItem>
+                        <MenuItem value='Female'>Female</MenuItem>
+                      </CusTextField>
+                    </LabelTextField>
+                  );
+                }}
+              />
             </Stack>
             <Stack direction={'row'}>
               <LabelTextField label='Social Media' size='small'>
                 <Stack direction={'row'} spacing={1}>
-                  <CusTextField
-                    select
-                    defaultValue={''}
-                    SelectProps={{
-                      displayEmpty: true,
+                  <Controller
+                    defaultValue='TG'
+                    control={control}
+                    name='socialType'
+                    render={({ field }) => {
+                      return (
+                        <CusTextField
+                          select
+                          defaultValue={''}
+                          SelectProps={{
+                            displayEmpty: true,
+                          }}
+                          size='small'
+                          sx={{ width: '40%' }}
+                          {...field}
+                        >
+                          <MenuItem value='FB'>Facebook</MenuItem>
+                          <MenuItem value='TG'>Telegram</MenuItem>
+                        </CusTextField>
+                      );
                     }}
-                    size='small'
-                    sx={{ width: '40%' }}
-                  >
-                    <MenuItem value=''>FB</MenuItem>
-                    <MenuItem value='TG'>TG</MenuItem>
-                  </CusTextField>
-                  <CusTextField
-                    defaultValue={''}
-                    SelectProps={{
-                      displayEmpty: true,
+                  />
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='social'
+                    render={({ field }) => {
+                      return <CusTextField fullWidth size='small' {...field} />;
                     }}
-                    fullWidth
-                    size='small'
-                  >
-                    <MenuItem value=''>FB</MenuItem>
-                  </CusTextField>
+                  />
                 </Stack>
               </LabelTextField>
             </Stack>
-            <LabelTextField label='Note...' size='small' multiline rows={5} />
+            <Controller
+              defaultValue=''
+              control={control}
+              name='note'
+              render={({ field, fieldState }) => {
+                return (
+                  <LabelTextField
+                    label='Note...'
+                    size='small'
+                    fieldState={fieldState}
+                    {...field}
+                  />
+                );
+              }}
+            />
             <Stack
               direction={'row'}
               justifyContent={'space-between'}
@@ -67,9 +172,14 @@ export default function NewPotential() {
               <Button variant='outlined' fullWidth>
                 Reset
               </Button>
-              <Button variant='contained' fullWidth>
-                Create
-              </Button>
+              <LoadingButton
+                loading={false}
+                type='submit'
+                variant='contained'
+                fullWidth
+              >
+                Save
+              </LoadingButton>
             </Stack>
           </Stack>
         </Container>

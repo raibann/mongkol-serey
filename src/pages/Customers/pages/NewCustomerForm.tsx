@@ -256,7 +256,7 @@ export default function NewCustomerForm() {
                   <Controller
                     defaultValue=''
                     control={control}
-                    name='district'
+                    name='social'
                     render={({ field }) => {
                       return <CusTextField fullWidth size='small' {...field} />;
                     }}
