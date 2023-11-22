@@ -139,20 +139,20 @@ const DashboardHeader = ({
     <>
       <PageHeader
         pageTitle='Dashboard'
-        endComponent={
-          <>
-            <ReactToPrint
-              pageStyle={pageStyle}
-              documentTitle={'All Reports'}
-              trigger={() => (
-                <CusIconButton color='primary' sx={{ height: 40 }}>
-                  <Printer size='24' variant='Outline' />
-                </CusIconButton>
-              )}
-              content={() => compToPrint.current}
-            />
-          </>
-        }
+        // endComponent={
+        //   <>
+        //     <ReactToPrint
+        //       pageStyle={pageStyle}
+        //       documentTitle={'All Reports'}
+        //       trigger={() => (
+        //         <CusIconButton color='primary' sx={{ height: 40 }}>
+        //           <Printer size='24' variant='Outline' />
+        //         </CusIconButton>
+        //       )}
+        //       content={() => compToPrint.current}
+        //     />
+        //   </>
+        // }
       >
         <Stack
           direction={'row'}

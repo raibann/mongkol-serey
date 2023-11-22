@@ -38,6 +38,9 @@ export const ROUTE_PATH = {
   },
   menus: {
     root: '/menus',
+    food: '/menus/food-menus',
+    createFood: '/menus/create-food-menus',
+    updateFood: '/menus/update-food-menus/:id',
     createMenuPackage: '/menus/create-new-package',
     updateMenuPackage: '/menus/update-package/:id',
   },

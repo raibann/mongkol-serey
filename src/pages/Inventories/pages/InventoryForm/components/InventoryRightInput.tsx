@@ -4,12 +4,18 @@ import { Camera } from 'iconsax-react';
 const InventoryRightInput = () => {
   return (
     <>
-      <Stack width='100%' alignItems='center' spacing={1}>
+      <Stack
+        width='100%'
+        alignItems='center'
+        maxWidth='sm'
+        alignSelf='center'
+        spacing={2}
+      >
         <Button
           component='label'
           sx={{
-            p: 1.5,
-            border: 'dashed 1px',
+            p: 0,
+            border: 'solid 1px',
             borderColor: 'divider',
             bgcolor: 'transparent',
             width: '100%',

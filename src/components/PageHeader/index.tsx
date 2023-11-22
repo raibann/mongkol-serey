@@ -8,7 +8,6 @@ const PageHeader = ({
   pageTitle,
 }: {
   children?: React.ReactNode;
-  endComponent?: React.ReactNode;
   pageTitle: string;
 }) => {
   const { isSmDown } = useResponsive();

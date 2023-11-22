@@ -17,13 +17,21 @@ const InventoryLeftInput = () => {
   const pricingFields = useFieldArray<InventoryInput>({ name: 'pricing' });
 
   return (
-    <Grid container maxWidth={800} width='100%' spacing={2}>
+    <Grid
+      container
+      maxWidth='sm'
+      width='100%'
+      spacing={2}
+      alignSelf='center'
+      minHeight={700}
+    >
       <Grid item xs={6}>
         <Controller
           control={control}
           name='category'
           render={({ field, fieldState }) => (
             <LabelTextField
+              size='small'
               label='Category'
               fieldState={fieldState}
               {...field}
@@ -37,6 +45,7 @@ const InventoryLeftInput = () => {
           name='productName'
           render={({ field, fieldState }) => (
             <LabelTextField
+              size='small'
               label='Product Name'
               fieldState={fieldState}
               {...field}
@@ -50,6 +59,7 @@ const InventoryLeftInput = () => {
           name='supplier'
           render={({ field, fieldState }) => (
             <LabelTextField
+              size='small'
               label='Supplier'
               fieldState={fieldState}
               {...field}
@@ -63,6 +73,7 @@ const InventoryLeftInput = () => {
           name='paymentMethod'
           render={({ field, fieldState }) => (
             <LabelTextField
+              size='small'
               label='Payment method'
               fieldState={fieldState}
               {...field}
@@ -98,6 +109,7 @@ const InventoryLeftInput = () => {
           name='quantity'
           render={({ field, fieldState }) => (
             <LabelTextField
+              size='small'
               type='number'
               label='Quantity in stock'
               fieldState={fieldState}
@@ -112,6 +124,7 @@ const InventoryLeftInput = () => {
           name='unit'
           render={({ field, fieldState }) => (
             <LabelTextField
+              size='small'
               select
               label='Unit'
               fieldState={fieldState}
@@ -130,6 +143,7 @@ const InventoryLeftInput = () => {
           name='cost'
           render={({ field, fieldState }) => (
             <LabelTextField
+              size='small'
               type='number'
               label='Cost'
               fieldState={fieldState}
@@ -144,6 +158,7 @@ const InventoryLeftInput = () => {
           name='currency'
           render={({ field, fieldState }) => (
             <LabelTextField
+              size='small'
               select
               label='Currency'
               fieldState={fieldState}
@@ -183,6 +198,7 @@ const InventoryLeftInput = () => {
               name={`pricing.${i}.unit`}
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   select
                   label='Unit'
                   fieldState={fieldState}
@@ -201,6 +217,7 @@ const InventoryLeftInput = () => {
               name={`pricing.${i}.qty`}
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Quantity'
                   fieldState={fieldState}
                   {...field}
@@ -214,6 +231,7 @@ const InventoryLeftInput = () => {
               name={`pricing.${i}.cost`}
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Cost'
                   fieldState={fieldState}
                   {...field}
@@ -227,6 +245,7 @@ const InventoryLeftInput = () => {
               name={`pricing.${i}.currency`}
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   select
                   label='Currency'
                   fieldState={fieldState}

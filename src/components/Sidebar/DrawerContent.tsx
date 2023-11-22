@@ -314,6 +314,7 @@ const DrawerContent = () => {
           );
         })}
 
+        {/* Logout Button */}
         <ListItem sx={{ py: 0.5 }}>
           <ListItemButton
             sx={{

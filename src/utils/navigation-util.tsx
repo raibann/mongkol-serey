@@ -85,7 +85,12 @@ const navigationUtil: Navigation = [
     toUrl: ROUTE_PATH.menus.root,
     icon: <Category size='18' />,
     selectedIcon: <Category size='18' variant='Bold' />,
-    children: [],
+    children: [
+      {
+        title: 'Food Menu',
+        toUrl: ROUTE_PATH.menus.food,
+      },
+    ],
   },
   {
     title: 'Prepare Grocery',

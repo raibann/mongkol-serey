@@ -6,10 +6,10 @@ import {
   TableCell,
   alpha,
   useTheme,
+  Container,
 } from '@mui/material';
 import { useResponsive } from 'ahooks';
 import { CusIconButton } from 'components/CusIconButton';
-import CusTable from 'components/CusTable/CusTable';
 import CusTextField from 'components/CusTextField';
 import Dialog, { IDialogRef } from 'components/Dialog';
 import PageHeader from 'components/PageHeader';
@@ -17,6 +17,7 @@ import { SearchNormal1, Add, Edit2, Trash } from 'iconsax-react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CategoryForm from './components/CategoryForm';
+import CusTable from 'components/CusTable';
 
 export default function InventoryCategory() {
   // Hooks
@@ -64,66 +65,65 @@ export default function InventoryCategory() {
         </Button>
       </PageHeader>
 
-      <CusTable
-        sx={{
-          container: {
-            p: 3,
-          },
-        }}
-        headers={['No.', 'Name', 'Description', '']}
-        body={
-          <TableRow
-            sx={{
-              background: (theme) => theme.palette.common.white,
-              '&> td:first-of-type': {
-                borderTopLeftRadius: '10px',
-                borderBottomLeftRadius: '10px',
-              },
-              '&> td:last-child': {
-                borderTopRightRadius: '10px',
-                borderBottomRightRadius: '10px',
-              },
-            }}
-          >
-            <TableCell>1</TableCell>
-            <TableCell>ប្រភេទសាច់</TableCell>
-            <TableCell>សាច់ថ្ពាល់អូន</TableCell>
-            <TableCell align='right'>
-              <Stack
-                spacing={2}
-                direction='row'
-                alignItems='center'
-                justifyContent='end'
-              >
-                <CusIconButton
-                  sx={{
-                    boxShadow: 0,
-                    background: (theme) => alpha(theme.palette.info.main, 0.1),
-                  }}
+      <Container maxWidth='xl'>
+        <CusTable
+          headers={['No.', 'Name', 'Description', '']}
+          body={
+            <TableRow
+              sx={{
+                background: (theme) => theme.palette.common.white,
+                '&> td:first-of-type': {
+                  borderTopLeftRadius: '10px',
+                  borderBottomLeftRadius: '10px',
+                },
+                '&> td:last-child': {
+                  borderTopRightRadius: '10px',
+                  borderBottomRightRadius: '10px',
+                },
+              }}
+            >
+              <TableCell>1</TableCell>
+              <TableCell>ប្រភេទសាច់</TableCell>
+              <TableCell>សាច់ថ្ពាល់អូន</TableCell>
+              <TableCell align='right'>
+                <Stack
+                  spacing={2}
+                  direction='row'
+                  alignItems='center'
+                  justifyContent='end'
                 >
-                  <Edit2
-                    size='20'
-                    color={theme.palette.info.main}
-                    variant='Bold'
-                  />
-                </CusIconButton>
-                <CusIconButton
-                  sx={{
-                    boxShadow: 0,
-                    background: (theme) => alpha(theme.palette.error.main, 0.1),
-                  }}
-                >
-                  <Trash
-                    size='20'
-                    color={theme.palette.error.main}
-                    variant='Bold'
-                  />
-                </CusIconButton>
-              </Stack>
-            </TableCell>
-          </TableRow>
-        }
-      />
+                  <CusIconButton
+                    sx={{
+                      boxShadow: 0,
+                      background: (theme) =>
+                        alpha(theme.palette.info.main, 0.1),
+                    }}
+                  >
+                    <Edit2
+                      size='20'
+                      color={theme.palette.info.main}
+                      variant='Bold'
+                    />
+                  </CusIconButton>
+                  <CusIconButton
+                    sx={{
+                      boxShadow: 0,
+                      background: (theme) =>
+                        alpha(theme.palette.error.main, 0.1),
+                    }}
+                  >
+                    <Trash
+                      size='20'
+                      color={theme.palette.error.main}
+                      variant='Bold'
+                    />
+                  </CusIconButton>
+                </Stack>
+              </TableCell>
+            </TableRow>
+          }
+        />
+      </Container>
     </>
   );
 }

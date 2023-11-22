@@ -1,4 +1,4 @@
-import { Button, Grid, InputAdornment } from '@mui/material';
+import { Button, Container, Grid, InputAdornment } from '@mui/material';
 import PageHeader from 'components/PageHeader';
 import MenuCard from './components/MenuCard';
 import CusTextField from 'components/CusTextField';
@@ -38,15 +38,17 @@ export default function Menus() {
         </Button>
       </PageHeader>
 
-      <Grid container p={3} pt={0} spacing={3}>
-        {Array(12)
-          .fill(null)
-          .map((_, i) => (
-            <Grid key={i} item xs={3}>
-              <MenuCard />
-            </Grid>
-          ))}
-      </Grid>
+      <Container maxWidth='xl'>
+        <Grid container spacing={3}>
+          {Array(12)
+            .fill(null)
+            .map((_, i) => (
+              <Grid key={i} item xs={3}>
+                <MenuCard />
+              </Grid>
+            ))}
+        </Grid>
+      </Container>
     </>
   );
 }
