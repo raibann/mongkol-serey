@@ -74,7 +74,9 @@ export default function ExpenseTable() {
               <TableCell>
                 <CusIconButton
                   onClick={() =>
-                    navigate(ROUTE_PATH.expenses.updateExpense + 1)
+                    navigate(
+                      ROUTE_PATH.expenses.updateExpense.replace(':id', '1')
+                    )
                   }
                   sx={{
                     boxShadow: 0,
