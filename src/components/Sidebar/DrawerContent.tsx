@@ -115,7 +115,7 @@ const DrawerContent = () => {
                     navigate(`${nav.toUrl}`);
                     openDrawer && setOpenDrawer(false);
                     handlePopoverOpen(e);
-                    setCollapseMenu(!location.pathname.includes(nav.toUrl));
+                    setCollapseMenu(!collapseMenu);
                   }}
                 >
                   {location.pathname.includes(nav.toUrl) && (

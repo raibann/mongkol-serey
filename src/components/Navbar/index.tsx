@@ -58,7 +58,6 @@ export default function Navbar() {
           </LinkRouter>
           {pathnames.map((value, index) => {
             const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-            console.log(to);
             return (
               <LinkRouter
                 underline='hover'
