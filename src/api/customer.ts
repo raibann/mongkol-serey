@@ -6,10 +6,12 @@ const CUSTOMER_API = {
     page,
     search,
     size,
+    type,
   }: {
     page?: number;
     size?: number;
     search?: string;
+    type: string;
   }) => {
     const res: ICustomer.ICustomerRespone = await HttpUtil.get(
       ROUTE_API.customersList,
@@ -18,6 +20,7 @@ const CUSTOMER_API = {
           page: page,
           size: size || 12,
           search: search,
+          customerType: type,
         },
       }
     );

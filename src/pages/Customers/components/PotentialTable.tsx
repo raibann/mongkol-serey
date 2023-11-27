@@ -1,20 +1,21 @@
 import { Avatar, Container, Grid, Stack, Typography } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
-import { Send2 } from 'iconsax-react';
+import { Facebook, Send2 } from 'iconsax-react';
 import { HiDotsHorizontal } from 'react-icons/hi';
 import THEME_UTIL from 'utils/theme-util';
 
-export default function PotentialTable() {
+export default function PotentialTable(props: {
+  data: ICustomer.Customer[] | undefined;
+}) {
   return (
     <>
       <Container maxWidth='xl'>
         <Grid container rowGap={2} columnGap={2}>
-          {Array(10)
-            .fill('')
-            .map((_, i) => {
+          {props.data &&
+            props.data.map((data, index) => {
               return (
                 <Grid
-                  key={i}
+                  key={data.id}
                   item
                   xs={12}
                   md={3.8}
@@ -36,32 +37,42 @@ export default function PotentialTable() {
                       <Avatar
                         alt='Remy Sharp'
                         src='/static/images/avatar/1.jpg'
-                        variant='rounded'
+                        variant='circular'
                         sx={{
                           height: 40,
                           width: 40,
-                          borderRadius: 2,
                         }}
                       />
                       {/* Text item */}
                       <Stack direction={'column'}>
-                        <Typography variant='body2'>Name</Typography>
+                        <Typography variant='body2'>
+                          {data.customer_name}
+                        </Typography>
                         <Stack
                           direction={'row'}
                           spacing={0.5}
                           alignItems={'center'}
                         >
-                          <Send2
-                            size='14'
-                            color={THEME_UTIL.telegramColor}
-                            variant='Bold'
-                          />
+                          {(data.telegram_name && (
+                            <Send2
+                              size='14'
+                              color={THEME_UTIL.telegramColor}
+                              variant='Bold'
+                            />
+                          )) ||
+                            (data.facebook_name && (
+                              <Facebook
+                                size='14'
+                                color={THEME_UTIL.facebookColor}
+                                variant='Bold'
+                              />
+                            ))}
                           <Typography
                             variant='caption'
                             noWrap
                             color={'text.secondary'}
                           >
-                            @Raibann
+                            {data.facebook_name || data.telegram_name}
                           </Typography>
                         </Stack>
                       </Stack>

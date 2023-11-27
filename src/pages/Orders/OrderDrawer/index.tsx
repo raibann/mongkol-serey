@@ -37,7 +37,7 @@ import FinalInvoiceForm, {
   IFinalInvoice,
 } from './FinalInvoiceForm';
 import CUSTOMER_API from 'api/customer';
-import { eventList, paidBy } from 'utils/data-util';
+import { EnumCustomerType, eventList, paidBy } from 'utils/data-util';
 import EXPENSE_API from 'api/expense';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
@@ -136,6 +136,7 @@ const OrderDrawer = ({
       CUSTOMER_API.getCustomerList({
         size: 5,
         search: debounceSearchCustomer,
+        type: EnumCustomerType.CUSTOMER,
       }),
     {
       refreshDeps: [debounceSearchCustomer],
@@ -244,7 +245,7 @@ const OrderDrawer = ({
       setValue('quantity', orderDetail.quantity || '');
       setValue('listMenu', tmpListMenu);
       setValue('finalInvoice', tmpFinalInvoice);
-      setSelectedCustomer(orderDetail?.customer);
+      // setSelectedCustomer(orderDetail?.customer);
       setListMenu(tmpListMenu);
       setFinalInvoice(tmpFinalInvoice);
       return;

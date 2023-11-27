@@ -41,6 +41,10 @@ declare namespace ICustomer {
     district: string;
     province: string;
     location: string;
+    customerType: string;
+    history?: string;
+    remarks?: string;
+    status: string;
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: any;
@@ -88,5 +92,8 @@ declare namespace ICustomer {
     district: string;
     province: string;
     location: string;
+    customerType: string;
+    remarks?: string;
+    image?: string;
   }
 }

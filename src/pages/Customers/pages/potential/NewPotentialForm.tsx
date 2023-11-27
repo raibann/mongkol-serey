@@ -1,14 +1,21 @@
 import { LoadingButton } from '@mui/lab';
 import { Paper, Container, Stack, MenuItem, Button } from '@mui/material';
+import { useRequest } from 'ahooks';
+import CUSTOMER_API from 'api/customer';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { EnumCustomerType, EnumSocialType } from 'utils/data-util';
+import { ROUTE_PATH } from 'utils/route-util';
 
 interface INewPotentialInput {
   id?: string | number;
-  firstName: string;
-  lastName: string;
+  customerName: string;
+  location: string;
   phoneNumber: string;
   gender: string;
   social: string;
@@ -17,15 +24,65 @@ interface INewPotentialInput {
 }
 
 export default function NewPotential() {
+  // State
+  const [errorAlert, setErrorAlert] = useState(false);
+
   /* Hooks */
   const { control, handleSubmit } = useForm<INewPotentialInput>();
+  const navigate = useNavigate();
+
+  // Request APIs
+  const {
+    loading: isLoading,
+    run: fecthData,
+    error: errorFetch,
+  } = useRequest(CUSTOMER_API.postNewCustomer, {
+    manual: true,
+    onSuccess: (data) =>
+      data && navigate(ROUTE_PATH.customers.potentialCustomers),
+  });
+
+  // Effect;
+  useEffect(() => {
+    if (errorFetch) {
+      setErrorAlert(!errorAlert);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errorFetch]);
 
   /* Methods */
   const onSubmit = (data: INewPotentialInput) => {
-    console.log(data);
+    // console.log(data);
+    const telegram = data.socialType === EnumSocialType.TG ? data.social : '';
+    const facebook = data.socialType === EnumSocialType.FB ? data.social : '';
+    // console.log(data);
+    fecthData({
+      cusRequest: {
+        customer_name: data.customerName,
+        facebook_name: facebook,
+        telegram_name: telegram,
+        contact_number: data.phoneNumber,
+        customerType: EnumCustomerType.POTENTIAL_CUSTOMER,
+        location: data.location,
+        remarks: data.note,
+        commune: '',
+        district: '',
+        house: '',
+        province: '',
+        street: '',
+      },
+    });
   };
   return (
     <>
+      <ErrorDialog
+        open={errorAlert}
+        onCloseDialog={() => {
+          setErrorAlert(!errorAlert);
+        }}
+        errorTitle='Failed Authentication'
+        errorMessage={errorFetch?.message || 'Something went wrong!'}
+      />
       <SecondaryPageHeader title='Create New Potential' />
       <Paper
         sx={{
@@ -44,11 +101,11 @@ export default function NewPotential() {
               <Controller
                 defaultValue=''
                 control={control}
-                name='firstName'
+                name='customerName'
                 render={({ field, fieldState }) => {
                   return (
                     <LabelTextField
-                      label='Frist Name'
+                      label='Customer Name'
                       size='small'
                       fieldState={fieldState}
                       {...field}
@@ -59,11 +116,11 @@ export default function NewPotential() {
               <Controller
                 defaultValue=''
                 control={control}
-                name='lastName'
+                name='location'
                 render={({ field, fieldState }) => {
                   return (
                     <LabelTextField
-                      label='Last Name'
+                      label='Location'
                       size='small'
                       fieldState={fieldState}
                       {...field}
@@ -173,7 +230,7 @@ export default function NewPotential() {
                 Reset
               </Button>
               <LoadingButton
-                loading={false}
+                loading={isLoading}
                 type='submit'
                 variant='contained'
                 fullWidth

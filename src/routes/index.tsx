@@ -51,9 +51,7 @@ const InventoryForm = lazy(
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
-  /* Allow to use without api */
   authState.authed = true;
-
   return (
     <Routes>
       <Route

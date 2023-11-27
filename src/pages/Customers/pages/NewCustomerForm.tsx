@@ -1,16 +1,25 @@
 import { LoadingButton } from '@mui/lab';
 import { Paper, Container, Stack, MenuItem, Button } from '@mui/material';
+import { useRequest } from 'ahooks';
+import CUSTOMER_API from 'api/customer';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import {
+  EnumCustomerType,
+  EnumGenderType,
+  EnumSocialType,
+} from 'utils/data-util';
+import { ROUTE_PATH } from 'utils/route-util';
 
 interface INewCustomerInput {
   id?: string | number;
-  firstName: string;
-  lastName: string;
+  customerName: string;
   phoneNumber: string;
   gender: string;
   street: string;
@@ -21,17 +30,68 @@ interface INewCustomerInput {
   payment: string;
   social: string;
   socialType: string;
+  location: string;
+  image?: string;
 }
 export default function NewCustomerForm() {
+  // State
+  const [errorAlert, setErrorAlert] = useState(false);
+
   /* Hooks */
   const { control, handleSubmit } = useForm<INewCustomerInput>();
+  const navigate = useNavigate();
+
+  // Request APIs
+  const {
+    loading: isLoading,
+    run: fecthData,
+    error: errorFetch,
+  } = useRequest(CUSTOMER_API.postNewCustomer, {
+    manual: true,
+    onSuccess: (data) => data && navigate(ROUTE_PATH.customers.root),
+  });
+
+  // Effect;
+  useEffect(() => {
+    if (errorFetch) {
+      setErrorAlert(!errorAlert);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errorFetch]);
 
   /* Methods */
   const onSubmit = (data: INewCustomerInput) => {
-    console.log(data);
+    const telegram = data.socialType === EnumSocialType.TG ? data.social : '';
+    const facebook = data.socialType === EnumSocialType.FB ? data.social : '';
+    // console.log(data);
+    fecthData({
+      cusRequest: {
+        customer_name: data.customerName,
+        facebook_name: facebook,
+        telegram_name: telegram,
+        contact_number: data.phoneNumber,
+        house: data.house,
+        street: data.street,
+        commune: data.commune,
+        district: data.district,
+        province: data.province,
+        location: data.location,
+        customerType: EnumCustomerType.CUSTOMER,
+        image: data.image,
+      },
+    });
   };
+
   return (
     <>
+      <ErrorDialog
+        open={errorAlert}
+        onCloseDialog={() => {
+          setErrorAlert(!errorAlert);
+        }}
+        errorTitle='Failed Authentication'
+        errorMessage={errorFetch?.message || 'Something went wrong!'}
+      />
       <SecondaryPageHeader title='Create New Customer' />
       <Paper
         sx={{
@@ -53,11 +113,11 @@ export default function NewCustomerForm() {
               <Controller
                 defaultValue=''
                 control={control}
-                name='firstName'
+                name='customerName'
                 render={({ field, fieldState }) => {
                   return (
                     <LabelTextField
-                      label='Frist Name'
+                      label='Customer Name'
                       size='small'
                       fieldState={fieldState}
                       {...field}
@@ -68,11 +128,11 @@ export default function NewCustomerForm() {
               <Controller
                 defaultValue=''
                 control={control}
-                name='lastName'
+                name='location'
                 render={({ field, fieldState }) => {
                   return (
                     <LabelTextField
-                      label='Last Name'
+                      label='Location'
                       size='small'
                       fieldState={fieldState}
                       {...field}
@@ -106,15 +166,18 @@ export default function NewCustomerForm() {
                     <LabelTextField label='Gender' fieldState={fieldState}>
                       <CusTextField
                         select
-                        defaultValue={'Male'}
+                        defaultValue={EnumGenderType.OTHER}
                         SelectProps={{
                           displayEmpty: true,
                         }}
                         size='small'
                         {...field}
                       >
-                        <MenuItem value='Male'>Male</MenuItem>
-                        <MenuItem value='Female'>Female</MenuItem>
+                        <MenuItem value={EnumGenderType.OTHER}>Other</MenuItem>
+                        <MenuItem value={EnumGenderType.MALE}>Male</MenuItem>
+                        <MenuItem value={EnumGenderType.FEMALE}>
+                          Female
+                        </MenuItem>
                       </CusTextField>
                     </LabelTextField>
                   );
@@ -239,7 +302,7 @@ export default function NewCustomerForm() {
                       return (
                         <CusTextField
                           select
-                          defaultValue={''}
+                          defaultValue={EnumSocialType.TG}
                           SelectProps={{
                             displayEmpty: true,
                           }}
@@ -247,8 +310,12 @@ export default function NewCustomerForm() {
                           sx={{ width: '40%' }}
                           {...field}
                         >
-                          <MenuItem value='FB'>Facebook</MenuItem>
-                          <MenuItem value='TG'>Telegram</MenuItem>
+                          <MenuItem value={EnumSocialType.FB}>
+                            Facebook
+                          </MenuItem>
+                          <MenuItem value={EnumSocialType.TG}>
+                            Telegram
+                          </MenuItem>
                         </CusTextField>
                       );
                     }}
@@ -274,7 +341,7 @@ export default function NewCustomerForm() {
                 Reset
               </Button>
               <LoadingButton
-                loading={false}
+                loading={isLoading}
                 type='submit'
                 variant='contained'
                 fullWidth

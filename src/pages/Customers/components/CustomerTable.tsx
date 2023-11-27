@@ -8,20 +8,22 @@ import {
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable, { custStyle } from 'components/CusTable';
-import { Edit2, Location, Send2, Trash } from 'iconsax-react';
+import { Edit2, Facebook, Location, Send2, Trash } from 'iconsax-react';
 import theme from 'theme/theme';
 import THEME_UTIL from 'utils/theme-util';
 const headers = ['No', 'Name', 'Phone Number', 'Address', ''];
 
-export default function CustTable() {
+export default function CustTable(props: {
+  data: ICustomer.Customer[] | undefined;
+}) {
   return (
     <CusTable
       headers={headers}
-      body={Array(3)
-        .fill('')
-        .map((_, i) => (
-          <TableRow key={i} sx={custStyle.bodyRow}>
-            <TableCell>{i + 1}</TableCell>
+      body={
+        props.data &&
+        props.data.map((data) => (
+          <TableRow key={data.id} sx={custStyle.bodyRow}>
+            <TableCell>{data.id}</TableCell>
             <TableCell
               align='left'
               sx={{
@@ -40,25 +42,35 @@ export default function CustTable() {
                   }}
                 />
                 <Stack direction={'column'}>
-                  <Typography variant='body2'>Name</Typography>
+                  <Typography variant='body2'>{data.customer_name}</Typography>
                   <Stack direction={'row'} spacing={0.5} alignItems={'center'}>
-                    <Send2
-                      size='14'
-                      color={THEME_UTIL.telegramColor}
-                      variant='Bold'
-                    />
+                    {(data.telegram_name && (
+                      <Send2
+                        size='14'
+                        color={THEME_UTIL.telegramColor}
+                        variant='Bold'
+                      />
+                    )) ||
+                      (data.facebook_name && (
+                        <Facebook
+                          size='14'
+                          color={THEME_UTIL.facebookColor}
+                          variant='Bold'
+                        />
+                      ))}
+
                     <Typography
                       variant='caption'
                       noWrap
                       color={'text.secondary'}
                     >
-                      @Raibann
+                      {data.telegram_name || data.facebook_name}
                     </Typography>
                   </Stack>
                 </Stack>
               </Stack>
             </TableCell>
-            <TableCell align='left'>012121212</TableCell>
+            <TableCell align='left'>{data.contact_number}</TableCell>
             <TableCell align='left'>
               <Stack direction={'row'} spacing={0.5} alignItems={'center'}>
                 <Location
@@ -67,7 +79,7 @@ export default function CustTable() {
                   variant='Bold'
                 />
                 <Typography variant='body2' noWrap>
-                  Phnom Penh
+                  {data.street + ',' + data.house + ',' + data.province}
                 </Typography>
               </Stack>
             </TableCell>
@@ -105,7 +117,8 @@ export default function CustTable() {
               </Stack>
             </TableCell>
           </TableRow>
-        ))}
+        ))
+      }
     />
   );
 }
