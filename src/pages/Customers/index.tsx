@@ -26,11 +26,14 @@ export default function Customers() {
   const searchDebounced = useDebounce(search, { wait: 500 });
 
   // Request APIs
+
+  // fetch list customer
   const {
     data: resCustomers,
     loading: isLoading,
     run: fecthData,
     error: errorFetch,
+    refresh: refreshCustomers,
   } = useRequest(CUSTOMER_API.getCustomerList, { manual: false });
 
   useEffect(() => {
@@ -115,7 +118,7 @@ export default function Customers() {
           <ErrorResponse errorMessage={'Internal Server Error!'} />
         ) : (
           <>
-            <CustTable data={resCustomers?.data} />
+            <CustTable data={resCustomers?.data} onSuccess={refreshCustomers} />
             <TablePagination
               rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
               component='div'

@@ -51,7 +51,7 @@ const InventoryForm = lazy(
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
-  authState.authed = true;
+
   return (
     <Routes>
       <Route
@@ -122,6 +122,14 @@ export default function AllRoutes() {
         />
         <Route
           path={ROUTE_PATH.customers.createNewCustomer}
+          element={
+            <Suspense>
+              <NewCustomerForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.customers.updateCustomer}
           element={
             <Suspense>
               <NewCustomerForm />

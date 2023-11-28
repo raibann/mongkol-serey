@@ -114,6 +114,12 @@ export default function NewCustomerForm() {
                 defaultValue=''
                 control={control}
                 name='customerName'
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Field is required',
+                  },
+                }}
                 render={({ field, fieldState }) => {
                   return (
                     <LabelTextField
@@ -146,6 +152,12 @@ export default function NewCustomerForm() {
                 defaultValue=''
                 control={control}
                 name='phoneNumber'
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Field is required',
+                  },
+                }}
                 render={({ field, fieldState }) => {
                   return (
                     <LabelTextField
@@ -158,19 +170,19 @@ export default function NewCustomerForm() {
                 }}
               />
               <Controller
-                defaultValue=''
+                defaultValue={EnumGenderType.OTHER}
                 control={control}
                 name='gender'
                 render={({ field, fieldState }) => {
                   return (
-                    <LabelTextField label='Gender' fieldState={fieldState}>
+                    <LabelTextField label='Gender'>
                       <CusTextField
                         select
-                        defaultValue={EnumGenderType.OTHER}
                         SelectProps={{
                           displayEmpty: true,
                         }}
                         size='small'
+                        helperText={fieldState.error?.message}
                         {...field}
                       >
                         <MenuItem value={EnumGenderType.OTHER}>Other</MenuItem>
@@ -221,6 +233,12 @@ export default function NewCustomerForm() {
                 defaultValue=''
                 control={control}
                 name='province'
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Field is required',
+                  },
+                }}
                 render={({ field, fieldState }) => {
                   return (
                     <LabelTextField
