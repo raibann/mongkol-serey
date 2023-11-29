@@ -106,12 +106,12 @@ const navigationUtil: Navigation = [
     selectedIcon: <Box size='18' variant='Bold' />,
     children: [
       {
-        title: 'Units',
-        toUrl: ROUTE_PATH.inventories.units,
-      },
-      {
         title: 'Categories',
         toUrl: ROUTE_PATH.inventories.categories,
+      },
+      {
+        title: 'Units',
+        toUrl: ROUTE_PATH.inventories.units,
       },
       {
         title: 'Reports',

@@ -19,8 +19,8 @@ const Users = lazy(() => import('pages/Users'));
 const Setting = lazy(() => import('pages/Setting'));
 
 // Children Page
-const Quotation = lazy(() => import('pages/Orders/Quotations'));
-const Payments = lazy(() => import('pages/Orders/Payments'));
+const Quotation = lazy(() => import('pages/Orders/pages/Quotations'));
+const Payments = lazy(() => import('pages/Orders/pages/Payments'));
 const Potentials = lazy(() => import('pages/Customers/pages/potential'));
 const InventoryUnit = lazy(() => import('pages/Inventories/pages/Units'));
 const InventoryCategory = lazy(
@@ -51,6 +51,11 @@ const FoodMenuForm = lazy(() => import('pages/Menus/pages/FoodMenuForm'));
 const FoodMenus = lazy(() => import('pages/Menus/pages/FoodMenus'));
 const PrepareGroceryForm = lazy(
   () => import('pages/PrepareGrocery/pages/PrepareGroceryForm')
+);
+const QuotationForm = lazy(() => import('pages/Orders/pages/QuotationForm'));
+const UpdatePayments = lazy(() => import('pages/Orders/pages/UpdatePayments'));
+const PreviewQuotation = lazy(
+  () => import('pages/Orders/pages/PreviewQuotation')
 );
 
 export default function AllRoutes() {
@@ -86,6 +91,30 @@ export default function AllRoutes() {
           }
         />
         <Route
+          path={ROUTE_PATH.orders.createQuotation}
+          element={
+            <Suspense>
+              <QuotationForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.updateQuotation}
+          element={
+            <Suspense>
+              <QuotationForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.previewQuotation}
+          element={
+            <Suspense>
+              <PreviewQuotation />
+            </Suspense>
+          }
+        />
+        <Route
           path={ROUTE_PATH.orders.quotations}
           element={
             <Suspense>
@@ -98,6 +127,14 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Payments />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.updatePayment}
+          element={
+            <Suspense>
+              <UpdatePayments />
             </Suspense>
           }
         />

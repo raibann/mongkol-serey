@@ -46,7 +46,7 @@ const InventoryLeftInput = () => {
           render={({ field, fieldState }) => (
             <LabelTextField
               size='small'
-              label='Product Name'
+              label='Product name'
               fieldState={fieldState}
               {...field}
             />

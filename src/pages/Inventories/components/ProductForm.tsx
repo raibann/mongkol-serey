@@ -1,62 +1,61 @@
 import { Button, Stack } from '@mui/material';
 import LabelTextField from 'components/LabelTextField';
+import UploadButton from 'components/UploadButton';
 import { Controller, useForm } from 'react-hook-form';
 import THEME_UTIL from 'utils/theme-util';
 
-type UnitFormInput = {
+type ProductFormInput = {
   name: string;
-  slug: string;
+  category: string;
   description: string;
 };
 
-const UnitForm = () => {
-  const { control, handleSubmit } = useForm<UnitFormInput>();
+const ProductForm = () => {
+  const { control, handleSubmit } = useForm<ProductFormInput>();
 
-  const onSubmit = (data: UnitFormInput) => {
+  const onSubmit = (data: ProductFormInput) => {
     console.log(data);
   };
 
   return (
     <Stack spacing={2} component='form' onSubmit={handleSubmit(onSubmit)}>
+      <UploadButton />
       <Controller
         control={control}
         name='name'
         render={({ field, fieldState }) => (
           <LabelTextField
             size='small'
-            label='Unit name'
+            label='Product name'
             fieldState={fieldState}
             {...field}
           />
         )}
       />
-
       <Controller
         control={control}
-        name='slug'
+        name='category'
         render={({ field, fieldState }) => (
           <LabelTextField
             size='small'
-            label='Slug'
+            label='Category'
             fieldState={fieldState}
             {...field}
           />
         )}
       />
-
       <Controller
         control={control}
         name='description'
         render={({ field, fieldState }) => (
           <LabelTextField
             size='small'
-            label='Description'
+            label='Type'
             fieldState={fieldState}
             {...field}
           />
         )}
       />
-
       <Stack direction='row' spacing={2} pt={2}>
         <Button size='large' variant='outlined' sx={{ flex: 1 }}>
           Cancel
@@ -73,4 +72,4 @@ const UnitForm = () => {
   );
 };
 
-export default UnitForm;
+export default ProductForm;

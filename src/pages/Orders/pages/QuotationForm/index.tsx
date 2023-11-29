@@ -19,64 +19,64 @@ import React from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import THEME_UTIL from 'utils/theme-util';
 
-type PrepareGroceryInput = {
-  invoiceId: number | '';
+export interface IFormQuotation {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  event: string;
   location: string;
-  date: string;
-  groceries: {
-    name: string;
-    quantity: number;
-    unit: string;
-  }[];
-};
+  total: number;
+  quotationItems: QuotationItems[];
+}
+export interface QuotationItems {
+  productName: string;
+  qty: number;
+  unit: string;
+  price: number;
+  subTotal: number;
+  remark: string;
+}
 
-const PrepareGroceryForm = () => {
+const PACKAGE_ITEM_GRID = 11 / 5;
+
+const QuotationForm = () => {
   const theme = useTheme();
 
   // React Hook Form
-  const { control } = useForm<PrepareGroceryInput>({
+  const { control } = useForm<IFormQuotation>({
     defaultValues: {
-      invoiceId: '',
-      groceries: [{ name: '', quantity: 0, unit: '' }],
+      quotationItems: [
+        {
+          productName: '',
+          qty: 0,
+          unit: '',
+          price: 0,
+          subTotal: 0,
+          remark: '',
+        },
+      ],
     },
   });
-  const groceriesFields = useFieldArray({
-    name: 'groceries',
+  const quotationItemsFields = useFieldArray({
+    name: 'quotationItems',
     control: control,
   });
 
   return (
     <>
-      <SecondaryPageHeader title='Prepare Grocery' />
+      <SecondaryPageHeader title='Create New Quotation' />
 
       <Paper component={Stack} m={3} mt={0} p={2} alignItems='center'>
         <Grid container maxWidth='sm' spacing={2} alignItems='center'>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <Controller
               control={control}
-              name='invoiceId'
+              name='firstName'
               render={({ field, fieldState }) => (
                 <LabelTextField
-                  label='Invoice ID'
+                  label='First name'
                   size='small'
-                  select
-                  SelectProps={{
-                    displayEmpty: true,
-                  }}
-                  menutItems={[
-                    <MenuItem key='' value=''>
-                      Choose...
-                    </MenuItem>,
-                    <MenuItem key='1023' value='1023'>
-                      1023
-                    </MenuItem>,
-                    <MenuItem key='1223' value='1223'>
-                      1223
-                    </MenuItem>,
-                    <MenuItem key='1045' value='1045'>
-                      1045
-                    </MenuItem>,
-                  ]}
                   fieldState={fieldState}
                   {...field}
                 />
@@ -84,39 +84,58 @@ const PrepareGroceryForm = () => {
             />
           </Grid>
           <Grid item xs={6}>
+            <Controller
+              control={control}
+              name='lastName'
+              render={({ field, fieldState }) => (
+                <LabelTextField
+                  label='Last name'
+                  size='small'
+                  fieldState={fieldState}
+                  {...field}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Controller
+              control={control}
+              name='phoneNumber'
+              render={({ field, fieldState }) => (
+                <LabelTextField
+                  label='Phone number'
+                  size='small'
+                  fieldState={fieldState}
+                  {...field}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Controller
+              control={control}
+              name='event'
+              render={({ field, fieldState }) => (
+                <LabelTextField
+                  label='Event'
+                  size='small'
+                  fieldState={fieldState}
+                  {...field}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={4}>
             <Controller
               control={control}
               name='location'
               render={({ field, fieldState }) => (
                 <LabelTextField
-                  label='Event location'
+                  label='Location'
                   size='small'
                   fieldState={fieldState}
                   {...field}
                 />
-              )}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Controller
-              control={control}
-              name='date'
-              render={({ field: { onChange, value, ...rest }, fieldState }) => (
-                <LocalizationProvider dateAdapter={AdapterMoment}>
-                  <DatePicker
-                    renderInput={(props: TextFieldProps) => (
-                      <LabelTextField
-                        {...props}
-                        fieldState={fieldState}
-                        size='small'
-                        label='Event date'
-                      />
-                    )}
-                    onChange={(val) => onChange(val)}
-                    value={value}
-                    {...rest}
-                  />
-                </LocalizationProvider>
               )}
             />
           </Grid>
@@ -128,13 +147,16 @@ const PrepareGroceryForm = () => {
             columnGap={2}
             mt={2}
           >
-            <Typography>Groceries</Typography>
+            <Typography>Packages</Typography>
             <Button
               onClick={() =>
-                groceriesFields.append({
-                  name: '',
-                  quantity: 0,
+                quotationItemsFields.append({
+                  productName: '',
+                  qty: 0,
                   unit: '',
+                  price: 0,
+                  subTotal: 0,
+                  remark: '',
                 })
               }
               size='small'
@@ -146,44 +168,72 @@ const PrepareGroceryForm = () => {
             </Button>
           </Grid>
 
-          {groceriesFields.fields.map((e, i) => (
-            <React.Fragment key={e.id}>
-              <Grid item xs={11 / 3}>
+          {quotationItemsFields.fields.map((e, i) => (
+            <Grid container item spacing={1} key={e.id}>
+              <Grid item xs={PACKAGE_ITEM_GRID + 0.75}>
                 <Controller
                   control={control}
-                  name={`groceries.${i}.name`}
+                  name={`quotationItems.${i}.productName`}
                   render={({ field, fieldState }) => (
                     <LabelTextField
                       size='small'
-                      label='Name'
+                      label={i === 0 ? 'Name' : undefined}
                       fieldState={fieldState}
                       {...field}
                     />
                   )}
                 />
               </Grid>
-              <Grid item xs={11 / 3}>
+              <Grid item xs={PACKAGE_ITEM_GRID - 0.75}>
                 <Controller
                   control={control}
-                  name={`groceries.${i}.quantity`}
+                  name={`quotationItems.${i}.qty`}
                   render={({ field, fieldState }) => (
                     <LabelTextField
                       size='small'
-                      label='Quantity'
+                      label={i === 0 ? 'Qty' : undefined}
                       fieldState={fieldState}
                       {...field}
                     />
                   )}
                 />
               </Grid>
-              <Grid item xs={11 / 3}>
+              <Grid item xs={PACKAGE_ITEM_GRID - 0.75}>
                 <Controller
                   control={control}
-                  name={`groceries.${i}.unit`}
+                  name={`quotationItems.${i}.unit`}
                   render={({ field, fieldState }) => (
                     <LabelTextField
                       size='small'
-                      label='Unit'
+                      label={i === 0 ? 'Unit' : undefined}
+                      fieldState={fieldState}
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={PACKAGE_ITEM_GRID}>
+                <Controller
+                  control={control}
+                  name={`quotationItems.${i}.price`}
+                  render={({ field, fieldState }) => (
+                    <LabelTextField
+                      size='small'
+                      label={i === 0 ? 'Price' : undefined}
+                      fieldState={fieldState}
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={PACKAGE_ITEM_GRID + 0.75}>
+                <Controller
+                  control={control}
+                  name={`quotationItems.${i}.remark`}
+                  render={({ field, fieldState }) => (
+                    <LabelTextField
+                      size='small'
+                      label={i === 0 ? 'Remark' : undefined}
                       fieldState={fieldState}
                       {...field}
                     />
@@ -192,12 +242,16 @@ const PrepareGroceryForm = () => {
               </Grid>
               <Grid item xs={1} textAlign='end'>
                 <Stack spacing={1}>
-                  <Typography fontSize={14} visibility='hidden'>
-                    Action
-                  </Typography>
+                  {i === 0 && (
+                    <Typography fontSize={14} visibility='hidden'>
+                      Action
+                    </Typography>
+                  )}
                   <CusIconButton
-                    onClick={() => groceriesFields.remove(i)}
+                    onClick={() => quotationItemsFields.remove(i)}
                     sx={{
+                      width: 40,
+                      height: 40,
                       boxShadow: 0,
                       background: alpha(theme.palette.error.main, 0.1),
                     }}
@@ -210,7 +264,7 @@ const PrepareGroceryForm = () => {
                   </CusIconButton>
                 </Stack>
               </Grid>
-            </React.Fragment>
+            </Grid>
           ))}
 
           <Grid item xs={6}>
@@ -241,4 +295,4 @@ const PrepareGroceryForm = () => {
   );
 };
 
-export default PrepareGroceryForm;
+export default QuotationForm;

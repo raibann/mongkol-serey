@@ -25,7 +25,7 @@ const PageHeader = ({
       <Toolbar sx={{ py: 2, px: { sm: 0 } }}>
         <Grid container px={isSmDown ? 0 : 3} rowGap={isSmDown ? 2 : 0}>
           <Grid item xs={6} md='auto'>
-            <Typography variant='h5' fontWeight='bolder'>
+            <Typography variant='h6' fontWeight='600'>
               {pageTitle}
             </Typography>
           </Grid>

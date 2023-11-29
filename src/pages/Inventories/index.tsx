@@ -17,25 +17,35 @@ import {
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable from 'components/CusTable';
 import CusTextField from 'components/CusTextField';
+import Dialog, { IDialogRef } from 'components/Dialog';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import { Add, Box, Convert3DCube, SearchNormal1 } from 'iconsax-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
+import ProductForm from './components/ProductForm';
 
 const Stocks = () => {
   // Hooks
   const { isMdDown } = useResponsive();
   const navigate = useNavigate();
   const theme = useTheme();
+  const productFormRef = useRef<IDialogRef>();
 
   // States
   const [searchProduct, setSearchProduct] = useState('');
 
   return (
     <>
+      <Dialog
+        ref={productFormRef}
+        cusWidth={400}
+        cusTitle='Add New Product'
+        content={() => <ProductForm />}
+      />
+
       <PageHeader pageTitle='Inventory'>
         <CusTextField
           placeholder='Search...'
@@ -50,7 +60,7 @@ const Stocks = () => {
           }}
         />
         <Button
-          onClick={() => navigate(ROUTE_PATH.inventories.addInventory)}
+          onClick={() => productFormRef.current?.open()}
           variant='contained'
           size='small'
           disableElevation
@@ -186,7 +196,9 @@ const Stocks = () => {
                 />
               </TableCell>
               <TableCell>
-                <CusIconButton>
+                <CusIconButton
+                  onClick={() => navigate(ROUTE_PATH.inventories.addInventory)}
+                >
                   <BsThreeDots />
                 </CusIconButton>
               </TableCell>
