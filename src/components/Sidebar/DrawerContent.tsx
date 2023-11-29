@@ -26,13 +26,17 @@ import React, { useState } from 'react';
 import { CusIconButton } from 'components/CusIconButton';
 
 const DrawerContent = () => {
+  /* State */
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [collapseMenu, setCollapseMenu] = useState(true);
+
+  /* Hooks */
   const { location, navigate } = useRouter();
   const { openDrawer, setOpenDrawer, collapse } = useDrawerContext();
   const { logout } = useAuthContext();
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-  const [collapseMenu, setCollapseMenu] = useState(false);
 
+  /* Methods */
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -40,6 +44,8 @@ const DrawerContent = () => {
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
+
+  console.log(collapseMenu);
   return (
     <>
       <Avatar
@@ -76,12 +82,9 @@ const DrawerContent = () => {
                 secondaryAction={
                   !collapse &&
                   nav.children.length > 0 &&
-                  (location.pathname.includes(nav.toUrl) ? (
+                  (collapseMenu && location.pathname.includes(nav.toUrl) ? (
                     <CusIconButton
                       sx={{ boxShadow: 0, background: 'transparent' }}
-                      onClick={() => {
-                        setCollapseMenu(!collapseMenu);
-                      }}
                     >
                       <ArrowDown2
                         size='16'
@@ -113,9 +116,10 @@ const DrawerContent = () => {
                     navigate(`${nav.toUrl}`);
                     openDrawer && setOpenDrawer(false);
                     handlePopoverOpen(e);
+                    setCollapseMenu(!location.pathname.includes(nav.toUrl));
                   }}
                 >
-                  {location.pathname === nav.toUrl && (
+                  {location.pathname.includes(nav.toUrl) && (
                     <Box
                       sx={{
                         position: 'absolute',
@@ -251,14 +255,9 @@ const DrawerContent = () => {
                 )}
 
               {!collapse &&
-                nav.children.length > 0 &&
-                location.pathname.includes(nav.toUrl) &&
-                collapseMenu && (
-                  <Collapse
-                    in={location.pathname.includes(nav.toUrl)}
-                    timeout='auto'
-                    unmountOnExit
-                  >
+                collapseMenu &&
+                location.pathname.includes(nav.toUrl) && (
+                  <Collapse in={collapseMenu} timeout='auto' unmountOnExit>
                     <List component='div' disablePadding>
                       {nav.children.map((child, index) => {
                         return (
@@ -266,11 +265,10 @@ const DrawerContent = () => {
                             <ListItemButton
                               sx={{
                                 pl: 4,
-                                background: location.pathname.includes(
-                                  child.toUrl
-                                )
-                                  ? alpha(theme.palette.primary.main, 0.1)
-                                  : theme.palette.common.white,
+                                background:
+                                  location.pathname === child.toUrl
+                                    ? alpha(theme.palette.primary.main, 0.1)
+                                    : theme.palette.common.white,
                                 borderRadius: 2.5,
                               }}
                               onClick={() => {
@@ -283,7 +281,7 @@ const DrawerContent = () => {
                                   size='12'
                                   variant='Bold'
                                   color={
-                                    location.pathname.includes(child.toUrl)
+                                    location.pathname === child.toUrl
                                       ? theme.palette.primary.main
                                       : theme.palette.secondary.main
                                   }
@@ -292,14 +290,14 @@ const DrawerContent = () => {
                               <ListItemText
                                 primary={child.title}
                                 primaryTypographyProps={{
-                                  color: location.pathname.includes(child.toUrl)
-                                    ? theme.palette.primary.main
-                                    : theme.palette.secondary.main,
-                                  fontWeight: location.pathname.includes(
-                                    child.toUrl
-                                  )
-                                    ? 'bold'
-                                    : 'medium',
+                                  color:
+                                    location.pathname === child.toUrl
+                                      ? theme.palette.primary.main
+                                      : theme.palette.secondary.main,
+                                  fontWeight:
+                                    location.pathname === child.toUrl
+                                      ? 'bold'
+                                      : 'medium',
                                   fontSize: 14,
                                 }}
                               />

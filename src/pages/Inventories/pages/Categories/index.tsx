@@ -8,26 +8,20 @@ import {
   useTheme,
   Container,
 } from '@mui/material';
-import { useResponsive } from 'ahooks';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTextField from 'components/CusTextField';
 import Dialog, { IDialogRef } from 'components/Dialog';
 import PageHeader from 'components/PageHeader';
 import { SearchNormal1, Add, Edit2, Trash } from 'iconsax-react';
-import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
 import CategoryForm from './components/CategoryForm';
 import CusTable from 'components/CusTable';
 
 export default function InventoryCategory() {
   // Hooks
-  const { isMdDown } = useResponsive();
-  const navigate = useNavigate();
+
   const theme = useTheme();
   const categoryFormRef = useRef<IDialogRef>();
-
-  // States
-  const [searchProduct, setSearchProduct] = useState('');
 
   return (
     <>

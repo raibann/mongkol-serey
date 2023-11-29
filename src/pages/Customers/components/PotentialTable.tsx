@@ -17,7 +17,8 @@ export default function PotentialTable() {
                   key={i}
                   item
                   xs={12}
-                  sm={3.88}
+                  md={3.8}
+                  sm={5.85}
                   sx={{
                     background: (theme) => theme.palette.background.default,
                     p: 2,

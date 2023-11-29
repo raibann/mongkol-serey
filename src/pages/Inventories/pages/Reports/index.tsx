@@ -2,14 +2,9 @@ import {
   Button,
   Chip,
   Container,
-  Grid,
   InputAdornment,
-  MenuItem,
-  Paper,
-  Stack,
   TableCell,
   TableRow,
-  TextField,
   Typography,
   alpha,
   useTheme,
@@ -18,21 +13,18 @@ import { CusIconButton } from 'components/CusIconButton';
 import CusTable from 'components/CusTable';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
-import useResponsive from 'hook/useResponsive';
-import { Add, Box, Convert3DCube, SearchNormal1 } from 'iconsax-react';
-import { useState } from 'react';
+import { Add, SearchNormal1 } from 'iconsax-react';
 import { BsThreeDots } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 
 export default function InventoryReport() {
   // Hooks
-  const { isMdDown } = useResponsive();
+
   const navigate = useNavigate();
   const theme = useTheme();
 
   // States
-  const [searchProduct, setSearchProduct] = useState('');
 
   return (
     <>

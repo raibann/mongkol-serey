@@ -43,6 +43,10 @@ const navigationUtil: Navigation = [
     selectedIcon: <NoteFavorite size='18' variant='Bold' />,
     children: [
       {
+        title: 'Orderings',
+        toUrl: ROUTE_PATH.orders.root,
+      },
+      {
         title: 'Quotations',
         toUrl: ROUTE_PATH.orders.quotations,
       },
@@ -66,6 +70,10 @@ const navigationUtil: Navigation = [
     selectedIcon: <Profile2User size='18' variant='Bold' />,
 
     children: [
+      {
+        title: 'Registered',
+        toUrl: ROUTE_PATH.customers.root,
+      },
       {
         title: 'Potentials',
         toUrl: ROUTE_PATH.customers.potentialCustomers,
@@ -132,6 +140,10 @@ const navigationUtil: Navigation = [
     icon: <UserSquare size='18' />,
     selectedIcon: <UserSquare size='18' variant='Bold' />,
     children: [
+      {
+        title: 'Profiles',
+        toUrl: ROUTE_PATH.users.root,
+      },
       {
         title: 'Departments',
         toUrl: ROUTE_PATH.users.departments,

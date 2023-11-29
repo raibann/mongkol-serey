@@ -1,4 +1,5 @@
 import { Paper, Stack, Typography, Grid } from '@mui/material';
+import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
 import { Facebook, Call, Personalcard, Cake } from 'iconsax-react';
 import moment from 'moment';
 import React from 'react';
@@ -16,7 +17,8 @@ const EventToday = ({
 
   return (
     <>
-      {temp && temp.length > 0 && (
+      <EmptyResponse />
+      {/* {temp && temp.length > 0 && (
         <Typography variant='h6' sx={{ pb: 2 }}>
           Anniversary today
         </Typography>
@@ -137,7 +139,7 @@ const EventToday = ({
             </Grid>
           </React.Fragment>
         ))}
-      </Grid>
+      </Grid> */}
     </>
   );
 };

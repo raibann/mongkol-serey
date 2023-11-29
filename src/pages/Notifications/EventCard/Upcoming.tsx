@@ -5,6 +5,7 @@ import { Facebook, Call, Personalcard, CalendarTick } from 'iconsax-react';
 import moment from 'moment';
 import React from 'react';
 import theme from 'theme/theme';
+import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
 
 const UpcomingEvent = ({
   listItem,
@@ -17,7 +18,7 @@ const UpcomingEvent = ({
   const navigate = useNavigate();
   return (
     <>
-      {temp && temp.length > 0 && (
+      {/* {temp && temp.length > 0 && (
         <Typography variant='h6' sx={{ py: 2 }}>
           Upcoming Anniversary
         </Typography>
@@ -147,7 +148,8 @@ const UpcomingEvent = ({
             </Grid>
           </React.Fragment>
         ))}
-      </Grid>
+      </Grid> */}
+      <EmptyResponse />
     </>
   );
 };
