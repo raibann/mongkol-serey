@@ -61,7 +61,7 @@ const PreviewQuotation = lazy(
 export default function AllRoutes() {
   const { authState } = useAuthContext();
   /* Allow to use without api */
-  authState.authed = true;
+  // authState.authed = true;
 
   return (
     <Routes>

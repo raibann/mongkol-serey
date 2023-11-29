@@ -1,67 +1,32 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   Box,
   Button,
+  Container,
   Dialog,
   DialogTitle,
   Divider,
   Drawer,
-  FormControlLabel,
-  Grid,
-  IconButton,
   InputAdornment,
-  MenuItem,
-  Pagination,
-  Paper,
-  Popover,
-  Radio,
-  RadioGroup,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  ToggleButtonGroup,
-  Tooltip,
-  Typography,
 } from '@mui/material';
 import theme from 'theme/theme';
 import BookingInvoice from 'components/ComToPrint/BookingInvoice';
 import FinalInvoice from 'components/ComToPrint/FinalInvoice';
-import CusTextField from 'components/CusTextField';
-import CusToggleButton from 'components/CusToggleButton';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
-import OrderDrawer, { Draft } from './OrderDrawer';
+import OrderDrawer from './OrderDrawer';
 import ORDER_API from 'api/order';
-import OrderTableBody, { OrderTableHead } from './OrderTable';
-import {
-  ArrowLeft2,
-  BoxRemove,
-  Calculator,
-  FilterRemove,
-  FilterSearch,
-  NoteFavorite,
-  Printer,
-  TickCircle,
-} from 'iconsax-react';
-import { CusLoading } from 'components/CusLoading';
+import OrderTableBody from './OrderTable';
+import { Add, ArrowLeft2, Filter, Printer, SearchNormal1 } from 'iconsax-react';
 import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
 import { useDebounce, useRequest } from 'ahooks';
 import useRouter from 'hook/useRouter';
-import { ROUTE_PATH } from 'utils/route-util';
-import { getPersistedState } from 'utils/persist-util';
-import { eventList } from 'utils/data-util';
 
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers';
-import LabelTextField from 'components/LabelTextField';
-import { Controller, useForm } from 'react-hook-form';
-import moment from 'moment';
+import { useForm } from 'react-hook-form';
+import CusTable from 'components/CusTable';
+import CusTextField from 'components/CusTextField';
 
 interface IFilterSearch {
   eventType: string;
@@ -71,68 +36,41 @@ interface IFilterSearch {
 }
 
 const Orders = () => {
-  // Variables
+  // Variables and Hooks
   const { isMdDown, isSmDown } = useResponsive();
   const [searchParams, setSearchParams] = useSearchParams();
-  const orderId = searchParams.get('id');
   const bookingInvoiceRef = useRef(null);
   const finalInvoiceRef = useRef(null);
   const { navigate } = useRouter();
+  const orderId = searchParams.get('id');
 
   // States
-  const [toggleValue, setToggleValue] = useState('pending');
+  const [orderStatus, setOrderStatus] = useState('pending');
   const [orderDetail, setOrderDetail] = useState<IOrder.Order>();
   const [newOrder, setNewOrder] = useState(false);
-  const [loadingChangingState, setLoadingChangingState] = useState(false);
   const [printer, setPrinter] = useState<IOrder.Order>();
   const [page, setPage] = useState(1);
   const [searchData, setSearchData] = useState('');
-  const [draft, setDraft] = useState<Draft | undefined>(
-    getPersistedState(`${process.env.REACT_APP_PERSIST_DRAFT}`)
-  );
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [FilterEl, setFilterEl] = useState<HTMLButtonElement | null>(null);
+
+  // React Hook Form
   const { handleSubmit, control, clearErrors, setValue } =
     useForm<IFilterSearch>();
 
   // useRequests
+  const debounceSearch = useDebounce(searchData, { wait: 500 });
   const {
     data: orderList,
     run: fetchOrderList,
     loading: isLoadingOrderList,
     refresh: refreshGetOrderList,
-  } = useRequest(ORDER_API.getOrdersList, {
-    manual: true,
-    // loadingDelay: 1000,
-    onSuccess: (data) => {
-      setLoadingChangingState(false);
-      if (orderId) {
-        const selectedOrder = data.data.find((e) => e.id === +orderId);
-        setPrinter(selectedOrder);
-      }
-    },
-    onError: () => setLoadingChangingState(false),
-  });
-
-  const debouncedValue = useDebounce(searchData, { wait: 500 });
-  // useEffects
-  useEffect(() => {
-    setLoadingChangingState(true);
-    fetchOrderList({
+  } = useRequest(() =>
+    ORDER_API.getOrdersList({
       page: `${page - 1}`,
-      status: toggleValue,
-      search: debouncedValue,
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggleValue, page, debouncedValue]);
-
-  useEffect(() => {
-    if (orderId) {
-      setToggleValue('all');
-      setSearchData(`#${orderId}`);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      status: orderStatus,
+      search: debounceSearch,
+    })
+  );
 
   // Methods
   const handleCloseOrderDialog = () => {
@@ -148,11 +86,11 @@ const Orders = () => {
     setSearchParams(searchParams);
   };
   const onPrintClick = useCallback(
-    (i: number) => setPrinter(orderList!.data![i]),
+    (i: number) => setPrinter(orderList![i]),
     [orderList]
   );
   const onEditClick = useCallback(
-    (i: number) => setOrderDetail(orderList!.data![i]),
+    (i: number) => setOrderDetail(orderList![i]),
     [orderList]
   );
   const onClearFilter = () => {
@@ -164,390 +102,88 @@ const Orders = () => {
   const handleSubmitFilter = (data: IFilterSearch) => {
     setSearchData('');
     setPage(1);
-    setAnchorEl(null);
+    setFilterEl(null);
     clearErrors();
-    fetchOrderList({
-      page: '0',
-      status: toggleValue,
-      search: '',
-      dateType: data.type,
-      startDate: moment(data.from).format('YYYY-MM-DD'),
-      endDate: moment(data.to).format('YYYY-MM-DD'),
-      eventType: data.eventType,
-    });
   };
 
   return (
     <>
-      <PageHeader pageTitle='Orders' />
-      <Paper
-        elevation={1}
-        sx={{
-          position: 'relative',
-          mx: 2,
-          borderRadius: 3,
-          height: 'calc(100vh - 100px)',
-          maxWidth: '100%',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Grid container p={2} rowSpacing={2}>
-          <Grid item xs={12} sm={12} md={4}>
-            <ToggleButtonGroup
-              value={toggleValue}
-              exclusive
-              fullWidth
-              size='small'
-              onChange={(_, value) => {
-                if (value !== null) {
-                  setToggleValue(value);
-                  setPage(1);
-                }
-              }}
-            >
-              <CusToggleButton value='pending'>Pending</CusToggleButton>
-              <CusToggleButton value='complete'>Completed</CusToggleButton>
-              <CusToggleButton value='all'>All</CusToggleButton>
-            </ToggleButtonGroup>
-          </Grid>
-          <Grid item xs={12} sm={12} md={8}>
-            <Grid container columnSpacing={2} alignItems='center'>
-              <Grid item xs={4} sm={6} md={8} lg={8} xl={9}>
-                <Stack
-                  direction={'row'}
-                  spacing={2}
-                  justifyContent={isMdDown ? 'flex-start' : 'flex-end'}
-                  alignItems='center'
-                >
-                  {isSmDown ? (
-                    <>
-                      <Tooltip title='Quotation'>
-                        <IconButton
-                          sx={{
-                            color: (theme) => theme.palette.common.white,
-                            background: (theme) => theme.palette.secondary.main,
-                            height: '100%',
-                          }}
-                          onClick={() => navigate(ROUTE_PATH.orders.quotations)}
-                        >
-                          <Calculator variant='Bold' size='16' />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title='Order'>
-                        <IconButton
-                          onClick={() => setNewOrder(true)}
-                          sx={{
-                            color: (theme) => theme.palette.common.white,
-                            background: (theme) => theme.palette.primary.main,
-                            height: '100%',
-                          }}
-                        >
-                          <NoteFavorite variant='Bold' size={16} />
-                        </IconButton>
-                      </Tooltip>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        variant='contained'
-                        sx={{
-                          color: theme.palette.common.white,
-                          boxShadow: theme.shadows[1],
-                          borderRadius: 2,
-                          textTransform: 'none',
-                          height: 40,
-                          position: 'relative',
-                          overflow: 'hidden',
-                          zIndex: 2,
-                        }}
-                        color='secondary'
-                        startIcon={<Calculator variant='Bold' size='16' />}
-                        onClick={() => navigate(ROUTE_PATH.orders.quotations)}
-                      >
-                        Quotation
-                      </Button>
-                      <Button
-                        variant='contained'
-                        sx={{
-                          color: theme.palette.common.white,
-                          boxShadow: theme.shadows[1],
-                          borderRadius: 2,
-                          textTransform: 'none',
-                          height: 40,
-                          position: 'relative',
-                          overflow: 'hidden',
-                          zIndex: 2,
-                        }}
-                        startIcon={<NoteFavorite variant='Bold' size={16} />}
-                        onClick={() => setNewOrder(true)}
-                      >
-                        Order
-                      </Button>
-                    </>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={8} sm={6} md={4} lg={4} xl={3}>
-                <CusTextField
-                  placeholder='Search...'
-                  size='small'
-                  value={searchData}
-                  onChange={(e) => {
-                    setSearchData(e.currentTarget.value);
-                    setPage(1);
-                    onClearFilter();
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <IconButton
-                          onClick={(e) => setAnchorEl(e.currentTarget)}
-                          sx={{ mr: -1 }}
-                        >
-                          <FilterSearch
-                            size='20'
-                            color={theme.palette.primary.main}
-                          />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{ float: 'right' }}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-        <TableContainer
-          className='hide-scrollbar'
+      <PageHeader pageTitle='Orders'>
+        <CusTextField
+          onChange={(e) => setSearchData(e.target.value)}
+          placeholder='Search...'
+          size='small'
+          sx={{ bgcolor: 'common.white' }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <SearchNormal1 size={18} />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          variant='contained'
+          size='small'
+          disableElevation
           sx={{
-            flexGrow: 1,
-            overflow: 'auto',
+            color: 'common.white',
+            minWidth: 40,
+            height: 40,
+            width: 40,
+            mx: 2,
           }}
         >
-          {isLoadingOrderList && loadingChangingState ? (
-            <Stack
-              direction={'column'}
-              alignItems={'center'}
-              justifyContent='center'
-              sx={{ height: '100%' }}
-            >
-              <CusLoading />
-            </Stack>
-          ) : orderList && orderList.data.length > 0 ? (
-            <>
-              <Table sx={{ minWidth: '50vw' }}>
-                <OrderTableHead />
-                <OrderTableBody
-                  data={orderList.data}
-                  onPrintClick={onPrintClick}
-                  onEditClick={onEditClick}
-                  isExpense={false}
-                />
-              </Table>
-            </>
-          ) : (
-            <Stack
-              direction={'column'}
-              alignItems={'center'}
-              justifyContent='center'
-              spacing={1}
-              sx={{ height: '100%' }}
-            >
-              <BoxRemove size='80' color={theme.palette.error.main} />
-              <Typography variant='h6' color='error'>
-                No Order Data
-              </Typography>
-            </Stack>
-          )}
-        </TableContainer>
+          <Filter variant='Bold' />
+        </Button>
+        <Button
+          variant='contained'
+          size='small'
+          disableElevation
+          sx={{
+            color: 'common.white',
+            minWidth: 40,
+            height: 40,
+            width: 40,
+          }}
+        >
+          <Add />
+        </Button>
+      </PageHeader>
 
-        <Stack
-          alignItems='center'
-          width='100%'
-          p={1.5}
-          sx={{
-            bgcolor: 'background.paper',
-          }}
-        >
-          <Pagination
-            count={orderList?.totalPage}
-            page={page}
-            onChange={handleChangePage}
-            color='primary'
-            variant='outlined'
-            sx={{
-              '& .MuiPaginationItem-root': {
-                borderWidth: 0,
-              },
-            }}
+      <Container maxWidth='xl'>
+        <CusTable
+          headers={[
+            'ID',
+            'Customer',
+            'Date',
+            'Quantity',
+            'Location',
+            'Deposit',
+            'Status',
+            '',
+          ]}
+          body={orderList?.map((e, i) => (
+            <OrderTableBody
+              key={e.id}
+              item={e}
+              onPrintClick={() => onPrintClick(i)}
+              onEditClick={() => onEditClick(i)}
+            />
+          ))}
+        />
+      </Container>
+
+      {/* {orderList && orderList.data.length > 0 && (
+        <>
+          <OrderTableBody
+            data={orderList.data}
+            onPrintClick={onPrintClick}
+            onEditClick={onEditClick}
+            isExpense={false}
           />
-        </Stack>
-      </Paper>
-
-      <Popover
-        id='filter-order'
-        open={!!anchorEl}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        PaperProps={{
-          sx: {
-            p: 2,
-          },
-        }}
-      >
-        <form onSubmit={handleSubmit(handleSubmitFilter)}>
-          <Stack direction={'column'} spacing={2}>
-            <Controller
-              control={control}
-              name='eventType'
-              defaultValue=''
-              render={({ field, fieldState: { error } }) => (
-                <CusTextField
-                  select
-                  defaultValue={''}
-                  SelectProps={{
-                    displayEmpty: true,
-                  }}
-                  fullWidth
-                  placeholder='Event Type'
-                  size='small'
-                  error={Boolean(error)}
-                  {...field}
-                >
-                  <MenuItem value=''>All Event Type</MenuItem>
-                  {eventList.map((d, i) => (
-                    <MenuItem key={i} value={d}>
-                      {d}
-                    </MenuItem>
-                  ))}
-                </CusTextField>
-              )}
-            />
-            <Controller
-              control={control}
-              name='type'
-              defaultValue='event'
-              rules={{
-                required: true,
-              }}
-              render={({ field }) => (
-                <RadioGroup row {...field}>
-                  <FormControlLabel
-                    value='event'
-                    control={<Radio />}
-                    label='Event'
-                  />
-                  <FormControlLabel
-                    value='booking'
-                    control={<Radio />}
-                    label='Booking'
-                  />
-                </RadioGroup>
-              )}
-            />
-
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Controller
-                control={control}
-                name='from'
-                defaultValue={null}
-                rules={{
-                  required: true,
-                }}
-                render={({ field, fieldState: { error } }) => (
-                  <LabelTextField label='From'>
-                    <DatePicker
-                      openTo='day'
-                      views={['year', 'month', 'day']}
-                      renderInput={(params) => (
-                        <CusTextField
-                          size='small'
-                          error={Boolean(error)}
-                          {...params}
-                        />
-                      )}
-                      onChange={(date) => {
-                        field.onChange(date);
-                      }}
-                      value={field.value}
-                    />
-                  </LabelTextField>
-                )}
-              />
-              <Controller
-                control={control}
-                name='to'
-                defaultValue={null}
-                rules={{
-                  required: true,
-                }}
-                render={({ field, fieldState: { error } }) => (
-                  <LabelTextField label='To'>
-                    <DatePicker
-                      openTo='day'
-                      views={['year', 'month', 'day']}
-                      renderInput={(params) => (
-                        <CusTextField
-                          size='small'
-                          error={Boolean(error)}
-                          {...params}
-                        />
-                      )}
-                      onChange={(date) => {
-                        field.onChange(date);
-                      }}
-                      value={field.value}
-                    />
-                  </LabelTextField>
-                )}
-              />
-            </LocalizationProvider>
-            <Stack direction='row' spacing={2}>
-              <Button
-                variant='contained'
-                type='submit'
-                sx={{
-                  color: theme.palette.common.white,
-                  boxShadow: theme.shadows[1],
-                  borderRadius: 2,
-                  textTransform: 'none',
-                  height: 40,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  zIndex: 2,
-                  flexGrow: 1,
-                }}
-                startIcon={<TickCircle variant='Bold' size={16} />}
-              >
-                Confirm
-              </Button>
-              <IconButton
-                color='primary'
-                onClick={() => {
-                  onClearFilter();
-                  fetchOrderList({
-                    page: `${page - 1}`,
-                    status: toggleValue,
-                  });
-                }}
-              >
-                <FilterRemove />
-              </IconButton>
-            </Stack>
-          </Stack>
-        </form>
-      </Popover>
+        </>
+      )} */}
 
       <Drawer
         open={newOrder || orderDetail !== undefined}
@@ -557,13 +193,10 @@ const Orders = () => {
         }}
       >
         <OrderDrawer
-          {...{ handleCloseOrderDialog, orderDetail, draft }}
+          {...{ handleCloseOrderDialog, orderDetail }}
           onActionSuccess={() => {
             refreshGetOrderList();
             handleCloseOrderDialog();
-          }}
-          onSaveDraft={(draft?: Draft) => {
-            setDraft(draft);
           }}
         />
       </Drawer>
@@ -760,3 +393,152 @@ const pageStyle = `@page {
     page-break-before: always;
   }
 }`;
+
+/* <Popover
+  id='filter-order'
+  open={!!anchorEl}
+  anchorEl={anchorEl}
+  onClose={() => setAnchorEl(null)}
+  anchorOrigin={{
+    vertical: 'bottom',
+    horizontal: 'right',
+  }}
+  transformOrigin={{
+    vertical: 'top',
+    horizontal: 'right',
+  }}
+  PaperProps={{
+    sx: {
+      p: 2,
+    },
+  }}
+>
+  <form onSubmit={handleSubmit(handleSubmitFilter)}>
+    <Stack direction={'column'} spacing={2}>
+      <Controller
+        control={control}
+        name='eventType'
+        defaultValue=''
+        render={({ field, fieldState: { error } }) => (
+          <CusTextField
+            select
+            defaultValue={''}
+            SelectProps={{
+              displayEmpty: true,
+            }}
+            fullWidth
+            placeholder='Event Type'
+            size='small'
+            error={Boolean(error)}
+            {...field}
+          >
+            <MenuItem value=''>All Event Type</MenuItem>
+            {eventList.map((d, i) => (
+              <MenuItem key={i} value={d}>
+                {d}
+              </MenuItem>
+            ))}
+          </CusTextField>
+        )}
+      />
+      <Controller
+        control={control}
+        name='type'
+        defaultValue='event'
+        rules={{
+          required: true,
+        }}
+        render={({ field }) => (
+          <RadioGroup row {...field}>
+            <FormControlLabel value='event' control={<Radio />} label='Event' />
+            <FormControlLabel
+              value='booking'
+              control={<Radio />}
+              label='Booking'
+            />
+          </RadioGroup>
+        )}
+      />
+
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Controller
+          control={control}
+          name='from'
+          defaultValue={null}
+          rules={{
+            required: true,
+          }}
+          render={({ field, fieldState: { error } }) => (
+            <LabelTextField label='From'>
+              <DatePicker
+                openTo='day'
+                views={['year', 'month', 'day']}
+                renderInput={(params) => (
+                  <CusTextField
+                    size='small'
+                    error={Boolean(error)}
+                    {...params}
+                  />
+                )}
+                onChange={(date) => {
+                  field.onChange(date);
+                }}
+                value={field.value}
+              />
+            </LabelTextField>
+          )}
+        />
+        <Controller
+          control={control}
+          name='to'
+          defaultValue={null}
+          rules={{
+            required: true,
+          }}
+          render={({ field, fieldState: { error } }) => (
+            <LabelTextField label='To'>
+              <DatePicker
+                openTo='day'
+                views={['year', 'month', 'day']}
+                renderInput={(params) => (
+                  <CusTextField
+                    size='small'
+                    error={Boolean(error)}
+                    {...params}
+                  />
+                )}
+                onChange={(date) => {
+                  field.onChange(date);
+                }}
+                value={field.value}
+              />
+            </LabelTextField>
+          )}
+        />
+      </LocalizationProvider>
+      <Stack direction='row' spacing={2}>
+        <Button
+          variant='contained'
+          type='submit'
+          sx={{
+            color: theme.palette.common.white,
+            boxShadow: theme.shadows[1],
+            borderRadius: 2,
+            textTransform: 'none',
+            height: 40,
+            position: 'relative',
+            overflow: 'hidden',
+            zIndex: 2,
+            flexGrow: 1,
+          }}
+          startIcon={<TickCircle variant='Bold' size={16} />}
+        >
+          Confirm
+        </Button>
+        <IconButton color='primary'>
+          <FilterRemove />
+        </IconButton>
+      </Stack>
+    </Stack>
+  </form>
+</Popover>; */
