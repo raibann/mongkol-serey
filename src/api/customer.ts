@@ -43,6 +43,19 @@ const CUSTOMER_API = {
     );
     return res;
   },
+  updateCustomer: async ({
+    cusRequest,
+    id,
+  }: {
+    cusRequest: ICustomer.ICustomerRequest;
+    id: string;
+  }) => {
+    const res: ICustomer.ICustomerDetails = await HttpUtil.put(
+      ROUTE_API.updateCustomer.replace(':id', `${id}`),
+      cusRequest
+    );
+    return res;
+  },
   deleteCustomer: async ({ id }: { id: number }) => {
     const res: ICustomer.ICustomerDetails = await HttpUtil.delete(
       ROUTE_API.deletCustomer.replace(':id', `${id}`)

@@ -16,7 +16,7 @@ import { Edit2, Facebook, Location, Send2, Trash } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import theme from 'theme/theme';
-import { ROUTE_API, ROUTE_PATH } from 'utils/route-util';
+import { ROUTE_PATH } from 'utils/route-util';
 import THEME_UTIL from 'utils/theme-util';
 const headers = ['No', 'Name', 'Phone Number', 'Address', ''];
 

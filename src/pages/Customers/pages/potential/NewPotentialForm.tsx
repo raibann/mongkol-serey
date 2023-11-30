@@ -9,7 +9,11 @@ import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { EnumCustomerType, EnumSocialType } from 'utils/data-util';
+import {
+  EnumCustomerType,
+  EnumGenderType,
+  EnumSocialType,
+} from 'utils/data-util';
 import { ROUTE_PATH } from 'utils/route-util';
 
 interface INewPotentialInput {
@@ -55,7 +59,6 @@ export default function NewPotential() {
     // console.log(data);
     const telegram = data.socialType === EnumSocialType.TG ? data.social : '';
     const facebook = data.socialType === EnumSocialType.FB ? data.social : '';
-    // console.log(data);
     fecthData({
       cusRequest: {
         customer_name: data.customerName,
@@ -102,6 +105,12 @@ export default function NewPotential() {
                 defaultValue=''
                 control={control}
                 name='customerName'
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Feild is required',
+                  },
+                }}
                 render={({ field, fieldState }) => {
                   return (
                     <LabelTextField
@@ -134,6 +143,12 @@ export default function NewPotential() {
                 defaultValue=''
                 control={control}
                 name='phoneNumber'
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Feild is required',
+                  },
+                }}
                 render={({ field, fieldState }) => {
                   return (
                     <LabelTextField
@@ -146,12 +161,12 @@ export default function NewPotential() {
                 }}
               />
               <Controller
-                defaultValue=''
+                defaultValue={EnumGenderType.OTHER}
                 control={control}
                 name='gender'
                 render={({ field, fieldState }) => {
                   return (
-                    <LabelTextField label='Gender' fieldState={fieldState}>
+                    <LabelTextField label='Gender'>
                       <CusTextField
                         select
                         defaultValue={'Male'}
@@ -159,10 +174,14 @@ export default function NewPotential() {
                           displayEmpty: true,
                         }}
                         size='small'
+                        helperText={fieldState.error?.message}
                         {...field}
                       >
-                        <MenuItem value='Male'>Male</MenuItem>
-                        <MenuItem value='Female'>Female</MenuItem>
+                        <MenuItem value={EnumGenderType.OTHER}>Other</MenuItem>
+                        <MenuItem value={EnumGenderType.MALE}>Male</MenuItem>
+                        <MenuItem value={EnumGenderType.FEMALE}>
+                          Female
+                        </MenuItem>
                       </CusTextField>
                     </LabelTextField>
                   );

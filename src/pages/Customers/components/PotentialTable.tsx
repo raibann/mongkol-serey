@@ -1,14 +1,144 @@
-import { Avatar, Container, Grid, Stack, Typography } from '@mui/material';
+import {
+  Avatar,
+  CircularProgress,
+  Container,
+  Grid,
+  Menu,
+  MenuItem,
+  Stack,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { useRequest } from 'ahooks';
+import CUSTOMER_API from 'api/customer';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { CusIconButton } from 'components/CusIconButton';
-import { Facebook, Send2 } from 'iconsax-react';
+import { Call, Edit2, Facebook, Send2, Trash, UserEdit } from 'iconsax-react';
+import { useEffect, useState } from 'react';
 import { HiDotsHorizontal } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
+import { EnumCustomerType } from 'utils/data-util';
+import { ROUTE_PATH } from 'utils/route-util';
+
 import THEME_UTIL from 'utils/theme-util';
 
 export default function PotentialTable(props: {
   data: ICustomer.Customer[] | undefined;
+  onSuccess: () => void;
 }) {
+  // States
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectId, setSelectId] = useState<number | undefined>();
+  const [errorAlert, setErrorAlert] = useState(false);
+
+  // Variable
+  const open = Boolean(anchorEl);
+
+  // Hooks
+  const theme = useTheme();
+  const navigate = useNavigate();
+
+  // Fetch APIS
+  const {
+    run: fetchDelete,
+    loading: isLoadingDelete,
+    error: errorDelete,
+  } = useRequest(CUSTOMER_API.deleteCustomer, {
+    manual: true,
+    onSuccess: () => {
+      setAnchorEl(null);
+      props.onSuccess();
+    },
+  });
+
+  const {
+    loading: isLoadingUpdate,
+    error: errorUpdate,
+    run: fetchUpdate,
+  } = useRequest(CUSTOMER_API.updateCustomer, {
+    manual: true,
+    onSuccess: () => {
+      setAnchorEl(null);
+      props.onSuccess();
+    },
+  });
+
+  const {
+    run: fetchDetails,
+    error: errorDetails,
+    cancel: cancelFetchDetails,
+  } = useRequest(CUSTOMER_API.getCustomerDetails, {
+    manual: false,
+    onSuccess: (data) => {
+      fetchUpdate({
+        cusRequest: {
+          ...data.customer,
+          customerType: EnumCustomerType.CUSTOMER,
+        },
+        id: `${data.customer.id}`,
+      });
+    },
+  });
+
+  // Effect
+  useEffect(() => {
+    if (errorDelete || errorDetails || errorUpdate) {
+      setErrorAlert(!errorAlert);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errorDelete, errorDetails, errorUpdate]);
+
+  useEffect(() => {
+    if (!selectId) {
+      cancelFetchDetails();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectId]);
+
+  // Methods
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    id?: number
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setSelectId(id);
+  };
+
+  const handleEdit = () => {
+    if (selectId) {
+      navigate(
+        ROUTE_PATH.customers.updatePotentialCustomer.replace(
+          ':id',
+          `${selectId}`
+        )
+      );
+      setAnchorEl(null);
+    }
+  };
+
+  const handleDelete = () => {
+    if (selectId) {
+      fetchDelete({ id: selectId });
+    }
+  };
+
+  const handleConvertToCustomer = () => {
+    if (selectId) {
+      fetchDetails({ id: selectId });
+    }
+  };
+
   return (
     <>
+      <ErrorDialog
+        open={errorAlert}
+        onCloseDialog={() => {
+          setErrorAlert(!errorAlert);
+        }}
+        errorTitle={'Delete fail!'}
+        errorMessage={errorDelete?.message || 'Something went wrong!'}
+      />
+
       <Container maxWidth='xl'>
         <Grid container rowGap={2} columnGap={2}>
           {props.data &&
@@ -66,13 +196,22 @@ export default function PotentialTable(props: {
                                 color={THEME_UTIL.facebookColor}
                                 variant='Bold'
                               />
+                            )) ||
+                            (data.contact_number && (
+                              <Call
+                                size='14'
+                                color={theme.palette.success.main}
+                                variant='Bold'
+                              />
                             ))}
                           <Typography
                             variant='caption'
                             noWrap
                             color={'text.secondary'}
                           >
-                            {data.facebook_name || data.telegram_name}
+                            {data.facebook_name ||
+                              data.telegram_name ||
+                              data.contact_number}
                           </Typography>
                         </Stack>
                       </Stack>
@@ -82,9 +221,61 @@ export default function PotentialTable(props: {
                         boxShadow: 0,
                         color: (theme) => theme.palette.text.secondary,
                       }}
+                      onClick={(e) => {
+                        handleClick(e, data.id);
+                      }}
                     >
                       <HiDotsHorizontal />
                     </CusIconButton>
+                    <Menu
+                      id='basic-menu'
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={() => {
+                        setAnchorEl(null);
+                      }}
+                      MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                      }}
+                      elevation={1}
+                    >
+                      <MenuItem onClick={handleEdit}>
+                        <Edit2
+                          size='14'
+                          color={theme.palette.info.main}
+                          style={{ marginRight: 8 }}
+                        />
+                        Edit
+                      </MenuItem>
+                      <MenuItem onClick={handleConvertToCustomer}>
+                        {isLoadingUpdate ? (
+                          <CircularProgress size={'small'} />
+                        ) : (
+                          <>
+                            <UserEdit
+                              size='14'
+                              color={theme.palette.primary.main}
+                              style={{ marginRight: 8 }}
+                            />
+                            To Customer
+                          </>
+                        )}
+                      </MenuItem>
+                      <MenuItem onClick={handleDelete}>
+                        {isLoadingDelete ? (
+                          <CircularProgress size={'small'} />
+                        ) : (
+                          <>
+                            <Trash
+                              size='14'
+                              color={theme.palette.error.main}
+                              style={{ marginRight: 8 }}
+                            />
+                            Delete
+                          </>
+                        )}
+                      </MenuItem>
+                    </Menu>
                   </Stack>
                 </Grid>
               );

@@ -32,6 +32,8 @@ declare namespace ICustomer {
   interface Customer {
     id?: number;
     image: string;
+    payment?: string;
+    gender?: string;
     customer_name: string;
     facebook_name: string;
     telegram_name: string;

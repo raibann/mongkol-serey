@@ -1,5 +1,12 @@
 import { LoadingButton } from '@mui/lab';
-import { Paper, Container, Stack, MenuItem, Button } from '@mui/material';
+import {
+  Paper,
+  Container,
+  Stack,
+  MenuItem,
+  Button,
+  Skeleton,
+} from '@mui/material';
 import { useRequest } from 'ahooks';
 import CUSTOMER_API from 'api/customer';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
@@ -9,7 +16,7 @@ import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   EnumCustomerType,
   EnumGenderType,
@@ -38,48 +45,117 @@ export default function NewCustomerForm() {
   const [errorAlert, setErrorAlert] = useState(false);
 
   /* Hooks */
-  const { control, handleSubmit } = useForm<INewCustomerInput>();
+  const { control, handleSubmit, setValue } = useForm<INewCustomerInput>();
   const navigate = useNavigate();
+  const params = useParams();
 
   // Request APIs
   const {
     loading: isLoading,
-    run: fecthData,
-    error: errorFetch,
+    run: fecthCreate,
+    error: errorCreate,
   } = useRequest(CUSTOMER_API.postNewCustomer, {
     manual: true,
     onSuccess: (data) => data && navigate(ROUTE_PATH.customers.root),
   });
 
-  // Effect;
+  const {
+    loading: isLoadingUpdate,
+    error: errorUpdate,
+    run: fetchUpdate,
+  } = useRequest(CUSTOMER_API.updateCustomer, {
+    manual: true,
+    onSuccess: () => {
+      navigate(ROUTE_PATH.customers.root);
+    },
+  });
+
+  const {
+    run: fetchDetails,
+    loading: isLoadingDetails,
+    error: errorDetails,
+    cancel: cancelFetchDetails,
+  } = useRequest(CUSTOMER_API.getCustomerDetails, {
+    manual: false,
+    onSuccess: (data) => {
+      const social = data.customer.telegram_name || data.customer.facebook_name;
+      const socialType = data.customer.telegram_name
+        ? EnumSocialType.TG
+        : EnumSocialType.FB;
+      setValue('customerName', data.customer.customer_name);
+      setValue('location', data.customer.location);
+      setValue('gender', data.customer.gender || EnumGenderType.OTHER);
+      setValue('phoneNumber', data.customer.contact_number);
+      setValue('street', data.customer.street);
+      setValue('house', data.customer.house);
+      setValue('province', data.customer.province);
+      setValue('district', data.customer.district);
+      setValue('commune', data.customer.commune);
+      setValue('payment', data.customer.payment || '');
+      setValue('socialType', socialType);
+      setValue('social', social);
+    },
+  });
+
+  // Effect
   useEffect(() => {
-    if (errorFetch) {
+    if (errorCreate || errorDetails || errorUpdate) {
       setErrorAlert(!errorAlert);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errorFetch]);
+  }, [errorCreate, errorDetails, errorUpdate]);
+
+  useEffect(() => {
+    if (params.id) {
+      fetchDetails({ id: +params.id });
+    } else {
+      cancelFetchDetails();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
 
   /* Methods */
   const onSubmit = (data: INewCustomerInput) => {
     const telegram = data.socialType === EnumSocialType.TG ? data.social : '';
     const facebook = data.socialType === EnumSocialType.FB ? data.social : '';
-    // console.log(data);
-    fecthData({
-      cusRequest: {
-        customer_name: data.customerName,
-        facebook_name: facebook,
-        telegram_name: telegram,
-        contact_number: data.phoneNumber,
-        house: data.house,
-        street: data.street,
-        commune: data.commune,
-        district: data.district,
-        province: data.province,
-        location: data.location,
-        customerType: EnumCustomerType.CUSTOMER,
-        image: data.image,
-      },
-    });
+
+    if (params.id) {
+      fetchUpdate({
+        id: params.id,
+        cusRequest: {
+          customer_name: data.customerName,
+          facebook_name: facebook,
+          telegram_name: telegram,
+          contact_number: data.phoneNumber,
+          house: data.house,
+          street: data.street,
+          commune: data.commune,
+          district: data.district,
+          province: data.province,
+          location: data.location,
+          customerType: EnumCustomerType.CUSTOMER,
+          image: data.image,
+        },
+      });
+    } else {
+      // console.log(data);
+      fecthCreate({
+        cusRequest: {
+          customer_name: data.customerName,
+          facebook_name: facebook,
+          telegram_name: telegram,
+          contact_number: data.phoneNumber,
+          house: data.house,
+          street: data.street,
+          commune: data.commune,
+          district: data.district,
+          province: data.province,
+          location: data.location,
+          customerType: EnumCustomerType.CUSTOMER,
+          image: data.image,
+        },
+      });
+    }
   };
 
   return (
@@ -90,9 +166,11 @@ export default function NewCustomerForm() {
           setErrorAlert(!errorAlert);
         }}
         errorTitle='Failed Authentication'
-        errorMessage={errorFetch?.message || 'Something went wrong!'}
+        errorMessage={errorCreate?.message || 'Something went wrong!'}
       />
-      <SecondaryPageHeader title='Create New Customer' />
+      <SecondaryPageHeader
+        title={params.id ? 'Update Customer' : 'Create New Customer'}
+      />
       <Paper
         sx={{
           m: 3,
@@ -106,267 +184,301 @@ export default function NewCustomerForm() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Stack direction={'column'} spacing={2}>
-            <Stack direction={'row'} spacing={2}>
-              <UploadButton />
-            </Stack>
-            <Stack direction={'row'} spacing={2}>
-              <Controller
-                defaultValue=''
-                control={control}
-                name='customerName'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Field is required',
-                  },
-                }}
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField
-                      label='Customer Name'
-                      size='small'
-                      fieldState={fieldState}
-                      {...field}
-                    />
-                  );
-                }}
-              />
-              <Controller
-                defaultValue=''
-                control={control}
-                name='location'
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField
-                      label='Location'
-                      size='small'
-                      fieldState={fieldState}
-                      {...field}
-                    />
-                  );
-                }}
-              />
-            </Stack>
-            <Stack direction={'row'} spacing={2}>
-              <Controller
-                defaultValue=''
-                control={control}
-                name='phoneNumber'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Field is required',
-                  },
-                }}
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField
-                      label='Phone Number'
-                      size='small'
-                      fieldState={fieldState}
-                      {...field}
-                    />
-                  );
-                }}
-              />
-              <Controller
-                defaultValue={EnumGenderType.OTHER}
-                control={control}
-                name='gender'
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField label='Gender'>
-                      <CusTextField
-                        select
-                        SelectProps={{
-                          displayEmpty: true,
-                        }}
-                        size='small'
-                        helperText={fieldState.error?.message}
-                        {...field}
-                      >
-                        <MenuItem value={EnumGenderType.OTHER}>Other</MenuItem>
-                        <MenuItem value={EnumGenderType.MALE}>Male</MenuItem>
-                        <MenuItem value={EnumGenderType.FEMALE}>
-                          Female
-                        </MenuItem>
-                      </CusTextField>
-                    </LabelTextField>
-                  );
-                }}
-              />
-            </Stack>
-            <Stack direction={'row'} spacing={2}>
-              <Controller
-                defaultValue=''
-                control={control}
-                name='street'
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField
-                      label='Street'
-                      size='small'
-                      fieldState={fieldState}
-                      {...field}
-                    />
-                  );
-                }}
-              />
-              <Controller
-                defaultValue=''
-                control={control}
-                name='house'
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField
-                      label='House'
-                      size='small'
-                      fieldState={fieldState}
-                      {...field}
-                    />
-                  );
-                }}
-              />
-            </Stack>
-            <Stack direction={'row'} spacing={2}>
-              <Controller
-                defaultValue=''
-                control={control}
-                name='province'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Field is required',
-                  },
-                }}
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField
-                      label='Province'
-                      size='small'
-                      fieldState={fieldState}
-                      {...field}
-                    />
-                  );
-                }}
-              />
-              <Controller
-                defaultValue=''
-                control={control}
-                name='district'
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField
-                      label='District'
-                      size='small'
-                      fieldState={fieldState}
-                      {...field}
-                    />
-                  );
-                }}
-              />
-            </Stack>
-            <Stack direction={'row'} spacing={2}>
-              <Controller
-                defaultValue=''
-                control={control}
-                name='commune'
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField
-                      label='Commune'
-                      size='small'
-                      fieldState={fieldState}
-                      {...field}
-                    />
-                  );
-                }}
-              />
-              <Controller
-                defaultValue=''
-                control={control}
-                name='payment'
-                render={({ field, fieldState }) => {
-                  return (
-                    <LabelTextField
-                      label='Default Payment'
-                      fieldState={fieldState}
-                    >
-                      <CusTextField
-                        select
-                        defaultValue={''}
-                        SelectProps={{
-                          displayEmpty: true,
-                        }}
-                        size='small'
-                        {...field}
-                      >
-                        <MenuItem value='Aba'>ABA</MenuItem>
-                        <MenuItem value='Acleda'>ACLEDA</MenuItem>
-                      </CusTextField>
-                    </LabelTextField>
-                  );
-                }}
-              />
-            </Stack>
-            <Stack direction={'row'}>
-              <LabelTextField label='Social Media' size='small'>
-                <Stack direction={'row'} spacing={1}>
+            {isLoadingDetails ? (
+              <>
+                <Stack
+                  direction={'row'}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                >
+                  <Skeleton variant='circular' width={80} height={80} />
+                </Stack>
+                {Array(4)
+                  .fill('')
+                  .map((_, i) => (
+                    <Stack direction={'row'} spacing={2} key={i}>
+                      <Skeleton
+                        variant='text'
+                        sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
+                      />
+                      <Skeleton
+                        variant='text'
+                        sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
+                      />
+                    </Stack>
+                  ))}
+              </>
+            ) : (
+              <>
+                <Stack direction={'row'} spacing={2}>
+                  <UploadButton />
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
                   <Controller
-                    defaultValue='TG'
+                    defaultValue=''
                     control={control}
-                    name='socialType'
-                    render={({ field }) => {
+                    name='customerName'
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Field is required',
+                      },
+                    }}
+                    render={({ field, fieldState }) => {
                       return (
-                        <CusTextField
-                          select
-                          defaultValue={EnumSocialType.TG}
-                          SelectProps={{
-                            displayEmpty: true,
-                          }}
+                        <LabelTextField
+                          label='Customer Name'
                           size='small'
-                          sx={{ width: '40%' }}
+                          fieldState={fieldState}
                           {...field}
-                        >
-                          <MenuItem value={EnumSocialType.FB}>
-                            Facebook
-                          </MenuItem>
-                          <MenuItem value={EnumSocialType.TG}>
-                            Telegram
-                          </MenuItem>
-                        </CusTextField>
+                        />
                       );
                     }}
                   />
                   <Controller
                     defaultValue=''
                     control={control}
-                    name='social'
-                    render={({ field }) => {
-                      return <CusTextField fullWidth size='small' {...field} />;
+                    name='location'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Location'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
                     }}
                   />
                 </Stack>
-              </LabelTextField>
-            </Stack>
-            <Stack
-              direction={'row'}
-              justifyContent={'space-between'}
-              spacing={2}
-              py={2}
-            >
-              <Button variant='outlined' fullWidth>
-                Reset
-              </Button>
-              <LoadingButton
-                loading={isLoading}
-                type='submit'
-                variant='contained'
-                fullWidth
-              >
-                Save
-              </LoadingButton>
-            </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='phoneNumber'
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Field is required',
+                      },
+                    }}
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Phone Number'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                  <Controller
+                    defaultValue={EnumGenderType.OTHER}
+                    control={control}
+                    name='gender'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField label='Gender'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={EnumGenderType.OTHER}>
+                              Other
+                            </MenuItem>
+                            <MenuItem value={EnumGenderType.MALE}>
+                              Male
+                            </MenuItem>
+                            <MenuItem value={EnumGenderType.FEMALE}>
+                              Female
+                            </MenuItem>
+                          </CusTextField>
+                        </LabelTextField>
+                      );
+                    }}
+                  />
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='street'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Street'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='house'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='House'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='province'
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Field is required',
+                      },
+                    }}
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Province'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='district'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='District'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='commune'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Commune'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='payment'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Default Payment'
+                          fieldState={fieldState}
+                        >
+                          <CusTextField
+                            select
+                            defaultValue={''}
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            {...field}
+                          >
+                            <MenuItem value='Aba'>ABA</MenuItem>
+                            <MenuItem value='Acleda'>ACLEDA</MenuItem>
+                          </CusTextField>
+                        </LabelTextField>
+                      );
+                    }}
+                  />
+                </Stack>
+                <Stack direction={'row'}>
+                  <LabelTextField label='Social Media' size='small'>
+                    <Stack direction={'row'} spacing={1}>
+                      <Controller
+                        defaultValue='TG'
+                        control={control}
+                        name='socialType'
+                        render={({ field }) => {
+                          return (
+                            <CusTextField
+                              select
+                              defaultValue={EnumSocialType.TG}
+                              SelectProps={{
+                                displayEmpty: true,
+                              }}
+                              size='small'
+                              sx={{ width: '40%' }}
+                              {...field}
+                            >
+                              <MenuItem value={EnumSocialType.FB}>
+                                Facebook
+                              </MenuItem>
+                              <MenuItem value={EnumSocialType.TG}>
+                                Telegram
+                              </MenuItem>
+                            </CusTextField>
+                          );
+                        }}
+                      />
+                      <Controller
+                        defaultValue=''
+                        control={control}
+                        name='social'
+                        render={({ field }) => {
+                          return (
+                            <CusTextField fullWidth size='small' {...field} />
+                          );
+                        }}
+                      />
+                    </Stack>
+                  </LabelTextField>
+                </Stack>
+                <Stack
+                  direction={'row'}
+                  justifyContent={'space-between'}
+                  spacing={2}
+                  py={2}
+                >
+                  <Button variant='outlined' fullWidth>
+                    Reset
+                  </Button>
+                  <LoadingButton
+                    loading={isLoading || isLoadingUpdate}
+                    type='submit'
+                    variant='contained'
+                    fullWidth
+                  >
+                    Save
+                  </LoadingButton>
+                </Stack>
+              </>
+            )}
           </Stack>
         </Container>
       </Paper>

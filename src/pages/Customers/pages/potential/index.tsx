@@ -36,11 +36,12 @@ export default function Potential() {
     loading: isLoading,
     run: fecthData,
     error: errorFetch,
+    refresh: refreshCustomer,
   } = useRequest(CUSTOMER_API.getCustomerList, { manual: false });
 
   useEffect(() => {
     fecthData({
-      type: EnumCustomerType.CUSTOMER,
+      type: EnumCustomerType.POTENTIAL_CUSTOMER,
       page: page,
       size: 10,
       search: searchDebounced,
@@ -118,7 +119,10 @@ export default function Potential() {
           <ErrorResponse errorMessage={'Internal Server Error!'} />
         ) : (
           <>
-            <PotentialTable data={resCustomers?.data} />
+            <PotentialTable
+              data={resCustomers?.data}
+              onSuccess={refreshCustomer}
+            />
             <TablePagination
               rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
               component='div'
