@@ -1,9 +1,9 @@
 import { Stack, TextFieldProps, Typography } from '@mui/material';
 import CusTextField from 'components/CusTextField';
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { ControllerFieldState } from 'react-hook-form';
 
-const LabelTextField = React.forwardRef<
+const LabelTextField = forwardRef<
   HTMLDivElement,
   {
     label?: string;

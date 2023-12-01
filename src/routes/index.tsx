@@ -27,16 +27,16 @@ const InventoryCategory = lazy(
   () => import('pages/Inventories/pages/Categories')
 );
 const InventoryReport = lazy(() => import('pages/Inventories/pages/Reports'));
-const Departments = lazy(() => import('pages/Users/pages/Departments'));
-const NewDepartmentForm = lazy(
-  () => import('pages/Users/pages/Departments/NewDepartmentForm')
-);
 const MenuForm = lazy(() => import('pages/Menus/pages/MenuPackageForm'));
+const Roles = lazy(() => import('pages/Users/pages/Roles'));
+const NewRoleForm = lazy(() => import('pages/Users/pages/Roles/NewRoleForm'));
 const NewUserForm = lazy(() => import('pages/Users/pages/NewUserForm'));
 const NewSupplierForm = lazy(
   () => import('pages/Suppliers/pages/NewSupplierForm')
 );
-const NewCustomerForm = lazy(() => import('pages/Customers/pages/NewCustomer'));
+const NewCustomerForm = lazy(
+  () => import('pages/Customers/pages/NewCustomerForm')
+);
 const NewPotentialForm = lazy(
   () => import('pages/Customers/pages/potential/NewPotentialForm')
 );
@@ -61,8 +61,6 @@ const OrderForm = lazy(() => import('pages/Orders/pages/OrderForm'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
-  /* Allow to use without api */
-  // authState.authed = true;
 
   return (
     <Routes>
@@ -192,6 +190,14 @@ export default function AllRoutes() {
           }
         />
         <Route
+          path={ROUTE_PATH.customers.updateCustomer}
+          element={
+            <Suspense>
+              <NewCustomerForm />
+            </Suspense>
+          }
+        />
+        <Route
           path={ROUTE_PATH.customers.potentialCustomers}
           element={
             <Suspense>
@@ -201,6 +207,14 @@ export default function AllRoutes() {
         />
         <Route
           path={ROUTE_PATH.customers.createPotentialCustomer}
+          element={
+            <Suspense>
+              <NewPotentialForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.customers.updatePotentialCustomer}
           element={
             <Suspense>
               <NewPotentialForm />
@@ -380,18 +394,18 @@ export default function AllRoutes() {
           }
         />
         <Route
-          path={ROUTE_PATH.users.departments}
+          path={ROUTE_PATH.users.roles}
           element={
             <Suspense>
-              <Departments />
+              <Roles />
             </Suspense>
           }
         />
         <Route
-          path={ROUTE_PATH.users.createNewDepartment}
+          path={ROUTE_PATH.users.createNewRole}
           element={
             <Suspense>
-              <NewDepartmentForm />
+              <NewRoleForm />
             </Suspense>
           }
         />

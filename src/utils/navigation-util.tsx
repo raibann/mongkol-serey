@@ -149,12 +149,12 @@ const navigationUtil: Navigation = [
     selectedIcon: <UserSquare size='18' variant='Bold' />,
     children: [
       {
-        title: 'Profiles',
+        title: 'Accounts',
         toUrl: ROUTE_PATH.users.root,
       },
       {
-        title: 'Departments',
-        toUrl: ROUTE_PATH.users.departments,
+        title: 'Role',
+        toUrl: ROUTE_PATH.users.roles,
       },
     ],
   },

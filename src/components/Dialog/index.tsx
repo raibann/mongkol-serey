@@ -1,5 +1,10 @@
-import React, { useState, useImperativeHandle, forwardRef, ForwardedRef, ReactElement } from 'react';
-import MuiDialog, { DialogProps as MuiDialogProps } from '@mui/material/Dialog';
+import React, {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  ForwardedRef,
+} from 'react';
+import MuiDialog from '@mui/material/Dialog';
 import DialogTitle, { DialogTitleProps } from '@mui/material/DialogTitle';
 import DialogContent, { DialogContentProps } from '@mui/material/DialogContent';
 import DialogActions, { DialogActionsProps } from '@mui/material/DialogActions';
@@ -22,8 +27,6 @@ export interface IDialogRef {
   open: (params?: any) => void;
   close: () => void;
 }
-
-type childrenProps = ReactElement<{ id: number }>;
 
 interface IDialogProps {
   cusTitle?: string;
@@ -106,7 +109,9 @@ const Dialog = (
             p={disablePadding ? 0 : undefined}
             {...dialogTitleProps}
           >
-            {params === undefined || alternateTitle === '' ? cusTitle : alternateTitle}
+            {params === undefined || alternateTitle === ''
+              ? cusTitle
+              : alternateTitle}
             {!disableCloseButton && (
               <IconButton onClick={onCloseDialog}>
                 <MdOutlineClose />
@@ -114,10 +119,15 @@ const Dialog = (
             )}
           </DialogTitle>
         )}
-        <DialogContent sx={{ p: disablePadding ? 0 : undefined, ...dialogContentProps?.sx }} {...dialogContentProps}>
+        <DialogContent
+          sx={{ p: disablePadding ? 0 : undefined, ...dialogContentProps?.sx }}
+          {...dialogContentProps}
+        >
           {content(params) || children}
         </DialogContent>
-        {action !== null && <DialogActions {...dialogActionProps}>{action}</DialogActions>}
+        {action !== null && (
+          <DialogActions {...dialogActionProps}>{action}</DialogActions>
+        )}
       </MuiDialog>
     </>
   );

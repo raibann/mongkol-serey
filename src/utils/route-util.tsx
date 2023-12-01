@@ -67,9 +67,9 @@ export const ROUTE_PATH = {
     root: '/users',
     createNewUser: '/users/create-new-user',
     updateUser: '/users/update-user/:id',
-    departments: '/users/departments',
-    createNewDepartment: '/users/create-new-department',
-    updateDepartment: '/users/update-department/:id',
+    roles: '/users/roles',
+    createNewRole: '/users/create-new-role',
+    updateRole: '/users/update-role/:id',
   },
   setting: {
     root: '/setting',
@@ -93,6 +93,7 @@ export const ROUTE_API = {
   customersList: '/api/customer/v1/list',
   customerDetails: '/api/customer/v1/:id',
   addCustomer: '/api/customer/v1/action',
+  updateCustomer: '/api/customer/v1/:id',
   deletCustomer: '/api/customer/v1/delete/:id',
 
   expensesList: '/api/expense/v1/orders',

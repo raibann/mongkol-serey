@@ -428,3 +428,20 @@ export const PercentFilter: { [key: string]: number } = {
   month: 1,
   year: 2,
 };
+
+// Types
+export enum EnumCustomerType {
+  POTENTIAL_CUSTOMER = 'POTENTIAL_CUSTOMER',
+  CUSTOMER = 'CUSTOMER',
+}
+
+export enum EnumGenderType {
+  OTHER = 'OTHER',
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+}
+
+export enum EnumSocialType {
+  FB = 'FB',
+  TG = 'TG',
+}

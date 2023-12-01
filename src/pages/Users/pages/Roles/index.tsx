@@ -3,7 +3,7 @@ import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import { Add, SearchNormal1 } from 'iconsax-react';
-import DepartmentTable from 'pages/Users/components/DepartmentTable';
+import RoleTable from 'pages/Users/components/RoleTable';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 
@@ -28,7 +28,7 @@ export default function Departments() {
           }}
         />
         <Button
-          onClick={() => navigate(ROUTE_PATH.users.createNewDepartment)}
+          onClick={() => navigate(ROUTE_PATH.users.createNewRole)}
           variant='contained'
           size='small'
           disableElevation
@@ -41,7 +41,7 @@ export default function Departments() {
         </Button>
       </PageHeader>
       <Container maxWidth='xl'>
-        <DepartmentTable />
+        <RoleTable />
       </Container>
     </>
   );

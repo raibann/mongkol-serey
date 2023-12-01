@@ -31,6 +31,9 @@ declare namespace ICustomer {
 
   interface Customer {
     id?: number;
+    image: string;
+    payment?: string;
+    gender?: string;
     customer_name: string;
     facebook_name: string;
     telegram_name: string;
@@ -41,6 +44,10 @@ declare namespace ICustomer {
     district: string;
     province: string;
     location: string;
+    customerType: string;
+    history?: string;
+    remarks?: string;
+    status: string;
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: any;
@@ -88,5 +95,8 @@ declare namespace ICustomer {
     district: string;
     province: string;
     location: string;
+    customerType: string;
+    remarks?: string;
+    image?: string;
   }
 }

@@ -13,6 +13,7 @@ import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
+import UploadButton from 'components/UploadButton';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -23,36 +24,40 @@ import {
 } from 'utils/data-util';
 import { ROUTE_PATH } from 'utils/route-util';
 
-interface INewPotentialInput {
+interface INewCustomerInput {
   id?: string | number;
   customerName: string;
-  location: string;
   phoneNumber: string;
   gender: string;
+  street: string;
+  house: string;
+  province: string;
+  district: string;
+  commune: string;
+  payment: string;
   social: string;
   socialType: string;
-  note: string;
+  location: string;
+  image?: string;
 }
-
-export default function NewPotential() {
+export default function NewCustomerForm() {
   // State
   const [errorAlert, setErrorAlert] = useState(false);
 
   /* Hooks */
   const { control, handleSubmit, setValue, reset } =
-    useForm<INewPotentialInput>();
+    useForm<INewCustomerInput>();
   const navigate = useNavigate();
   const params = useParams();
 
   // Request APIs
   const {
     loading: isLoadingCreate,
-    run: fecthData,
+    run: fecthCreate,
     error: errorCreate,
   } = useRequest(CUSTOMER_API.postNewCustomer, {
     manual: true,
-    onSuccess: (data) =>
-      data && navigate(ROUTE_PATH.customers.potentialCustomers),
+    onSuccess: (data) => data && navigate(ROUTE_PATH.customers.root),
   });
 
   const {
@@ -62,7 +67,7 @@ export default function NewPotential() {
   } = useRequest(CUSTOMER_API.updateCustomer, {
     manual: true,
     onSuccess: () => {
-      navigate(ROUTE_PATH.customers.potentialCustomers);
+      navigate(ROUTE_PATH.customers.root);
     },
   });
 
@@ -82,12 +87,18 @@ export default function NewPotential() {
       setValue('location', data.customer.location);
       setValue('gender', data.customer.gender || EnumGenderType.OTHER);
       setValue('phoneNumber', data.customer.contact_number);
+      setValue('street', data.customer.street);
+      setValue('house', data.customer.house);
+      setValue('province', data.customer.province);
+      setValue('district', data.customer.district);
+      setValue('commune', data.customer.commune);
+      setValue('payment', data.customer.payment || '');
       setValue('socialType', socialType);
       setValue('social', social);
     },
   });
 
-  // Effect;
+  // Effect
   useEffect(() => {
     if (errorCreate || errorDetails || errorUpdate) {
       setErrorAlert(!errorAlert);
@@ -105,10 +116,10 @@ export default function NewPotential() {
   }, [params]);
 
   /* Methods */
-  const onSubmit = (data: INewPotentialInput) => {
-    // console.log(data);
+  const onSubmit = (data: INewCustomerInput) => {
     const telegram = data.socialType === EnumSocialType.TG ? data.social : '';
     const facebook = data.socialType === EnumSocialType.FB ? data.social : '';
+
     if (params.id) {
       fetchUpdate({
         id: params.id,
@@ -117,31 +128,32 @@ export default function NewPotential() {
           facebook_name: facebook,
           telegram_name: telegram,
           contact_number: data.phoneNumber,
-          customerType: EnumCustomerType.POTENTIAL_CUSTOMER,
+          house: data.house,
+          street: data.street,
+          commune: data.commune,
+          district: data.district,
+          province: data.province,
           location: data.location,
-          remarks: data.note,
-          commune: '',
-          district: '',
-          house: '',
-          province: '',
-          street: '',
+          customerType: EnumCustomerType.CUSTOMER,
+          image: data.image,
         },
       });
     } else {
-      fecthData({
+      // console.log(data);
+      fecthCreate({
         cusRequest: {
           customer_name: data.customerName,
           facebook_name: facebook,
           telegram_name: telegram,
           contact_number: data.phoneNumber,
-          customerType: EnumCustomerType.POTENTIAL_CUSTOMER,
+          house: data.house,
+          street: data.street,
+          commune: data.commune,
+          district: data.district,
+          province: data.province,
           location: data.location,
-          remarks: data.note,
-          commune: '',
-          district: '',
-          house: '',
-          province: '',
-          street: '',
+          customerType: EnumCustomerType.CUSTOMER,
+          image: data.image,
         },
       });
     }
@@ -150,12 +162,18 @@ export default function NewPotential() {
   const onReset = () => {
     reset({
       customerName: '',
-      location: '',
       phoneNumber: '',
       gender: EnumGenderType.OTHER,
+      street: '',
+      house: '',
+      province: '',
+      district: '',
+      commune: '',
+      payment: '',
       social: '',
       socialType: EnumSocialType.TG,
-      note: '',
+      location: '',
+      image: '',
     });
   };
 
@@ -170,7 +188,7 @@ export default function NewPotential() {
         errorMessage={'Something went wrong!'}
       />
       <SecondaryPageHeader
-        title={params.id ? 'Update Potential' : 'Create New Potential'}
+        title={params.id ? 'Update Customer' : 'Create New Customer'}
       />
       <Paper
         sx={{
@@ -187,18 +205,25 @@ export default function NewPotential() {
           <Stack direction={'column'} spacing={2}>
             {isLoadingDetails ? (
               <>
+                <Stack
+                  direction={'row'}
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                >
+                  <Skeleton variant='circular' width={80} height={80} />
+                </Stack>
                 {Array(4)
                   .fill('')
                   .map((_, i) => (
                     <Stack direction={'row'} spacing={2} key={i}>
                       <Skeleton
-                        variant='text'
                         animation='wave'
+                        variant='text'
                         sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
                       />
                       <Skeleton
-                        variant='text'
                         animation='wave'
+                        variant='text'
                         sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
                       />
                     </Stack>
@@ -207,6 +232,9 @@ export default function NewPotential() {
             ) : (
               <>
                 <Stack direction={'row'} spacing={2}>
+                  <UploadButton />
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
                   <Controller
                     defaultValue=''
                     control={control}
@@ -214,7 +242,7 @@ export default function NewPotential() {
                     rules={{
                       required: {
                         value: true,
-                        message: 'Feild is required',
+                        message: 'Field is required',
                       },
                     }}
                     render={({ field, fieldState }) => {
@@ -252,7 +280,7 @@ export default function NewPotential() {
                     rules={{
                       required: {
                         value: true,
-                        message: 'Feild is required',
+                        message: 'Field is required',
                       },
                     }}
                     render={({ field, fieldState }) => {
@@ -275,7 +303,6 @@ export default function NewPotential() {
                         <LabelTextField label='Gender'>
                           <CusTextField
                             select
-                            defaultValue={'Male'}
                             SelectProps={{
                               displayEmpty: true,
                             }}
@@ -298,6 +325,119 @@ export default function NewPotential() {
                     }}
                   />
                 </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='street'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Street'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='house'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='House'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='province'
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Field is required',
+                      },
+                    }}
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Province'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='district'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='District'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                </Stack>
+                <Stack direction={'row'} spacing={2}>
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='commune'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Commune'
+                          size='small'
+                          fieldState={fieldState}
+                          {...field}
+                        />
+                      );
+                    }}
+                  />
+                  <Controller
+                    defaultValue=''
+                    control={control}
+                    name='payment'
+                    render={({ field, fieldState }) => {
+                      return (
+                        <LabelTextField
+                          label='Default Payment'
+                          fieldState={fieldState}
+                        >
+                          <CusTextField
+                            select
+                            defaultValue={''}
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            {...field}
+                          >
+                            <MenuItem value='Aba'>ABA</MenuItem>
+                            <MenuItem value='Acleda'>ACLEDA</MenuItem>
+                          </CusTextField>
+                        </LabelTextField>
+                      );
+                    }}
+                  />
+                </Stack>
                 <Stack direction={'row'}>
                   <LabelTextField label='Social Media' size='small'>
                     <Stack direction={'row'} spacing={1}>
@@ -309,7 +449,7 @@ export default function NewPotential() {
                           return (
                             <CusTextField
                               select
-                              defaultValue={''}
+                              defaultValue={EnumSocialType.TG}
                               SelectProps={{
                                 displayEmpty: true,
                               }}
@@ -317,8 +457,12 @@ export default function NewPotential() {
                               sx={{ width: '40%' }}
                               {...field}
                             >
-                              <MenuItem value='FB'>Facebook</MenuItem>
-                              <MenuItem value='TG'>Telegram</MenuItem>
+                              <MenuItem value={EnumSocialType.FB}>
+                                Facebook
+                              </MenuItem>
+                              <MenuItem value={EnumSocialType.TG}>
+                                Telegram
+                              </MenuItem>
                             </CusTextField>
                           );
                         }}
@@ -336,21 +480,6 @@ export default function NewPotential() {
                     </Stack>
                   </LabelTextField>
                 </Stack>
-                <Controller
-                  defaultValue=''
-                  control={control}
-                  name='note'
-                  render={({ field, fieldState }) => {
-                    return (
-                      <LabelTextField
-                        label='Note...'
-                        size='small'
-                        fieldState={fieldState}
-                        {...field}
-                      />
-                    );
-                  }}
-                />
                 <Stack
                   direction={'row'}
                   justifyContent={'space-between'}

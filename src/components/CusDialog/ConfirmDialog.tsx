@@ -44,7 +44,7 @@ export default function ConfirmDialogSlide(props: IConfirmDialog) {
         </Stack>
         <Stack direction={'row'} spacing={4}>
           <Button
-            variant='outlined'
+            variant='contained'
             color='error'
             sx={{
               '&:hover': {
@@ -59,7 +59,7 @@ export default function ConfirmDialogSlide(props: IConfirmDialog) {
           <LoadingButton
             onClick={confirm}
             loading={loading}
-            variant='outlined'
+            variant='contained'
             color='info'
             loadingIndicator='Deletting…'
           >

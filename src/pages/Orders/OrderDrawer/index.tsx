@@ -16,7 +16,6 @@ import {
   SubmitHandler,
   useForm,
 } from 'react-hook-form';
-import { CustomerInput } from 'pages/Customers/CustForm/CustomerForm';
 import { BsPlus } from 'react-icons/bs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { useEffect, useRef, useState } from 'react';
@@ -37,7 +36,7 @@ import FinalInvoiceForm, {
   IFinalInvoice,
 } from './FinalInvoiceForm';
 import CUSTOMER_API from 'api/customer';
-import { eventList, paidBy } from 'utils/data-util';
+import { EnumCustomerType, eventList, paidBy } from 'utils/data-util';
 import EXPENSE_API from 'api/expense';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
@@ -117,6 +116,7 @@ const OrderDrawer = ({
       CUSTOMER_API.getCustomerList({
         size: 5,
         search: debounceSearchCustomer,
+        type: EnumCustomerType.CUSTOMER,
       }),
     {
       refreshDeps: [debounceSearchCustomer],
@@ -132,16 +132,14 @@ const OrderDrawer = ({
   });
 
   // react-hooks-form
-  const methods = useForm<IOrderForm & CustomerInput & FinalInvoiceInput>();
-  const { setValue, handleSubmit } = methods;
+  const methods = useForm<IOrderForm & FinalInvoiceInput>();
+  const { setValue, handleSubmit, getValues } = methods;
 
   // Variables
   let orderItemId = 0;
   const selectCustomerWidth = useRef(0);
 
-  const onSubmit: SubmitHandler<
-    IOrderForm & CustomerInput & FinalInvoiceInput
-  > = (data) => {
+  const onSubmit: SubmitHandler<IOrderForm & FinalInvoiceInput> = (data) => {
     orderActionReq.run(
       {
         id: data.orderId || undefined,
@@ -227,7 +225,7 @@ const OrderDrawer = ({
       setValue('quantity', orderDetail.quantity || '');
       setValue('listMenu', tmpListMenu);
       setValue('finalInvoice', tmpFinalInvoice);
-      setSelectedCustomer(orderDetail?.customer);
+      // setSelectedCustomer(orderDetail?.customer);
       setListMenu(tmpListMenu);
       setFinalInvoice(tmpFinalInvoice);
       return;

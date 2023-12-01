@@ -1,11 +1,6 @@
-import { Paper, Stack, Typography, Grid } from '@mui/material';
 import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
-import { Facebook, Call, Personalcard, Cake } from 'iconsax-react';
 import moment from 'moment';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import theme from 'theme/theme';
-import { ROUTE_PATH } from 'utils/route-util';
 
 const EventToday = ({
   listItem,

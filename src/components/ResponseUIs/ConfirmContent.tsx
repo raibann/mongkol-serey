@@ -1,5 +1,5 @@
 import { Box, Typography, useTheme, Button, Stack } from '@mui/material';
-import { EmojiSad, MessageQuestion } from 'iconsax-react';
+import { MessageQuestion } from 'iconsax-react';
 
 const ConfirmContent = ({
   background,
@@ -51,11 +51,22 @@ const ConfirmContent = ({
           alignItems: 'center',
         }}
       >
-        {icon || <MessageQuestion variant='Bulk' size={50} color={theme.palette.info.main} />}
+        {icon || (
+          <MessageQuestion
+            variant='Bulk'
+            size={50}
+            color={theme.palette.info.main}
+          />
+        )}
         <Typography variant='h6' fontWeight='bold' textAlign='center' mt={1}>
           {title}
         </Typography>
-        <Typography variant='body2' fontWeight='normal' textAlign='center' mb={2}>
+        <Typography
+          variant='body2'
+          fontWeight='normal'
+          textAlign='center'
+          mb={2}
+        >
           {message}
         </Typography>
         <Stack direction='row' spacing={2}>
@@ -64,7 +75,12 @@ const ConfirmContent = ({
               Cancel
             </Button>
           )}
-          <Button onClick={onConfirm} color='info' size='small' disabled={loading}>
+          <Button
+            onClick={onConfirm}
+            color='info'
+            size='small'
+            disabled={loading}
+          >
             {loading ? buttonTextLoading : buttonText}
           </Button>
         </Stack>
