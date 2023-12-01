@@ -45,13 +45,14 @@ export default function NewCustomerForm() {
   const [errorAlert, setErrorAlert] = useState(false);
 
   /* Hooks */
-  const { control, handleSubmit, setValue } = useForm<INewCustomerInput>();
+  const { control, handleSubmit, setValue, reset } =
+    useForm<INewCustomerInput>();
   const navigate = useNavigate();
   const params = useParams();
 
   // Request APIs
   const {
-    loading: isLoading,
+    loading: isLoadingCreate,
     run: fecthCreate,
     error: errorCreate,
   } = useRequest(CUSTOMER_API.postNewCustomer, {
@@ -158,6 +159,24 @@ export default function NewCustomerForm() {
     }
   };
 
+  const onReset = () => {
+    reset({
+      customerName: '',
+      phoneNumber: '',
+      gender: EnumGenderType.OTHER,
+      street: '',
+      house: '',
+      province: '',
+      district: '',
+      commune: '',
+      payment: '',
+      social: '',
+      socialType: EnumSocialType.TG,
+      location: '',
+      image: '',
+    });
+  };
+
   return (
     <>
       <ErrorDialog
@@ -166,7 +185,7 @@ export default function NewCustomerForm() {
           setErrorAlert(!errorAlert);
         }}
         errorTitle='Failed Authentication'
-        errorMessage={errorCreate?.message || 'Something went wrong!'}
+        errorMessage={'Something went wrong!'}
       />
       <SecondaryPageHeader
         title={params.id ? 'Update Customer' : 'Create New Customer'}
@@ -198,10 +217,12 @@ export default function NewCustomerForm() {
                   .map((_, i) => (
                     <Stack direction={'row'} spacing={2} key={i}>
                       <Skeleton
+                        animation='wave'
                         variant='text'
                         sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
                       />
                       <Skeleton
+                        animation='wave'
                         variant='text'
                         sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
                       />
@@ -465,11 +486,11 @@ export default function NewCustomerForm() {
                   spacing={2}
                   py={2}
                 >
-                  <Button variant='outlined' fullWidth>
+                  <Button variant='outlined' fullWidth onClick={onReset}>
                     Reset
                   </Button>
                   <LoadingButton
-                    loading={isLoading || isLoadingUpdate}
+                    loading={isLoadingCreate || isLoadingUpdate}
                     type='submit'
                     variant='contained'
                     fullWidth

@@ -152,6 +152,14 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        <Route
+          path={ROUTE_PATH.customers.updatePotentialCustomer}
+          element={
+            <Suspense>
+              <NewPotentialForm />
+            </Suspense>
+          }
+        />
 
         {/* Notification */}
         <Route

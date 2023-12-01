@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import { EnumCustomerType } from 'utils/data-util';
 import ErrorResponse from 'components/ResponseUIs/ErrorResponse';
 import { CusLoading } from 'components/CusLoading';
+import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
 
 export default function Customers() {
   // State
@@ -118,17 +119,26 @@ export default function Customers() {
           <ErrorResponse errorMessage={'Internal Server Error!'} />
         ) : (
           <>
-            <CustTable data={resCustomers?.data} onSuccess={refreshCustomers} />
-            <TablePagination
-              rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
-              component='div'
-              count={resCustomers?.totalItem || 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              labelRowsPerPage={isSmDown ? '' : 'Rows per page'}
-            />
+            {resCustomers?.data.length === 0 ? (
+              <EmptyResponse />
+            ) : (
+              <>
+                <CustTable
+                  data={resCustomers?.data}
+                  onSuccess={refreshCustomers}
+                />
+                <TablePagination
+                  rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
+                  component='div'
+                  count={resCustomers?.totalItem || 0}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  labelRowsPerPage={isSmDown ? '' : 'Rows per page'}
+                />
+              </>
+            )}
           </>
         )}
       </Container>

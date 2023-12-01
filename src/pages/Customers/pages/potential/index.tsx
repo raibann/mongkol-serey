@@ -10,6 +10,7 @@ import CUSTOMER_API from 'api/customer';
 import { CusLoading } from 'components/CusLoading';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
+import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
 import ErrorResponse from 'components/ResponseUIs/ErrorResponse';
 import useResponsive from 'hook/useResponsive';
 import { SearchNormal1, Add } from 'iconsax-react';
@@ -119,20 +120,26 @@ export default function Potential() {
           <ErrorResponse errorMessage={'Internal Server Error!'} />
         ) : (
           <>
-            <PotentialTable
-              data={resCustomers?.data}
-              onSuccess={refreshCustomer}
-            />
-            <TablePagination
-              rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
-              component='div'
-              count={resCustomers?.totalItem || 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              labelRowsPerPage={isSmDown ? '' : 'Rows per page'}
-            />
+            {resCustomers?.data.length === 0 ? (
+              <EmptyResponse />
+            ) : (
+              <>
+                <PotentialTable
+                  data={resCustomers?.data}
+                  onSuccess={refreshCustomer}
+                />
+                <TablePagination
+                  rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
+                  component='div'
+                  count={resCustomers?.totalItem || 0}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  labelRowsPerPage={isSmDown ? '' : 'Rows per page'}
+                />
+              </>
+            )}
           </>
         )}
       </Container>
