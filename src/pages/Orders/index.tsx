@@ -22,7 +22,7 @@ import { Add, ArrowLeft2, Filter, Printer, SearchNormal1 } from 'iconsax-react';
 import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
 import { useDebounce, useRequest } from 'ahooks';
-import useRouter from 'hook/useRouter';
+import useRouter, { ROUTE_PATH } from 'hook/useRouter';
 
 import { useForm } from 'react-hook-form';
 import CusTable from 'components/CusTable';
@@ -137,6 +137,7 @@ const Orders = () => {
           <Filter variant='Bold' />
         </Button>
         <Button
+          onClick={() => navigate(ROUTE_PATH.orders.createOrder)}
           variant='contained'
           size='small'
           disableElevation

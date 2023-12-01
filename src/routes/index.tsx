@@ -57,6 +57,7 @@ const UpdatePayments = lazy(() => import('pages/Orders/pages/UpdatePayments'));
 const PreviewQuotation = lazy(
   () => import('pages/Orders/pages/PreviewQuotation')
 );
+const OrderForm = lazy(() => import('pages/Orders/pages/OrderForm'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -87,6 +88,22 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Orders />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.createOrder}
+          element={
+            <Suspense>
+              <OrderForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.updateBooking}
+          element={
+            <Suspense>
+              <OrderForm />
             </Suspense>
           }
         />

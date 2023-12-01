@@ -20,6 +20,7 @@ const SecondaryPageHeader = ({ title }: { title: string }) => {
           color='secondary.main'
           spacing={1}
           component={Button}
+          disableRipple
           onClick={() => navigate(-1)}
         >
           <ArrowLeft2 variant='Bold' />
