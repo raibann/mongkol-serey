@@ -71,9 +71,9 @@ export const ROUTE_PATH = {
     root: '/users',
     createNewUser: '/users/create-new-user',
     updateUser: '/users/update-user/:id',
-    departments: '/users/departments',
-    createNewDepartment: '/users/create-new-department',
-    updateDepartment: '/users/update-department/:id',
+    roles: '/users/roles',
+    createNewRole: '/users/create-new-role',
+    updateRole: '/users/update-role/:id',
   },
   setting: {
     root: '/setting',

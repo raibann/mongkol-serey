@@ -78,26 +78,19 @@ export const UserTableBody = (props: { data: IAuth.User[] | undefined }) => {
                   />
                   <Stack direction={'column'}>
                     <Typography variant='body2'>{user.name}</Typography>
-                    <Chip
-                      label={user.roles && user.roles[0]?.name.toLowerCase()}
-                      size='small'
-                      sx={{
-                        color: (theme) => theme.palette.primary.main,
-                        background: (theme) =>
-                          alpha(theme.palette.primary.main, 0.1),
-                      }}
-                    />
+                    <Typography variant='body2' color={'text.secondary'}>
+                      {user.username}
+                    </Typography>
                   </Stack>
                 </Stack>
               </TableCell>
-              <TableCell align='left'>{user.username}</TableCell>
               <TableCell
                 align='left'
                 sx={{
                   fontWeight: (theme) => theme.typography.fontWeightBold,
                 }}
               >
-                Accounting
+                {user.roles && user.roles[0]?.name.toLowerCase()}
               </TableCell>
               <TableCell align='left'>
                 <Button
@@ -153,8 +146,7 @@ export const UserTableHead = () => {
       >
         <TableCell align='left'>No.</TableCell>
         <TableCell align='left'>Profile</TableCell>
-        <TableCell align='left'>Username</TableCell>
-        <TableCell align='left'>Department</TableCell>
+        <TableCell align='left'>Role</TableCell>
         <TableCell align='left'>Status</TableCell>
         <TableCell align='left'></TableCell>
       </TableRow>

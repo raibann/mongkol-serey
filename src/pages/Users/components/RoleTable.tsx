@@ -13,7 +13,7 @@ import CusTable, { custStyle } from 'components/CusTable';
 import { ArrowDown2, Edit2, Trash } from 'iconsax-react';
 import React, { useState } from 'react';
 
-const headers = ['No.', 'Department', 'Permissions'];
+const headers = ['No.', 'Role', 'Permissions'];
 const bodyRows = [
   {
     id: 1,

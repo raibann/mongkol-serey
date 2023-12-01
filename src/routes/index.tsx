@@ -26,10 +26,8 @@ const InventoryCategory = lazy(
   () => import('pages/Inventories/pages/Categories')
 );
 const InventoryReport = lazy(() => import('pages/Inventories/pages/Reports'));
-const Departments = lazy(() => import('pages/Users/pages/Departments'));
-const NewDepartmentForm = lazy(
-  () => import('pages/Users/pages/Departments/NewDepartmentForm')
-);
+const Roles = lazy(() => import('pages/Users/pages/Roles'));
+const NewRoleForm = lazy(() => import('pages/Users/pages/Roles/NewRoleForm'));
 const MenuForm = lazy(() => import('pages/Menus/pages/MenuForm'));
 const NewUserForm = lazy(() => import('pages/Users/pages/NewUserForm'));
 const NewSupplierForm = lazy(
@@ -290,18 +288,18 @@ export default function AllRoutes() {
           }
         />
         <Route
-          path={ROUTE_PATH.users.departments}
+          path={ROUTE_PATH.users.roles}
           element={
             <Suspense>
-              <Departments />
+              <Roles />
             </Suspense>
           }
         />
         <Route
-          path={ROUTE_PATH.users.createNewDepartment}
+          path={ROUTE_PATH.users.createNewRole}
           element={
             <Suspense>
-              <NewDepartmentForm />
+              <NewRoleForm />
             </Suspense>
           }
         />
