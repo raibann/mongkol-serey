@@ -53,12 +53,6 @@ export default function NewUserForm() {
                 select
                 defaultValue={''}
               ></LabelTextField>
-              <LabelTextField
-                label='Department'
-                size='small'
-                select
-                defaultValue={''}
-              ></LabelTextField>
             </Stack>
             <Stack
               direction={'row'}
