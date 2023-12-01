@@ -3,6 +3,15 @@ import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
 
+interface INewUserInput {
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+  gender: string;
+  role: number;
+}
 export default function NewUserForm() {
   return (
     <>
@@ -38,6 +47,12 @@ export default function NewUserForm() {
               <LabelTextField label='Confirm Password' size='small' />
             </Stack>
             <Stack direction={'row'} spacing={2}>
+              <LabelTextField
+                label='Role'
+                size='small'
+                select
+                defaultValue={''}
+              ></LabelTextField>
               <LabelTextField
                 label='Department'
                 size='small'

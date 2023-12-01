@@ -3,7 +3,6 @@ import {
   InputAdornment,
   TableContainer,
   Table,
-  TableBody,
   Box,
   Container,
 } from '@mui/material';
@@ -16,15 +15,29 @@ import { CusLoading } from 'components/CusLoading';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import { UserTableBody, UserTableHead } from './components/UserTable';
+import { useRequest } from 'ahooks';
+import USER_API from 'api/user';
+import { useEffect, useState } from 'react';
 export default function Users() {
   // Varaibles
 
   // States
+  const [search, setSearch] = useState('');
 
-  // ahooks
+  // Hooks
   const { isSmDown } = useResponsive();
   const navigate = useNavigate();
-  // Response Variables
+  // Fetch APIS
+  const {
+    run: fetchUsers,
+    loading: isLoadingUsers,
+    data: resUsers,
+  } = useRequest(USER_API.getUserList, { manual: false });
+
+  useEffect(() => {
+    fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Methods
 
@@ -59,7 +72,7 @@ export default function Users() {
       </PageHeader>
 
       <Container maxWidth='xl'>
-        {false ? (
+        {isLoadingUsers ? (
           <Box flexGrow={1} display='grid' sx={{ placeItems: 'center' }}>
             <CusLoading />
           </Box>
@@ -84,21 +97,7 @@ export default function Users() {
               }}
             >
               <UserTableHead />
-              <TableBody>
-                {Array(10)
-                  .fill('')
-                  ?.map((data, i) => {
-                    return (
-                      <UserTableBody
-                        key={i}
-                        props={data}
-                        onEdit={() => {}}
-                        onAddRole={() => {}}
-                        onSuccess={() => {}}
-                      />
-                    );
-                  })}
-              </TableBody>
+              <UserTableBody data={resUsers} />
             </Table>
           </TableContainer>
         )}
