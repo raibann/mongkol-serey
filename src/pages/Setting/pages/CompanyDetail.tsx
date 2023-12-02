@@ -34,7 +34,7 @@ const CompanyDetail = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack width='100%' maxWidth={800} spacing={2}>
+      <Stack width='100%' maxWidth='sm' spacing={2}>
         <UploadButton label='Company Logo' />
 
         <Grid container spacing={2} width='100%'>
@@ -44,6 +44,7 @@ const CompanyDetail = () => {
               name='khName'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Khmer name'
                   placeholder='Company Khmer name'
                   fieldState={fieldState}
@@ -58,6 +59,7 @@ const CompanyDetail = () => {
               name='enName'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='English name'
                   placeholder='Company English name'
                   fieldState={fieldState}
@@ -72,6 +74,7 @@ const CompanyDetail = () => {
               name='phone'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Phone number'
                   placeholder='Ex: 0987655443 | 0987655443'
                   fieldState={fieldState}
@@ -86,6 +89,7 @@ const CompanyDetail = () => {
               name='location'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Location'
                   placeholder='Company location'
                   fieldState={fieldState}
@@ -100,6 +104,7 @@ const CompanyDetail = () => {
               name='ownerName'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Owner name'
                   placeholder='Owner name'
                   fieldState={fieldState}
@@ -114,6 +119,7 @@ const CompanyDetail = () => {
               name='title'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Title'
                   placeholder='Ms, Mrs, Mr'
                   fieldState={fieldState}
@@ -128,6 +134,7 @@ const CompanyDetail = () => {
               name='gender'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Gender'
                   placeholder='Female, Male'
                   fieldState={fieldState}
@@ -142,6 +149,7 @@ const CompanyDetail = () => {
               name='idCard'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='ID card'
                   placeholder='ID card number'
                   fieldState={fieldState}
@@ -156,6 +164,7 @@ const CompanyDetail = () => {
               name='st'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Street'
                   placeholder='Street no.'
                   fieldState={fieldState}
@@ -170,6 +179,7 @@ const CompanyDetail = () => {
               name='house'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='House'
                   placeholder='House no.'
                   fieldState={fieldState}
@@ -184,6 +194,7 @@ const CompanyDetail = () => {
               name='province'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Province'
                   placeholder='Province name'
                   fieldState={fieldState}
@@ -198,6 +209,7 @@ const CompanyDetail = () => {
               name='district'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='District'
                   placeholder='District name'
                   fieldState={fieldState}
@@ -212,6 +224,7 @@ const CompanyDetail = () => {
               name='commune'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Commune'
                   placeholder='Commune name'
                   fieldState={fieldState}
@@ -226,6 +239,7 @@ const CompanyDetail = () => {
               name='address'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Address location'
                   placeholder='ឧ. បុរីសុវណ្ណារី វីឡាគម្រោង 3'
                   fieldState={fieldState}
@@ -240,6 +254,7 @@ const CompanyDetail = () => {
               name='policies'
               render={({ field, fieldState }) => (
                 <LabelTextField
+                  size='small'
                   label='Company policies'
                   placeholder='Company policies'
                   multiline

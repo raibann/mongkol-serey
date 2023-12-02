@@ -4,7 +4,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import { useAuthContext } from 'context/AuthContext';
 
-/* Parent Page */
+// Parent Page
 const Login = lazy(() => import('pages/Login'));
 const Dashboard = lazy(() => import('pages/Dashboard'));
 const Orders = lazy(() => import('pages/Orders'));
@@ -17,18 +17,19 @@ const Inventories = lazy(() => import('pages/Inventories'));
 const Suppliers = lazy(() => import('pages/Suppliers'));
 const Users = lazy(() => import('pages/Users'));
 const Setting = lazy(() => import('pages/Setting'));
-/* Children Page */
-const Quotation = lazy(() => import('pages/Orders/Quotations'));
-const Payments = lazy(() => import('pages/Orders/Payments'));
+
+// Children Page
+const Quotation = lazy(() => import('pages/Orders/pages/Quotations'));
+const Payments = lazy(() => import('pages/Orders/pages/Payments'));
 const Potentials = lazy(() => import('pages/Customers/pages/potential'));
 const InventoryUnit = lazy(() => import('pages/Inventories/pages/Units'));
 const InventoryCategory = lazy(
   () => import('pages/Inventories/pages/Categories')
 );
 const InventoryReport = lazy(() => import('pages/Inventories/pages/Reports'));
+const MenuForm = lazy(() => import('pages/Menus/pages/MenuPackageForm'));
 const Roles = lazy(() => import('pages/Users/pages/Roles'));
 const NewRoleForm = lazy(() => import('pages/Users/pages/Roles/NewRoleForm'));
-const MenuForm = lazy(() => import('pages/Menus/pages/MenuForm'));
 const NewUserForm = lazy(() => import('pages/Users/pages/NewUserForm'));
 const NewSupplierForm = lazy(
   () => import('pages/Suppliers/pages/NewSupplierForm')
@@ -46,6 +47,17 @@ const UpdateExpenseForm = lazy(
 const InventoryForm = lazy(
   () => import('pages/Inventories/pages/InventoryForm')
 );
+const FoodMenuForm = lazy(() => import('pages/Menus/pages/FoodMenuForm'));
+const FoodMenus = lazy(() => import('pages/Menus/pages/FoodMenus'));
+const PrepareGroceryForm = lazy(
+  () => import('pages/PrepareGrocery/pages/PrepareGroceryForm')
+);
+const QuotationForm = lazy(() => import('pages/Orders/pages/QuotationForm'));
+const UpdatePayments = lazy(() => import('pages/Orders/pages/UpdatePayments'));
+const PreviewQuotation = lazy(
+  () => import('pages/Orders/pages/PreviewQuotation')
+);
+const OrderForm = lazy(() => import('pages/Orders/pages/OrderForm'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -67,12 +79,53 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+
         {/* Orders */}
         <Route
           path={ROUTE_PATH.orders.root}
           element={
             <Suspense>
               <Orders />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.createOrder}
+          element={
+            <Suspense>
+              <OrderForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.updateBooking}
+          element={
+            <Suspense>
+              <OrderForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.createQuotation}
+          element={
+            <Suspense>
+              <QuotationForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.updateQuotation}
+          element={
+            <Suspense>
+              <QuotationForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.previewQuotation}
+          element={
+            <Suspense>
+              <PreviewQuotation />
             </Suspense>
           }
         />
@@ -92,6 +145,15 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        <Route
+          path={ROUTE_PATH.orders.updatePayment}
+          element={
+            <Suspense>
+              <UpdatePayments />
+            </Suspense>
+          }
+        />
+
         {/* Expenses */}
         <Route
           path={ROUTE_PATH.expenses.root}
@@ -109,6 +171,7 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+
         {/* Customers */}
         <Route
           path={ROUTE_PATH.customers.root}
@@ -194,6 +257,31 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        <Route
+          path={ROUTE_PATH.menus.food}
+          element={
+            <Suspense>
+              <FoodMenus />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.menus.createFood}
+          element={
+            <Suspense>
+              <FoodMenuForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.menus.updateFood}
+          element={
+            <Suspense>
+              <FoodMenuForm />
+            </Suspense>
+          }
+        />
+
         {/* Prepare Grocery */}
         <Route
           path={ROUTE_PATH.prepareGrocery.root}
@@ -203,6 +291,23 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        <Route
+          path={ROUTE_PATH.prepareGrocery.createGrocery}
+          element={
+            <Suspense>
+              <PrepareGroceryForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.prepareGrocery.updateGrocery}
+          element={
+            <Suspense>
+              <PrepareGroceryForm />
+            </Suspense>
+          }
+        />
+
         {/* Inventory */}
         <Route
           path={ROUTE_PATH.inventories.root}
@@ -252,6 +357,7 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+
         {/* Suppliers */}
         <Route
           path={ROUTE_PATH.suppliers.root}
@@ -311,6 +417,7 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+
         {/* Setting */}
         <Route
           path={ROUTE_PATH.setting.root}
@@ -320,6 +427,7 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+
         {/* Root Page */}
         <Route
           path={ROUTE_PATH.root}

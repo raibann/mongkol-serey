@@ -6,7 +6,7 @@ import THEME_UTIL from 'utils/theme-util';
 
 const ExchangeRate = () => {
   return (
-    <Stack width='100%' maxWidth={800} spacing={2}>
+    <Stack width='100%' maxWidth='sm' spacing={2}>
       <LabelTextField
         label='Riel exchange rate (1$)'
         type='number'

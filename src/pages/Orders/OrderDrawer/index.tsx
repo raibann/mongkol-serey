@@ -6,7 +6,6 @@ import {
   Stack,
   Typography,
   IconButton,
-  Tooltip,
   Popover,
   List,
   Box,
@@ -42,10 +41,8 @@ import EXPENSE_API from 'api/expense';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { LoadingButton } from '@mui/lab';
-import { persistState, removePersistedState } from 'utils/persist-util';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDebounce, useRequest } from 'ahooks';
-import { HiOutlineFolderRemove } from 'react-icons/hi';
 import { CusLoading } from 'components/CusLoading';
 
 export interface IOrderForm {
@@ -74,31 +71,14 @@ interface IlistMenu {
   }[];
 }
 
-export type Draft = {
-  bookingDate: Date | null;
-  deposit: number | '';
-  depositText: string;
-  eventDate: Date | null;
-  eventLocation: string;
-  eventType: string;
-  listMenu: IlistMenu[];
-  paidBy: string;
-  quantity: number | '';
-  customer: ICustomer.Customer | undefined;
-};
-
 const OrderDrawer = ({
   handleCloseOrderDialog,
   orderDetail,
   onActionSuccess,
-  draft,
-  onSaveDraft,
 }: {
   onActionSuccess: () => void;
   handleCloseOrderDialog: () => void;
   orderDetail: IOrder.Order | undefined;
-  draft?: Draft;
-  onSaveDraft: (draft?: Draft) => void;
 }) => {
   // states
   const [finalInvoice, setFinalInvoice] = useState<IFinalInvoice[]>([]);
@@ -251,21 +231,6 @@ const OrderDrawer = ({
       return;
     }
 
-    if (!orderDetail && draft) {
-      setValue('eventLocation', draft.eventLocation);
-      setValue('bookingDate', draft.bookingDate);
-      setValue('eventDate', draft.eventDate);
-      setValue('paidBy', draft.paidBy);
-      setValue('deposit', draft.deposit);
-      setValue('depositText', draft.depositText);
-      setValue('eventType', draft.eventType);
-      setValue('quantity', draft.quantity);
-      setValue('listMenu', draft.listMenu);
-      setSelectedCustomer(draft?.customer);
-      setListMenu(draft.listMenu);
-      return;
-    }
-
     addListOrderHandler();
     addFinalInvoiceHandler();
 
@@ -340,32 +305,6 @@ const OrderDrawer = ({
     });
     setFinalInvoice(tmp);
     setValue('finalInvoice', tmp);
-  };
-
-  const handleSaveDraft = () => {
-    let tmpDraft: Draft = {
-      bookingDate: getValues('bookingDate'),
-      deposit: getValues('deposit'),
-      depositText: getValues('depositText'),
-      eventDate: getValues('eventDate'),
-      eventLocation: getValues('eventLocation'),
-      eventType: getValues('eventType'),
-      paidBy: getValues('paidBy'),
-      quantity: getValues('quantity'),
-      listMenu: getValues('listMenu') || [],
-      customer: selectedCustomer,
-    };
-
-    persistState(process.env.REACT_APP_PERSIST_DRAFT || '', tmpDraft);
-    onSaveDraft(tmpDraft);
-    handleCloseOrderDialog();
-  };
-
-  const handleRemoveDraft = () => {
-    removePersistedState(`${process.env.REACT_APP_PERSIST_DRAFT}`);
-    onSaveDraft();
-    methods.reset();
-    setSelectedCustomer(undefined);
   };
 
   if ((!customerListReq.data && customerListReq.loading) || menuListReq.loading)
@@ -467,18 +406,10 @@ const OrderDrawer = ({
         <Typography variant='h4' color='secondary.main' fontWeight='bold'>
           {orderDetail ? 'Update Order' : 'New Order'}
         </Typography>
-        <Stack direction={'row'} alignItems='center' spacing={4}>
-          {draft && (
-            <Tooltip title='Clear Draft'>
-              <CusIconButton color='error' onClick={handleRemoveDraft}>
-                <HiOutlineFolderRemove />
-              </CusIconButton>
-            </Tooltip>
-          )}
-          <CusIconButton color='error' onClick={handleCloseOrderDialog}>
-            <MdClose />
-          </CusIconButton>
-        </Stack>
+
+        <CusIconButton color='error' onClick={handleCloseOrderDialog}>
+          <MdClose />
+        </CusIconButton>
       </Stack>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -973,28 +904,6 @@ const OrderDrawer = ({
             position='relative'
             direction='row'
           >
-            {!orderDetail && (
-              <Button
-                onClick={handleSaveDraft}
-                variant='contained'
-                fullWidth
-                disableElevation
-                color='info'
-                sx={{
-                  fontSize: 18,
-                  fontWeight: 'medium',
-                  p: 1.5,
-                  borderRadius: 2,
-                  boxShadow: 1,
-                  background: (theme) => theme.palette.info.main,
-                  color: '#fff',
-                  textTransform: 'capitalize',
-                }}
-              >
-                Save Draft
-              </Button>
-            )}
-
             <LoadingButton
               type='submit'
               variant='contained'

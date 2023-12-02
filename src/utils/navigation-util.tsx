@@ -37,13 +37,13 @@ const navigationUtil: Navigation = [
     children: [],
   },
   {
-    title: 'Orders',
+    title: 'Events',
     toUrl: ROUTE_PATH.orders.root,
     icon: <NoteFavorite size='18' />,
     selectedIcon: <NoteFavorite size='18' variant='Bold' />,
     children: [
       {
-        title: 'Orderings',
+        title: 'Orders',
         toUrl: ROUTE_PATH.orders.root,
       },
       {
@@ -93,7 +93,16 @@ const navigationUtil: Navigation = [
     toUrl: ROUTE_PATH.menus.root,
     icon: <Category size='18' />,
     selectedIcon: <Category size='18' variant='Bold' />,
-    children: [],
+    children: [
+      {
+        title: 'Menu Package',
+        toUrl: ROUTE_PATH.menus.root,
+      },
+      {
+        title: 'Food Menu',
+        toUrl: ROUTE_PATH.menus.food,
+      },
+    ],
   },
   {
     title: 'Prepare Grocery',
@@ -113,12 +122,12 @@ const navigationUtil: Navigation = [
         toUrl: ROUTE_PATH.inventories.root,
       },
       {
-        title: 'Units',
-        toUrl: ROUTE_PATH.inventories.units,
-      },
-      {
         title: 'Categories',
         toUrl: ROUTE_PATH.inventories.categories,
+      },
+      {
+        title: 'Units',
+        toUrl: ROUTE_PATH.inventories.units,
       },
       {
         title: 'Reports',

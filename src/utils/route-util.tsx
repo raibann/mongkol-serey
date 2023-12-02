@@ -13,8 +13,7 @@ export const ROUTE_PATH = {
     root: '/orders',
     quotations: '/orders/quotations',
     payments: '/orders/customer-payments',
-    createOrderExistingCustomer: '/orders/create-order-existing-customer',
-    createOrderNewCustomer: '/orders/create-order-new-customer',
+    createOrder: '/orders/create-order',
     updateBooking: '/orders/update-booking-invoice/:id',
     updateFinal: '/orders/update-final-invoice/:id',
     previewInvoice: '/orders/preview/:id',
@@ -38,6 +37,9 @@ export const ROUTE_PATH = {
   },
   menus: {
     root: '/menus',
+    food: '/menus/food-menus',
+    createFood: '/menus/create-food-menus',
+    updateFood: '/menus/update-food-menus/:id',
     createMenuPackage: '/menus/create-new-package',
     updateMenuPackage: '/menus/update-package/:id',
   },
@@ -54,12 +56,6 @@ export const ROUTE_PATH = {
     addInventory: '/inventories/add-new-inventory',
     editInventory: '/inventories/edit-inventory/:id',
     inventoryReport: '/inventories/reports',
-    createNewProduct: '/inventories/create-new-product',
-    updateProduct: '/inventories/update-product/:id',
-    createNewUnit: '/inventories/create-new-unit',
-    updateUnit: '/inventories/update-unit/:id',
-    createNewCategory: '/inventories/create-new-category',
-    updateCategory: '/inventories/update-category/:id',
   },
 
   suppliers: {

@@ -1,4 +1,4 @@
-import { Toolbar, IconButton, Typography } from '@mui/material';
+import { Toolbar, IconButton, Typography, Button, Stack } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import { ArrowLeft2 } from 'iconsax-react';
 import React from 'react';
@@ -14,10 +14,20 @@ const SecondaryPageHeader = ({ title }: { title: string }) => {
       color='transparent'
     >
       <Toolbar>
-        <IconButton onClick={() => navigate(-1)}>
+        <Stack
+          direction='row'
+          textTransform='none'
+          color='secondary.main'
+          spacing={1}
+          component={Button}
+          disableRipple
+          onClick={() => navigate(-1)}
+        >
           <ArrowLeft2 variant='Bold' />
-        </IconButton>
-        <Typography variant='h6'>{title}</Typography>
+          <Typography variant='h6' fontWeight='600'>
+            {title}
+          </Typography>
+        </Stack>
       </Toolbar>
     </AppBar>
   );

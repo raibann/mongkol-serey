@@ -23,7 +23,8 @@ const CategoryForm = () => {
         name='name'
         render={({ field, fieldState }) => (
           <LabelTextField
-            label='Unit name'
+            size='small'
+            label='Category name'
             fieldState={fieldState}
             {...field}
           />
@@ -34,7 +35,12 @@ const CategoryForm = () => {
         control={control}
         name='slug'
         render={({ field, fieldState }) => (
-          <LabelTextField label='Slug' fieldState={fieldState} {...field} />
+          <LabelTextField
+            size='small'
+            label='Slug'
+            fieldState={fieldState}
+            {...field}
+          />
         )}
       />
 
@@ -43,6 +49,7 @@ const CategoryForm = () => {
         name='description'
         render={({ field, fieldState }) => (
           <LabelTextField
+            size='small'
             label='Description'
             fieldState={fieldState}
             {...field}

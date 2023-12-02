@@ -11,7 +11,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { IFormQuotation } from 'pages/Orders/Quotations';
+import { IFormQuotation } from 'pages/Orders/pages/QuotationForm';
 import { forwardRef } from 'react';
 interface IQuotation {
   quotData?: IFormQuotation;
@@ -100,7 +100,9 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
               </Grid>
               <Grid item xs={8}>
                 <Typography fontFamily='Khmer Busra high' fontSize={16}>
-                  {`៖ ${quotData?.customerName || '....................'}`}
+                  {`៖ ${quotData?.firstName ?? '..........'} ${
+                    quotData?.lastName ?? '..........'
+                  }`}
                 </Typography>
               </Grid>
               <Grid item xs={4}>
@@ -226,7 +228,7 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
             </TableRow>
           </TableHead>
           <TableBody>
-            {quotData?.list.map((data, index) => (
+            {quotData?.quotationItems.map((data, index) => (
               <TableRow key={index}>
                 <TableCell sx={{ textAlign: 'center' }}>{index + 1}</TableCell>
                 <TableCell>{data.productName}</TableCell>
