@@ -65,8 +65,9 @@ export default function Navbar() {
                 to={to}
                 replace={true}
                 key={index}
+                textTransform='capitalize'
               >
-                {value}
+                {value.replaceAll('-', ' ')}
               </LinkRouter>
             );
           })}

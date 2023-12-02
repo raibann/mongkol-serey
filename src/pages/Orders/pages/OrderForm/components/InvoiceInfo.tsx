@@ -1,7 +1,9 @@
-import { Grid } from '@mui/material';
+import { Grid, TextFieldProps } from '@mui/material';
 import LabelTextField from 'components/LabelTextField';
 import { Controller, useFormContext } from 'react-hook-form';
 import { IOrderForm } from '..';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 const InvoiceInfo = () => {
   const { control } = useFormContext<IOrderForm>();
@@ -27,12 +29,19 @@ const InvoiceInfo = () => {
           control={control}
           name='bookingDate'
           render={({ field, fieldState }) => (
-            <LabelTextField
-              size='small'
-              label='Booking date'
-              fieldState={fieldState}
-              {...field}
-            />
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DatePicker
+                renderInput={(props: TextFieldProps) => (
+                  <LabelTextField
+                    {...props}
+                    fieldState={fieldState}
+                    size='small'
+                    label='Booking date'
+                  />
+                )}
+                {...field}
+              />
+            </LocalizationProvider>
           )}
         />
       </Grid>
@@ -41,12 +50,19 @@ const InvoiceInfo = () => {
           control={control}
           name='eventDate'
           render={({ field, fieldState }) => (
-            <LabelTextField
-              size='small'
-              label='Event date'
-              fieldState={fieldState}
-              {...field}
-            />
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <DatePicker
+                renderInput={(props: TextFieldProps) => (
+                  <LabelTextField
+                    {...props}
+                    fieldState={fieldState}
+                    size='small'
+                    label='Event date'
+                  />
+                )}
+                {...field}
+              />
+            </LocalizationProvider>
           )}
         />
       </Grid>
