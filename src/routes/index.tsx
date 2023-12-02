@@ -269,6 +269,14 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
+        <Route
+          path={ROUTE_PATH.suppliers.updateSupplier}
+          element={
+            <Suspense>
+              <NewSupplierForm />
+            </Suspense>
+          }
+        />
 
         {/* Users */}
         <Route

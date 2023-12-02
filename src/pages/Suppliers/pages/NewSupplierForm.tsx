@@ -1,10 +1,15 @@
 import { LoadingButton } from '@mui/lab';
 import { Paper, Container, Stack, Button, MenuItem } from '@mui/material';
+import { useRequest } from 'ahooks';
+import CUSTOMER_API from 'api/customer';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
 interface INewSuplierInput {
   id?: string | number;
   firstName: string;
@@ -22,8 +27,34 @@ interface INewSuplierInput {
 }
 
 const NewSupplierForm = () => {
+  // State
+  const [errorAlert, setErrorAlert] = useState(false);
+
   /* Hooks */
   const { control, handleSubmit } = useForm<INewSuplierInput>();
+  const navigate = useNavigate();
+  const params = useParams();
+
+  // Request APIs
+  const {
+    loading: isLoadingCreate,
+    run: fecthCreate,
+    error: errorCreate,
+  } = useRequest(CUSTOMER_API.postNewCustomer, {
+    manual: true,
+    onSuccess: (data) => data && navigate(ROUTE_PATH.customers.root),
+  });
+
+  const {
+    loading: isLoadingUpdate,
+    error: errorUpdate,
+    run: fetchUpdate,
+  } = useRequest(CUSTOMER_API.updateCustomer, {
+    manual: true,
+    onSuccess: () => {
+      navigate(ROUTE_PATH.customers.root);
+    },
+  });
 
   /* Methods */
   const onSubmit = (data: INewSuplierInput) => {
@@ -31,7 +62,9 @@ const NewSupplierForm = () => {
   };
   return (
     <>
-      <SecondaryPageHeader title='Create New Supplier' />
+      <SecondaryPageHeader
+        title={params.id ? 'Update Supplier' : 'Create New Supplier'}
+      />
       <Paper
         sx={{
           m: 3,

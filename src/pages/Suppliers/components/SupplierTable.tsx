@@ -8,22 +8,28 @@ import {
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable, { custStyle } from 'components/CusTable';
-import { Send2, Edit2, Trash, Location } from 'iconsax-react';
+import { Send2, Edit2, Trash, Location, Facebook } from 'iconsax-react';
+import { useNavigate } from 'react-router-dom';
 import theme from 'theme/theme';
+import { ROUTE_PATH } from 'utils/route-util';
 import THEME_UTIL from 'utils/theme-util';
 
 const headers = ['No', 'Name', 'Phone Number', 'Address', ''];
 
-export default function SupplierTable() {
+export default function SupplierTable(props: {
+  data: ICustomer.Customer[] | undefined;
+}) {
+  // Hooks
+  const navigate = useNavigate();
   return (
     <>
       <CusTable
         headers={headers}
-        body={Array(3)
-          .fill('')
-          .map((_, i) => (
-            <TableRow key={i} sx={custStyle.bodyRow}>
-              <TableCell>{i + 1}</TableCell>
+        body={
+          props.data &&
+          props.data.map((item) => (
+            <TableRow key={item.id} sx={custStyle.bodyRow}>
+              <TableCell>{item.id}</TableCell>
               <TableCell
                 align='left'
                 sx={{
@@ -33,7 +39,7 @@ export default function SupplierTable() {
                 <Stack direction={'row'} spacing={2} alignItems={'center'}>
                   <Avatar
                     alt='Remy Sharp'
-                    src='https://i.pinimg.com/564x/31/ca/cf/31cacfc8bceb2011c2f23ea32d2fbfa1.jpg'
+                    src={item.image}
                     variant='rounded'
                     sx={{
                       height: 40,
@@ -42,29 +48,41 @@ export default function SupplierTable() {
                     }}
                   />
                   <Stack direction={'column'}>
-                    <Typography variant='body2'>Name</Typography>
+                    <Typography variant='body2'>
+                      {item.customer_name}
+                    </Typography>
                     <Stack
                       direction={'row'}
                       spacing={0.5}
                       alignItems={'center'}
                     >
-                      <Send2
-                        size='14'
-                        color={THEME_UTIL.telegramColor}
-                        variant='Bold'
-                      />
+                      {(item.telegram_name && (
+                        <Send2
+                          size='14'
+                          color={THEME_UTIL.telegramColor}
+                          variant='Bold'
+                        />
+                      )) ||
+                        (item.facebook_name && (
+                          <Facebook
+                            size='14'
+                            color={THEME_UTIL.facebookColor}
+                            variant='Bold'
+                          />
+                        ))}
+
                       <Typography
                         variant='caption'
                         noWrap
                         color={'text.secondary'}
                       >
-                        @Raibann
+                        {item.telegram_name || item.facebook_name}
                       </Typography>
                     </Stack>
                   </Stack>
                 </Stack>
               </TableCell>
-              <TableCell align='left'>012121212</TableCell>
+              <TableCell align='left'>{item.contact_number}</TableCell>
               <TableCell align='left'>
                 <Stack direction={'row'} spacing={0.5} alignItems={'center'}>
                   <Location
@@ -73,7 +91,7 @@ export default function SupplierTable() {
                     variant='Bold'
                   />
                   <Typography variant='body2' noWrap>
-                    Phnom Penh
+                    {item.province}
                   </Typography>
                 </Stack>
               </TableCell>
@@ -90,6 +108,14 @@ export default function SupplierTable() {
                       background: (theme) =>
                         alpha(theme.palette.info.main, 0.1),
                     }}
+                    onClick={() =>
+                      navigate(
+                        ROUTE_PATH.suppliers.updateSupplier.replace(
+                          ':id',
+                          `${item.id}`
+                        )
+                      )
+                    }
                   >
                     <Edit2
                       size='20'
@@ -113,7 +139,8 @@ export default function SupplierTable() {
                 </Stack>
               </TableCell>
             </TableRow>
-          ))}
+          ))
+        }
       />
     </>
   );
