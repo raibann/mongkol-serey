@@ -6,23 +6,66 @@ import {
   Typography,
   alpha,
 } from '@mui/material';
+import { useRequest } from 'ahooks';
+import SUPPLIER_API from 'api/supplier';
+import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable, { custStyle } from 'components/CusTable';
-import { Send2, Edit2, Trash, Location, Facebook } from 'iconsax-react';
+import { Edit2, Trash, Location } from 'iconsax-react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import theme from 'theme/theme';
 import { ROUTE_PATH } from 'utils/route-util';
-import THEME_UTIL from 'utils/theme-util';
 
 const headers = ['No', 'Name', 'Phone Number', 'Address', ''];
 
 export default function SupplierTable(props: {
-  data: ICustomer.Customer[] | undefined;
+  data: ISupplier.ResSupplier[] | undefined;
+  onSuccess: () => void;
 }) {
+  // State
+  const [errorAlert, setErrorAlert] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState<number | undefined>();
   // Hooks
   const navigate = useNavigate();
+
+  // Fetch Apis
+  const { run, loading, error } = useRequest(SUPPLIER_API.deleteSupplier, {
+    manual: true,
+    onSuccess: props.onSuccess,
+  });
+  useEffect(() => {
+    if (error) {
+      setErrorAlert(!errorAlert);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
   return (
     <>
+      <ErrorDialog
+        open={errorAlert}
+        onCloseDialog={() => {
+          setErrorAlert(!errorAlert);
+        }}
+        errorTitle={'Delete fail!'}
+        errorMessage={error?.message || 'Something went wrong!'}
+      />
+
+      <ConfirmDialogSlide
+        open={open}
+        loading={loading}
+        onClose={() => setOpen(false)}
+        cancel={() => setOpen(false)}
+        confirm={() =>
+          id &&
+          run({
+            id: id,
+          })
+        }
+        title='Are you sure?'
+      />
       <CusTable
         headers={headers}
         body={
@@ -49,14 +92,21 @@ export default function SupplierTable(props: {
                   />
                   <Stack direction={'column'}>
                     <Typography variant='body2'>
-                      {item.customer_name}
+                      {item.firstName} {item.lastName}
                     </Typography>
                     <Stack
                       direction={'row'}
                       spacing={0.5}
                       alignItems={'center'}
                     >
-                      {(item.telegram_name && (
+                      <Typography
+                        variant='caption'
+                        noWrap
+                        color={'text.secondary'}
+                      >
+                        {item.socialMedia}
+                      </Typography>
+                      {/* {(item.telegram && (
                         <Send2
                           size='14'
                           color={THEME_UTIL.telegramColor}
@@ -77,12 +127,12 @@ export default function SupplierTable(props: {
                         color={'text.secondary'}
                       >
                         {item.telegram_name || item.facebook_name}
-                      </Typography>
+                      </Typography> */}
                     </Stack>
                   </Stack>
                 </Stack>
               </TableCell>
-              <TableCell align='left'>{item.contact_number}</TableCell>
+              <TableCell align='left'>{item.phoneNumber}</TableCell>
               <TableCell align='left'>
                 <Stack direction={'row'} spacing={0.5} alignItems={'center'}>
                   <Location
@@ -128,6 +178,10 @@ export default function SupplierTable(props: {
                       boxShadow: 0,
                       background: (theme) =>
                         alpha(theme.palette.error.main, 0.1),
+                    }}
+                    onClick={() => {
+                      setId(item.id);
+                      setOpen(true);
                     }}
                   >
                     <Trash

@@ -133,7 +133,7 @@ const OrderDrawer = ({
 
   // react-hooks-form
   const methods = useForm<IOrderForm & FinalInvoiceInput>();
-  const { setValue, handleSubmit, getValues } = methods;
+  const { setValue, handleSubmit } = methods;
 
   // Variables
   let orderItemId = 0;

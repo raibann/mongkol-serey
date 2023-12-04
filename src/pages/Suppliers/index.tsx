@@ -15,10 +15,10 @@ import SupplierTable from './components/SupplierTable';
 import { useEffect, useState } from 'react';
 import { EnumCustomerType } from 'utils/data-util';
 import { useDebounce, useRequest } from 'ahooks';
-import CUSTOMER_API from 'api/customer';
 import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
 import ErrorResponse from 'components/ResponseUIs/ErrorResponse';
 import { CusLoading } from 'components/CusLoading';
+import SUPPLIER_API from 'api/supplier';
 
 export default function Suppliers() {
   // State
@@ -37,7 +37,7 @@ export default function Suppliers() {
     run: fecthData,
     error: errorFetch,
     refresh: refreshSuppliers,
-  } = useRequest(CUSTOMER_API.getCustomerList, { manual: false });
+  } = useRequest(SUPPLIER_API.getSupplierList, { manual: false });
 
   useEffect(() => {
     fecthData({
@@ -116,7 +116,10 @@ export default function Suppliers() {
               <EmptyResponse />
             ) : (
               <>
-                <SupplierTable data={resSuppliers?.data} />
+                <SupplierTable
+                  data={resSuppliers?.data}
+                  onSuccess={refreshSuppliers}
+                />
                 <TablePagination
                   rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
                   component='div'

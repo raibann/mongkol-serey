@@ -8,7 +8,7 @@ import {
   Skeleton,
 } from '@mui/material';
 import { useRequest } from 'ahooks';
-import CUSTOMER_API from 'api/customer';
+import SUPPLIER_API from 'api/supplier';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
@@ -47,21 +47,21 @@ const NewSupplierForm = () => {
   // Request APIs
   const {
     loading: isLoadingCreate,
-    run: fecthCreate,
     error: errorCreate,
-  } = useRequest(CUSTOMER_API.postNewCustomer, {
+    run: fecthCreate,
+  } = useRequest(SUPPLIER_API.postNewSupplier, {
     manual: true,
-    onSuccess: (data) => data && navigate(ROUTE_PATH.customers.root),
+    onSuccess: (data) => data && navigate(ROUTE_PATH.suppliers.root),
   });
 
   const {
     loading: isLoadingUpdate,
     error: errorUpdate,
     run: fetchUpdate,
-  } = useRequest(CUSTOMER_API.updateCustomer, {
+  } = useRequest(SUPPLIER_API.updateSupplier, {
     manual: true,
     onSuccess: () => {
-      navigate(ROUTE_PATH.customers.root);
+      navigate(ROUTE_PATH.suppliers.root);
     },
   });
   const {
@@ -69,25 +69,21 @@ const NewSupplierForm = () => {
     loading: isLoadingDetails,
     error: errorDetails,
     cancel: cancelFetchDetails,
-  } = useRequest(CUSTOMER_API.getCustomerDetails, {
+  } = useRequest(SUPPLIER_API.getSupplierDetails, {
     manual: false,
     onSuccess: (data) => {
-      const social = data.customer.telegram_name || data.customer.facebook_name;
-      const socialType = data.customer.telegram_name
-        ? EnumSocialType.TG
-        : EnumSocialType.FB;
-      setValue('firstName', data.customer.customer_name);
-      setValue('lastName', data.customer.location);
-      setValue('gender', data.customer.gender || EnumGenderType.OTHER);
-      setValue('phoneNumber', data.customer.contact_number);
-      setValue('street', data.customer.street);
-      setValue('house', data.customer.house);
-      setValue('province', data.customer.province);
-      setValue('district', data.customer.district);
-      setValue('commune', data.customer.commune);
-      setValue('payment', data.customer.payment || '');
-      setValue('socialType', socialType);
-      setValue('social', social);
+      setValue('firstName', data.data.firstName);
+      setValue('lastName', data.data.lastName);
+      setValue('gender', data.data.gender || EnumGenderType.OTHER);
+      setValue('phoneNumber', data.data.phoneNumber);
+      setValue('street', data.data.street);
+      setValue('house', data.data.house);
+      setValue('province', data.data.province);
+      setValue('district', data.data.district);
+      setValue('commune', data.data.commune);
+      setValue('payment', data.data.defaultPayment || '');
+      setValue('socialType', EnumSocialType.TG);
+      setValue('social', data.data.socialMedia);
     },
   });
   // Effect
@@ -108,7 +104,42 @@ const NewSupplierForm = () => {
   }, [params]);
   /* Methods */
   const onSubmit = (data: INewSuplierInput) => {
-    console.log(data);
+    if (params.id) {
+      fetchUpdate({
+        id: params.id,
+        payload: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          gender: data.gender,
+          phoneNumber: data.phoneNumber,
+          defaultPayment: data.payment,
+          socialMedia: data.social,
+          district: data.district,
+          house: data.house,
+          province: data.province,
+          street: data.street,
+          commune: data.commune,
+          others: null,
+        },
+      });
+    } else {
+      fecthCreate({
+        payload: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          gender: data.gender,
+          phoneNumber: data.phoneNumber,
+          defaultPayment: data.payment,
+          socialMedia: data.social,
+          district: data.district,
+          house: data.house,
+          province: data.province,
+          street: data.street,
+          commune: data.commune,
+          others: null,
+        },
+      });
+    }
   };
   return (
     <>
@@ -172,6 +203,12 @@ const NewSupplierForm = () => {
                     defaultValue=''
                     control={control}
                     name='firstName'
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Field is required',
+                      },
+                    }}
                     render={({ field, fieldState }) => {
                       return (
                         <LabelTextField
@@ -187,6 +224,12 @@ const NewSupplierForm = () => {
                     defaultValue=''
                     control={control}
                     name='lastName'
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Field is required',
+                      },
+                    }}
                     render={({ field, fieldState }) => {
                       return (
                         <LabelTextField
@@ -204,6 +247,12 @@ const NewSupplierForm = () => {
                     defaultValue=''
                     control={control}
                     name='phoneNumber'
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Field is required',
+                      },
+                    }}
                     render={({ field, fieldState }) => {
                       return (
                         <LabelTextField
@@ -216,7 +265,7 @@ const NewSupplierForm = () => {
                     }}
                   />
                   <Controller
-                    defaultValue=''
+                    defaultValue={EnumGenderType.OTHER}
                     control={control}
                     name='gender'
                     render={({ field, fieldState }) => {
@@ -224,7 +273,6 @@ const NewSupplierForm = () => {
                         <LabelTextField label='Gender'>
                           <CusTextField
                             select
-                            defaultValue={EnumGenderType.OTHER}
                             SelectProps={{
                               displayEmpty: true,
                             }}
@@ -284,6 +332,12 @@ const NewSupplierForm = () => {
                     defaultValue=''
                     control={control}
                     name='province'
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Field is required',
+                      },
+                    }}
                     render={({ field, fieldState }) => {
                       return (
                         <LabelTextField
@@ -346,8 +400,8 @@ const NewSupplierForm = () => {
                             size='small'
                             {...field}
                           >
-                            <MenuItem value='Aba'>ABA</MenuItem>
-                            <MenuItem value='Acleda'>ACLEDA</MenuItem>
+                            <MenuItem value='ABA'>ABA</MenuItem>
+                            <MenuItem value='ACLEDA'>ACLEDA</MenuItem>
                           </CusTextField>
                         </LabelTextField>
                       );
@@ -382,7 +436,7 @@ const NewSupplierForm = () => {
                       <Controller
                         defaultValue=''
                         control={control}
-                        name='district'
+                        name='social'
                         render={({ field }) => {
                           return (
                             <CusTextField fullWidth size='small' {...field} />
