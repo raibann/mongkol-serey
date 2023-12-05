@@ -58,6 +58,7 @@ const PreviewQuotation = lazy(
   () => import('pages/Orders/pages/PreviewQuotation')
 );
 const OrderForm = lazy(() => import('pages/Orders/pages/OrderForm'));
+const FinalInvoice = lazy(() => import('pages/Orders/pages/FinalInvoice'));
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -102,6 +103,14 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <OrderForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.updateFinal}
+          element={
+            <Suspense>
+              <FinalInvoice />
             </Suspense>
           }
         />

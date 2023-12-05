@@ -43,7 +43,7 @@ const OrderForm = () => {
           price: 0,
           quantity: 0,
           unitPrice: 0,
-          menuItem: [],
+          menuItem: [{ title: '' }],
         },
       ],
     },
@@ -53,7 +53,9 @@ const OrderForm = () => {
     <>
       <SecondaryPageHeader
         title='Create New Order'
+        sticky
         endComponent={<Box id='order-form-endcomponent' />}
+        appBarSx={{ bgcolor: 'background.paper' }}
       />
 
       <form>

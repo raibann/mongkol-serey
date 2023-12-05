@@ -17,7 +17,7 @@ import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
 import OrderDrawer from './OrderDrawer';
 import ORDER_API from 'api/order';
-import OrderTableBody from './OrderTable';
+import OrderTableBody from './components/OrderTableBody';
 import { Add, ArrowLeft2, Filter, Printer, SearchNormal1 } from 'iconsax-react';
 import ReactToPrint from 'react-to-print';
 import { useSearchParams } from 'react-router-dom';
@@ -93,18 +93,6 @@ const Orders = () => {
     (i: number) => setOrderDetail(orderList![i]),
     [orderList]
   );
-  const onClearFilter = () => {
-    setValue('from', null);
-    setValue('to', null);
-    setValue('eventType', '');
-    setValue('type', 'event');
-  };
-  const handleSubmitFilter = (data: IFilterSearch) => {
-    setSearchData('');
-    setPage(1);
-    setFilterEl(null);
-    clearErrors();
-  };
 
   return (
     <>
@@ -169,22 +157,11 @@ const Orders = () => {
               key={e.id}
               item={e}
               onPrintClick={() => onPrintClick(i)}
-              onEditClick={() => onEditClick(i)}
+              onEditClick={() => navigate(ROUTE_PATH.orders.updateFinal)}
             />
           ))}
         />
       </Container>
-
-      {/* {orderList && orderList.data.length > 0 && (
-        <>
-          <OrderTableBody
-            data={orderList.data}
-            onPrintClick={onPrintClick}
-            onEditClick={onEditClick}
-            isExpense={false}
-          />
-        </>
-      )} */}
 
       <Drawer
         open={newOrder || orderDetail !== undefined}

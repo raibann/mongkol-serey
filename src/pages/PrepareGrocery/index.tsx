@@ -50,6 +50,8 @@ export default function PrepareGrocery() {
           sx={{
             color: 'common.white',
             minWidth: 0,
+            width: 40,
+            height: 40,
           }}
         >
           <Add />

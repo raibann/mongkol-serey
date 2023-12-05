@@ -16,6 +16,7 @@ import React from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import theme from 'theme/theme';
 import { IOrderForm } from '..';
+import PackageItem from './PackageItem';
 
 const PACKAGE_ITEM_GRID = 12 / 5;
 
@@ -34,6 +35,7 @@ const InvoicePackage = () => {
         container={() => document.getElementById('order-form-endcomponent')}
       >
         <Button
+          startIcon={<Add />}
           onClick={() =>
             listMenuFields.append({
               id: undefined,
@@ -42,7 +44,7 @@ const InvoicePackage = () => {
               price: 0,
               quantity: 0,
               unitPrice: 0,
-              menuItem: [],
+              menuItem: [{ title: '' }],
             })
           }
           variant='contained'
@@ -61,6 +63,7 @@ const InvoicePackage = () => {
                 Package {i + 1}
               </Typography>
               <Box flexGrow={1} />
+              <Box id={`append-item-button-${i}`} />
               <Button
                 variant='text'
                 size='small'
@@ -141,30 +144,9 @@ const InvoicePackage = () => {
                 )}
               />
             </Grid>
-            {/* <Grid item xs={1} textAlign='end'>
-              <Stack spacing={1}>
-                {i === 0 && (
-                  <Typography fontSize={14} visibility='hidden'>
-                    Action
-                  </Typography>
-                )}
-                <CusIconButton
-                  onClick={() => listMenuFields.remove(i)}
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    boxShadow: 0,
-                    background: alpha(theme.palette.error.main, 0.1),
-                  }}
-                >
-                  <Trash
-                    size='20'
-                    color={theme.palette.error.main}
-                    variant='Bold'
-                  />
-                </CusIconButton>
-              </Stack>
-            </Grid> */}
+            <Grid item xs={12}>
+              <PackageItem index={i} />
+            </Grid>
           </Grid>
         </Paper>
       ))}
