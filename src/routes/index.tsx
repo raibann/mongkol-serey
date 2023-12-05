@@ -61,9 +61,6 @@ const OrderForm = lazy(() => import('pages/Orders/pages/OrderForm'));
 const PreviewExpense = lazy(
   () => import('pages/Expenses/pages/PreviewExpense')
 );
-const PreviewGrocery = lazy(
-  () => import('pages/PrepareGrocery/pages/PreviewGrocery')
-);
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -318,14 +315,6 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <PrepareGroceryForm />
-            </Suspense>
-          }
-        />
-        <Route
-          path={ROUTE_PATH.prepareGrocery.previewGrocery}
-          element={
-            <Suspense>
-              <PreviewGrocery />
             </Suspense>
           }
         />

@@ -1,19 +1,19 @@
 import {
   Grid,
+  Typography,
   Table,
-  TableBody,
-  TableCell,
-  TableContainer,
   TableHead,
   TableRow,
-  Typography,
+  TableCell,
+  TableBody,
 } from '@mui/material';
-
+import A4Layout from 'components/PrintLayout/A4Layout';
+import React, { forwardRef } from 'react';
 const header = ['ល.រ', 'ឈ្មោះទំនិញ', 'ចំនួន', 'ឯកតា'];
 
-export default function PreviewGroceryTable() {
+const GroceryList = forwardRef<HTMLInputElement, any>(({ value }, ref) => {
   return (
-    <>
+    <A4Layout ref={ref}>
       <Grid container>
         <Grid item xs={12} sx={{ p: 1 }}>
           <Typography
@@ -56,7 +56,6 @@ export default function PreviewGroceryTable() {
                               p: 0.5,
                               fontFamily: 'Moul',
                               fontSize: 12,
-                              width: '10%',
                             }}
                             key={i}
                             align='center'
@@ -76,7 +75,6 @@ export default function PreviewGroceryTable() {
                                 border: 1,
                                 p: 0.5,
                                 fontSize: 12,
-                                width: '10%',
                               }}
                               align='center'
                             >
@@ -87,7 +85,6 @@ export default function PreviewGroceryTable() {
                                 border: 1,
                                 p: 0.5,
                                 fontSize: 12,
-                                width: '40%',
                               }}
                             >
                               item
@@ -97,7 +94,6 @@ export default function PreviewGroceryTable() {
                                 border: 1,
                                 p: 0.5,
                                 fontSize: 12,
-                                width: '25%',
                               }}
                               align='center'
                             >
@@ -109,7 +105,6 @@ export default function PreviewGroceryTable() {
                                 border: 1,
                                 p: 0.5,
                                 fontSize: 12,
-                                width: '25%',
                               }}
                             >
                               kg
@@ -123,6 +118,8 @@ export default function PreviewGroceryTable() {
             </Grid>
           ))}
       </Grid>
-    </>
+    </A4Layout>
   );
-}
+});
+
+export default GroceryList;

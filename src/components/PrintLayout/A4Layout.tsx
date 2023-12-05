@@ -1,9 +1,10 @@
 import { Box } from '@mui/material';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, forwardRef } from 'react';
 
-export default function A4Layput({ children }: { children: ReactNode }) {
+const A4Layout = forwardRef(({ children }: { children: ReactNode }, ref) => {
   return (
     <Box
+      ref={ref}
       sx={{
         width: '210mm',
         // height: '297mm',
@@ -21,4 +22,5 @@ export default function A4Layput({ children }: { children: ReactNode }) {
       {children}
     </Box>
   );
-}
+});
+export default A4Layout;
