@@ -1,9 +1,8 @@
-import { IExpenseRow } from 'pages/Expenses/components/ExpenseDialogs';
 import { GrUserAdmin } from 'react-icons/gr';
 import { MdOutlineAdminPanelSettings } from 'react-icons/md';
 import theme from 'theme/theme';
 
-const listTitle: IExpenseRow[] = [
+const listTitle = [
   {
     id: undefined,
     title: 'កម្លាំងចុងភៅ',

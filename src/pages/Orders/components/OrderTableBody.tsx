@@ -11,10 +11,9 @@ import {
   alpha,
 } from '@mui/material';
 import moment from 'moment';
-import theme from 'theme/theme';
 import { FaFacebookSquare, FaTelegram } from 'react-icons/fa';
 import { CusIconButton } from 'components/CusIconButton';
-import { Calendar, Edit, MenuBoard, MoneySend, Printer } from 'iconsax-react';
+import { Calendar, Edit2, MenuBoard, Printer } from 'iconsax-react';
 import { paidByColor } from 'utils/data-util';
 import THEME_UTIL from 'utils/theme-util';
 
@@ -172,29 +171,38 @@ const OrderTableBody = ({
           }}
         />
       </TableCell>
-      <TableCell align='center'>
-        {onEditClick && (
-          <Tooltip title='Edit' arrow>
+      <TableCell align='right'>
+        <Stack
+          direction={'row'}
+          justifyContent={'end'}
+          alignItems={'center'}
+          spacing={1}
+        >
+          {onEditClick && (
             <CusIconButton
               onClick={onEditClick}
               color='info'
-              sx={{ p: 0.5, mx: 0.5 }}
+              sx={{
+                boxShadow: 0,
+                background: (theme) => alpha(theme.palette.info.main, 0.1),
+              }}
             >
-              <Edit size={18} />
+              <Edit2 size={18} variant='Bold' />
             </CusIconButton>
-          </Tooltip>
-        )}
-        {onPrintClick && (
-          <Tooltip title='Print' arrow>
+          )}
+          {onPrintClick && (
             <CusIconButton
-              color='primary'
-              sx={{ p: 0.5, mx: 0.5 }}
+              color='default'
+              sx={{
+                boxShadow: 0,
+                background: (theme) => theme.palette.background.paper,
+              }}
               onClick={onPrintClick}
             >
-              <Printer size={18} />
+              <Printer size='18' variant='Bold' />
             </CusIconButton>
-          </Tooltip>
-        )}
+          )}
+        </Stack>
       </TableCell>
     </TableRow>
   );

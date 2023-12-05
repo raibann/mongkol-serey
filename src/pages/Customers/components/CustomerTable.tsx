@@ -143,7 +143,7 @@ export default function CustTable(props: {
               <TableCell align='right'>
                 <Stack
                   direction={'row'}
-                  spacing={2}
+                  spacing={1}
                   alignItems={'center'}
                   justifyContent={'end'}
                 >
@@ -163,7 +163,7 @@ export default function CustTable(props: {
                     }
                   >
                     <Edit2
-                      size='20'
+                      size='18'
                       color={theme.palette.info.main}
                       variant='Bold'
                     />
@@ -180,7 +180,7 @@ export default function CustTable(props: {
                     }}
                   >
                     <Trash
-                      size='20'
+                      size='18'
                       color={theme.palette.error.main}
                       variant='Bold'
                     />

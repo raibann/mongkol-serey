@@ -26,9 +26,7 @@ export default function Customers() {
   const navigate = useNavigate();
   const searchDebounced = useDebounce(search, { wait: 500 });
 
-  // Request APIs
-
-  // fetch list customer
+  // Fetch APIs
   const {
     data: resCustomers,
     loading: isLoading,

@@ -1,4 +1,10 @@
-import { InputAdornment, Button, Container } from '@mui/material';
+import {
+  InputAdornment,
+  Button,
+  Container,
+  TablePagination,
+  Stack,
+} from '@mui/material';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import useResponsive from 'hook/useResponsive';
@@ -6,15 +12,65 @@ import { SearchNormal1, Add } from 'iconsax-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import SupplierTable from './components/SupplierTable';
+import { useEffect, useState } from 'react';
+import { EnumCustomerType } from 'utils/data-util';
+import { useDebounce, useRequest } from 'ahooks';
+import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
+import ErrorResponse from 'components/ResponseUIs/ErrorResponse';
+import { CusLoading } from 'components/CusLoading';
+import SUPPLIER_API from 'api/supplier';
 
 export default function Suppliers() {
+  // State
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [search, setSearch] = useState('');
+
   /* Hooks */
   const { isSmDown } = useResponsive();
   const navigate = useNavigate();
+  const searchDebounced = useDebounce(search, { wait: 500 });
+
+  const {
+    data: resSuppliers,
+    loading: isLoading,
+    run: fecthData,
+    error: errorFetch,
+    refresh: refreshSuppliers,
+  } = useRequest(SUPPLIER_API.getSupplierList, { manual: false });
+
+  useEffect(() => {
+    fecthData({
+      type: EnumCustomerType.CUSTOMER,
+      page: page,
+      size: 10,
+      search: searchDebounced,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, searchDebounced]);
+
+  // Methods
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  const handleSearch = (value: string) => {
+    setSearch(value);
+  };
+
   return (
     <>
       <PageHeader pageTitle='Suppliers'>
         <CusTextField
+          onChange={(e) => {
+            handleSearch(e.currentTarget.value);
+          }}
           fullWidth={isSmDown ? true : false}
           placeholder='Search...'
           size='small'
@@ -41,7 +97,43 @@ export default function Suppliers() {
         </Button>
       </PageHeader>
       <Container maxWidth='xl'>
-        <SupplierTable />
+        {isLoading ? (
+          <Stack
+            direction={'column'}
+            justifyContent={'center'}
+            alignItems={'center'}
+            sx={{
+              height: ['calc(100vh - 176px)'],
+            }}
+          >
+            <CusLoading />
+          </Stack>
+        ) : errorFetch ? (
+          <ErrorResponse errorMessage={'Internal Server Error!'} />
+        ) : (
+          <>
+            {resSuppliers?.data.length === 0 ? (
+              <EmptyResponse />
+            ) : (
+              <>
+                <SupplierTable
+                  data={resSuppliers?.data}
+                  onSuccess={refreshSuppliers}
+                />
+                <TablePagination
+                  rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
+                  component='div'
+                  count={resSuppliers?.totalItem || 0}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  labelRowsPerPage={isSmDown ? '' : 'Rows per page'}
+                />
+              </>
+            )}
+          </>
+        )}
       </Container>
     </>
   );

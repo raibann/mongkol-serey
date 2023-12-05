@@ -8,7 +8,7 @@ export const validatePatterns = {
 };
 
 // format separateComma
-export const separateComma = (val: number | string) => {
+export const separateComma = (val: number) => {
   // remove sign if negative
   var sign = 1;
   if (val < 0) {
@@ -83,6 +83,23 @@ export const DataFormater = (number: number) => {
 export const pageStyle = ` @page {
   size: A4;
   margin:2.54cm;
+}
+
+@media all {
+  .pagebreak {
+    display: none;
+  }
+}
+
+@media print {
+  .pagebreak {
+    page-break-before: always;
+  }
+}`;
+
+export const pageStyleGrocery = ` @page {
+  size: A4;
+  margin:1mm;
 }
 
 @media all {

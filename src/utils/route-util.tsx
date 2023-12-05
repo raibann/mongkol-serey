@@ -81,33 +81,48 @@ export const ROUTE_PATH = {
 
 /* Route Path API */
 export const ROUTE_API = {
+  // Auth
   login: '/api/auth/v1/login',
   refreshToken: '/api/auth/v1/refresh-token',
 
+  // Orders
   ordersList: '/api/orders/v1/list',
   orderAction: '/api/orders/v1/action',
   deleteOrder: '/api/orders/v1/delete/:id',
   menuList: '/api/v2/menu_list',
   categoryList: '/api/v2/category',
 
+  // Customer
   customersList: '/api/customer/v1/list',
   customerDetails: '/api/customer/v1/:id',
   addCustomer: '/api/customer/v1/action',
   updateCustomer: '/api/customer/v1/:id',
   deletCustomer: '/api/customer/v1/delete/:id',
 
+  // Supplier
+  suppliersList: '/api/suppliers/v1/list',
+  suppliersDetails: '/api/suppliers/v1/:id',
+  updateSupplier: '/api/suppliers/v1/:id',
+  deleteSupplier: '/api/suppliers/v1/delete/:id',
+  addNewSupplier: '/api/suppliers/v1/action',
+
+  // Expense
   expensesList: '/api/expense/v1/orders',
   addExpense: '/api/expense/v1/:id',
 
+  // Notification
   remindersList: '/api/reminder/v1/orders',
 
+  // Dashboard
   charts: '/api/dashboard/v1/charts',
   totals: '/api/dashboard/v1/orders',
 
+  // Inventory
   stockList: '/api/stock/v1/list',
   addStock: '/api/stock/v1/action',
   deleteStock: '/api/stock/v1/delete/:id',
 
+  // User
   userList: '/api/auth/v1/users',
   addNewUser: '/api/auth/v1/user/save',
   updateUser: '/api/auth/v1/user/update/:id',

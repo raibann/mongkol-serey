@@ -29,13 +29,7 @@ const PageHeader = ({
               {pageTitle}
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={6}
-            md
-            display='flex'
-            sx={{ justifyContent: 'flex-end' }}
-          >
+          <Grid item xs={6} md display='flex' justifyContent='flex-end'>
             {children}
           </Grid>
         </Grid>

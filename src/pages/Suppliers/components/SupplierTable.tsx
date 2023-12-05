@@ -6,24 +6,73 @@ import {
   Typography,
   alpha,
 } from '@mui/material';
+import { useRequest } from 'ahooks';
+import SUPPLIER_API from 'api/supplier';
+import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable, { custStyle } from 'components/CusTable';
-import { Send2, Edit2, Trash, Location } from 'iconsax-react';
+import { Edit2, Trash, Location } from 'iconsax-react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import theme from 'theme/theme';
-import THEME_UTIL from 'utils/theme-util';
+import { ROUTE_PATH } from 'utils/route-util';
 
 const headers = ['No', 'Name', 'Phone Number', 'Address', ''];
 
-export default function SupplierTable() {
+export default function SupplierTable(props: {
+  data: ISupplier.ResSupplier[] | undefined;
+  onSuccess: () => void;
+}) {
+  // State
+  const [errorAlert, setErrorAlert] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState<number | undefined>();
+  // Hooks
+  const navigate = useNavigate();
+
+  // Fetch Apis
+  const { run, loading, error } = useRequest(SUPPLIER_API.deleteSupplier, {
+    manual: true,
+    onSuccess: props.onSuccess,
+  });
+  useEffect(() => {
+    if (error) {
+      setErrorAlert(!errorAlert);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
   return (
     <>
+      <ErrorDialog
+        open={errorAlert}
+        onCloseDialog={() => {
+          setErrorAlert(!errorAlert);
+        }}
+        errorTitle={'Delete fail!'}
+        errorMessage={error?.message || 'Something went wrong!'}
+      />
+
+      <ConfirmDialogSlide
+        open={open}
+        loading={loading}
+        onClose={() => setOpen(false)}
+        cancel={() => setOpen(false)}
+        confirm={() =>
+          id &&
+          run({
+            id: id,
+          })
+        }
+        title='Are you sure?'
+      />
       <CusTable
         headers={headers}
-        body={Array(3)
-          .fill('')
-          .map((_, i) => (
-            <TableRow key={i} sx={custStyle.bodyRow}>
-              <TableCell>{i + 1}</TableCell>
+        body={
+          props.data &&
+          props.data.map((item) => (
+            <TableRow key={item.id} sx={custStyle.bodyRow}>
+              <TableCell>{item.id}</TableCell>
               <TableCell
                 align='left'
                 sx={{
@@ -33,7 +82,7 @@ export default function SupplierTable() {
                 <Stack direction={'row'} spacing={2} alignItems={'center'}>
                   <Avatar
                     alt='Remy Sharp'
-                    src='https://i.pinimg.com/564x/31/ca/cf/31cacfc8bceb2011c2f23ea32d2fbfa1.jpg'
+                    src={item.image}
                     variant='rounded'
                     sx={{
                       height: 40,
@@ -42,29 +91,48 @@ export default function SupplierTable() {
                     }}
                   />
                   <Stack direction={'column'}>
-                    <Typography variant='body2'>Name</Typography>
+                    <Typography variant='body2'>
+                      {item.firstName} {item.lastName}
+                    </Typography>
                     <Stack
                       direction={'row'}
                       spacing={0.5}
                       alignItems={'center'}
                     >
-                      <Send2
-                        size='14'
-                        color={THEME_UTIL.telegramColor}
-                        variant='Bold'
-                      />
                       <Typography
                         variant='caption'
                         noWrap
                         color={'text.secondary'}
                       >
-                        @Raibann
+                        {item.socialMedia}
                       </Typography>
+                      {/* {(item.telegram && (
+                        <Send2
+                          size='14'
+                          color={THEME_UTIL.telegramColor}
+                          variant='Bold'
+                        />
+                      )) ||
+                        (item.facebook_name && (
+                          <Facebook
+                            size='14'
+                            color={THEME_UTIL.facebookColor}
+                            variant='Bold'
+                          />
+                        ))}
+
+                      <Typography
+                        variant='caption'
+                        noWrap
+                        color={'text.secondary'}
+                      >
+                        {item.telegram_name || item.facebook_name}
+                      </Typography> */}
                     </Stack>
                   </Stack>
                 </Stack>
               </TableCell>
-              <TableCell align='left'>012121212</TableCell>
+              <TableCell align='left'>{item.phoneNumber}</TableCell>
               <TableCell align='left'>
                 <Stack direction={'row'} spacing={0.5} alignItems={'center'}>
                   <Location
@@ -73,7 +141,7 @@ export default function SupplierTable() {
                     variant='Bold'
                   />
                   <Typography variant='body2' noWrap>
-                    Phnom Penh
+                    {item.province}
                   </Typography>
                 </Stack>
               </TableCell>
@@ -90,6 +158,14 @@ export default function SupplierTable() {
                       background: (theme) =>
                         alpha(theme.palette.info.main, 0.1),
                     }}
+                    onClick={() =>
+                      navigate(
+                        ROUTE_PATH.suppliers.updateSupplier.replace(
+                          ':id',
+                          `${item.id}`
+                        )
+                      )
+                    }
                   >
                     <Edit2
                       size='20'
@@ -103,6 +179,10 @@ export default function SupplierTable() {
                       background: (theme) =>
                         alpha(theme.palette.error.main, 0.1),
                     }}
+                    onClick={() => {
+                      setId(item.id);
+                      setOpen(true);
+                    }}
                   >
                     <Trash
                       size='20'
@@ -113,7 +193,8 @@ export default function SupplierTable() {
                 </Stack>
               </TableCell>
             </TableRow>
-          ))}
+          ))
+        }
       />
     </>
   );

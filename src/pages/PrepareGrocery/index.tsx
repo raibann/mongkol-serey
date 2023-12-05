@@ -7,18 +7,23 @@ import {
   alpha,
   useTheme,
   Container,
+  Box,
 } from '@mui/material';
 import { useResponsive } from 'ahooks';
+import GroceryList from 'components/ComToPrint/GroceryList';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable from 'components/CusTable';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
 import { SearchNormal1, Add, Edit2, Trash, Printer } from 'iconsax-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactToPrint from 'react-to-print';
 import { ROUTE_PATH } from 'utils/route-util';
+import { pageStyleGrocery } from 'utils/validate-util';
 
 export default function PrepareGrocery() {
+  const groceryRef = useRef(null);
   // Hooks
   const { isMdDown } = useResponsive();
   const navigate = useNavigate();
@@ -85,19 +90,26 @@ export default function PrepareGrocery() {
                   alignItems='center'
                   justifyContent='end'
                 >
-                  <CusIconButton
-                    sx={{
-                      boxShadow: 0,
-                      background: (theme) =>
-                        alpha(theme.palette.primary.main, 0.1),
-                    }}
-                  >
-                    <Printer
-                      size='20'
-                      color={theme.palette.primary.main}
-                      variant='Bold'
-                    />
-                  </CusIconButton>
+                  <ReactToPrint
+                    pageStyle={pageStyleGrocery}
+                    documentTitle={'grocery'}
+                    trigger={() => (
+                      <CusIconButton
+                        sx={{
+                          boxShadow: 0,
+                          background: (theme) =>
+                            alpha(theme.palette.primary.main, 0.1),
+                        }}
+                      >
+                        <Printer
+                          size='20'
+                          color={theme.palette.primary.main}
+                          variant='Bold'
+                        />
+                      </CusIconButton>
+                    )}
+                    content={() => groceryRef.current}
+                  />
                   <CusIconButton
                     sx={{
                       boxShadow: 0,
@@ -130,6 +142,9 @@ export default function PrepareGrocery() {
           }
         />
       </Container>
+      <Box display={'none'}>
+        <GroceryList ref={groceryRef} />
+      </Box>
     </>
   );
 }

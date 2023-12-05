@@ -59,6 +59,9 @@ const PreviewQuotation = lazy(
 );
 const OrderForm = lazy(() => import('pages/Orders/pages/OrderForm'));
 const FinalInvoice = lazy(() => import('pages/Orders/pages/FinalInvoice'));
+const PreviewExpense = lazy(
+  () => import('pages/Expenses/pages/PreviewExpense')
+);
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -177,6 +180,14 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <UpdateExpenseForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.expenses.previewExpense}
+          element={
+            <Suspense>
+              <PreviewExpense />
             </Suspense>
           }
         />
@@ -378,6 +389,14 @@ export default function AllRoutes() {
         />
         <Route
           path={ROUTE_PATH.suppliers.createNewSupplier}
+          element={
+            <Suspense>
+              <NewSupplierForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.suppliers.updateSupplier}
           element={
             <Suspense>
               <NewSupplierForm />

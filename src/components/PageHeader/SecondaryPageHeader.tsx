@@ -1,6 +1,5 @@
 import {
   Toolbar,
-  IconButton,
   Typography,
   Button,
   Stack,

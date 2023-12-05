@@ -18,7 +18,7 @@ const CUSTOMER_API = {
       {
         params: {
           page: page,
-          size: size || 12,
+          size: size || 10,
           search: search,
           customerType: type,
         },
