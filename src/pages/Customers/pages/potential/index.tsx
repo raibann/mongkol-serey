@@ -103,6 +103,9 @@ export default function Potential() {
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
+          '&> .css-19r6kue-MuiContainer-root': {
+            px: 0,
+          },
         }}
       >
         {isLoading ? (

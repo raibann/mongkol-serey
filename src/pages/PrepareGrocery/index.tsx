@@ -89,6 +89,14 @@ export default function PrepareGrocery() {
                       background: (theme) =>
                         alpha(theme.palette.primary.main, 0.1),
                     }}
+                    onClick={() =>
+                      navigate(
+                        ROUTE_PATH.prepareGrocery.previewGrocery.replace(
+                          ':id',
+                          `${1}`
+                        )
+                      )
+                    }
                   >
                     <Printer
                       size='20'

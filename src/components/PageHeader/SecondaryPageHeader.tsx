@@ -1,4 +1,4 @@
-import { Toolbar, IconButton, Typography, Button, Stack } from '@mui/material';
+import { Toolbar, Typography, Button, Stack } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import { ArrowLeft2 } from 'iconsax-react';
 import React from 'react';
