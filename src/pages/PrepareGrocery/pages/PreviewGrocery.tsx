@@ -2,7 +2,7 @@ import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import React from 'react';
 import PreviewGroceryTable from '../components/PreviewGroceryTable';
 import A4Layput from 'components/PrintLayout/A4Layput';
-import { Box, Container } from '@mui/material';
+import { Box } from '@mui/material';
 
 export default function PreviewGrocery() {
   return (

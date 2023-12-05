@@ -46,80 +46,78 @@ export default function PreviewGroceryTable() {
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          {header.map((h, i) => (
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        {header.map((h, i) => (
+                          <TableCell
+                            sx={{
+                              border: 1,
+                              p: 0.5,
+                              fontFamily: 'Moul',
+                              fontSize: 12,
+                              width: '10%',
+                            }}
+                            key={i}
+                            align='center'
+                          >
+                            {h}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {Array(20)
+                        .fill('')
+                        .map((_, idx) => (
+                          <TableRow key={idx}>
                             <TableCell
                               sx={{
                                 border: 1,
                                 p: 0.5,
-                                fontFamily: 'Moul',
                                 fontSize: 12,
                                 width: '10%',
                               }}
-                              key={i}
                               align='center'
                             >
-                              {h}
+                              {idx + 1}
                             </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {Array(20)
-                          .fill('')
-                          .map((_, idx) => (
-                            <TableRow key={idx}>
-                              <TableCell
-                                sx={{
-                                  border: 1,
-                                  p: 0.5,
-                                  fontSize: 12,
-                                  width: '10%',
-                                }}
-                                align='center'
-                              >
-                                {idx + 1}
-                              </TableCell>
-                              <TableCell
-                                sx={{
-                                  border: 1,
-                                  p: 0.5,
-                                  fontSize: 12,
-                                  width: '40%',
-                                }}
-                              >
-                                item
-                              </TableCell>
-                              <TableCell
-                                sx={{
-                                  border: 1,
-                                  p: 0.5,
-                                  fontSize: 12,
-                                  width: '25%',
-                                }}
-                                align='center'
-                              >
-                                10
-                              </TableCell>
-                              <TableCell
-                                align='center'
-                                sx={{
-                                  border: 1,
-                                  p: 0.5,
-                                  fontSize: 12,
-                                  width: '25%',
-                                }}
-                              >
-                                kg
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                            <TableCell
+                              sx={{
+                                border: 1,
+                                p: 0.5,
+                                fontSize: 12,
+                                width: '40%',
+                              }}
+                            >
+                              item
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                border: 1,
+                                p: 0.5,
+                                fontSize: 12,
+                                width: '25%',
+                              }}
+                              align='center'
+                            >
+                              10
+                            </TableCell>
+                            <TableCell
+                              align='center'
+                              sx={{
+                                border: 1,
+                                p: 0.5,
+                                fontSize: 12,
+                                width: '25%',
+                              }}
+                            >
+                              kg
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
                 </Grid>
               </Grid>
             </Grid>
