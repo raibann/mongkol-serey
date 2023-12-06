@@ -1,23 +1,36 @@
-import { Toolbar, Typography, Button, Stack, Box } from '@mui/material';
+import {
+  Toolbar,
+  Typography,
+  Button,
+  Stack,
+  Box,
+  SxProps,
+  Theme,
+} from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import { ArrowLeft2 } from 'iconsax-react';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SecondaryPageHeader = ({
   title,
-  component,
+  sticky = false,
+  endComponent,
+  appBarSx,
 }: {
   title: string;
-  component?: ReactNode;
+  sticky?: boolean;
+  endComponent?: React.ReactNode;
+  appBarSx?: SxProps<Theme>;
 }) => {
   const navigate = useNavigate();
   return (
     <AppBar
-      position='static'
+      position={sticky ? 'sticky' : 'static'}
       variant='elevation'
       elevation={0}
       color='transparent'
+      sx={{ top: 64, ...appBarSx }}
     >
       <Toolbar>
         <Stack
@@ -34,8 +47,9 @@ const SecondaryPageHeader = ({
             {title}
           </Typography>
         </Stack>
+
         <Box flexGrow={1} />
-        {component}
+        {endComponent}
       </Toolbar>
     </AppBar>
   );

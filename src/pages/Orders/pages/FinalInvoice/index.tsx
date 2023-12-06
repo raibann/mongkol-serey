@@ -19,161 +19,74 @@ import React from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import THEME_UTIL from 'utils/theme-util';
 
-export interface IFormQuotation {
-  id: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  event: string;
-  location: string;
-  total: number;
-  quotationItems: QuotationItems[];
-}
-export interface QuotationItems {
-  productName: string;
-  qty: number;
+export interface IFinalInvoice {
+  id?: number;
+  title: string;
+  qty: number | '';
   unit: string;
-  price: number;
-  subTotal: number;
+  price: number | '';
   remark: string;
 }
 
 const PACKAGE_ITEM_GRID = 11 / 5;
 
-const QuotationForm = () => {
+const FinalInvoice = () => {
   const theme = useTheme();
 
   // React Hook Form
-  const { control } = useForm<IFormQuotation>({
+  const { control } = useForm<{ finalInvoice: IFinalInvoice[] }>({
     defaultValues: {
-      quotationItems: [
+      finalInvoice: [
         {
-          productName: '',
+          title: '',
           qty: 0,
           unit: '',
           price: 0,
-          subTotal: 0,
           remark: '',
         },
       ],
     },
   });
-  const quotationItemsFields = useFieldArray({
-    name: 'quotationItems',
-    control: control,
+  const finalInvoiceFields = useFieldArray({
+    control,
+    name: 'finalInvoice',
   });
 
   return (
     <>
-      <SecondaryPageHeader title='Create New Quotation' />
+      <SecondaryPageHeader
+        title='Final Invoice'
+        endComponent={
+          <Button
+            startIcon={<Add />}
+            onClick={() =>
+              finalInvoiceFields.append({
+                id: undefined,
+                title: '',
+                qty: 0,
+                unit: '',
+                price: 0,
+                remark: '',
+              })
+            }
+            size='small'
+            variant='contained'
+            disableElevation
+            sx={{ color: 'common.white' }}
+          >
+            Add Invoice Item
+          </Button>
+        }
+      />
 
       <Paper component={Stack} m={3} mt={0} p={2} alignItems='center'>
         <Grid container maxWidth='sm' spacing={2} alignItems='center'>
-          <Grid item xs={6}>
-            <Controller
-              control={control}
-              name='firstName'
-              render={({ field, fieldState }) => (
-                <LabelTextField
-                  label='First name'
-                  size='small'
-                  fieldState={fieldState}
-                  {...field}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Controller
-              control={control}
-              name='lastName'
-              render={({ field, fieldState }) => (
-                <LabelTextField
-                  label='Last name'
-                  size='small'
-                  fieldState={fieldState}
-                  {...field}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Controller
-              control={control}
-              name='phoneNumber'
-              render={({ field, fieldState }) => (
-                <LabelTextField
-                  label='Phone number'
-                  size='small'
-                  fieldState={fieldState}
-                  {...field}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Controller
-              control={control}
-              name='event'
-              render={({ field, fieldState }) => (
-                <LabelTextField
-                  label='Event'
-                  size='small'
-                  fieldState={fieldState}
-                  {...field}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Controller
-              control={control}
-              name='location'
-              render={({ field, fieldState }) => (
-                <LabelTextField
-                  label='Location'
-                  size='small'
-                  fieldState={fieldState}
-                  {...field}
-                />
-              )}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            display='flex'
-            alignItems='center'
-            columnGap={2}
-            mt={2}
-          >
-            <Typography>Packages</Typography>
-            <Button
-              onClick={() =>
-                quotationItemsFields.append({
-                  productName: '',
-                  qty: 0,
-                  unit: '',
-                  price: 0,
-                  subTotal: 0,
-                  remark: '',
-                })
-              }
-              size='small'
-              variant='contained'
-              disableElevation
-              sx={{ minWidth: 0, color: 'common.white', p: 0.25 }}
-            >
-              <Add />
-            </Button>
-          </Grid>
-
-          {quotationItemsFields.fields.map((e, i) => (
+          {finalInvoiceFields.fields.map((e, i) => (
             <Grid container item spacing={1} key={e.id}>
               <Grid item xs={PACKAGE_ITEM_GRID + 0.75}>
                 <Controller
                   control={control}
-                  name={`quotationItems.${i}.productName`}
+                  name={`finalInvoice.${i}.title`}
                   render={({ field, fieldState }) => (
                     <LabelTextField
                       size='small'
@@ -187,7 +100,7 @@ const QuotationForm = () => {
               <Grid item xs={PACKAGE_ITEM_GRID - 0.5}>
                 <Controller
                   control={control}
-                  name={`quotationItems.${i}.qty`}
+                  name={`finalInvoice.${i}.qty`}
                   render={({ field, fieldState }) => (
                     <LabelTextField
                       size='small'
@@ -201,7 +114,7 @@ const QuotationForm = () => {
               <Grid item xs={PACKAGE_ITEM_GRID - 0.5}>
                 <Controller
                   control={control}
-                  name={`quotationItems.${i}.unit`}
+                  name={`finalInvoice.${i}.unit`}
                   render={({ field, fieldState }) => (
                     <LabelTextField
                       size='small'
@@ -215,7 +128,7 @@ const QuotationForm = () => {
               <Grid item xs={PACKAGE_ITEM_GRID - 0.5}>
                 <Controller
                   control={control}
-                  name={`quotationItems.${i}.price`}
+                  name={`finalInvoice.${i}.price`}
                   render={({ field, fieldState }) => (
                     <LabelTextField
                       size='small'
@@ -229,7 +142,7 @@ const QuotationForm = () => {
               <Grid item xs={PACKAGE_ITEM_GRID + 0.75}>
                 <Controller
                   control={control}
-                  name={`quotationItems.${i}.remark`}
+                  name={`finalInvoice.${i}.remark`}
                   render={({ field, fieldState }) => (
                     <LabelTextField
                       size='small'
@@ -248,7 +161,7 @@ const QuotationForm = () => {
                     </Typography>
                   )}
                   <CusIconButton
-                    onClick={() => quotationItemsFields.remove(i)}
+                    onClick={() => finalInvoiceFields.remove(i)}
                     sx={{
                       width: 40,
                       height: 40,
@@ -295,4 +208,4 @@ const QuotationForm = () => {
   );
 };
 
-export default QuotationForm;
+export default FinalInvoice;

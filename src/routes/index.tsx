@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import { useAuthContext } from 'context/AuthContext';
+import FinalInvoice from 'pages/Orders/pages/FinalInvoice';
 
 // Parent Page
 const Login = lazy(() => import('pages/Login'));
@@ -102,6 +103,14 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <OrderForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.orders.updateFinal}
+          element={
+            <Suspense>
+              <FinalInvoice />
             </Suspense>
           }
         />
