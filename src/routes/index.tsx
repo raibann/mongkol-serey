@@ -58,9 +58,6 @@ const PreviewQuotation = lazy(
   () => import('pages/Orders/pages/PreviewQuotation')
 );
 const OrderForm = lazy(() => import('pages/Orders/pages/OrderForm'));
-const PreviewExpense = lazy(
-  () => import('pages/Expenses/pages/PreviewExpense')
-);
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -174,15 +171,6 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
-        <Route
-          path={ROUTE_PATH.expenses.previewExpense}
-          element={
-            <Suspense>
-              <PreviewExpense />
-            </Suspense>
-          }
-        />
-
         {/* Customers */}
         <Route
           path={ROUTE_PATH.customers.root}
