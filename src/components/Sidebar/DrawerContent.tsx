@@ -190,8 +190,9 @@ const DrawerContent = () => {
                       timeout='auto'
                       unmountOnExit
                       sx={{ width: '100%' }}
+                      component={'div'}
                     >
-                      <List component='div' disablePadding>
+                      <List disablePadding>
                         {nav.children.map((child, index) => {
                           return (
                             <ListItem key={index} sx={{ pl: 4 }} disablePadding>

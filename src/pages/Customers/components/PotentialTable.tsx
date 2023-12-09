@@ -167,7 +167,14 @@ export default function PotentialTable(props: {
                     />
                     {/* Text item */}
                     <Stack direction={'column'}>
-                      <Typography variant='body2'>
+                      <Typography
+                        variant='body2'
+                        noWrap
+                        overflow={'hidden'}
+                        textOverflow={'ellipsis'}
+                        width={92}
+                        display={'inline-block'}
+                      >
                         {data.customer_name}
                       </Typography>
                       <Stack
