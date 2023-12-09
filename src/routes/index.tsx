@@ -410,6 +410,14 @@ export default function AllRoutes() {
           }
         />
         <Route
+          path={ROUTE_PATH.users.updateUser}
+          element={
+            <Suspense>
+              <NewUserForm />
+            </Suspense>
+          }
+        />
+        <Route
           path={ROUTE_PATH.users.roles}
           element={
             <Suspense>

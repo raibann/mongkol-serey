@@ -9,26 +9,32 @@ import {
   Button,
   alpha,
   TableBody,
+  MenuItem,
+  Menu,
 } from '@mui/material';
 import { useRequest } from 'ahooks';
 import USER_API from 'api/user';
 import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import { CusIconButton } from 'components/CusIconButton';
-import { ArrowDown2 } from 'iconsax-react';
+import { ArrowDown2, Edit2, Trash } from 'iconsax-react';
 import { useState } from 'react';
-import { HiDotsHorizontal } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
 
 export const UserTableBody = (props: { data: IAuth.User[] | undefined }) => {
-  // varible
+  // Hooks
   const theme = useTheme();
+  const navigate = useNavigate();
   // State
   const [open, setOpen] = useState(false);
   const [selectId, setSelectId] = useState<number | undefined>();
 
-  // ahooks
+  // Fetch Apis
   const { run, loading } = useRequest(USER_API.deleteUser, {
     manual: true,
   });
+
+  // Methods
 
   return (
     <>
@@ -111,17 +117,47 @@ export const UserTableBody = (props: { data: IAuth.User[] | undefined }) => {
               <TableCell align='right'>
                 <Stack
                   direction={'row'}
-                  spacing={2}
+                  spacing={1}
                   alignItems={'center'}
                   justifyContent={'end'}
                 >
                   <CusIconButton
                     sx={{
                       boxShadow: 0,
-                      color: (theme) => theme.palette.text.secondary,
+                      background: (theme) =>
+                        alpha(theme.palette.info.main, 0.1),
+                    }}
+                    onClick={() =>
+                      navigate(
+                        ROUTE_PATH.users.updateUser.replace(
+                          ':id',
+                          `${user?.id}`
+                        )
+                      )
+                    }
+                  >
+                    <Edit2
+                      size='18'
+                      color={theme.palette.info.main}
+                      variant='Bold'
+                    />
+                  </CusIconButton>
+                  <CusIconButton
+                    sx={{
+                      boxShadow: 0,
+                      background: (theme) =>
+                        alpha(theme.palette.error.main, 0.1),
+                    }}
+                    onClick={() => {
+                      setSelectId(user.id);
+                      setOpen(true);
                     }}
                   >
-                    <HiDotsHorizontal />
+                    <Trash
+                      size='18'
+                      color={theme.palette.error.main}
+                      variant='Bold'
+                    />
                   </CusIconButton>
                 </Stack>
               </TableCell>
