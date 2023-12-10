@@ -24,13 +24,15 @@ declare namespace ISupplier {
     province: string;
     district: string;
     commune: string;
-    socialMedia: string;
-    others: string;
+    others?: string;
     defaultPayment: string;
     status: string;
     createdAt: number;
     updatedAt?: any;
     deletedAt?: any;
+    facebook?: string;
+    telegram?: string;
+    status: string;
   }
 
   interface ReqSupplerAction {
@@ -43,8 +45,10 @@ declare namespace ISupplier {
     province: string;
     district: string;
     commune: string;
-    socialMedia: string;
-    others?: any;
+    images?: string;
+    facebook?: string;
+    telegram?: any;
+    others?: string;
     defaultPayment: string;
   }
   interface ResDelete {

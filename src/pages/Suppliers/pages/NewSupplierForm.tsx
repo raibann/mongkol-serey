@@ -72,6 +72,10 @@ const NewSupplierForm = () => {
   } = useRequest(SUPPLIER_API.getSupplierDetails, {
     manual: false,
     onSuccess: (data) => {
+      const social = data.data.telegram || data.data.facebook;
+      const socialType = data.data.telegram
+        ? EnumSocialType.TG
+        : EnumSocialType.FB;
       setValue('firstName', data.data.firstName);
       setValue('lastName', data.data.lastName);
       setValue('gender', data.data.gender || EnumGenderType.OTHER);
@@ -81,9 +85,9 @@ const NewSupplierForm = () => {
       setValue('province', data.data.province);
       setValue('district', data.data.district);
       setValue('commune', data.data.commune);
-      setValue('payment', data.data.defaultPayment || '');
-      setValue('socialType', EnumSocialType.TG);
-      setValue('social', data.data.socialMedia);
+      setValue('payment', data.data.defaultPayment);
+      setValue('socialType', socialType);
+      setValue('social', social || '');
     },
   });
   // Effect
@@ -104,6 +108,8 @@ const NewSupplierForm = () => {
   }, [params]);
   /* Methods */
   const onSubmit = (data: INewSuplierInput) => {
+    const telegram = data.socialType === EnumSocialType.TG ? data.social : '';
+    const facebook = data.socialType === EnumSocialType.FB ? data.social : '';
     if (params.id) {
       fetchUpdate({
         id: params.id,
@@ -113,13 +119,15 @@ const NewSupplierForm = () => {
           gender: data.gender,
           phoneNumber: data.phoneNumber,
           defaultPayment: data.payment,
-          socialMedia: data.social,
           district: data.district,
           house: data.house,
           province: data.province,
           street: data.street,
           commune: data.commune,
-          others: null,
+          facebook: facebook,
+          telegram: telegram,
+          others: '',
+          images: '',
         },
       });
     } else {
@@ -130,13 +138,15 @@ const NewSupplierForm = () => {
           gender: data.gender,
           phoneNumber: data.phoneNumber,
           defaultPayment: data.payment,
-          socialMedia: data.social,
           district: data.district,
           house: data.house,
           province: data.province,
           street: data.street,
           commune: data.commune,
-          others: null,
+          facebook: facebook,
+          telegram: telegram,
+          others: '',
+          images: '',
         },
       });
     }

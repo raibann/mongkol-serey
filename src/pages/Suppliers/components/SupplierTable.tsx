@@ -12,11 +12,12 @@ import ConfirmDialogSlide from 'components/CusDialog/ConfirmDialog';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable, { custStyle } from 'components/CusTable';
-import { Edit2, Trash, Location } from 'iconsax-react';
+import { Edit2, Trash, Location, Send2, Facebook } from 'iconsax-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import theme from 'theme/theme';
 import { ROUTE_PATH } from 'utils/route-util';
+import THEME_UTIL from 'utils/theme-util';
 
 const headers = ['No', 'Name', 'Phone Number', 'Address', ''];
 
@@ -99,21 +100,14 @@ export default function SupplierTable(props: {
                       spacing={0.5}
                       alignItems={'center'}
                     >
-                      <Typography
-                        variant='caption'
-                        noWrap
-                        color={'text.secondary'}
-                      >
-                        {item.socialMedia}
-                      </Typography>
-                      {/* {(item.telegram && (
+                      {(item.telegram && (
                         <Send2
                           size='14'
                           color={THEME_UTIL.telegramColor}
                           variant='Bold'
                         />
                       )) ||
-                        (item.facebook_name && (
+                        (item.facebook && (
                           <Facebook
                             size='14'
                             color={THEME_UTIL.facebookColor}
@@ -126,8 +120,8 @@ export default function SupplierTable(props: {
                         noWrap
                         color={'text.secondary'}
                       >
-                        {item.telegram_name || item.facebook_name}
-                      </Typography> */}
+                        {item.telegram || item.facebook}
+                      </Typography>
                     </Stack>
                   </Stack>
                 </Stack>
