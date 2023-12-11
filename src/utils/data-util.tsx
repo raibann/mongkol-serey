@@ -444,3 +444,15 @@ export enum EnumSocialType {
   FB = 'FB',
   TG = 'TG',
 }
+
+export enum EnumStockType {
+  STOCK = 'STOCK',
+  NON_STOCK = 'NON_STOCK',
+}
+
+export const StockTypeDescription: { [key: string]: string } = {
+  STOCK: 'មានក្នុងស្តុក',
+  NON_STOCK: 'មិនមានស្តុក',
+};
+
+export const EXCHANGE_RATE = 4100;

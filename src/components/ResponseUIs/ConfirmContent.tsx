@@ -2,7 +2,7 @@ import { Box, Typography, useTheme, Button, Stack } from '@mui/material';
 import { MessageQuestion } from 'iconsax-react';
 
 const ConfirmContent = ({
-  background,
+  background = 'transparent',
   height = 'auto',
   width = 'auto',
   boxWidth = 300,

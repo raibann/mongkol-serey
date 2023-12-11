@@ -1,21 +1,53 @@
-import { Button, Stack } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Button, MenuItem, Stack } from '@mui/material';
+import { useRequest } from 'ahooks';
+import { STOCK_CATEGORY_API, STOCK_PRODUCT_API } from 'api/stock';
 import LabelTextField from 'components/LabelTextField';
 import UploadButton from 'components/UploadButton';
 import { Controller, useForm } from 'react-hook-form';
 import THEME_UTIL from 'utils/theme-util';
 
-type ProductFormInput = {
+export type ProductFormInput = {
+  id?: number;
   name: string;
-  category: string;
-  description: string;
+  images: string;
+  category: { id: number | '' };
 };
 
-const ProductForm = () => {
-  const { control, handleSubmit } = useForm<ProductFormInput>();
+const ProductForm = ({ onClose, id }: { id?: number; onClose: () => void }) => {
+  const { control, handleSubmit, setValue } = useForm<ProductFormInput>({
+    defaultValues: {
+      category: { id: '' },
+      images: '',
+      name: '',
+    },
+  });
 
   const onSubmit = (data: ProductFormInput) => {
-    console.log(data);
+    run(data);
   };
+
+  // Requests
+  const { run, loading } = useRequest(STOCK_PRODUCT_API.productAction, {
+    manual: true,
+    onError: () => console.log('error'),
+    onSuccess: onClose,
+  });
+  const { loading: loadingUnitDetail } = useRequest(
+    () => STOCK_PRODUCT_API.productDetail({ id: id! }),
+    {
+      onSuccess: (res) => {
+        setValue('id', res.id);
+        setValue('name', res.name);
+        setValue('images', res.images);
+        setValue('category.id', res.category.id);
+      },
+      ready: !!id,
+    }
+  );
+  const { loading: loadingCategoryList, data: dataCategoryList } = useRequest(
+    () => STOCK_CATEGORY_API.categoryList({ search: '' })
+  );
 
   return (
     <Stack spacing={2} component='form' onSubmit={handleSubmit(onSubmit)}>
@@ -23,6 +55,9 @@ const ProductForm = () => {
       <Controller
         control={control}
         name='name'
+        rules={{
+          required: { value: true, message: 'Field is required' },
+        }}
         render={({ field, fieldState }) => (
           <LabelTextField
             size='small'
@@ -34,25 +69,23 @@ const ProductForm = () => {
       />
       <Controller
         control={control}
-        name='category'
+        name='category.id'
+        rules={{
+          required: { value: true, message: 'Field is required' },
+        }}
         render={({ field, fieldState }) => (
           <LabelTextField
+            select
             size='small'
-            label='Category'
+            label={`Category ${loadingCategoryList ? 'Loading...' : ''}`}
+            disabled={loadingCategoryList}
             fieldState={fieldState}
             {...field}
-          />
-        )}
-      />
-      <Controller
-        control={control}
-        name='description'
-        render={({ field, fieldState }) => (
-          <LabelTextField
-            size='small'
-            label='Type'
-            fieldState={fieldState}
-            {...field}
+            menutItems={dataCategoryList?.map((e) => (
+              <MenuItem key={e.id} value={e.id}>
+                {e.name}
+              </MenuItem>
+            ))}
           />
         )}
       />
@@ -60,13 +93,15 @@ const ProductForm = () => {
         <Button size='large' variant='outlined' sx={{ flex: 1 }}>
           Cancel
         </Button>
-        <Button
+        <LoadingButton
+          loading={loadingUnitDetail || loading}
+          type='submit'
           size='large'
           variant='contained'
           sx={{ flex: 1, background: THEME_UTIL.goldGradientMain }}
         >
           Save
-        </Button>
+        </LoadingButton>
       </Stack>
     </Stack>
   );

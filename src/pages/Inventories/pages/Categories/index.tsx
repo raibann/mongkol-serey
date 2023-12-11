@@ -7,21 +7,40 @@ import {
   alpha,
   useTheme,
   Container,
+  Chip,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTextField from 'components/CusTextField';
 import Dialog, { IDialogRef } from 'components/Dialog';
 import PageHeader from 'components/PageHeader';
 import { SearchNormal1, Add, Edit2, Trash } from 'iconsax-react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import CategoryForm from './components/CategoryForm';
 import CusTable from 'components/CusTable';
+import { useDebounce, useRequest } from 'ahooks';
+import { STOCK_CATEGORY_API } from 'api/stock';
+import ConfirmContent from 'components/ResponseUIs/ConfirmContent';
+import { EnumStockType, StockTypeDescription } from 'utils/data-util';
 
 export default function InventoryCategory() {
   // Hooks
-
   const theme = useTheme();
   const categoryFormRef = useRef<IDialogRef>();
+  const confirmRef = useRef<IDialogRef>();
+
+  // States
+  const [search, setSearch] = useState('');
+
+  // Requests
+  const searchDebounce = useDebounce(search, { wait: 500 });
+  const { data, loading, error, refresh } = useRequest(
+    () => STOCK_CATEGORY_API.categoryList({ search: searchDebounce }),
+    { refreshDeps: [searchDebounce] }
+  );
+  const { run: runDelete } = useRequest(STOCK_CATEGORY_API.deleteCategory, {
+    manual: true,
+    onSuccess: refresh,
+  });
 
   return (
     <>
@@ -29,7 +48,29 @@ export default function InventoryCategory() {
         ref={categoryFormRef}
         cusWidth={400}
         cusTitle='Add New Category'
-        content={() => <CategoryForm />}
+        alternateTitle='Update Category'
+        content={(id?: number) => (
+          <CategoryForm
+            id={id}
+            onClose={() => {
+              refresh();
+              categoryFormRef.current?.close();
+            }}
+          />
+        )}
+      />
+      <Dialog
+        ref={confirmRef}
+        content={(id?: number) => (
+          <ConfirmContent
+            title='Delete Category'
+            onConfirm={() => {
+              runDelete({ id });
+              confirmRef.current?.close();
+            }}
+            onClose={() => confirmRef.current?.close()}
+          />
+        )}
       />
 
       <PageHeader pageTitle='Inventory Category'>
@@ -60,63 +101,77 @@ export default function InventoryCategory() {
       </PageHeader>
 
       <Container maxWidth='xl'>
-        <CusTable
-          headers={['No.', 'Name', 'Description', '']}
-          body={
-            <TableRow
-              sx={{
-                background: (theme) => theme.palette.common.white,
-                '&> td:first-of-type': {
-                  borderTopLeftRadius: '10px',
-                  borderBottomLeftRadius: '10px',
-                },
-                '&> td:last-child': {
-                  borderTopRightRadius: '10px',
-                  borderBottomRightRadius: '10px',
-                },
-              }}
-            >
-              <TableCell>1</TableCell>
-              <TableCell>ប្រភេទសាច់</TableCell>
-              <TableCell>សាច់ថ្ពាល់អូន</TableCell>
-              <TableCell align='right'>
-                <Stack
-                  spacing={2}
-                  direction='row'
-                  alignItems='center'
-                  justifyContent='end'
-                >
-                  <CusIconButton
-                    sx={{
-                      boxShadow: 0,
-                      background: (theme) =>
-                        alpha(theme.palette.info.main, 0.1),
-                    }}
+        {data && (
+          <CusTable
+            headers={['No.', 'Name', 'Stock type', '']}
+            body={data.map((e) => (
+              <TableRow
+                key={e.id}
+                sx={{
+                  background: (theme) => theme.palette.common.white,
+                  '&> td:first-of-type': {
+                    borderTopLeftRadius: '10px',
+                    borderBottomLeftRadius: '10px',
+                  },
+                  '&> td:last-child': {
+                    borderTopRightRadius: '10px',
+                    borderBottomRightRadius: '10px',
+                  },
+                }}
+              >
+                <TableCell>{e.id}</TableCell>
+                <TableCell>{e.name}</TableCell>
+                <TableCell>
+                  <Chip
+                    label={StockTypeDescription[e.groupType]}
+                    color={
+                      e.groupType === EnumStockType.STOCK ? 'info' : 'error'
+                    }
+                    sx={{ color: 'common.white' }}
+                    size='small'
+                  />
+                </TableCell>
+                <TableCell align='right'>
+                  <Stack
+                    spacing={2}
+                    direction='row'
+                    alignItems='center'
+                    justifyContent='end'
                   >
-                    <Edit2
-                      size='20'
-                      color={theme.palette.info.main}
-                      variant='Bold'
-                    />
-                  </CusIconButton>
-                  <CusIconButton
-                    sx={{
-                      boxShadow: 0,
-                      background: (theme) =>
-                        alpha(theme.palette.error.main, 0.1),
-                    }}
-                  >
-                    <Trash
-                      size='20'
-                      color={theme.palette.error.main}
-                      variant='Bold'
-                    />
-                  </CusIconButton>
-                </Stack>
-              </TableCell>
-            </TableRow>
-          }
-        />
+                    <CusIconButton
+                      onClick={() => categoryFormRef.current?.open(e.id)}
+                      sx={{
+                        boxShadow: 0,
+                        background: (theme) =>
+                          alpha(theme.palette.info.main, 0.1),
+                      }}
+                    >
+                      <Edit2
+                        size='20'
+                        color={theme.palette.info.main}
+                        variant='Bold'
+                      />
+                    </CusIconButton>
+                    <CusIconButton
+                      onClick={() => confirmRef.current?.open(e.id)}
+                      sx={{
+                        boxShadow: 0,
+                        background: (theme) =>
+                          alpha(theme.palette.error.main, 0.1),
+                      }}
+                    >
+                      <Trash
+                        size='20'
+                        color={theme.palette.error.main}
+                        variant='Bold'
+                      />
+                    </CusIconButton>
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            ))}
+          />
+        )}
       </Container>
     </>
   );

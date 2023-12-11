@@ -119,8 +119,28 @@ export const ROUTE_API = {
 
   // Inventory
   stockList: '/api/stock/v1/list',
-  addStock: '/api/stock/v1/action',
+  stockDetail: '/api/stock/v1/:id',
+  createStock: '/api/stock/v1/action',
+  updateStock: '/api/stock/v1/:id',
   deleteStock: '/api/stock/v1/delete/:id',
+  //
+  unitList: '/api/unit/v1/list',
+  unitDetail: '/api/unit/v1/:id',
+  createUnit: '/api/unit/v1/action',
+  updateUnit: '/api/unit/v1/:id',
+  deleteUnit: '/api/unit/v1/delete/:id',
+  //
+  productList: '/api/product/v1/list',
+  productDetail: '/api/product/v1/:id',
+  createProduct: '/api/product/v1/action',
+  updateProduct: '/api/product/v1/:id',
+  deleteProduct: '/api/product/v1/delete/:id',
+  //
+  stockCategoryList: '/api/category/v1/list',
+  stockCategoryDetail: '/api/category/v1/:id',
+  stockCreateCategory: '/api/category/v1/action',
+  stockUpdateCategory: '/api/category/v1/:id',
+  stockDeleteCategory: '/api/unit/v1/delete/:id',
 
   // User
   userList: '/api/auth/v1/users',

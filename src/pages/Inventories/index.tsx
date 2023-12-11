@@ -26,6 +26,9 @@ import { BsThreeDots } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import ProductForm from './components/ProductForm';
+import { useDebounce, useRequest } from 'ahooks';
+import { STOCK_API, STOCK_UNIT_API } from 'api/stock';
+import { EXCHANGE_RATE } from 'utils/data-util';
 
 const Stocks = () => {
   // Hooks
@@ -35,7 +38,18 @@ const Stocks = () => {
   const productFormRef = useRef<IDialogRef>();
 
   // States
-  const [searchProduct, setSearchProduct] = useState('');
+  const [search, setSearch] = useState('');
+
+  // Requests
+  const searchDebounce = useDebounce(search, { wait: 500 });
+  const { data, loading, error, refresh } = useRequest(
+    () => STOCK_API.stockList({ search: searchDebounce }),
+    { refreshDeps: [searchDebounce] }
+  );
+  const { run: runDelete } = useRequest(STOCK_API.deleteStock, {
+    manual: true,
+    onSuccess: refresh,
+  });
 
   return (
     <>
@@ -43,11 +57,21 @@ const Stocks = () => {
         ref={productFormRef}
         cusWidth={400}
         cusTitle='Add New Product'
-        content={() => <ProductForm />}
+        alternateTitle='Update Product'
+        content={(id?: number) => (
+          <ProductForm
+            id={id}
+            onClose={() => {
+              productFormRef.current?.close();
+              refresh();
+            }}
+          />
+        )}
       />
 
       <PageHeader pageTitle='Inventory'>
         <CusTextField
+          onChange={(e) => setSearch(e.target.value)}
           placeholder='Search...'
           size='small'
           sx={{ bgcolor: 'common.white', mr: 2 }}
@@ -141,70 +165,78 @@ const Stocks = () => {
           </Paper>
         </Stack>
 
-        <CusTable
-          sx={{
-            container: {
-              py: 3,
-            },
-          }}
-          headers={[
-            'ID',
-            'Product Name',
-            'Category',
-            'Unit Price',
-            'In Stock',
-            'Out Stock',
-            'Total Value',
-            'Status',
-            '',
-          ]}
-          body={
-            <TableRow
-              sx={{
-                background: (theme) => theme.palette.common.white,
-                '&> td:first-of-type': {
-                  borderTopLeftRadius: '10px',
-                  borderBottomLeftRadius: '10px',
-                },
-                '&> td:last-child': {
-                  borderTopRightRadius: '10px',
-                  borderBottomRightRadius: '10px',
-                },
-              }}
-            >
-              <TableCell>1</TableCell>
-              <TableCell>Master Chef</TableCell>
-              <TableCell>Grocery</TableCell>
-              <TableCell>3.2$</TableCell>
-              <TableCell>10ដប</TableCell>
-              <TableCell>5ដប</TableCell>
-              <TableCell>
-                <Typography variant='body2'>{`${(3.2 * 5).toFixed(
-                  2
-                )}$`}</Typography>
-                <Typography variant='body2'>{`${3.2 * 5 * 4100}៛`}</Typography>
-              </TableCell>
-              <TableCell>
-                <Chip
-                  label='Active'
-                  color='info'
-                  size='small'
-                  sx={{
-                    bgcolor: alpha(theme.palette.info.light, 0.2),
-                    color: 'info.main',
-                  }}
-                />
-              </TableCell>
-              <TableCell>
-                <CusIconButton
-                  onClick={() => navigate(ROUTE_PATH.inventories.addInventory)}
-                >
-                  <BsThreeDots />
-                </CusIconButton>
-              </TableCell>
-            </TableRow>
-          }
-        />
+        {data && data.length > 0 && (
+          <CusTable
+            sx={{
+              container: {
+                py: 3,
+              },
+            }}
+            headers={[
+              'ID',
+              'Product Name',
+              'Category',
+              'Unit Price',
+              'In Stock',
+              'Total Value',
+              'Status',
+              '',
+            ]}
+            body={data.map((e) => (
+              <TableRow
+                key={e.id}
+                sx={{
+                  bgcolor: 'common.white',
+                  '&> td:first-of-type': {
+                    borderTopLeftRadius: '10px',
+                    borderBottomLeftRadius: '10px',
+                  },
+                  '&> td:last-child': {
+                    borderTopRightRadius: '10px',
+                    borderBottomRightRadius: '10px',
+                  },
+                }}
+              >
+                <TableCell>{e.id}</TableCell>
+                <TableCell>{e.product.name}</TableCell>
+                <TableCell>{e.product.category.name}</TableCell>
+                <TableCell>
+                  {(e.price ?? 0).toFixed(2)}
+                  {e.currency}
+                </TableCell>
+                <TableCell>
+                  {e.quantity}
+                  {e.unit.name}
+                </TableCell>
+                <TableCell>
+                  <Typography variant='body2'>{`${(
+                    e.price * e.quantity
+                  ).toFixed(2)}${e.currency}`}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    label='Active'
+                    color='info'
+                    size='small'
+                    sx={{
+                      bgcolor: alpha(theme.palette.info.light, 0.2),
+                      color: 'info.main',
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CusIconButton
+                    onClick={() =>
+                      navigate(ROUTE_PATH.inventories.addInventory)
+                    }
+                  >
+                    <BsThreeDots />
+                  </CusIconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          />
+        )}
       </Container>
     </>
   );

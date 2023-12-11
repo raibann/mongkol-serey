@@ -42,7 +42,7 @@ const InventoryLeftInput = () => {
       <Grid item xs={6}>
         <Controller
           control={control}
-          name='productName'
+          name='product'
           render={({ field, fieldState }) => (
             <LabelTextField
               size='small'
@@ -70,7 +70,7 @@ const InventoryLeftInput = () => {
       <Grid item xs={6}>
         <Controller
           control={control}
-          name='paymentMethod'
+          name='paidBy'
           render={({ field, fieldState }) => (
             <LabelTextField
               size='small'
@@ -140,7 +140,7 @@ const InventoryLeftInput = () => {
       <Grid item xs={9}>
         <Controller
           control={control}
-          name='cost'
+          name='price'
           render={({ field, fieldState }) => (
             <LabelTextField
               size='small'
