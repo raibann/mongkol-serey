@@ -1,4 +1,5 @@
 import {
+  Box,
   Chip,
   Stack,
   TableCell,
@@ -7,11 +8,15 @@ import {
   alpha,
   useTheme,
 } from '@mui/material';
+import ExpenseInvoice from 'components/ComToPrint/ExpenseInvoice';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable, { custStyle } from 'components/CusTable';
 import { Edit2, Printer } from 'iconsax-react';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactToPrint from 'react-to-print';
 import { ROUTE_PATH } from 'utils/route-util';
+import { pageStyle } from 'utils/validate-util';
 
 const headers = [
   'Invoice Id',
@@ -40,11 +45,17 @@ const bodyRow = [
 ];
 
 export default function ExpenseTable() {
+  const expenseRef = useRef(null);
   /* Hooks */
   const navigate = useNavigate();
   const theme = useTheme();
+
   return (
     <>
+      <Box display={'none'}>
+        <ExpenseInvoice ref={expenseRef} />
+      </Box>
+
       <CusTable
         headers={headers}
         body={bodyRow.map((value) => {
@@ -99,20 +110,22 @@ export default function ExpenseTable() {
                       variant='Bold'
                     />
                   </CusIconButton>
-                  <CusIconButton
-                    color='default'
-                    onClick={() =>
-                      navigate(
-                        ROUTE_PATH.expenses.previewExpense.replace(':id', '1')
-                      )
-                    }
-                    sx={{
-                      boxShadow: 0,
-                      background: (theme) => theme.palette.background.paper,
-                    }}
-                  >
-                    <Printer size='18' variant='Bold' />
-                  </CusIconButton>
+                  <ReactToPrint
+                    pageStyle={pageStyle}
+                    documentTitle={'grocery'}
+                    trigger={() => (
+                      <CusIconButton
+                        color='default'
+                        sx={{
+                          boxShadow: 0,
+                          background: (theme) => theme.palette.background.paper,
+                        }}
+                      >
+                        <Printer size='18' variant='Bold' />
+                      </CusIconButton>
+                    )}
+                    content={() => expenseRef.current}
+                  />
                 </Stack>
               </TableCell>
             </TableRow>

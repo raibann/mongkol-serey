@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 import { useAuthContext } from 'context/AuthContext';
+import FinalInvoice from 'pages/Orders/pages/FinalInvoice';
 
 // Parent Page
 const Login = lazy(() => import('pages/Login'));
@@ -58,10 +59,6 @@ const PreviewQuotation = lazy(
   () => import('pages/Orders/pages/PreviewQuotation')
 );
 const OrderForm = lazy(() => import('pages/Orders/pages/OrderForm'));
-const FinalInvoice = lazy(() => import('pages/Orders/pages/FinalInvoice'));
-const PreviewExpense = lazy(
-  () => import('pages/Expenses/pages/PreviewExpense')
-);
 
 export default function AllRoutes() {
   const { authState } = useAuthContext();
@@ -183,15 +180,6 @@ export default function AllRoutes() {
             </Suspense>
           }
         />
-        <Route
-          path={ROUTE_PATH.expenses.previewExpense}
-          element={
-            <Suspense>
-              <PreviewExpense />
-            </Suspense>
-          }
-        />
-
         {/* Customers */}
         <Route
           path={ROUTE_PATH.customers.root}
@@ -415,6 +403,14 @@ export default function AllRoutes() {
         />
         <Route
           path={ROUTE_PATH.users.createNewUser}
+          element={
+            <Suspense>
+              <NewUserForm />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.users.updateUser}
           element={
             <Suspense>
               <NewUserForm />

@@ -32,7 +32,7 @@ const OrderTableBody = ({
     <TableRow
       sx={{
         bgcolor: 'common.white',
-        '&> td:first-child': {
+        '&> td:first-of-type': {
           borderTopLeftRadius: '10px',
           borderBottomLeftRadius: '10px',
         },

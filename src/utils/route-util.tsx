@@ -25,7 +25,6 @@ export const ROUTE_PATH = {
   expenses: {
     root: '/expenses',
     updateExpense: '/expenses/update-expense/:id',
-    previewExpense: '/expense/preview/:id',
   },
   customers: {
     root: '/customers',
@@ -47,7 +46,6 @@ export const ROUTE_PATH = {
     root: '/prepare-groceries',
     createGrocery: '/prepare-grocery/create-new-list',
     updateGrocery: '/prepare-grocery/update-list/:id',
-    previewGrocery: '/prepare-grocery/preview/:id',
   },
   inventories: {
     root: '/inventories',

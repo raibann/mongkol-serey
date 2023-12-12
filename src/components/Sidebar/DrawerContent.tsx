@@ -180,6 +180,69 @@ const DrawerContent = () => {
                   />
                 </ListItemButton>
               </ListItem>
+
+              {!collapse &&
+                collapseMenu &&
+                location.pathname.includes(nav.toUrl) && (
+                  <ListItem>
+                    <Collapse
+                      in={collapseMenu}
+                      timeout='auto'
+                      unmountOnExit
+                      sx={{ width: '100%' }}
+                      component={'div'}
+                    >
+                      <List disablePadding>
+                        {nav.children.map((child, index) => {
+                          return (
+                            <ListItem key={index} sx={{ pl: 4 }} disablePadding>
+                              <ListItemButton
+                                sx={{
+                                  background:
+                                    location.pathname === child.toUrl
+                                      ? alpha(theme.palette.primary.main, 0.1)
+                                      : theme.palette.common.white,
+                                  borderRadius: 2.5,
+                                }}
+                                onClick={() => {
+                                  navigate(`${child.toUrl}`);
+                                  openDrawer && setOpenDrawer(false);
+                                }}
+                              >
+                                <ListItemIcon>
+                                  <Component
+                                    size='12'
+                                    variant='Bold'
+                                    color={
+                                      location.pathname === child.toUrl
+                                        ? theme.palette.primary.main
+                                        : theme.palette.secondary.main
+                                    }
+                                  />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={child.title}
+                                  primaryTypographyProps={{
+                                    color:
+                                      location.pathname === child.toUrl
+                                        ? theme.palette.primary.main
+                                        : theme.palette.secondary.main,
+                                    fontWeight:
+                                      location.pathname === child.toUrl
+                                        ? 'bold'
+                                        : 'medium',
+                                    fontSize: 14,
+                                  }}
+                                />
+                              </ListItemButton>
+                            </ListItem>
+                          );
+                        })}
+                      </List>
+                    </Collapse>
+                  </ListItem>
+                )}
+
               {collapse &&
                 nav.children.length > 0 &&
                 location.pathname.includes(nav.toUrl) && (
@@ -251,61 +314,6 @@ const DrawerContent = () => {
                       </Fade>
                     )}
                   </Popper>
-                )}
-
-              {!collapse &&
-                collapseMenu &&
-                location.pathname.includes(nav.toUrl) && (
-                  <Collapse in={collapseMenu} timeout='auto' unmountOnExit>
-                    <List component='div' disablePadding>
-                      {nav.children.map((child, index) => {
-                        return (
-                          <ListItem key={index} sx={{ py: 0 }}>
-                            <ListItemButton
-                              sx={{
-                                pl: 4,
-                                background:
-                                  location.pathname === child.toUrl
-                                    ? alpha(theme.palette.primary.main, 0.1)
-                                    : theme.palette.common.white,
-                                borderRadius: 2.5,
-                              }}
-                              onClick={() => {
-                                navigate(`${child.toUrl}`);
-                                openDrawer && setOpenDrawer(false);
-                              }}
-                            >
-                              <ListItemIcon sx={{ pl: 2 }}>
-                                <Component
-                                  size='12'
-                                  variant='Bold'
-                                  color={
-                                    location.pathname === child.toUrl
-                                      ? theme.palette.primary.main
-                                      : theme.palette.secondary.main
-                                  }
-                                />
-                              </ListItemIcon>
-                              <ListItemText
-                                primary={child.title}
-                                primaryTypographyProps={{
-                                  color:
-                                    location.pathname === child.toUrl
-                                      ? theme.palette.primary.main
-                                      : theme.palette.secondary.main,
-                                  fontWeight:
-                                    location.pathname === child.toUrl
-                                      ? 'bold'
-                                      : 'medium',
-                                  fontSize: 14,
-                                }}
-                              />
-                            </ListItemButton>
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </Collapse>
                 )}
             </React.Fragment>
           );
