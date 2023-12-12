@@ -1,43 +1,26 @@
 declare namespace IStock {
   interface IStockResponse {
+    data: Stock[];
+    totalItem: number;
+    totalPage: number;
     message: string;
     status: number;
-    data: Stock[];
   }
 
   interface Stock {
     id?: number;
-    productName: string;
     quantity: number;
-    price: number;
-    currency: string;
+    priceKh?: any;
+    priceUsd: number;
+    defaultValueKh: number;
+    defaultValueUsd: number;
     paidBy: string;
     groupType: string;
     expiryDate?: any;
+    currency: Currency;
     product: Product;
     unit: Unit;
-    suppliers: Suppliers;
-    createdAt: number;
-    updatedAt?: any;
-    deletedAt?: any;
-  }
-
-  interface Suppliers {
-    id: number;
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    gender: string;
-    street: string;
-    house: string;
-    province: string;
-    district: string;
-    commune: string;
-    images?: any;
-    facebook: string;
-    telegram: string;
-    others: string;
-    defaultPayment: string;
+    suppliers?: any;
     status: string;
     createdAt: number;
     updatedAt?: any;
@@ -51,7 +34,7 @@ declare namespace IStock {
     status: string;
     createdAt: number;
     updatedAt?: any;
-    deletedAt: number;
+    deletedAt?: any;
   }
 
   interface Product {
@@ -73,6 +56,17 @@ declare namespace IStock {
     status: string;
     createdAt: number;
     updatedAt: number;
+    deletedAt?: any;
+  }
+
+  interface Currency {
+    id: number;
+    name: string;
+    description: string;
+    value: number;
+    status: string;
+    createdAt: number;
+    updatedAt?: any;
     deletedAt?: any;
   }
 }

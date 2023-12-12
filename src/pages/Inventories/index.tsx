@@ -201,17 +201,19 @@ const Stocks = () => {
                 <TableCell>{e.product.name}</TableCell>
                 <TableCell>{e.product.category.name}</TableCell>
                 <TableCell>
-                  {(e.price ?? 0).toFixed(2)}
-                  {e.currency}
+                  <Typography variant='body2'>{e.priceKh ?? 0}៛</Typography>
+                  <Typography variant='body2'>
+                    {(e.priceUsd ?? 0).toFixed(2)}$
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   {e.quantity}
                   {e.unit.name}
                 </TableCell>
                 <TableCell>
-                  <Typography variant='body2'>{`${(
-                    e.price * e.quantity
-                  ).toFixed(2)}${e.currency}`}</Typography>
+                  <Typography variant='body2'>
+                    {e.defaultValueUsd.toFixed(2)}$
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   <Chip

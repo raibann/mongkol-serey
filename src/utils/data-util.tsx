@@ -271,7 +271,7 @@ const paidBy = [
   'Cash',
 ];
 
-const paidByColor = {
+const paidByColor: { [key: string]: string } = {
   ACLEDA: '#143c6d',
   ABA: '#005b7a',
   WING: '#a4c535',

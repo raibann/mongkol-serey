@@ -73,28 +73,25 @@ export const STOCK_PRODUCT_API = {
       data
     );
 
-    await STOCK_API.createStock({
-      category: '',
-      supplier: '',
-      paidBy: '',
-      addStock: false,
-      quantity: 0,
-      currency: '',
-      price: '',
-      discount: 0,
-      expiryDate: '',
-      groupType: '',
-      product: {
-        id: 0,
-      },
-      unit: {
-        id: 0,
-      },
-      suppliers: {
-        id: 0,
-      },
-      pricing: [],
-    });
+    if (res.id) {
+      await STOCK_API.createStock({
+        category: res.category.id,
+        paidBy: '',
+        addStock: false,
+        quantity: 0,
+        priceUsd: 0,
+        priceKh: 0,
+        discount: 0,
+        expiryDate: '',
+        currency: { id: 1 },
+        product: {
+          id: res.id,
+        },
+        unit: undefined,
+        suppliers: undefined,
+        pricing: [],
+      });
+    }
     return res;
   },
   updateProduct: async (data: ProductFormInput) => {

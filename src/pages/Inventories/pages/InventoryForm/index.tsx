@@ -6,23 +6,22 @@ import InventoryRightInput from './components/InventoryRightInput';
 
 export type InventoryInput = {
   id?: number;
-  category: string;
-  supplier: string;
+  category?: number;
   paidBy: string;
   addStock: boolean;
   quantity: number;
-  currency: string;
-  price: string;
-  discount: number;
-  expiryDate: string;
-  groupType: string;
+  priceKh: number;
+  priceUsd: number;
+  discount?: number;
+  expiryDate?: string;
   product: {
     id: number;
   };
-  unit: {
+  currency?: { id: number };
+  unit?: {
     id: number;
   };
-  suppliers: {
+  suppliers?: {
     id: number;
   };
   pricing: {
