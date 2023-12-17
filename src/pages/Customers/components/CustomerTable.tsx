@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   Stack,
   TableCell,
   TableRow,
@@ -18,11 +19,14 @@ import { useNavigate } from 'react-router-dom';
 import theme from 'theme/theme';
 import { ROUTE_PATH } from 'utils/route-util';
 import THEME_UTIL from 'utils/theme-util';
+
 const headers = ['No', 'Name', 'Phone Number', 'Address', ''];
 
 export default function CustTable(props: {
   data: ICustomer.Customer[] | undefined;
-  onSuccess: () => void;
+  onSuccess?: () => void;
+  disableAction?: boolean;
+  onSelect?: (customer: ICustomer.Customer) => void;
 }) {
   // State
   const [errorAlert, setErrorAlert] = useState(false);
@@ -73,7 +77,11 @@ export default function CustTable(props: {
         body={
           props.data &&
           props.data.map((data) => (
-            <TableRow key={data.id} sx={custStyle.bodyRow}>
+            <TableRow
+              onClick={() => props.onSelect?.(data)}
+              key={data.id}
+              sx={custStyle.bodyRow}
+            >
               <TableCell>{data.id}</TableCell>
               <TableCell
                 align='left'
@@ -84,7 +92,7 @@ export default function CustTable(props: {
                 <Stack direction={'row'} spacing={2} alignItems={'center'}>
                   <Avatar
                     alt='Remy Sharp'
-                    src={data.image}
+                    src={data.images}
                     variant='rounded'
                     sx={{
                       height: 40,
@@ -147,44 +155,58 @@ export default function CustTable(props: {
                   alignItems={'center'}
                   justifyContent={'end'}
                 >
-                  <CusIconButton
-                    sx={{
-                      boxShadow: 0,
-                      background: (theme) =>
-                        alpha(theme.palette.info.main, 0.1),
-                    }}
-                    onClick={() =>
-                      navigate(
-                        ROUTE_PATH.customers.updateCustomer.replace(
-                          ':id',
-                          `${data.id}`
-                        )
-                      )
-                    }
-                  >
-                    <Edit2
-                      size='18'
-                      color={theme.palette.info.main}
-                      variant='Bold'
-                    />
-                  </CusIconButton>
-                  <CusIconButton
-                    sx={{
-                      boxShadow: 0,
-                      background: (theme) =>
-                        alpha(theme.palette.error.main, 0.1),
-                    }}
-                    onClick={() => {
-                      setId(data.id);
-                      setOpen(true);
-                    }}
-                  >
-                    <Trash
-                      size='18'
-                      color={theme.palette.error.main}
-                      variant='Bold'
-                    />
-                  </CusIconButton>
+                  {props.disableAction !== true && (
+                    <>
+                      <CusIconButton
+                        sx={{
+                          boxShadow: 0,
+                          background: (theme) =>
+                            alpha(theme.palette.info.main, 0.1),
+                        }}
+                        onClick={() =>
+                          navigate(
+                            ROUTE_PATH.customers.updateCustomer.replace(
+                              ':id',
+                              `${data.id}`
+                            )
+                          )
+                        }
+                      >
+                        <Edit2
+                          size='18'
+                          color={theme.palette.info.main}
+                          variant='Bold'
+                        />
+                      </CusIconButton>
+                      <CusIconButton
+                        sx={{
+                          boxShadow: 0,
+                          background: (theme) =>
+                            alpha(theme.palette.error.main, 0.1),
+                        }}
+                        onClick={() => {
+                          setId(data.id);
+                          setOpen(true);
+                        }}
+                      >
+                        <Trash
+                          size='18'
+                          color={theme.palette.error.main}
+                          variant='Bold'
+                        />
+                      </CusIconButton>
+                    </>
+                  )}
+                  {props.onSelect && (
+                    <Button
+                      onClick={() => props.onSelect?.(data)}
+                      variant='contained'
+                      size='small'
+                      sx={{ color: 'common.white' }}
+                    >
+                      Select
+                    </Button>
+                  )}
                 </Stack>
               </TableCell>
             </TableRow>

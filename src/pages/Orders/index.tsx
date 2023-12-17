@@ -27,6 +27,9 @@ import useRouter, { ROUTE_PATH } from 'hook/useRouter';
 import { useForm } from 'react-hook-form';
 import CusTable from 'components/CusTable';
 import CusTextField from 'components/CusTextField';
+import { CusLoading } from 'components/CusLoading';
+import ErrorResponse from 'components/ResponseUIs/ErrorResponse';
+import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
 
 interface IFilterSearch {
   eventType: string;
@@ -61,8 +64,8 @@ const Orders = () => {
   const debounceSearch = useDebounce(searchData, { wait: 500 });
   const {
     data: orderList,
-    run: fetchOrderList,
-    loading: isLoadingOrderList,
+    loading: loadingOrderList,
+    error: errorOrderList,
     refresh: refreshGetOrderList,
   } = useRequest(() =>
     ORDER_API.getOrdersList({
@@ -87,10 +90,6 @@ const Orders = () => {
   };
   const onPrintClick = useCallback(
     (i: number) => setPrinter(orderList![i]),
-    [orderList]
-  );
-  const onEditClick = useCallback(
-    (i: number) => setOrderDetail(orderList![i]),
     [orderList]
   );
 
@@ -141,26 +140,36 @@ const Orders = () => {
       </PageHeader>
 
       <Container maxWidth='xl'>
-        <CusTable
-          headers={[
-            'ID',
-            'Customer',
-            'Date',
-            'Quantity',
-            'Location',
-            'Deposit',
-            'Status',
-            '',
-          ]}
-          body={orderList?.map((e, i) => (
-            <OrderTableBody
-              key={e.id}
-              item={e}
-              onPrintClick={() => onPrintClick(i)}
-              onEditClick={() => navigate(ROUTE_PATH.orders.updateFinal)}
-            />
-          ))}
-        />
+        {loadingOrderList ? (
+          <Stack height='80vh' alignItems='center' justifyContent='center'>
+            <CusLoading />
+          </Stack>
+        ) : errorOrderList ? (
+          <ErrorResponse height='80vh' />
+        ) : orderList && orderList.length > 0 ? (
+          <CusTable
+            headers={[
+              'ID',
+              'Customer',
+              'Date',
+              'Quantity',
+              'Location',
+              'Deposit',
+              'Status',
+              '',
+            ]}
+            body={orderList.map((e, i) => (
+              <OrderTableBody
+                key={e.id}
+                item={e}
+                onPrintClick={() => onPrintClick(i)}
+                onEditClick={() => navigate(ROUTE_PATH.orders.updateFinal)}
+              />
+            ))}
+          />
+        ) : (
+          <EmptyResponse height='80vh' />
+        )}
       </Container>
 
       <Drawer

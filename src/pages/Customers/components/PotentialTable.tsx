@@ -156,8 +156,7 @@ export default function PotentialTable(props: {
                   <Stack direction={'row'} spacing={2} alignItems='center'>
                     {/* Avatar */}
                     <Avatar
-                      alt='Remy Sharp'
-                      src='/static/images/avatar/1.jpg'
+                      src={data.images}
                       variant='circular'
                       sx={{
                         height: 40,

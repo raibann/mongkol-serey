@@ -1,6 +1,6 @@
 declare namespace IInventoryProduct {
   interface IInventoryProductResponse {
-    data: Datum[];
+    data: InventoryProduct[];
     totalItem: number;
     totalPage: number;
     message: string;

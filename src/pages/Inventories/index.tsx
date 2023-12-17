@@ -208,7 +208,7 @@ const Stocks = () => {
                 </TableCell>
                 <TableCell>
                   {e.quantity}
-                  {e.unit.name}
+                  {e.unit?.name}
                 </TableCell>
                 <TableCell>
                   <Typography variant='body2'>
@@ -229,7 +229,9 @@ const Stocks = () => {
                 <TableCell>
                   <CusIconButton
                     onClick={() =>
-                      navigate(ROUTE_PATH.inventories.addInventory)
+                      navigate(
+                        `${ROUTE_PATH.inventories.addInventory}?cateId=${e.product.category.id}&prodId=${e.product.id}`
+                      )
                     }
                   >
                     <BsThreeDots />

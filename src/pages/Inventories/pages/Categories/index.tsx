@@ -21,6 +21,9 @@ import { useDebounce, useRequest } from 'ahooks';
 import { STOCK_CATEGORY_API } from 'api/stock';
 import ConfirmContent from 'components/ResponseUIs/ConfirmContent';
 import { EnumStockType, StockTypeDescription } from 'utils/data-util';
+import { CusLoading } from 'components/CusLoading';
+import ErrorResponse from 'components/ResponseUIs/ErrorResponse';
+import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
 
 export default function InventoryCategory() {
   // Hooks
@@ -78,6 +81,7 @@ export default function InventoryCategory() {
           placeholder='Search...'
           size='small'
           sx={{ bgcolor: 'common.white', mr: 2 }}
+          onChange={(e) => setSearch(e.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
@@ -101,7 +105,17 @@ export default function InventoryCategory() {
       </PageHeader>
 
       <Container maxWidth='xl'>
-        {data && (
+        {loading ? (
+          <Stack height='80vh' alignItems='center' justifyContent='center'>
+            <CusLoading />
+          </Stack>
+        ) : error ? (
+          <ErrorResponse
+            height='80vh'
+            errorMessage={error?.message}
+            onRetry={refresh}
+          />
+        ) : data && data.length > 0 ? (
           <CusTable
             headers={['No.', 'Name', 'Stock type', '']}
             body={data.map((e) => (
@@ -171,6 +185,8 @@ export default function InventoryCategory() {
               </TableRow>
             ))}
           />
+        ) : (
+          <EmptyResponse height='80vh' />
         )}
       </Container>
     </>

@@ -244,14 +244,15 @@ const listTitle = [
 ];
 
 const paidBy = [
-  'ACLEDA',
+  'Cash',
   'ABA',
+  'ACLEDA',
   'WING',
   'BAKONG',
   'CANADIA',
+  'TRUE MONEY',
   // 'SATHAPANA',
   // 'WOORI',
-  'TRUE MONEY',
   // 'AMK',
   // 'PRASAC',
   // 'PHILLIP',
@@ -268,7 +269,6 @@ const paidBy = [
   // 'MAY Bank',
   // 'eMoney Agent',
   // 'Pi Pay',
-  'Cash',
 ];
 
 const paidByColor: { [key: string]: string } = {
@@ -277,9 +277,9 @@ const paidByColor: { [key: string]: string } = {
   WING: '#a4c535',
   BAKONG: '#dc222c',
   CANADIA: '#D61229',
+  Cash: '#BB9300',
   'TRUE MONEY': '#f88a30',
   // 'Pi Pay': '#ed288a',
-  Cash: '#BB9300',
 };
 
 const foodList = [

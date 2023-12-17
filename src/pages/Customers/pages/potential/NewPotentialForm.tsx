@@ -9,10 +9,12 @@ import {
 } from '@mui/material';
 import { useRequest } from 'ahooks';
 import CUSTOMER_API from 'api/customer';
+import TELEGRAM_API from 'api/telegram';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
+import UploadButton from 'components/UploadButton';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -22,6 +24,7 @@ import {
   EnumSocialType,
 } from 'utils/data-util';
 import { ROUTE_PATH } from 'utils/route-util';
+import THEME_UTIL from 'utils/theme-util';
 
 interface INewPotentialInput {
   id?: string | number;
@@ -32,6 +35,7 @@ interface INewPotentialInput {
   social: string;
   socialType: string;
   note: string;
+  images: string;
 }
 
 export default function NewPotential() {
@@ -39,7 +43,7 @@ export default function NewPotential() {
   const [errorAlert, setErrorAlert] = useState(false);
 
   /* Hooks */
-  const { control, handleSubmit, setValue, reset } =
+  const { control, handleSubmit, setValue, reset, watch } =
     useForm<INewPotentialInput>();
   const navigate = useNavigate();
   const params = useParams();
@@ -66,6 +70,17 @@ export default function NewPotential() {
     },
   });
 
+  const { run: runUpload, loading: loadingUpload } = useRequest(
+    TELEGRAM_API.uploadFile,
+    {
+      manual: true,
+      onError: () => console.log('error'),
+      onSuccess: (res) => {
+        setValue('images', res.path);
+      },
+    }
+  );
+
   const {
     run: fetchDetails,
     loading: isLoadingDetails,
@@ -84,6 +99,7 @@ export default function NewPotential() {
       setValue('phoneNumber', data.customer.contact_number);
       setValue('socialType', socialType);
       setValue('social', social);
+      setValue('images', data.customer.images);
     },
   });
 
@@ -116,10 +132,12 @@ export default function NewPotential() {
           customer_name: data.customerName,
           facebook_name: facebook,
           telegram_name: telegram,
+          gender: data.gender,
           contact_number: data.phoneNumber,
           customerType: EnumCustomerType.POTENTIAL_CUSTOMER,
           location: data.location,
           remarks: data.note,
+          images: data.images,
           commune: '',
           district: '',
           house: '',
@@ -134,9 +152,11 @@ export default function NewPotential() {
           facebook_name: facebook,
           telegram_name: telegram,
           contact_number: data.phoneNumber,
+          gender: data.gender,
           customerType: EnumCustomerType.POTENTIAL_CUSTOMER,
           location: data.location,
           remarks: data.note,
+          images: data.images,
           commune: '',
           district: '',
           house: '',
@@ -184,6 +204,16 @@ export default function NewPotential() {
           component={'form'}
           onSubmit={handleSubmit(onSubmit)}
         >
+          <Stack mx='auto' mb={2}>
+            <UploadButton
+              src={watch('images')}
+              onChange={(dataUrl, file) => {
+                runUpload(file);
+                setValue('images', dataUrl);
+              }}
+            />
+          </Stack>
+
           <Stack direction={'column'} spacing={2}>
             {isLoadingDetails ? (
               <>
@@ -357,14 +387,23 @@ export default function NewPotential() {
                   spacing={2}
                   py={2}
                 >
-                  <Button variant='outlined' fullWidth onClick={onReset}>
+                  <Button
+                    size='large'
+                    variant='outlined'
+                    fullWidth
+                    onClick={onReset}
+                  >
                     Reset
                   </Button>
                   <LoadingButton
-                    loading={isLoadingCreate || isLoadingUpdate}
+                    size='large'
+                    loading={
+                      isLoadingCreate || isLoadingUpdate || loadingUpload
+                    }
                     type='submit'
                     variant='contained'
                     fullWidth
+                    sx={{ background: THEME_UTIL.goldGradientMain }}
                   >
                     Save
                   </LoadingButton>

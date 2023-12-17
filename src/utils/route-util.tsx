@@ -117,6 +117,7 @@ export const ROUTE_API = {
 
   // Inventory
   stockList: '/api/stock/v1/list',
+  stockReportList: '/api/stockReport/v1/list',
   stockDetail: '/api/stock/v1/:id',
   createStock: '/api/stock/v1/action',
   updateStock: '/api/stock/v1/:id',

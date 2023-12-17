@@ -7,7 +7,6 @@ import {
   alpha,
   useTheme,
   Container,
-  Box,
 } from '@mui/material';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTextField from 'components/CusTextField';
@@ -106,9 +105,9 @@ export default function InventoryUnit() {
 
       <Container maxWidth='xl'>
         {loading ? (
-          <Box height='80vh' display='grid' sx={{ placeItems: 'center' }}>
+          <Stack height='80vh' alignItems='center' justifyContent='center'>
             <CusLoading />
-          </Box>
+          </Stack>
         ) : error ? (
           <ErrorResponse height='80vh' errorMessage={error?.message} />
         ) : data && data.length > 0 ? (

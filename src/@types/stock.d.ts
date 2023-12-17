@@ -19,7 +19,7 @@ declare namespace IStock {
     expiryDate?: any;
     currency: Currency;
     product: Product;
-    unit: Unit;
+    unit?: Unit;
     suppliers?: any;
     status: string;
     createdAt: number;
@@ -68,5 +68,32 @@ declare namespace IStock {
     createdAt: number;
     updatedAt?: any;
     deletedAt?: any;
+  }
+
+  interface StockReport {
+    id: number;
+    stockId: string;
+    productName: string;
+    unitType: string;
+    action: string;
+    quantity: number;
+    priceKh: number;
+    priceUsd: number;
+    expiryDate?: number;
+    addedByUser: AddedByUser;
+    createdAt: number;
+  }
+
+  interface AddedByUser {
+    id: number;
+    name: string;
+    username: string;
+    roles: Role[];
+  }
+
+  interface Role {
+    id: number;
+    name: string;
+    permission: any[];
   }
 }

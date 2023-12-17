@@ -2,6 +2,7 @@ import { LoadingButton } from '@mui/lab';
 import { Button, MenuItem, Stack } from '@mui/material';
 import { useRequest } from 'ahooks';
 import { STOCK_CATEGORY_API, STOCK_PRODUCT_API } from 'api/stock';
+import TELEGRAM_API from 'api/telegram';
 import LabelTextField from 'components/LabelTextField';
 import UploadButton from 'components/UploadButton';
 import { Controller, useForm } from 'react-hook-form';
@@ -15,7 +16,7 @@ export type ProductFormInput = {
 };
 
 const ProductForm = ({ onClose, id }: { id?: number; onClose: () => void }) => {
-  const { control, handleSubmit, setValue } = useForm<ProductFormInput>({
+  const { control, handleSubmit, setValue, watch } = useForm<ProductFormInput>({
     defaultValues: {
       category: { id: '' },
       images: '',
@@ -33,6 +34,16 @@ const ProductForm = ({ onClose, id }: { id?: number; onClose: () => void }) => {
     onError: () => console.log('error'),
     onSuccess: onClose,
   });
+  const { run: runUpload, loading: loadingUpload } = useRequest(
+    TELEGRAM_API.uploadFile,
+    {
+      manual: true,
+      onError: () => console.log('error'),
+      onSuccess: (res) => {
+        setValue('images', res.path);
+      },
+    }
+  );
   const { loading: loadingUnitDetail } = useRequest(
     () => STOCK_PRODUCT_API.productDetail({ id: id! }),
     {
@@ -51,7 +62,13 @@ const ProductForm = ({ onClose, id }: { id?: number; onClose: () => void }) => {
 
   return (
     <Stack spacing={2} component='form' onSubmit={handleSubmit(onSubmit)}>
-      <UploadButton />
+      <UploadButton
+        src={watch('images')}
+        onChange={(dataUrl, file) => {
+          setValue('images', dataUrl);
+          runUpload(file);
+        }}
+      />
       <Controller
         control={control}
         name='name'
@@ -94,7 +111,7 @@ const ProductForm = ({ onClose, id }: { id?: number; onClose: () => void }) => {
           Cancel
         </Button>
         <LoadingButton
-          loading={loadingUnitDetail || loading}
+          loading={loadingUnitDetail || loading || loadingUpload}
           type='submit'
           size='large'
           variant='contained'

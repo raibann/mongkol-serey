@@ -9,14 +9,18 @@ import {
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { InventoryInput } from '..';
 import LabelTextField from 'components/LabelTextField';
-import { CusIconButton } from 'components/CusIconButton';
 import { Add } from 'iconsax-react';
 import { useRequest } from 'ahooks';
-import { STOCK_CATEGORY_API, STOCK_UNIT_API } from 'api/stock';
+import {
+  STOCK_CATEGORY_API,
+  STOCK_PRODUCT_API,
+  STOCK_UNIT_API,
+} from 'api/stock';
 import SUPPLIER_API from 'api/supplier';
 import { EnumCustomerType, paidBy, paidByColor } from 'utils/data-util';
 
 const InventoryLeftInput = () => {
+  // React Hook Form
   const { control, watch } = useFormContext<InventoryInput>();
   const pricingFields = useFieldArray<InventoryInput>({ name: 'pricing' });
 
@@ -27,11 +31,15 @@ const InventoryLeftInput = () => {
   const { loading: loadingCategoryList, data: dataCategoryList } = useRequest(
     () => STOCK_CATEGORY_API.categoryList({ search: '' })
   );
+  const { data: dataProductList, loading: loadingProductList } = useRequest(
+    () =>
+      STOCK_PRODUCT_API.productList({
+        search: '',
+      })
+  );
   const { data: dataSuppliersList, loading: loadingSuppliersList } = useRequest(
     () =>
       SUPPLIER_API.getSupplierList({
-        search: '',
-        page: 0,
         size: 1000,
         type: EnumCustomerType.CUSTOMER,
       })
@@ -55,7 +63,7 @@ const InventoryLeftInput = () => {
               select
               size='small'
               label='Category'
-              disabled={loadingCategoryList}
+              disabled={loadingCategoryList || true}
               fieldState={fieldState}
               {...field}
               menutItems={dataCategoryList?.map((e) => (
@@ -70,13 +78,20 @@ const InventoryLeftInput = () => {
       <Grid item xs={6}>
         <Controller
           control={control}
-          name='product'
+          name='product.id'
           render={({ field, fieldState }) => (
             <LabelTextField
+              select
               size='small'
               label='Product name'
+              disabled={loadingProductList || true}
               fieldState={fieldState}
               {...field}
+              menutItems={dataProductList?.map((e) => (
+                <MenuItem key={e.id} value={e.id}>
+                  {e.name}
+                </MenuItem>
+              ))}
             />
           )}
         />
@@ -91,6 +106,7 @@ const InventoryLeftInput = () => {
               size='small'
               label='Supplier'
               fieldState={fieldState}
+              disabled={loadingSuppliersList}
               {...field}
               menutItems={dataSuppliersList?.data.map((e) => (
                 <MenuItem key={e.id} value={e.id}>
@@ -164,7 +180,7 @@ const InventoryLeftInput = () => {
       <Grid item xs={3}>
         <Controller
           control={control}
-          name='unit'
+          name='unit.id'
           render={({ field, fieldState }) => (
             <LabelTextField
               size='small'
@@ -185,7 +201,7 @@ const InventoryLeftInput = () => {
       <Grid item xs={3}>
         <Controller
           control={control}
-          name='currency'
+          name='currency.id'
           render={({ field, fieldState }) => (
             <LabelTextField
               size='small'
@@ -193,8 +209,8 @@ const InventoryLeftInput = () => {
               label='Currency'
               fieldState={fieldState}
               menutItems={[
-                <MenuItem value='1'>Dollar</MenuItem>,
-                <MenuItem value='2'>Riel</MenuItem>,
+                <MenuItem value={1}>Riel</MenuItem>,
+                <MenuItem value={2}>Dollar</MenuItem>,
               ]}
               {...field}
             />
@@ -240,8 +256,8 @@ const InventoryLeftInput = () => {
             pricingFields.append({
               qty: 0,
               cost: 0,
-              unit: 'ដប',
-              currency: 'dollar',
+              unit: '',
+              currency: 1,
             })
           }
           size='small'
@@ -264,10 +280,11 @@ const InventoryLeftInput = () => {
                   select
                   label='Unit'
                   fieldState={fieldState}
-                  menutItems={[
-                    <MenuItem value='ដប'>ដប</MenuItem>,
-                    <MenuItem value='កំប៉ុង'>កំប៉ុង</MenuItem>,
-                  ]}
+                  menutItems={dataUnitList?.map((e) => (
+                    <MenuItem key={e.id} value={e.id}>
+                      {e.name}
+                    </MenuItem>
+                  ))}
                   {...field}
                 />
               )}
@@ -312,8 +329,8 @@ const InventoryLeftInput = () => {
                   label='Currency'
                   fieldState={fieldState}
                   menutItems={[
-                    <MenuItem value='riel'>Riel</MenuItem>,
-                    <MenuItem value='dollar'>Dollar</MenuItem>,
+                    <MenuItem value={1}>Riel</MenuItem>,
+                    <MenuItem value={2}>Dollar</MenuItem>,
                   ]}
                   {...field}
                 />

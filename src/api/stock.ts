@@ -18,6 +18,17 @@ export const STOCK_API = {
     });
     return res.data;
   },
+  stockReportsList: async ({ search }: { search?: string }) => {
+    const res: IStock.StockReport[] = await HttpUtil.get(
+      ROUTE_API.stockReportList,
+      {
+        params: {
+          search: search,
+        },
+      }
+    );
+    return res;
+  },
   deleteStock: async (data: { id?: number }) => {
     const res = await HttpUtil.delete(
       ROUTE_API.deleteStock.replace(':id', `${data.id}`)

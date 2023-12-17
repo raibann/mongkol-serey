@@ -3,29 +3,56 @@ import {
   Chip,
   Container,
   InputAdornment,
+  Stack,
   TableCell,
   TableRow,
   Typography,
   alpha,
   useTheme,
 } from '@mui/material';
-import { CusIconButton } from 'components/CusIconButton';
+import { useDebounce, useRequest } from 'ahooks';
+import { STOCK_API } from 'api/stock';
+import { CusLoading } from 'components/CusLoading';
 import CusTable from 'components/CusTable';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
+import EmptyResponse from 'components/ResponseUIs/EmptyResponse';
+import ErrorResponse from 'components/ResponseUIs/ErrorResponse';
 import { Add, SearchNormal1 } from 'iconsax-react';
-import { BsThreeDots } from 'react-icons/bs';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 
 export default function InventoryReport() {
   // Hooks
-
   const navigate = useNavigate();
   const theme = useTheme();
 
   // States
+  const [search, setSearch] = useState('');
 
+  // Requests
+  const searchDebounce = useDebounce(search, { wait: 500 });
+  const { data, loading, error, refresh } = useRequest(
+    () => STOCK_API.stockReportsList({ search: searchDebounce }),
+    { refreshDeps: [searchDebounce] }
+  );
+
+  const getPrice = (index: number) => {
+    if (!data) return '0';
+    if (data[index].priceUsd) return `${data[index].priceUsd}$`;
+    if (data[index].priceKh) return `${data[index].priceKh}៛`;
+    return '0';
+  };
+
+  const getTotalPrice = (index: number) => {
+    if (!data) return '0';
+    if (data[index].priceUsd)
+      return `${data[index].priceUsd * data[index].quantity}$`;
+    if (data[index].priceKh)
+      return `${data[index].priceKh * data[index].quantity}៛`;
+    return '0';
+  };
   return (
     <>
       <PageHeader pageTitle='Inventory Report'>
@@ -56,63 +83,72 @@ export default function InventoryReport() {
       </PageHeader>
 
       <Container maxWidth='xl'>
-        <CusTable
-          headers={[
-            'ID',
-            'Product Name',
-            'Category',
-            'Unit Price',
-            'In Stock',
-            'Out Stock',
-            'Total Value',
-            'Status',
-            '',
-          ]}
-          body={
-            <TableRow
-              sx={{
-                background: (theme) => theme.palette.common.white,
-                '&> td:first-of-type': {
-                  borderTopLeftRadius: '10px',
-                  borderBottomLeftRadius: '10px',
-                },
-                '&> td:last-child': {
-                  borderTopRightRadius: '10px',
-                  borderBottomRightRadius: '10px',
-                },
-              }}
-            >
-              <TableCell>1</TableCell>
-              <TableCell>Master Chef</TableCell>
-              <TableCell>Grocery</TableCell>
-              <TableCell>3.2$</TableCell>
-              <TableCell>10ដប</TableCell>
-              <TableCell>5ដប</TableCell>
-              <TableCell>
-                <Typography variant='body2'>{`${(3.2 * 5).toFixed(
-                  2
-                )}$`}</Typography>
-                <Typography variant='body2'>{`${3.2 * 5 * 4100}៛`}</Typography>
-              </TableCell>
-              <TableCell>
-                <Chip
-                  label='Active'
-                  color='info'
-                  size='small'
-                  sx={{
-                    bgcolor: alpha(theme.palette.info.light, 0.2),
-                    color: 'info.main',
-                  }}
-                />
-              </TableCell>
-              <TableCell>
-                <CusIconButton>
-                  <BsThreeDots />
-                </CusIconButton>
-              </TableCell>
-            </TableRow>
-          }
-        />
+        {loading ? (
+          <Stack height='80vh' alignItems='center' justifyContent='center'>
+            <CusLoading />
+          </Stack>
+        ) : error ? (
+          <ErrorResponse
+            height='80vh'
+            errorMessage={error?.message}
+            onRetry={refresh}
+          />
+        ) : data && data.length > 0 ? (
+          <CusTable
+            headers={[
+              'ID',
+              'Product name',
+              'Category',
+              'Unit price',
+              'Quantity',
+              'Total price',
+              'User',
+              'Action',
+            ]}
+            body={data.map((e, i) => (
+              <TableRow
+                key={e.id}
+                sx={{
+                  bgcolor: 'common.white',
+                  '&> td:first-of-type': {
+                    borderTopLeftRadius: '10px',
+                    borderBottomLeftRadius: '10px',
+                  },
+                  '&> td:last-child': {
+                    borderTopRightRadius: '10px',
+                    borderBottomRightRadius: '10px',
+                  },
+                }}
+              >
+                <TableCell>{e.id}</TableCell>
+                <TableCell>{e.productName}</TableCell>
+                <TableCell>??</TableCell>
+                <TableCell>{getPrice(i)}</TableCell>
+                <TableCell>
+                  {e.quantity}
+                  {e.unitType}
+                </TableCell>
+                <TableCell>
+                  <Typography variant='body2'>{getTotalPrice(i)}</Typography>
+                </TableCell>
+                <TableCell>{e.addedByUser.name}</TableCell>
+                <TableCell>
+                  <Chip
+                    label={e.action}
+                    color='info'
+                    size='small'
+                    sx={{
+                      bgcolor: alpha(theme.palette.info.light, 0.2),
+                      color: 'info.main',
+                    }}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          />
+        ) : (
+          <EmptyResponse height='80vh' />
+        )}
       </Container>
     </>
   );
