@@ -69,8 +69,8 @@ const BookingInvoice = React.forwardRef<HTMLInputElement, IBookingInvoice>(
                   fontSize={18}
                   whiteSpace='pre-line'
                 >
-                  {`វណ្ណារីវីឡា គម្រោង03 ផ្ទះលេខ NR23 ផ្លូវបេតុង
-                  ខណ្ឌកំបូល រាជធានីភ្នំពេញ`}
+                  {`សុវណ្ណារី វីឡា គម្រោង03 ផ្ទះលេខ NR23
+                  ផ្លូវបេតុង ខណ្ឌកំបូល រាជធានីភ្នំពេញ`}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
