@@ -41,16 +41,19 @@ const QuotationInvoice = forwardRef<HTMLInputElement, IQuotation>(
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  fontSize={16}
+                  fontSize={18}
+                  whiteSpace='nowrap'
                 >
                   អាស័យដ្ឋាន​៖
                 </Typography>
                 <Typography
                   fontWeight={'bold'}
                   fontFamily='Khmer Busra high'
-                  fontSize={16}
+                  fontSize={18}
+                  whiteSpace='pre-line'
                 >
-                  បុរីឈូកវា០៣ ផ្លូវលេខ០៣ ផ្ទះលេខ៨២
+                  {`វណ្ណារីវីឡា គម្រោង03 ផ្ទះលេខ NR23 ផ្លូវបេតុង
+                  ខណ្ឌកំបូល រាជធានីភ្នំពេញ`}
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1.5}>
