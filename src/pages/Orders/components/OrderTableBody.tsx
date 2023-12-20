@@ -149,8 +149,7 @@ const OrderTableBody = ({
             size='small'
             sx={{
               backgroundColor:
-                (paidByColor as any)[item.paidBy || 'Cash'] ||
-                theme.palette.info.main,
+                paidByColor[item.paidBy || 'Cash'] || theme.palette.info.main,
               color: '#fff',
             }}
           />

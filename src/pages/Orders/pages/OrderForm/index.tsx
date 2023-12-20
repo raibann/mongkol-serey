@@ -3,9 +3,27 @@ import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import { FormProvider, useForm } from 'react-hook-form';
 import InvoiceInfo from './components/InvoiceInfo';
 import InvoicePackage from './components/InvoicePackage';
+import SelectCustomer from './components/SelectCustomer';
+
+// const handleStockOut = () => {
+//   let stockOut = 30;
+
+//   const stock = [24, 22];
+
+//   stock.forEach((e) => {
+//     if (e > 0) {
+//       if (e < stockOut) {
+//         e.setQuantity(0);
+//         stockOut = stockOut - e;
+//       } else {
+//         e - stockOut;
+//       }
+//     }
+//   });
+// };
 
 export interface IOrderForm {
-  orderId?: number;
+  id?: number;
   eventType: string;
   eventLocation: string;
   eventDate: string | null;
@@ -16,6 +34,7 @@ export interface IOrderForm {
   quantity: number;
   discount: number;
   listMenu: IlistMenu[];
+  customer?: ICustomer.Customer;
 }
 
 interface IlistMenu {
@@ -62,6 +81,9 @@ const OrderForm = () => {
         <FormProvider {...methods}>
           <Grid container p={3} pt={0} spacing={3}>
             <Grid item xs={6}>
+              <Stack component={Paper} p={2} mb={2}>
+                <SelectCustomer />
+              </Stack>
               <Stack component={Paper} p={2}>
                 <InvoiceInfo />
               </Stack>

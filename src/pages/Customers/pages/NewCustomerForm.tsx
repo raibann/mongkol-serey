@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { useRequest } from 'ahooks';
 import CUSTOMER_API from 'api/customer';
+import TELEGRAM_API from 'api/telegram';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
@@ -23,6 +24,7 @@ import {
   EnumSocialType,
 } from 'utils/data-util';
 import { ROUTE_PATH } from 'utils/route-util';
+import THEME_UTIL from 'utils/theme-util';
 
 interface INewCustomerInput {
   id?: string | number;
@@ -38,14 +40,14 @@ interface INewCustomerInput {
   social: string;
   socialType: string;
   location: string;
-  image?: string;
+  images?: string;
 }
 export default function NewCustomerForm() {
   // State
   const [errorAlert, setErrorAlert] = useState(false);
 
   /* Hooks */
-  const { control, handleSubmit, setValue, reset } =
+  const { control, handleSubmit, setValue, reset, watch } =
     useForm<INewCustomerInput>();
   const navigate = useNavigate();
   const params = useParams();
@@ -70,6 +72,17 @@ export default function NewCustomerForm() {
       navigate(ROUTE_PATH.customers.root);
     },
   });
+
+  const { run: runUpload, loading: loadingUpload } = useRequest(
+    TELEGRAM_API.uploadFile,
+    {
+      manual: true,
+      onError: () => console.log('error'),
+      onSuccess: (res) => {
+        setValue('images', res.path);
+      },
+    }
+  );
 
   const {
     run: fetchDetails,
@@ -128,6 +141,7 @@ export default function NewCustomerForm() {
           facebook_name: facebook,
           telegram_name: telegram,
           contact_number: data.phoneNumber,
+          gender: data.gender,
           house: data.house,
           street: data.street,
           commune: data.commune,
@@ -135,7 +149,7 @@ export default function NewCustomerForm() {
           province: data.province,
           location: data.location,
           customerType: EnumCustomerType.CUSTOMER,
-          image: data.image,
+          images: data.images,
         },
       });
     } else {
@@ -146,6 +160,7 @@ export default function NewCustomerForm() {
           facebook_name: facebook,
           telegram_name: telegram,
           contact_number: data.phoneNumber,
+          gender: data.gender,
           house: data.house,
           street: data.street,
           commune: data.commune,
@@ -153,7 +168,7 @@ export default function NewCustomerForm() {
           province: data.province,
           location: data.location,
           customerType: EnumCustomerType.CUSTOMER,
-          image: data.image,
+          images: data.images,
         },
       });
     }
@@ -173,7 +188,7 @@ export default function NewCustomerForm() {
       social: '',
       socialType: EnumSocialType.TG,
       location: '',
-      image: '',
+      images: '',
     });
   };
 
@@ -232,7 +247,13 @@ export default function NewCustomerForm() {
             ) : (
               <>
                 <Stack direction={'row'} spacing={2}>
-                  <UploadButton />
+                  <UploadButton
+                    src={watch('images')}
+                    onChange={(dataUrl, file) => {
+                      runUpload(file);
+                      setValue('images', dataUrl);
+                    }}
+                  />
                 </Stack>
                 <Stack direction={'row'} spacing={2}>
                   <Controller
@@ -486,14 +507,23 @@ export default function NewCustomerForm() {
                   spacing={2}
                   py={2}
                 >
-                  <Button variant='outlined' fullWidth onClick={onReset}>
+                  <Button
+                    size='large'
+                    variant='outlined'
+                    fullWidth
+                    onClick={onReset}
+                  >
                     Reset
                   </Button>
                   <LoadingButton
-                    loading={isLoadingCreate || isLoadingUpdate}
+                    size='large'
+                    loading={
+                      isLoadingCreate || isLoadingUpdate || loadingUpload
+                    }
                     type='submit'
                     variant='contained'
                     fullWidth
+                    sx={{ background: THEME_UTIL.goldGradientMain }}
                   >
                     Save
                   </LoadingButton>

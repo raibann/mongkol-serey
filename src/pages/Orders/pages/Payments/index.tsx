@@ -124,8 +124,7 @@ export default function Payments() {
                     label={`ABA`}
                     size='small'
                     sx={{
-                      bgcolor:
-                        (paidByColor as any)['ABA'] || theme.palette.info.main,
+                      bgcolor: paidByColor['ABA'] || theme.palette.info.main,
                       color: '#fff',
                     }}
                   />
@@ -140,8 +139,7 @@ export default function Payments() {
                     label={`ABA`}
                     size='small'
                     sx={{
-                      bgcolor:
-                        (paidByColor as any)['ABA'] || theme.palette.info.main,
+                      bgcolor: paidByColor['ABA'] || theme.palette.info.main,
                       color: '#fff',
                     }}
                   />
