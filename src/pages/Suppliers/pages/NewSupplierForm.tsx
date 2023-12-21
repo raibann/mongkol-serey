@@ -8,6 +8,7 @@ import {
   Skeleton,
 } from '@mui/material';
 import { useRequest } from 'ahooks';
+import GEO_API from 'api/geography';
 import SUPPLIER_API from 'api/supplier';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
@@ -38,32 +39,27 @@ interface INewSuplierInput {
 const NewSupplierForm = () => {
   // State
   const [errorAlert, setErrorAlert] = useState(false);
+  const [provinceId, setProvinceId] = useState('1');
+  const [districtId, setDistrictId] = useState('102');
+  const [listDistrict, setListDistrict] = useState<IGeography.District[]>();
+  const [listCommune, setListCommune] = useState<IGeography.Commune[]>();
 
   /* Hooks */
-  const { control, handleSubmit, setValue } = useForm<INewSuplierInput>();
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    resetField,
+    getValues,
+    getFieldState,
+  } = useForm<INewSuplierInput>();
   const navigate = useNavigate();
   const params = useParams();
 
   // Request APIs
-  const {
-    loading: isLoadingCreate,
-    error: errorCreate,
-    run: fecthCreate,
-  } = useRequest(SUPPLIER_API.postNewSupplier, {
-    manual: true,
-    onSuccess: (data) => data && navigate(ROUTE_PATH.suppliers.root),
-  });
 
-  const {
-    loading: isLoadingUpdate,
-    error: errorUpdate,
-    run: fetchUpdate,
-  } = useRequest(SUPPLIER_API.updateSupplier, {
-    manual: true,
-    onSuccess: () => {
-      navigate(ROUTE_PATH.suppliers.root);
-    },
-  });
+  // --- fecth details
   const {
     run: fetchDetails,
     loading: isLoadingDetails,
@@ -90,6 +86,59 @@ const NewSupplierForm = () => {
       setValue('social', social || '');
     },
   });
+
+  // --- req province
+  const { data: resProvinces } = useRequest(GEO_API.getProvince, {
+    manual: false,
+    refreshOnWindowFocus: true,
+  });
+
+  // --- req district
+  useRequest(() => GEO_API.getDistrict(provinceId), {
+    manual: false,
+    refreshOnWindowFocus: true,
+    refreshDeps: [provinceId],
+    onSuccess: (data) => setListDistrict(data),
+  });
+
+  useEffect(() => {
+    if (resProvinces) {
+      const pro = resProvinces.find((p) => p.name === watch('province'));
+      if (pro) {
+        setProvinceId(`${pro.id}`);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resProvinces]);
+
+  //  --- req commune
+  useRequest(() => GEO_API.getCommune(districtId), {
+    manual: false,
+    refreshOnWindowFocus: true,
+    refreshDeps: [districtId],
+    onSuccess: (data) => setListCommune(data),
+  });
+
+  const {
+    loading: isLoadingCreate,
+    error: errorCreate,
+    run: fecthCreate,
+  } = useRequest(SUPPLIER_API.postNewSupplier, {
+    manual: true,
+    onSuccess: (data) => data && navigate(ROUTE_PATH.suppliers.root),
+  });
+
+  const {
+    loading: isLoadingUpdate,
+    error: errorUpdate,
+    run: fetchUpdate,
+  } = useRequest(SUPPLIER_API.updateSupplier, {
+    manual: true,
+    onSuccess: () => {
+      navigate(ROUTE_PATH.suppliers.root);
+    },
+  });
+
   // Effect
   useEffect(() => {
     if (errorCreate || errorDetails || errorUpdate) {
@@ -98,6 +147,8 @@ const NewSupplierForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorCreate, errorDetails, errorUpdate]);
 
+  // console.log(watch('district'));
+  // console.log(watch('commune'));
   useEffect(() => {
     if (params.id) {
       fetchDetails({ id: +params.id });
@@ -106,6 +157,14 @@ const NewSupplierForm = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
+
+  // useEffect(() => {
+  //   if (watch('province') > 0) {
+  //     fetchDistrict(`${watch('province')}`);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [watch('province') > 0]);
+
   /* Methods */
   const onSubmit = (data: INewSuplierInput) => {
     const telegram = data.socialType === EnumSocialType.TG ? data.social : '';
@@ -121,7 +180,7 @@ const NewSupplierForm = () => {
           defaultPayment: data.payment,
           district: data.district,
           house: data.house,
-          province: data.province,
+          province: `${data.province}`,
           street: data.street,
           commune: data.commune,
           facebook: facebook,
@@ -140,7 +199,7 @@ const NewSupplierForm = () => {
           defaultPayment: data.payment,
           district: data.district,
           house: data.house,
-          province: data.province,
+          province: `${data.province}`,
           street: data.street,
           commune: data.commune,
           facebook: facebook,
@@ -339,7 +398,7 @@ const NewSupplierForm = () => {
                 </Stack>
                 <Stack direction={'row'} spacing={2}>
                   <Controller
-                    defaultValue=''
+                    defaultValue={''}
                     control={control}
                     name='province'
                     rules={{
@@ -350,12 +409,31 @@ const NewSupplierForm = () => {
                     }}
                     render={({ field, fieldState }) => {
                       return (
-                        <LabelTextField
-                          label='Province'
-                          size='small'
-                          fieldState={fieldState}
-                          {...field}
-                        />
+                        <LabelTextField label='Province'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={''}>Select Province</MenuItem>
+                            {resProvinces?.map((p) => (
+                              <MenuItem
+                                value={p.name}
+                                key={p.name}
+                                onClick={() => {
+                                  setProvinceId(`${p.id}`);
+                                  resetField('district');
+                                }}
+                              >
+                                {p.name}
+                              </MenuItem>
+                            ))}
+                          </CusTextField>
+                        </LabelTextField>
                       );
                     }}
                   />
@@ -365,12 +443,31 @@ const NewSupplierForm = () => {
                     name='district'
                     render={({ field, fieldState }) => {
                       return (
-                        <LabelTextField
-                          label='District'
-                          size='small'
-                          fieldState={fieldState}
-                          {...field}
-                        />
+                        <LabelTextField label='District'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={''}>Select District</MenuItem>
+                            {listDistrict?.map((d) => (
+                              <MenuItem
+                                value={d.name}
+                                key={d.name}
+                                onClick={() => {
+                                  setDistrictId(`${d.id}`);
+                                  resetField('commune');
+                                }}
+                              >
+                                {d.name}
+                              </MenuItem>
+                            ))}
+                          </CusTextField>
+                        </LabelTextField>
                       );
                     }}
                   />
@@ -382,12 +479,24 @@ const NewSupplierForm = () => {
                     name='commune'
                     render={({ field, fieldState }) => {
                       return (
-                        <LabelTextField
-                          label='Commune'
-                          size='small'
-                          fieldState={fieldState}
-                          {...field}
-                        />
+                        <LabelTextField label='Commune'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={''}>Select Commune</MenuItem>
+                            {listCommune?.map((d) => (
+                              <MenuItem value={d.name} key={d.name}>
+                                {d.name}
+                              </MenuItem>
+                            ))}
+                          </CusTextField>
+                        </LabelTextField>
                       );
                     }}
                   />
