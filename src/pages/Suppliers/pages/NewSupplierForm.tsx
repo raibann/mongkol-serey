@@ -8,13 +8,13 @@ import {
   Skeleton,
 } from '@mui/material';
 import { useRequest } from 'ahooks';
-import GEO_API from 'api/geography';
 import SUPPLIER_API from 'api/supplier';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
+import useGeography from 'hook/useGeography';
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -39,21 +39,20 @@ interface INewSuplierInput {
 const NewSupplierForm = () => {
   // State
   const [errorAlert, setErrorAlert] = useState(false);
-  const [provinceId, setProvinceId] = useState('1');
-  const [districtId, setDistrictId] = useState('102');
-  const [listDistrict, setListDistrict] = useState<IGeography.District[]>();
-  const [listCommune, setListCommune] = useState<IGeography.Commune[]>();
 
   /* Hooks */
+  const { control, handleSubmit, setValue, resetField, getValues } =
+    useForm<INewSuplierInput>();
   const {
-    control,
-    handleSubmit,
-    setValue,
-    watch,
-    resetField,
-    getValues,
-    getFieldState,
-  } = useForm<INewSuplierInput>();
+    provinces,
+    districts,
+    communes,
+    setDistrictId,
+    setProvinceId,
+    communeLoading,
+    districtLoading,
+    provinceLoading,
+  } = useGeography();
   const navigate = useNavigate();
   const params = useParams();
 
@@ -68,10 +67,16 @@ const NewSupplierForm = () => {
   } = useRequest(SUPPLIER_API.getSupplierDetails, {
     manual: false,
     onSuccess: (data) => {
+      const getProvinceId = provinces?.find(
+        (p) => p.name === data.data.province
+      );
+
       const social = data.data.telegram || data.data.facebook;
       const socialType = data.data.telegram
         ? EnumSocialType.TG
         : EnumSocialType.FB;
+
+      // Set to form
       setValue('firstName', data.data.firstName);
       setValue('lastName', data.data.lastName);
       setValue('gender', data.data.gender || EnumGenderType.OTHER);
@@ -84,39 +89,9 @@ const NewSupplierForm = () => {
       setValue('payment', data.data.defaultPayment);
       setValue('socialType', socialType);
       setValue('social', social || '');
+      // set to geo hooks
+      setProvinceId(`${getProvinceId?.id}`);
     },
-  });
-
-  // --- req province
-  const { data: resProvinces } = useRequest(GEO_API.getProvince, {
-    manual: false,
-    refreshOnWindowFocus: true,
-  });
-
-  // --- req district
-  useRequest(() => GEO_API.getDistrict(provinceId), {
-    manual: false,
-    refreshOnWindowFocus: true,
-    refreshDeps: [provinceId],
-    onSuccess: (data) => setListDistrict(data),
-  });
-
-  useEffect(() => {
-    if (resProvinces) {
-      const pro = resProvinces.find((p) => p.name === watch('province'));
-      if (pro) {
-        setProvinceId(`${pro.id}`);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resProvinces]);
-
-  //  --- req commune
-  useRequest(() => GEO_API.getCommune(districtId), {
-    manual: false,
-    refreshOnWindowFocus: true,
-    refreshDeps: [districtId],
-    onSuccess: (data) => setListCommune(data),
   });
 
   const {
@@ -147,8 +122,6 @@ const NewSupplierForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorCreate, errorDetails, errorUpdate]);
 
-  // console.log(watch('district'));
-  // console.log(watch('commune'));
   useEffect(() => {
     if (params.id) {
       fetchDetails({ id: +params.id });
@@ -158,12 +131,18 @@ const NewSupplierForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
 
-  // useEffect(() => {
-  //   if (watch('province') > 0) {
-  //     fetchDistrict(`${watch('province')}`);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [watch('province') > 0]);
+  useEffect(() => {
+    if (districts) {
+      const getDistrictId = districts?.find(
+        (d) => d.name === getValues('district')
+      );
+
+      if (getDistrictId) {
+        setDistrictId(`${getDistrictId?.id}`);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [districts]);
 
   /* Methods */
   const onSubmit = (data: INewSuplierInput) => {
@@ -419,19 +398,26 @@ const NewSupplierForm = () => {
                             helperText={fieldState.error?.message}
                             {...field}
                           >
-                            <MenuItem value={''}>Select Province</MenuItem>
-                            {resProvinces?.map((p) => (
-                              <MenuItem
-                                value={p.name}
-                                key={p.name}
-                                onClick={() => {
-                                  setProvinceId(`${p.id}`);
-                                  resetField('district');
-                                }}
-                              >
-                                {p.name}
-                              </MenuItem>
-                            ))}
+                            <MenuItem value={''}>
+                              {provinceLoading
+                                ? 'Loading...'
+                                : 'Select Provicne'}
+                            </MenuItem>
+
+                            {!provinceLoading &&
+                              provinces?.map((p) => (
+                                <MenuItem
+                                  value={p.name}
+                                  key={p.name}
+                                  onClick={() => {
+                                    setProvinceId(`${p.id}`);
+                                    resetField('district');
+                                    resetField('commune');
+                                  }}
+                                >
+                                  {p.name}
+                                </MenuItem>
+                              ))}
                           </CusTextField>
                         </LabelTextField>
                       );
@@ -453,19 +439,24 @@ const NewSupplierForm = () => {
                             helperText={fieldState.error?.message}
                             {...field}
                           >
-                            <MenuItem value={''}>Select District</MenuItem>
-                            {listDistrict?.map((d) => (
-                              <MenuItem
-                                value={d.name}
-                                key={d.name}
-                                onClick={() => {
-                                  setDistrictId(`${d.id}`);
-                                  resetField('commune');
-                                }}
-                              >
-                                {d.name}
-                              </MenuItem>
-                            ))}
+                            <MenuItem value={''}>
+                              {districtLoading
+                                ? 'Loading...'
+                                : 'Select District'}
+                            </MenuItem>
+                            {!districtLoading &&
+                              districts?.map((d) => (
+                                <MenuItem
+                                  value={d.name}
+                                  key={d.name}
+                                  onClick={() => {
+                                    setDistrictId(`${d.id}`);
+                                    resetField('commune');
+                                  }}
+                                >
+                                  {d.name}
+                                </MenuItem>
+                              ))}
                           </CusTextField>
                         </LabelTextField>
                       );
@@ -489,12 +480,15 @@ const NewSupplierForm = () => {
                             helperText={fieldState.error?.message}
                             {...field}
                           >
-                            <MenuItem value={''}>Select Commune</MenuItem>
-                            {listCommune?.map((d) => (
-                              <MenuItem value={d.name} key={d.name}>
-                                {d.name}
-                              </MenuItem>
-                            ))}
+                            <MenuItem value={''}>
+                              {communeLoading ? 'Loading...' : 'Select Commune'}
+                            </MenuItem>
+                            {!communeLoading &&
+                              communes?.map((d) => (
+                                <MenuItem value={d.name} key={d.name}>
+                                  {d.name}
+                                </MenuItem>
+                              ))}
                           </CusTextField>
                         </LabelTextField>
                       );
