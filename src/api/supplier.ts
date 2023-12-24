@@ -20,12 +20,13 @@ const SUPPLIER_API = {
           page: page,
           size: size || 10,
           search: search,
+          type: type,
         },
       }
     );
     return res;
   },
-  getSupplierDetails: async ({ id }: { id: number }) => {
+  getSupplierDetails: async ({ id }: { id?: number }) => {
     const res: ISupplier.ResSupplierDetails = await HttpUtil.get(
       ROUTE_API.suppliersDetails.replace(':id', `${id}`)
     );

@@ -52,41 +52,53 @@ const NewSupplierForm = () => {
     communeLoading,
     districtLoading,
     provinceLoading,
-  } = useGeography();
+    errState,
+  } = useGeography({
+    disName: getValues('district'),
+    proName: getValues('province'),
+  });
   const navigate = useNavigate();
   const params = useParams();
+  const paramId = params && params.id;
 
   // Request APIs
 
   // --- fecth details
   const {
-    run: fetchDetails,
+    // run: fetchDetails,
     loading: isLoadingDetails,
     error: errorDetails,
-    cancel: cancelFetchDetails,
-  } = useRequest(SUPPLIER_API.getSupplierDetails, {
-    manual: false,
-    onSuccess: (data) => {
-      const social = data.data.telegram || data.data.facebook;
-      const socialType = data.data.telegram
-        ? EnumSocialType.TG
-        : EnumSocialType.FB;
+  } = useRequest(
+    async () =>
+      await SUPPLIER_API.getSupplierDetails({
+        id: (paramId && +paramId) || undefined,
+      }),
+    {
+      manual: false,
+      ready: paramId !== undefined,
+      refreshDeps: [paramId],
+      onSuccess: (data) => {
+        const social = data.data.telegram || data.data.facebook;
+        const socialType = data.data.telegram
+          ? EnumSocialType.TG
+          : EnumSocialType.FB;
 
-      // Set to form
-      setValue('firstName', data.data.firstName);
-      setValue('lastName', data.data.lastName);
-      setValue('gender', data.data.gender || EnumGenderType.OTHER);
-      setValue('phoneNumber', data.data.phoneNumber);
-      setValue('street', data.data.street);
-      setValue('house', data.data.house);
-      setValue('province', data.data.province);
-      setValue('district', data.data.district);
-      setValue('commune', data.data.commune);
-      setValue('payment', data.data.defaultPayment);
-      setValue('socialType', socialType);
-      setValue('social', social || '');
-    },
-  });
+        // Set to form
+        setValue('firstName', data.data.firstName);
+        setValue('lastName', data.data.lastName);
+        setValue('gender', data.data.gender || EnumGenderType.OTHER);
+        setValue('phoneNumber', data.data.phoneNumber);
+        setValue('street', data.data.street);
+        setValue('house', data.data.house);
+        setValue('province', data.data.province);
+        setValue('district', data.data.district);
+        setValue('commune', data.data.commune);
+        setValue('payment', data.data.defaultPayment);
+        setValue('socialType', socialType);
+        setValue('social', social || '');
+      },
+    }
+  );
 
   const {
     loading: isLoadingCreate,
@@ -110,49 +122,11 @@ const NewSupplierForm = () => {
 
   // Effect
   useEffect(() => {
-    if (errorCreate || errorDetails || errorUpdate) {
+    if (errorCreate || errorDetails || errorUpdate || errState) {
       setErrorAlert(!errorAlert);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errorCreate, errorDetails, errorUpdate]);
-
-  useEffect(() => {
-    if (params.id) {
-      fetchDetails({ id: +params.id });
-    } else {
-      cancelFetchDetails();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params]);
-
-  useEffect(() => {
-    if (getValues('province') !== undefined) {
-      if (provinces && provinces.length > 0) {
-        const getProvinceId = provinces?.find(
-          (d) => d.name === getValues('province')
-        );
-        if (getProvinceId) {
-          setProvinceId(`${getProvinceId?.id}`);
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getValues('province'), provinces]);
-
-  useEffect(() => {
-    if (getValues('district') !== undefined) {
-      if (districts && districts.length > 0) {
-        const getDistrictId = districts?.find(
-          (d) => d.name === getValues('district')
-        );
-        if (getDistrictId) {
-          setDistrictId(`${getDistrictId?.id}`);
-        }
-      }
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getValues('district'), districts]);
+  }, [errorCreate, errorDetails, errorUpdate, errState]);
 
   /* Methods */
   const onSubmit = (data: INewSuplierInput) => {
