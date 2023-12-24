@@ -1,21 +1,17 @@
 import { LoadingButton } from '@mui/lab';
-import {
-  Paper,
-  Container,
-  Stack,
-  MenuItem,
-  Button,
-  Skeleton,
-} from '@mui/material';
+import { Paper, Container, Stack, MenuItem, Button } from '@mui/material';
 import { useRequest } from 'ahooks';
 import CUSTOMER_API from 'api/customer';
 import TELEGRAM_API from 'api/telegram';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
+import FormSkeleton from 'components/CusSkeleton/FormSkeleton';
 import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
-import { useEffect, useState } from 'react';
+import useError from 'hook/useError';
+import useGeography from 'hook/useGeography';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -43,90 +39,127 @@ interface INewCustomerInput {
   images?: string;
 }
 export default function NewCustomerForm() {
-  // State
-  const [errorAlert, setErrorAlert] = useState(false);
-
   /* Hooks */
-  const { control, handleSubmit, setValue, reset, watch } =
-    useForm<INewCustomerInput>();
+  const { errorState, setErorrState } = useError();
   const navigate = useNavigate();
   const params = useParams();
 
+  const paramId = params && params.id;
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    reset,
+    watch,
+    getValues,
+    resetField,
+  } = useForm<INewCustomerInput>();
+  const {
+    provinces,
+    districts,
+    communes,
+    setDistrictId,
+    setProvinceId,
+    communeLoading,
+    districtLoading,
+    provinceLoading,
+    errorGeo,
+  } = useGeography({
+    disName: getValues('district'),
+    proName: getValues('province'),
+  });
+
   // Request APIs
-  const {
-    loading: isLoadingCreate,
-    run: fecthCreate,
-    error: errorCreate,
-  } = useRequest(CUSTOMER_API.postNewCustomer, {
-    manual: true,
-    onSuccess: (data) => data && navigate(ROUTE_PATH.customers.root),
-  });
+  // --- check error
+  useEffect(() => {
+    if (errorGeo) {
+      setErorrState(errorGeo);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errorGeo]);
 
-  const {
-    loading: isLoadingUpdate,
-    error: errorUpdate,
-    run: fetchUpdate,
-  } = useRequest(CUSTOMER_API.updateCustomer, {
-    manual: true,
-    onSuccess: () => {
-      navigate(ROUTE_PATH.customers.root);
-    },
-  });
+  // --- fetch details
+  const { loading: isLoadingDetails } = useRequest(
+    async () =>
+      await CUSTOMER_API.getCustomerDetails({
+        id: (paramId && +paramId) || undefined,
+      }),
+    {
+      manual: false,
+      ready: paramId !== undefined,
+      refreshDeps: [paramId],
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: (data) => {
+        const social =
+          data.customer.telegram_name || data.customer.facebook_name;
+        const socialType = data.customer.telegram_name
+          ? EnumSocialType.TG
+          : EnumSocialType.FB;
+        setValue('customerName', data.customer.customer_name);
+        setValue('location', data.customer.location);
+        setValue('gender', data.customer.gender || EnumGenderType.OTHER);
+        setValue('phoneNumber', data.customer.contact_number);
+        setValue('street', data.customer.street);
+        setValue('house', data.customer.house);
+        setValue('province', data.customer.province);
+        setValue('district', data.customer.district);
+        setValue('commune', data.customer.commune);
+        setValue('payment', data.customer.defaultPayment || '');
+        setValue('socialType', socialType);
+        setValue('social', social);
+      },
+    }
+  );
 
+  // --- fecth create
+  const { loading: isLoadingCreate, run: fecthCreate } = useRequest(
+    CUSTOMER_API.postNewCustomer,
+    {
+      manual: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: (data) => data && navigate(ROUTE_PATH.customers.root),
+    }
+  );
+
+  // --- fecth update
+  const { loading: isLoadingUpdate, run: fetchUpdate } = useRequest(
+    CUSTOMER_API.updateCustomer,
+    {
+      manual: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: () => {
+        navigate(ROUTE_PATH.customers.root);
+      },
+    }
+  );
+
+  // --upload
   const { run: runUpload, loading: loadingUpload } = useRequest(
     TELEGRAM_API.uploadFile,
     {
       manual: true,
-      onError: () => console.log('error'),
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
       onSuccess: (res) => {
         setValue('images', res.path);
       },
     }
   );
-
-  const {
-    run: fetchDetails,
-    loading: isLoadingDetails,
-    error: errorDetails,
-    cancel: cancelFetchDetails,
-  } = useRequest(CUSTOMER_API.getCustomerDetails, {
-    manual: false,
-    onSuccess: (data) => {
-      const social = data.customer.telegram_name || data.customer.facebook_name;
-      const socialType = data.customer.telegram_name
-        ? EnumSocialType.TG
-        : EnumSocialType.FB;
-      setValue('customerName', data.customer.customer_name);
-      setValue('location', data.customer.location);
-      setValue('gender', data.customer.gender || EnumGenderType.OTHER);
-      setValue('phoneNumber', data.customer.contact_number);
-      setValue('street', data.customer.street);
-      setValue('house', data.customer.house);
-      setValue('province', data.customer.province);
-      setValue('district', data.customer.district);
-      setValue('commune', data.customer.commune);
-      setValue('payment', data.customer.payment || '');
-      setValue('socialType', socialType);
-      setValue('social', social);
-    },
-  });
-
-  // Effect
-  useEffect(() => {
-    if (errorCreate || errorDetails || errorUpdate) {
-      setErrorAlert(!errorAlert);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errorCreate, errorDetails, errorUpdate]);
-
-  useEffect(() => {
-    if (params.id) {
-      fetchDetails({ id: +params.id });
-    } else {
-      cancelFetchDetails();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params]);
 
   /* Methods */
   const onSubmit = (data: INewCustomerInput) => {
@@ -150,6 +183,7 @@ export default function NewCustomerForm() {
           location: data.location,
           customerType: EnumCustomerType.CUSTOMER,
           images: data.images,
+          defaultPayment: data.payment,
         },
       });
     } else {
@@ -169,6 +203,7 @@ export default function NewCustomerForm() {
           location: data.location,
           customerType: EnumCustomerType.CUSTOMER,
           images: data.images,
+          defaultPayment: data.payment,
         },
       });
     }
@@ -195,15 +230,17 @@ export default function NewCustomerForm() {
   return (
     <>
       <ErrorDialog
-        open={errorAlert}
+        open={errorState.error}
         onCloseDialog={() => {
-          setErrorAlert(!errorAlert);
+          setErorrState({
+            error: !errorState.error,
+            message: '',
+          });
         }}
-        errorTitle='Failed Authentication'
-        errorMessage={'Something went wrong!'}
+        errorMessage={errorState.message}
       />
       <SecondaryPageHeader
-        title={params.id ? 'Update Customer' : 'Create New Customer'}
+        title={paramId ? 'Update Customer' : 'Create New Customer'}
       />
       <Paper
         sx={{
@@ -219,31 +256,7 @@ export default function NewCustomerForm() {
         >
           <Stack direction={'column'} spacing={2}>
             {isLoadingDetails ? (
-              <>
-                <Stack
-                  direction={'row'}
-                  alignItems={'center'}
-                  justifyContent={'center'}
-                >
-                  <Skeleton variant='circular' width={80} height={80} />
-                </Stack>
-                {Array(4)
-                  .fill('')
-                  .map((_, i) => (
-                    <Stack direction={'row'} spacing={2} key={i}>
-                      <Skeleton
-                        animation='wave'
-                        variant='text'
-                        sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
-                      />
-                      <Skeleton
-                        animation='wave'
-                        variant='text'
-                        sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
-                      />
-                    </Stack>
-                  ))}
-              </>
+              <FormSkeleton />
             ) : (
               <>
                 <Stack direction={'row'} spacing={2}>
@@ -391,12 +404,38 @@ export default function NewCustomerForm() {
                     }}
                     render={({ field, fieldState }) => {
                       return (
-                        <LabelTextField
-                          label='Province'
-                          size='small'
-                          fieldState={fieldState}
-                          {...field}
-                        />
+                        <LabelTextField label='Province'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={''}>
+                              {provinceLoading
+                                ? 'Loading...'
+                                : 'Select Provicne'}
+                            </MenuItem>
+
+                            {!provinceLoading &&
+                              provinces?.map((p) => (
+                                <MenuItem
+                                  value={p.name}
+                                  key={p.name}
+                                  onClick={() => {
+                                    setProvinceId(`${p.id}`);
+                                    resetField('district');
+                                    resetField('commune');
+                                  }}
+                                >
+                                  {p.name}
+                                </MenuItem>
+                              ))}
+                          </CusTextField>
+                        </LabelTextField>
                       );
                     }}
                   />
@@ -406,12 +445,36 @@ export default function NewCustomerForm() {
                     name='district'
                     render={({ field, fieldState }) => {
                       return (
-                        <LabelTextField
-                          label='District'
-                          size='small'
-                          fieldState={fieldState}
-                          {...field}
-                        />
+                        <LabelTextField label='District'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={''}>
+                              {districtLoading
+                                ? 'Loading...'
+                                : 'Select District'}
+                            </MenuItem>
+                            {!districtLoading &&
+                              districts?.map((d) => (
+                                <MenuItem
+                                  value={d.name}
+                                  key={d.name}
+                                  onClick={() => {
+                                    setDistrictId(`${d.id}`);
+                                    resetField('commune');
+                                  }}
+                                >
+                                  {d.name}
+                                </MenuItem>
+                              ))}
+                          </CusTextField>
+                        </LabelTextField>
                       );
                     }}
                   />
@@ -423,12 +486,27 @@ export default function NewCustomerForm() {
                     name='commune'
                     render={({ field, fieldState }) => {
                       return (
-                        <LabelTextField
-                          label='Commune'
-                          size='small'
-                          fieldState={fieldState}
-                          {...field}
-                        />
+                        <LabelTextField label='Commune'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={''}>
+                              {communeLoading ? 'Loading...' : 'Select Commune'}
+                            </MenuItem>
+                            {!communeLoading &&
+                              communes?.map((d) => (
+                                <MenuItem value={d.name} key={d.name}>
+                                  {d.name}
+                                </MenuItem>
+                              ))}
+                          </CusTextField>
+                        </LabelTextField>
                       );
                     }}
                   />

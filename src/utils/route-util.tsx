@@ -148,4 +148,9 @@ export const ROUTE_API = {
   deleteUser: '/api/auth/v1/user/delete/:id',
   saveRole: '/api/auth/v1/role/save',
   addRoleToUser: '/api/auth/v1/role/adduser',
+
+  // geography
+  province: '/api/geography/v1/provinces',
+  district: '/api/geography/v1/districts/:id',
+  commune: '/api/geography/v1/communes/:id',
 };

@@ -32,7 +32,6 @@ declare namespace ICustomer {
   interface Customer {
     id?: number;
     images: string;
-    payment?: string;
     gender: string;
     customer_name: string;
     facebook_name: string;
@@ -52,6 +51,7 @@ declare namespace ICustomer {
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: any;
+    defaultPayment?: string;
   }
 
   interface EventPackage {
@@ -100,5 +100,6 @@ declare namespace ICustomer {
     customerType: string;
     remarks?: string;
     images?: string;
+    defaultPayment?: string;
   }
 }

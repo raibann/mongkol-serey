@@ -1,12 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import {
-  Paper,
-  Container,
-  Stack,
-  Button,
-  MenuItem,
-  Skeleton,
-} from '@mui/material';
+import { Paper, Container, Stack, Button, MenuItem } from '@mui/material';
 import { useRequest } from 'ahooks';
 import SUPPLIER_API from 'api/supplier';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
@@ -14,11 +7,14 @@ import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
-import { useEffect, useState } from 'react';
+import useGeography from 'hook/useGeography';
+import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EnumGenderType, EnumSocialType } from 'utils/data-util';
 import { ROUTE_PATH } from 'utils/route-util';
+import FormSkeleton from '../../../components/CusSkeleton/FormSkeleton';
+import useError from 'hook/useError';
 interface INewSuplierInput {
   id?: string | number;
   firstName: string;
@@ -37,75 +33,105 @@ interface INewSuplierInput {
 
 const NewSupplierForm = () => {
   // State
-  const [errorAlert, setErrorAlert] = useState(false);
 
   /* Hooks */
-  const { control, handleSubmit, setValue } = useForm<INewSuplierInput>();
+  const { errorState, setErorrState } = useError();
+  const { control, handleSubmit, setValue, resetField, getValues } =
+    useForm<INewSuplierInput>();
+  const {
+    provinces,
+    districts,
+    communes,
+    setDistrictId,
+    setProvinceId,
+    communeLoading,
+    districtLoading,
+    provinceLoading,
+    errorGeo,
+  } = useGeography({
+    disName: getValues('district'),
+    proName: getValues('province'),
+  });
   const navigate = useNavigate();
   const params = useParams();
+  const paramId = params && params.id;
 
   // Request APIs
-  const {
-    loading: isLoadingCreate,
-    error: errorCreate,
-    run: fecthCreate,
-  } = useRequest(SUPPLIER_API.postNewSupplier, {
-    manual: true,
-    onSuccess: (data) => data && navigate(ROUTE_PATH.suppliers.root),
-  });
 
-  const {
-    loading: isLoadingUpdate,
-    error: errorUpdate,
-    run: fetchUpdate,
-  } = useRequest(SUPPLIER_API.updateSupplier, {
-    manual: true,
-    onSuccess: () => {
-      navigate(ROUTE_PATH.suppliers.root);
-    },
-  });
-  const {
-    run: fetchDetails,
-    loading: isLoadingDetails,
-    error: errorDetails,
-    cancel: cancelFetchDetails,
-  } = useRequest(SUPPLIER_API.getSupplierDetails, {
-    manual: false,
-    onSuccess: (data) => {
-      const social = data.data.telegram || data.data.facebook;
-      const socialType = data.data.telegram
-        ? EnumSocialType.TG
-        : EnumSocialType.FB;
-      setValue('firstName', data.data.firstName);
-      setValue('lastName', data.data.lastName);
-      setValue('gender', data.data.gender || EnumGenderType.OTHER);
-      setValue('phoneNumber', data.data.phoneNumber);
-      setValue('street', data.data.street);
-      setValue('house', data.data.house);
-      setValue('province', data.data.province);
-      setValue('district', data.data.district);
-      setValue('commune', data.data.commune);
-      setValue('payment', data.data.defaultPayment);
-      setValue('socialType', socialType);
-      setValue('social', social || '');
-    },
-  });
-  // Effect
+  // --- check error
   useEffect(() => {
-    if (errorCreate || errorDetails || errorUpdate) {
-      setErrorAlert(!errorAlert);
+    if (errorGeo) {
+      setErorrState(errorGeo);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errorCreate, errorDetails, errorUpdate]);
+  }, [errorGeo]);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchDetails({ id: +params.id });
-    } else {
-      cancelFetchDetails();
+  // --- fecth details
+  const { loading: isLoadingDetails } = useRequest(
+    async () =>
+      await SUPPLIER_API.getSupplierDetails({
+        id: (paramId && +paramId) || undefined,
+      }),
+    {
+      manual: false,
+      ready: paramId !== undefined,
+      refreshDeps: [paramId],
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: (data) => {
+        const social = data.data.telegram || data.data.facebook;
+        const socialType = data.data.telegram
+          ? EnumSocialType.TG
+          : EnumSocialType.FB;
+
+        // Set to form
+        setValue('firstName', data.data.firstName);
+        setValue('lastName', data.data.lastName);
+        setValue('gender', data.data.gender || EnumGenderType.OTHER);
+        setValue('phoneNumber', data.data.phoneNumber);
+        setValue('street', data.data.street);
+        setValue('house', data.data.house);
+        setValue('province', data.data.province);
+        setValue('district', data.data.district);
+        setValue('commune', data.data.commune);
+        setValue('payment', data.data.defaultPayment);
+        setValue('socialType', socialType);
+        setValue('social', social || '');
+      },
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params]);
+  );
+
+  const { loading: isLoadingCreate, run: fecthCreate } = useRequest(
+    SUPPLIER_API.postNewSupplier,
+    {
+      manual: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: (data) => data && navigate(ROUTE_PATH.suppliers.root),
+    }
+  );
+
+  const { loading: isLoadingUpdate, run: fetchUpdate } = useRequest(
+    SUPPLIER_API.updateSupplier,
+    {
+      manual: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: () => {
+        navigate(ROUTE_PATH.suppliers.root);
+      },
+    }
+  );
+
   /* Methods */
   const onSubmit = (data: INewSuplierInput) => {
     const telegram = data.socialType === EnumSocialType.TG ? data.social : '';
@@ -121,7 +147,7 @@ const NewSupplierForm = () => {
           defaultPayment: data.payment,
           district: data.district,
           house: data.house,
-          province: data.province,
+          province: `${data.province}`,
           street: data.street,
           commune: data.commune,
           facebook: facebook,
@@ -140,7 +166,7 @@ const NewSupplierForm = () => {
           defaultPayment: data.payment,
           district: data.district,
           house: data.house,
-          province: data.province,
+          province: `${data.province}`,
           street: data.street,
           commune: data.commune,
           facebook: facebook,
@@ -154,12 +180,14 @@ const NewSupplierForm = () => {
   return (
     <>
       <ErrorDialog
-        open={errorAlert}
+        open={errorState.error}
         onCloseDialog={() => {
-          setErrorAlert(!errorAlert);
+          setErorrState({
+            error: !errorState.error,
+            message: '',
+          });
         }}
-        errorTitle='Failed Authentication'
-        errorMessage={'Something went wrong!'}
+        errorMessage={errorState.message}
       />
       <SecondaryPageHeader
         title={params.id ? 'Update Supplier' : 'Create New Supplier'}
@@ -178,31 +206,7 @@ const NewSupplierForm = () => {
         >
           <Stack direction={'column'} spacing={2}>
             {isLoadingDetails ? (
-              <>
-                <Stack
-                  direction={'row'}
-                  alignItems={'center'}
-                  justifyContent={'center'}
-                >
-                  <Skeleton variant='circular' width={80} height={80} />
-                </Stack>
-                {Array(4)
-                  .fill('')
-                  .map((_, i) => (
-                    <Stack direction={'row'} spacing={2} key={i}>
-                      <Skeleton
-                        animation='wave'
-                        variant='text'
-                        sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
-                      />
-                      <Skeleton
-                        animation='wave'
-                        variant='text'
-                        sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
-                      />
-                    </Stack>
-                  ))}
-              </>
+              <FormSkeleton />
             ) : (
               <>
                 <Stack direction={'row'} spacing={2}>
@@ -339,7 +343,7 @@ const NewSupplierForm = () => {
                 </Stack>
                 <Stack direction={'row'} spacing={2}>
                   <Controller
-                    defaultValue=''
+                    defaultValue={''}
                     control={control}
                     name='province'
                     rules={{
@@ -350,12 +354,38 @@ const NewSupplierForm = () => {
                     }}
                     render={({ field, fieldState }) => {
                       return (
-                        <LabelTextField
-                          label='Province'
-                          size='small'
-                          fieldState={fieldState}
-                          {...field}
-                        />
+                        <LabelTextField label='Province'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={''}>
+                              {provinceLoading
+                                ? 'Loading...'
+                                : 'Select Provicne'}
+                            </MenuItem>
+
+                            {!provinceLoading &&
+                              provinces?.map((p) => (
+                                <MenuItem
+                                  value={p.name}
+                                  key={p.name}
+                                  onClick={() => {
+                                    setProvinceId(`${p.id}`);
+                                    resetField('district');
+                                    resetField('commune');
+                                  }}
+                                >
+                                  {p.name}
+                                </MenuItem>
+                              ))}
+                          </CusTextField>
+                        </LabelTextField>
                       );
                     }}
                   />
@@ -365,12 +395,36 @@ const NewSupplierForm = () => {
                     name='district'
                     render={({ field, fieldState }) => {
                       return (
-                        <LabelTextField
-                          label='District'
-                          size='small'
-                          fieldState={fieldState}
-                          {...field}
-                        />
+                        <LabelTextField label='District'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={''}>
+                              {districtLoading
+                                ? 'Loading...'
+                                : 'Select District'}
+                            </MenuItem>
+                            {!districtLoading &&
+                              districts?.map((d) => (
+                                <MenuItem
+                                  value={d.name}
+                                  key={d.name}
+                                  onClick={() => {
+                                    setDistrictId(`${d.id}`);
+                                    resetField('commune');
+                                  }}
+                                >
+                                  {d.name}
+                                </MenuItem>
+                              ))}
+                          </CusTextField>
+                        </LabelTextField>
                       );
                     }}
                   />
@@ -382,12 +436,27 @@ const NewSupplierForm = () => {
                     name='commune'
                     render={({ field, fieldState }) => {
                       return (
-                        <LabelTextField
-                          label='Commune'
-                          size='small'
-                          fieldState={fieldState}
-                          {...field}
-                        />
+                        <LabelTextField label='Commune'>
+                          <CusTextField
+                            select
+                            SelectProps={{
+                              displayEmpty: true,
+                            }}
+                            size='small'
+                            helperText={fieldState.error?.message}
+                            {...field}
+                          >
+                            <MenuItem value={''}>
+                              {communeLoading ? 'Loading...' : 'Select Commune'}
+                            </MenuItem>
+                            {!communeLoading &&
+                              communes?.map((d) => (
+                                <MenuItem value={d.name} key={d.name}>
+                                  {d.name}
+                                </MenuItem>
+                              ))}
+                          </CusTextField>
+                        </LabelTextField>
                       );
                     }}
                   />
