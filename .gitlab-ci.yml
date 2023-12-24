@@ -13,4 +13,4 @@ deploy:
   stage: deploy
   image: ubuntu:latest
   script:
-    - ssh -i /key/LightsailDefaultKey-ap-southeast-1.pem ubunto@13.213.53.227 "cd /home/ubuntu/front/mongkol-serey-frontend && git pull"
+    - ssh -i /home/ubuntu/front/mongkol-serey-frontend/key/LightsailDefaultKey-ap-southeast-1.pem ubunto@13.213.53.227 "cd /home/ubuntu/front/mongkol-serey-frontend && git pull"
