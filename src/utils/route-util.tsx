@@ -71,9 +71,8 @@ export const ROUTE_PATH = {
   },
   setting: {
     root: '/setting',
-    updateProfile: '/setting/update-profile/:id',
-    updateCompanyProfile: '/setting/update-company-profile',
     updateExchangeRate: '/setting/update-exchange-rate',
+    customizePayment: '/setting/customze-payment',
   },
 };
 

@@ -15,6 +15,7 @@ import { EnumGenderType, EnumSocialType } from 'utils/data-util';
 import { ROUTE_PATH } from 'utils/route-util';
 import FormSkeleton from '../../../components/CusSkeleton/FormSkeleton';
 import useError from 'hook/useError';
+import TELEGRAM_API from 'api/telegram';
 interface INewSuplierInput {
   id?: string | number;
   firstName: string;
@@ -29,6 +30,7 @@ interface INewSuplierInput {
   payment: string;
   social: string;
   socialType: string;
+  images: string;
 }
 
 const NewSupplierForm = () => {
@@ -36,7 +38,7 @@ const NewSupplierForm = () => {
 
   /* Hooks */
   const { errorState, setErorrState } = useError();
-  const { control, handleSubmit, setValue, resetField, getValues } =
+  const { control, handleSubmit, setValue, resetField, getValues, watch } =
     useForm<INewSuplierInput>();
   const {
     provinces,
@@ -100,10 +102,12 @@ const NewSupplierForm = () => {
         setValue('payment', data.data.defaultPayment);
         setValue('socialType', socialType);
         setValue('social', social || '');
+        setValue('images', data.data.image || '');
       },
     }
   );
 
+  // --- create
   const { loading: isLoadingCreate, run: fecthCreate } = useRequest(
     SUPPLIER_API.postNewSupplier,
     {
@@ -117,6 +121,7 @@ const NewSupplierForm = () => {
     }
   );
 
+  // --- update
   const { loading: isLoadingUpdate, run: fetchUpdate } = useRequest(
     SUPPLIER_API.updateSupplier,
     {
@@ -128,6 +133,22 @@ const NewSupplierForm = () => {
         }),
       onSuccess: () => {
         navigate(ROUTE_PATH.suppliers.root);
+      },
+    }
+  );
+
+  // --- upload
+  const { run: runUpload, loading: loadingUpload } = useRequest(
+    TELEGRAM_API.uploadFile,
+    {
+      manual: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: (res) => {
+        setValue('images', res.path);
       },
     }
   );
@@ -210,7 +231,13 @@ const NewSupplierForm = () => {
             ) : (
               <>
                 <Stack direction={'row'} spacing={2}>
-                  <UploadButton />
+                  <UploadButton
+                    src={watch('images')}
+                    onChange={(dataUrl, file) => {
+                      runUpload(file);
+                      setValue('images', dataUrl);
+                    }}
+                  />
                 </Stack>
                 <Stack direction={'row'} spacing={2}>
                   <Controller
@@ -535,7 +562,9 @@ const NewSupplierForm = () => {
                     Reset
                   </Button>
                   <LoadingButton
-                    loading={isLoadingCreate || isLoadingUpdate}
+                    loading={
+                      isLoadingCreate || isLoadingUpdate || loadingUpload
+                    }
                     type='submit'
                     variant='contained'
                     fullWidth

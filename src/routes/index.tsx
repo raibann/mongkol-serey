@@ -6,53 +6,17 @@ import { useAuthContext } from 'context/AuthContext';
 import FinalInvoice from 'pages/Orders/pages/FinalInvoice';
 
 // Parent Page
-const Login = lazy(() => import('pages/Login'));
-const Dashboard = lazy(() => import('pages/Dashboard'));
-const Orders = lazy(() => import('pages/Orders'));
-const Expense = lazy(() => import('pages/Expenses'));
-const Customer = lazy(() => import('pages/Customers'));
-const Notifications = lazy(() => import('pages/Notifications'));
-const Menus = lazy(() => import('pages/Menus'));
-const PrepareGrocery = lazy(() => import('pages/PrepareGrocery'));
-const Inventories = lazy(() => import('pages/Inventories'));
-const Suppliers = lazy(() => import('pages/Suppliers'));
-const Users = lazy(() => import('pages/Users'));
-const Setting = lazy(() => import('pages/Setting'));
 
-// Children Page
+// --login --
+const Login = lazy(() => import('pages/Login'));
+
+// -- dashboard --
+const Dashboard = lazy(() => import('pages/Dashboard'));
+
+// -- order --
+const Orders = lazy(() => import('pages/Orders'));
 const Quotation = lazy(() => import('pages/Orders/pages/Quotations'));
 const Payments = lazy(() => import('pages/Orders/pages/Payments'));
-const Potentials = lazy(() => import('pages/Customers/pages/potential'));
-const InventoryUnit = lazy(() => import('pages/Inventories/pages/Units'));
-const InventoryCategory = lazy(
-  () => import('pages/Inventories/pages/Categories')
-);
-const InventoryReport = lazy(() => import('pages/Inventories/pages/Reports'));
-const MenuForm = lazy(() => import('pages/Menus/pages/MenuPackageForm'));
-const Roles = lazy(() => import('pages/Users/pages/Roles'));
-const NewRoleForm = lazy(() => import('pages/Users/pages/Roles/NewRoleForm'));
-const NewUserForm = lazy(() => import('pages/Users/pages/NewUserForm'));
-const NewSupplierForm = lazy(
-  () => import('pages/Suppliers/pages/NewSupplierForm')
-);
-const NewCustomerForm = lazy(
-  () => import('pages/Customers/pages/NewCustomerForm')
-);
-const NewPotentialForm = lazy(
-  () => import('pages/Customers/pages/potential/NewPotentialForm')
-);
-const UpdateExpenseForm = lazy(
-  () => import('pages/Expenses/pages/UpdateExpenseForm')
-);
-
-const InventoryForm = lazy(
-  () => import('pages/Inventories/pages/InventoryForm')
-);
-const FoodMenuForm = lazy(() => import('pages/Menus/pages/FoodMenuForm'));
-const FoodMenus = lazy(() => import('pages/Menus/pages/FoodMenus'));
-const PrepareGroceryForm = lazy(
-  () => import('pages/PrepareGrocery/pages/PrepareGroceryForm')
-);
 const QuotationForm = lazy(() => import('pages/Orders/pages/QuotationForm'));
 const UpdatePayments = lazy(() => import('pages/Orders/pages/UpdatePayments'));
 const PreviewQuotation = lazy(
@@ -60,6 +24,72 @@ const PreviewQuotation = lazy(
 );
 const OrderForm = lazy(() => import('pages/Orders/pages/OrderForm'));
 
+// -- expense --
+const Expense = lazy(() => import('pages/Expenses'));
+const UpdateExpenseForm = lazy(
+  () => import('pages/Expenses/pages/UpdateExpenseForm')
+);
+
+// -- customer --
+const Customer = lazy(() => import('pages/Customers'));
+const Potentials = lazy(() => import('pages/Customers/pages/potential'));
+const NewCustomerForm = lazy(
+  () => import('pages/Customers/pages/NewCustomerForm')
+);
+const NewPotentialForm = lazy(
+  () => import('pages/Customers/pages/potential/NewPotentialForm')
+);
+
+// -- notification --
+const Notifications = lazy(() => import('pages/Notifications'));
+
+// -- menu --
+const Menus = lazy(() => import('pages/Menus'));
+const MenuForm = lazy(() => import('pages/Menus/pages/MenuPackageForm'));
+const FoodMenuForm = lazy(() => import('pages/Menus/pages/FoodMenuForm'));
+const FoodMenus = lazy(() => import('pages/Menus/pages/FoodMenus'));
+
+// -- preparegrocery --
+const PrepareGrocery = lazy(() => import('pages/PrepareGrocery'));
+const PrepareGroceryForm = lazy(
+  () => import('pages/PrepareGrocery/pages/PrepareGroceryForm')
+);
+
+// -- inventeries --
+const Inventories = lazy(() => import('pages/Inventories'));
+const InventoryUnit = lazy(() => import('pages/Inventories/pages/Units'));
+const InventoryCategory = lazy(
+  () => import('pages/Inventories/pages/Categories')
+);
+const InventoryReport = lazy(() => import('pages/Inventories/pages/Reports'));
+const InventoryForm = lazy(
+  () => import('pages/Inventories/pages/InventoryForm')
+);
+
+// -- suppliers --
+const Suppliers = lazy(() => import('pages/Suppliers'));
+const NewSupplierForm = lazy(
+  () => import('pages/Suppliers/pages/NewSupplierForm')
+);
+
+// -- users --
+const Users = lazy(() => import('pages/Users'));
+const Roles = lazy(() => import('pages/Users/pages/Roles'));
+const NewRoleForm = lazy(() => import('pages/Users/pages/Roles/NewRoleForm'));
+const NewUserForm = lazy(() => import('pages/Users/pages/NewUserForm'));
+
+// -- setting --
+const Setting = lazy(() => import('pages/Setting'));
+
+// Children Page
+
+// --- setings
+const UpdateExchangeRate = lazy(
+  () => import('pages/Setting/pages/ExchangeRate')
+);
+const CustomizePayment = lazy(
+  () => import('pages/Setting/pages/CustomizePayment')
+);
 export default function AllRoutes() {
   const { authState } = useAuthContext();
 
@@ -440,6 +470,22 @@ export default function AllRoutes() {
           element={
             <Suspense>
               <Setting />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.setting.updateExchangeRate}
+          element={
+            <Suspense>
+              <UpdateExchangeRate />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ROUTE_PATH.setting.customizePayment}
+          element={
+            <Suspense>
+              <CustomizePayment />
             </Suspense>
           }
         />

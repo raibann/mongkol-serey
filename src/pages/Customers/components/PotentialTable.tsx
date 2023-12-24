@@ -8,6 +8,8 @@ import {
   Stack,
   Typography,
   useTheme,
+  Box,
+  alpha,
 } from '@mui/material';
 import { useRequest } from 'ahooks';
 import CUSTOMER_API from 'api/customer';
@@ -145,138 +147,156 @@ export default function PotentialTable(props: {
             return (
               <Grid key={data.id} item xs={12} sm={4}>
                 <Stack
-                  direction={'row'}
-                  alignItems={'center'}
-                  width={'100%'}
-                  justifyContent={'space-between'}
+                  direction={'column'}
                   bgcolor='common.white'
                   p={2}
                   borderRadius={2.5}
                 >
-                  <Stack direction={'row'} spacing={2} alignItems='center'>
-                    {/* Avatar */}
-                    <Avatar
-                      src={data.images}
-                      variant='circular'
-                      sx={{
-                        height: 40,
-                        width: 40,
-                        borderRadius: 2,
-                      }}
-                    />
-                    {/* Text item */}
-                    <Stack direction={'column'}>
-                      <Typography
-                        variant='body2'
-                        noWrap
-                        overflow={'hidden'}
-                        textOverflow={'ellipsis'}
-                        width={92}
-                        display={'inline-block'}
-                      >
-                        {data.customer_name}
-                      </Typography>
-                      <Stack
-                        direction={'row'}
-                        spacing={0.5}
-                        alignItems={'center'}
-                      >
-                        {(data.telegram_name && (
-                          <Send2
-                            size='14'
-                            color={THEME_UTIL.telegramColor}
-                            variant='Bold'
-                          />
-                        )) ||
-                          (data.facebook_name && (
-                            <Facebook
+                  <Stack
+                    direction={'row'}
+                    alignItems={'center'}
+                    width={'100%'}
+                    justifyContent={'space-between'}
+                  >
+                    <Stack direction={'row'} spacing={2} alignItems='center'>
+                      {/* Avatar */}
+                      <Avatar
+                        src={data.images}
+                        variant='circular'
+                        sx={{
+                          height: 40,
+                          width: 40,
+                        }}
+                      />
+                      {/* Text item */}
+                      <Stack direction={'column'}>
+                        <Typography
+                          variant='body2'
+                          noWrap
+                          overflow={'hidden'}
+                          textOverflow={'ellipsis'}
+                          width={92}
+                          display={'inline-block'}
+                        >
+                          {data.customer_name}
+                        </Typography>
+                        <Stack
+                          direction={'row'}
+                          spacing={0.5}
+                          alignItems={'center'}
+                        >
+                          {(data.telegram_name && (
+                            <Send2
                               size='14'
-                              color={THEME_UTIL.facebookColor}
+                              color={THEME_UTIL.telegramColor}
                               variant='Bold'
                             />
                           )) ||
-                          (data.contact_number && (
-                            <Call
-                              size='14'
-                              color={theme.palette.success.main}
-                              variant='Bold'
-                            />
-                          ))}
-                        <Typography
-                          variant='caption'
-                          noWrap
-                          color={'text.secondary'}
-                        >
-                          {data.facebook_name ||
-                            data.telegram_name ||
-                            data.contact_number}
-                        </Typography>
+                            (data.facebook_name && (
+                              <Facebook
+                                size='14'
+                                color={THEME_UTIL.facebookColor}
+                                variant='Bold'
+                              />
+                            )) ||
+                            (data.contact_number && (
+                              <Call
+                                size='14'
+                                color={theme.palette.success.main}
+                                variant='Bold'
+                              />
+                            ))}
+                          <Typography
+                            variant='caption'
+                            noWrap
+                            color={'text.secondary'}
+                          >
+                            {data.facebook_name ||
+                              data.telegram_name ||
+                              data.contact_number}
+                          </Typography>
+                        </Stack>
                       </Stack>
                     </Stack>
+                    <CusIconButton
+                      sx={{
+                        boxShadow: 0,
+                        color: (theme) => theme.palette.text.secondary,
+                      }}
+                      onClick={(e) => {
+                        handleClick(e, data.id);
+                      }}
+                    >
+                      <HiDotsHorizontal />
+                    </CusIconButton>
+                    <Menu
+                      id='basic-menu'
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={() => {
+                        setAnchorEl(null);
+                      }}
+                      MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                      }}
+                      elevation={1}
+                    >
+                      <MenuItem onClick={handleEdit}>
+                        <Edit2
+                          size='18'
+                          color={theme.palette.info.main}
+                          style={{ marginRight: 8 }}
+                          variant='Bold'
+                        />
+                        Edit
+                      </MenuItem>
+                      <MenuItem onClick={handleConvertToCustomer}>
+                        {isLoadingUpdate ? (
+                          <CircularProgress size={'small'} />
+                        ) : (
+                          <>
+                            <UserEdit
+                              variant='Bold'
+                              size='18'
+                              color={theme.palette.primary.main}
+                              style={{ marginRight: 8 }}
+                            />
+                            To Customer
+                          </>
+                        )}
+                      </MenuItem>
+                      <MenuItem onClick={handleDelete}>
+                        {isLoadingDelete ? (
+                          <CircularProgress size={'small'} />
+                        ) : (
+                          <>
+                            <Trash
+                              variant='Bold'
+                              size='18'
+                              color={theme.palette.error.main}
+                              style={{ marginRight: 8 }}
+                            />
+                            Delete
+                          </>
+                        )}
+                      </MenuItem>
+                    </Menu>
                   </Stack>
-                  <CusIconButton
+                  <Box
+                    mt={1}
                     sx={{
-                      boxShadow: 0,
-                      color: (theme) => theme.palette.text.secondary,
-                    }}
-                    onClick={(e) => {
-                      handleClick(e, data.id);
+                      bgcolor: (theme) =>
+                        alpha(theme.palette.warning.light, 0.1),
+                      borderRadius: 2,
+                      height: 100,
+                      overflow: 'auto',
+                      p: 1,
                     }}
                   >
-                    <HiDotsHorizontal />
-                  </CusIconButton>
-                  <Menu
-                    id='basic-menu'
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={() => {
-                      setAnchorEl(null);
-                    }}
-                    MenuListProps={{
-                      'aria-labelledby': 'basic-button',
-                    }}
-                    elevation={1}
-                  >
-                    <MenuItem onClick={handleEdit}>
-                      <Edit2
-                        size='18'
-                        color={theme.palette.info.main}
-                        style={{ marginRight: 8 }}
-                        variant='Bold'
-                      />
-                      Edit
-                    </MenuItem>
-                    <MenuItem onClick={handleConvertToCustomer}>
-                      {isLoadingUpdate ? (
-                        <CircularProgress size={'small'} />
-                      ) : (
-                        <>
-                          <UserEdit
-                            variant='Bold'
-                            size='18'
-                            color={theme.palette.primary.main}
-                            style={{ marginRight: 8 }}
-                          />
-                          To Customer
-                        </>
-                      )}
-                    </MenuItem>
-                    <MenuItem onClick={handleDelete}>
-                      {isLoadingDelete ? (
-                        <CircularProgress size={'small'} />
-                      ) : (
-                        <>
-                          <Trash
-                            variant='Bold'
-                            size='18'
-                            color={theme.palette.error.main}
-                            style={{ marginRight: 8 }}
-                          />
-                          Delete
-                        </>
-                      )}
-                    </MenuItem>
-                  </Menu>
+                    <Typography whiteSpace={'pre-line'}>
+                      {data.remarks}
+                    </Typography>
+                  </Box>
                 </Stack>
               </Grid>
             );
