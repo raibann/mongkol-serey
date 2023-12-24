@@ -1,7 +1,7 @@
 declare namespace IStock {
   interface IStockResponse {
-    data: Stock[];
-    totalItem: number;
+    response: Stock[];
+    totalRecords: number;
     totalPage: number;
     message: string;
     status: number;

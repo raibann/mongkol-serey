@@ -16,7 +16,7 @@ export const STOCK_API = {
         search: search,
       },
     });
-    return res.data;
+    return res.response;
   },
   stockReportsList: async ({ search }: { search?: string }) => {
     const res: IStock.StockReport[] = await HttpUtil.get(
@@ -65,7 +65,7 @@ export const STOCK_PRODUCT_API = {
         },
       }
     );
-    return res.data;
+    return res.response;
   },
   productDetail: async ({ id }: { id: number }) => {
     const res: { data: IInventoryProduct.InventoryProduct } =
@@ -117,7 +117,7 @@ export const STOCK_UNIT_API = {
         },
       }
     );
-    return res.data;
+    return res.response;
   },
   deleteUnit: async (data: { id?: number }) => {
     const res = await HttpUtil.delete(
@@ -166,7 +166,7 @@ export const STOCK_CATEGORY_API = {
           search: search,
         },
       });
-    return res.data;
+    return res.response;
   },
   createCategory: async (data: { name: string; description?: string }) => {
     const res = await HttpUtil.post(ROUTE_API.stockCreateCategory, data);

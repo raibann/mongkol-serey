@@ -17,7 +17,6 @@ const InventoryLeftInput = () => {
 
   // React Hook Form
   const { control, watch } = useFormContext<InventoryInput>();
-  // const pricingFields = useFieldArray<InventoryInput>({ name: 'pricing' });
 
   // Requests
   const { data: dataUnitList, loading: loadingUnitList } = useRequest(
