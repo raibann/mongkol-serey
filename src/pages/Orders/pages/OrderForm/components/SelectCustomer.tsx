@@ -75,7 +75,7 @@ const SelectCustomer = () => {
               </Box>
             ) : (
               <CustTable
-                data={dataCustomer?.data}
+                data={dataCustomer?.response}
                 disableAction
                 onSelect={(customer) => setValue('customer', customer)}
               />

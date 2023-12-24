@@ -123,18 +123,18 @@ export default function Potential() {
           <ErrorResponse errorMessage={'Internal Server Error!'} />
         ) : (
           <>
-            {resCustomers?.data.length === 0 ? (
+            {resCustomers?.response.length === 0 ? (
               <EmptyResponse />
             ) : (
               <>
                 <PotentialTable
-                  data={resCustomers?.data}
+                  data={resCustomers?.response}
                   onSuccess={refreshCustomer}
                 />
                 <TablePagination
                   rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
                   component='div'
-                  count={resCustomers?.totalItem || 0}
+                  count={resCustomers?.totalRecord || 0}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}

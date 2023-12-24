@@ -1,7 +1,7 @@
 declare namespace ISupplier {
   interface ResSuppliers {
-    data: ResSupplier[];
-    totalItem: number;
+    response: ResSupplier[];
+    totalRecord: number;
     totalPage: number;
     message: string;
     status: number;

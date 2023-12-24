@@ -4,7 +4,7 @@ import HttpUtil from 'utils/http-util';
 import { ROUTE_API } from 'utils/route-util';
 
 export const STOCK_API = {
-  stockDetail: async ({ id }: { id: number }) => {
+  stockDetail: async ({ id }: { id: string }) => {
     const res: { data: IStock.Stock } = await HttpUtil.get(
       ROUTE_API.stockDetail.replace(':id', `${id}`)
     );
@@ -16,10 +16,10 @@ export const STOCK_API = {
         search: search,
       },
     });
-    return res.data;
+    return res.response;
   },
   stockReportsList: async ({ search }: { search?: string }) => {
-    const res: IStock.StockReport[] = await HttpUtil.get(
+    const res: IStock.IStockReportResponse = await HttpUtil.get(
       ROUTE_API.stockReportList,
       {
         params: {
@@ -27,9 +27,9 @@ export const STOCK_API = {
         },
       }
     );
-    return res;
+    return res.response;
   },
-  deleteStock: async (data: { id?: number }) => {
+  deleteStock: async (data: { id?: string }) => {
     const res = await HttpUtil.delete(
       ROUTE_API.deleteStock.replace(':id', `${data.id}`)
     );
@@ -41,7 +41,7 @@ export const STOCK_API = {
   },
   updateStock: async (data: InventoryInput) => {
     const res = await HttpUtil.put(
-      ROUTE_API.deleteStock.replace(':id', `${data.id}`),
+      ROUTE_API.updateStock.replace(':id', `${data.id}`),
       data
     );
     return res;
@@ -65,7 +65,7 @@ export const STOCK_PRODUCT_API = {
         },
       }
     );
-    return res.data;
+    return res.response;
   },
   productDetail: async ({ id }: { id: number }) => {
     const res: { data: IInventoryProduct.InventoryProduct } =
@@ -83,31 +83,11 @@ export const STOCK_PRODUCT_API = {
       ROUTE_API.createProduct,
       data
     );
-
-    if (res.id) {
-      await STOCK_API.createStock({
-        category: res.category.id,
-        paidBy: '',
-        addStock: false,
-        quantity: 0,
-        priceUsd: 0,
-        priceKh: 0,
-        discount: 0,
-        expiryDate: '',
-        currency: { id: 1 },
-        product: {
-          id: res.id,
-        },
-        unit: undefined,
-        suppliers: undefined,
-        pricing: [],
-      });
-    }
     return res;
   },
   updateProduct: async (data: ProductFormInput) => {
-    const res = await HttpUtil.put(
-      ROUTE_API.deleteProduct.replace(':id', `${data.id}`),
+    const res: IInventoryProduct.InventoryProduct = await HttpUtil.put(
+      ROUTE_API.updateProduct.replace(':id', `${data.id}`),
       data
     );
     return res;
@@ -137,7 +117,7 @@ export const STOCK_UNIT_API = {
         },
       }
     );
-    return res.data;
+    return res.response;
   },
   deleteUnit: async (data: { id?: number }) => {
     const res = await HttpUtil.delete(
@@ -186,7 +166,7 @@ export const STOCK_CATEGORY_API = {
           search: search,
         },
       });
-    return res.data;
+    return res.response;
   },
   createCategory: async (data: { name: string; description?: string }) => {
     const res = await HttpUtil.post(ROUTE_API.stockCreateCategory, data);

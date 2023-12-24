@@ -1,6 +1,6 @@
 declare namespace IInventoryUnit {
   interface IInventoryUnitResponse {
-    data: InventoryUnit[];
+    response: InventoryUnit[];
     totalItem: number;
     totalPage: number;
     message: string;

@@ -370,7 +370,7 @@ const OrderDrawer = ({
               borderTop: `solid 1px ${theme.palette.divider}`,
             }}
           >
-            {customerListReq.data?.data?.map((e) => (
+            {customerListReq.data?.response?.map((e) => (
               <MenuItem
                 divider
                 key={e.id}

@@ -1,7 +1,7 @@
 declare namespace IOrder {
   interface IOrderRes {
-    data: Order[];
-    totalItem: number;
+    response: Order[];
+    totalRecord: number;
     totalPage: number;
     message: string;
     status: number;

@@ -1,7 +1,7 @@
 declare namespace IExpense {
   interface IExpenseRes {
-    data: IOrder.Order[];
-    totalItem: number;
+    response: IOrder.Order[];
+    totalRecord: number;
     totalPage: number;
     message: string;
     status: number;

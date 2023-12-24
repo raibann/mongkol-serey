@@ -1,7 +1,7 @@
 declare namespace IInventoryCategory {
   interface IInventoryCategoryResponse {
-    data: InventoryCategory[];
-    totalItem: number;
+    response: InventoryCategory[];
+    totalRecords: number;
     totalPage: number;
     message: string;
     status: number;

@@ -44,7 +44,7 @@ export default function Expense() {
   });
 
   // Variable
-  const expenseList = expenseListReq.data?.data;
+  const expenseList = expenseListReq.data?.response;
 
   // useForm
   const { handleSubmit, control, clearErrors, setValue } =

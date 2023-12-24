@@ -1,7 +1,27 @@
 import { Stack, Button, Avatar, Typography } from '@mui/material';
 import { Camera } from 'iconsax-react';
+import { useFormContext } from 'react-hook-form';
+import { InventoryInput } from '..';
+import { uploadImage } from 'utils/upload-image-util';
+import { useRequest } from 'ahooks';
+import TELEGRAM_API from 'api/telegram';
 
 const InventoryRightInput = () => {
+  const { setValue, watch } = useFormContext<InventoryInput>();
+
+  const { run: runUpload, loading: loadingUpload } = useRequest(
+    TELEGRAM_API.uploadFile,
+    {
+      manual: true,
+      onError: () => {
+        setValue('product.images', '');
+      },
+      onSuccess: (res) => {
+        setValue('product.images', res.path);
+      },
+    }
+  );
+
   return (
     <>
       <Stack
@@ -14,6 +34,7 @@ const InventoryRightInput = () => {
         <Button
           component='label'
           sx={{
+            opacity: loadingUpload ? 0.5 : 1,
             p: 0,
             border: 'solid 1px',
             borderColor: 'divider',
@@ -24,10 +45,9 @@ const InventoryRightInput = () => {
           color='inherit'
         >
           <Avatar
+            src={watch('product.images')}
             variant='rounded'
             sx={{
-              // width: 135,
-              // height: 135,
               cursor: 'pointer',
               bgcolor: 'grey.100',
               width: '100%',
@@ -50,7 +70,12 @@ const InventoryRightInput = () => {
             type='file'
             hidden
             accept='image/jpeg, image/png'
-            // onChange={(e) => uploadImage(e, onChange)}
+            onChange={(e) =>
+              uploadImage(e, (baseUrl, file) => {
+                setValue('product.images', baseUrl);
+                runUpload(file);
+              })
+            }
           />
         </Button>
         <Typography

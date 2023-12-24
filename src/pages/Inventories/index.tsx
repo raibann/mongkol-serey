@@ -1,40 +1,32 @@
 import {
   Button,
-  Chip,
   Container,
   Grid,
   InputAdornment,
   MenuItem,
   Paper,
   Stack,
-  TableCell,
-  TableRow,
   TextField,
   Typography,
-  alpha,
   useTheme,
 } from '@mui/material';
-import { CusIconButton } from 'components/CusIconButton';
 import CusTable from 'components/CusTable';
 import CusTextField from 'components/CusTextField';
 import Dialog, { IDialogRef } from 'components/Dialog';
 import PageHeader from 'components/PageHeader';
-import useResponsive from 'hook/useResponsive';
 import { Add, Box, Convert3DCube, SearchNormal1 } from 'iconsax-react';
 import { useRef, useState } from 'react';
-import { BsThreeDots } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
-import { ROUTE_PATH } from 'utils/route-util';
 import ProductForm from './components/ProductForm';
 import { useDebounce, useRequest } from 'ahooks';
-import { STOCK_API, STOCK_UNIT_API } from 'api/stock';
-import { EXCHANGE_RATE } from 'utils/data-util';
+import { STOCK_API } from 'api/stock';
+import StockItem from './components/StockItem';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from 'utils/route-util';
 
 const Stocks = () => {
   // Hooks
-  const { isMdDown } = useResponsive();
-  const navigate = useNavigate();
   const theme = useTheme();
+  const navigate = useNavigate();
   const productFormRef = useRef<IDialogRef>();
 
   // States
@@ -46,10 +38,6 @@ const Stocks = () => {
     () => STOCK_API.stockList({ search: searchDebounce }),
     { refreshDeps: [searchDebounce] }
   );
-  const { run: runDelete } = useRequest(STOCK_API.deleteStock, {
-    manual: true,
-    onSuccess: refresh,
-  });
 
   return (
     <>
@@ -84,7 +72,8 @@ const Stocks = () => {
           }}
         />
         <Button
-          onClick={() => productFormRef.current?.open()}
+          // onClick={() => productFormRef.current?.open()}
+          onClick={() => navigate(ROUTE_PATH.inventories.addInventory)}
           variant='contained'
           size='small'
           disableElevation
@@ -183,61 +172,7 @@ const Stocks = () => {
               '',
             ]}
             body={data.map((e) => (
-              <TableRow
-                key={e.id}
-                sx={{
-                  bgcolor: 'common.white',
-                  '&> td:first-of-type': {
-                    borderTopLeftRadius: '10px',
-                    borderBottomLeftRadius: '10px',
-                  },
-                  '&> td:last-child': {
-                    borderTopRightRadius: '10px',
-                    borderBottomRightRadius: '10px',
-                  },
-                }}
-              >
-                <TableCell>{e.id}</TableCell>
-                <TableCell>{e.product.name}</TableCell>
-                <TableCell>{e.product.category.name}</TableCell>
-                <TableCell>
-                  <Typography variant='body2'>{e.priceKh ?? 0}៛</Typography>
-                  <Typography variant='body2'>
-                    {(e.priceUsd ?? 0).toFixed(2)}$
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  {e.quantity}
-                  {e.unit?.name}
-                </TableCell>
-                <TableCell>
-                  <Typography variant='body2'>
-                    {e.defaultValueUsd.toFixed(2)}$
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    label='Active'
-                    color='info'
-                    size='small'
-                    sx={{
-                      bgcolor: alpha(theme.palette.info.light, 0.2),
-                      color: 'info.main',
-                    }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <CusIconButton
-                    onClick={() =>
-                      navigate(
-                        `${ROUTE_PATH.inventories.addInventory}?cateId=${e.product.category.id}&prodId=${e.product.id}`
-                      )
-                    }
-                  >
-                    <BsThreeDots />
-                  </CusIconButton>
-                </TableCell>
-              </TableRow>
+              <StockItem key={e.id} stock={e} refresh={refresh} />
             ))}
           />
         )}
