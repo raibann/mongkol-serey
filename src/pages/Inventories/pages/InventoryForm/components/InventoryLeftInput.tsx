@@ -1,41 +1,31 @@
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  MenuItem,
-  Typography,
-} from '@mui/material';
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { Grid, MenuItem } from '@mui/material';
+import { Controller, useFormContext } from 'react-hook-form';
 import { InventoryInput } from '..';
 import LabelTextField from 'components/LabelTextField';
-import { Add } from 'iconsax-react';
 import { useRequest } from 'ahooks';
-import {
-  STOCK_CATEGORY_API,
-  STOCK_PRODUCT_API,
-  STOCK_UNIT_API,
-} from 'api/stock';
+import { STOCK_CATEGORY_API, STOCK_UNIT_API } from 'api/stock';
 import SUPPLIER_API from 'api/supplier';
 import { EnumCustomerType, paidBy, paidByColor } from 'utils/data-util';
+import { useSearchParams } from 'react-router-dom';
 
 const InventoryLeftInput = () => {
+  // Hooks
+  const [params] = useSearchParams();
+
+  // Variables
+  const addStockId = params.get('stockId');
+
   // React Hook Form
   const { control, watch } = useFormContext<InventoryInput>();
-  const pricingFields = useFieldArray<InventoryInput>({ name: 'pricing' });
+  // const pricingFields = useFieldArray<InventoryInput>({ name: 'pricing' });
 
   // Requests
-  const { data: dataUnitList, loading: loadingUnitList } = useRequest(() =>
-    STOCK_UNIT_API.unitList({ search: '' })
+  const { data: dataUnitList, loading: loadingUnitList } = useRequest(
+    () => STOCK_UNIT_API.unitList({ search: '' }),
+    { ready: !addStockId }
   );
   const { loading: loadingCategoryList, data: dataCategoryList } = useRequest(
     () => STOCK_CATEGORY_API.categoryList({ search: '' })
-  );
-  const { data: dataProductList, loading: loadingProductList } = useRequest(
-    () =>
-      STOCK_PRODUCT_API.productList({
-        search: '',
-      })
   );
   const { data: dataSuppliersList, loading: loadingSuppliersList } = useRequest(
     () =>
@@ -60,17 +50,22 @@ const InventoryLeftInput = () => {
           name='category'
           render={({ field, fieldState }) => (
             <LabelTextField
-              select
+              select={!!dataCategoryList}
               size='small'
               label='Category'
-              disabled={loadingCategoryList || true}
+              disabled={loadingCategoryList || !!addStockId}
               fieldState={fieldState}
               {...field}
-              menutItems={dataCategoryList?.map((e) => (
-                <MenuItem key={e.id} value={e.id}>
-                  {e.name}
-                </MenuItem>
-              ))}
+              menutItems={
+                dataCategoryList && [
+                  <MenuItem key='-1' value='' disabled></MenuItem>,
+                  ...dataCategoryList.map((e) => (
+                    <MenuItem key={e.id} value={e.id}>
+                      {e.name}
+                    </MenuItem>
+                  )),
+                ]
+              }
             />
           )}
         />
@@ -78,20 +73,14 @@ const InventoryLeftInput = () => {
       <Grid item xs={6}>
         <Controller
           control={control}
-          name='product.id'
+          name='product.name'
           render={({ field, fieldState }) => (
             <LabelTextField
-              select
               size='small'
               label='Product name'
-              disabled={loadingProductList || true}
+              disabled={!!addStockId}
               fieldState={fieldState}
               {...field}
-              menutItems={dataProductList?.map((e) => (
-                <MenuItem key={e.id} value={e.id}>
-                  {e.name}
-                </MenuItem>
-              ))}
             />
           )}
         />
@@ -102,17 +91,22 @@ const InventoryLeftInput = () => {
           name='suppliers.id'
           render={({ field, fieldState }) => (
             <LabelTextField
-              select
+              select={!!dataSuppliersList}
               size='small'
               label='Supplier'
               fieldState={fieldState}
               disabled={loadingSuppliersList}
               {...field}
-              menutItems={dataSuppliersList?.data.map((e) => (
-                <MenuItem key={e.id} value={e.id}>
-                  {e.firstName} {e.lastName}
-                </MenuItem>
-              ))}
+              menutItems={
+                dataSuppliersList && [
+                  <MenuItem key='-1' value='' disabled></MenuItem>,
+                  ...dataSuppliersList.data.map((e) => (
+                    <MenuItem key={e.id} value={e.id}>
+                      {e.firstName} {e.lastName}
+                    </MenuItem>
+                  )),
+                ]
+              }
             />
           )}
         />
@@ -131,16 +125,19 @@ const InventoryLeftInput = () => {
               }}
               fieldState={fieldState}
               {...field}
-              menutItems={paidBy.map((e) => (
-                <MenuItem key={e} value={e}>
-                  {e}
-                </MenuItem>
-              ))}
+              menutItems={[
+                <MenuItem key='-1' value='' disabled></MenuItem>,
+                ...paidBy.map((e) => (
+                  <MenuItem key={e} value={e}>
+                    {e}
+                  </MenuItem>
+                )),
+              ]}
             />
           )}
         />
       </Grid>
-      <Grid
+      {/* <Grid
         item
         xs={12}
         display='flex'
@@ -161,11 +158,11 @@ const InventoryLeftInput = () => {
             />
           )}
         />
-      </Grid>
-      <Grid item xs={6}>
+      </Grid> */}
+      <Grid item xs={9}>
         <Controller
           control={control}
-          name='quantity'
+          name='defaultUnitQty'
           render={({ field, fieldState }) => (
             <LabelTextField
               size='small'
@@ -180,43 +177,67 @@ const InventoryLeftInput = () => {
       <Grid item xs={3}>
         <Controller
           control={control}
-          name='unit.id'
+          name={!addStockId ? 'unit.id' : 'unit.name'}
           render={({ field, fieldState }) => (
             <LabelTextField
               size='small'
-              select
+              select={!addStockId && !!dataUnitList}
               label='Unit'
-              disabled={loadingUnitList}
+              disabled={loadingUnitList || !!addStockId}
               fieldState={fieldState}
-              menutItems={dataUnitList?.map((e) => (
-                <MenuItem key={e.id} value={e.id}>
-                  {e.name}
-                </MenuItem>
-              ))}
+              menutItems={
+                dataUnitList && [
+                  <MenuItem key='-1' value='' disabled></MenuItem>,
+                  ...dataUnitList.map((e) => (
+                    <MenuItem key={e.id} value={e.id}>
+                      {e.name}
+                    </MenuItem>
+                  )),
+                ]
+              }
               {...field}
             />
           )}
         />
       </Grid>
-      <Grid item xs={3}>
-        <Controller
-          control={control}
-          name='currency.id'
-          render={({ field, fieldState }) => (
-            <LabelTextField
-              size='small'
-              select
-              label='Currency'
-              fieldState={fieldState}
-              menutItems={[
-                <MenuItem value={1}>Riel</MenuItem>,
-                <MenuItem value={2}>Dollar</MenuItem>,
-              ]}
-              {...field}
+      {!addStockId && (
+        <>
+          <Grid item xs={6}>
+            <Controller
+              control={control}
+              name='unitPrice'
+              render={({ field, fieldState }) => (
+                <LabelTextField
+                  size='small'
+                  type='number'
+                  label='Unit price'
+                  fieldState={fieldState}
+                  {...field}
+                />
+              )}
             />
-          )}
-        />
-      </Grid>
+          </Grid>
+          <Grid item xs={6}>
+            <Controller
+              control={control}
+              name='currency.id'
+              render={({ field, fieldState }) => (
+                <LabelTextField
+                  size='small'
+                  select
+                  label='Currency'
+                  fieldState={fieldState}
+                  menutItems={[
+                    <MenuItem value={1}>Riel</MenuItem>,
+                    <MenuItem value={2}>Dollar</MenuItem>,
+                  ]}
+                  {...field}
+                />
+              )}
+            />
+          </Grid>
+        </>
+      )}
       <Grid item xs={6}>
         <Controller
           control={control}
@@ -247,7 +268,7 @@ const InventoryLeftInput = () => {
           )}
         />
       </Grid>
-      <Grid item xs={12} display='flex' alignItems='center'>
+      {/* <Grid item xs={12} display='flex' alignItems='center'>
         <Typography fontWeight='bold' mr={2}>
           Pricing
         </Typography>
@@ -338,7 +359,7 @@ const InventoryLeftInput = () => {
             />
           </Grid>
         </Grid>
-      ))}
+      ))} */}
     </Grid>
   );
 };

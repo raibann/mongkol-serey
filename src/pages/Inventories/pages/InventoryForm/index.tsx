@@ -1,105 +1,145 @@
-import { Grid, Paper, Stack } from '@mui/material';
+import { Box, Grid, Paper, Stack } from '@mui/material';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import { FormProvider, useForm } from 'react-hook-form';
 import InventoryLeftInput from './components/InventoryLeftInput';
 import InventoryRightInput from './components/InventoryRightInput';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { STOCK_API } from 'api/stock';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { STOCK_API, STOCK_PRODUCT_API } from 'api/stock';
 import { useRequest } from 'ahooks';
 import { LoadingButton } from '@mui/lab';
 import THEME_UTIL from 'utils/theme-util';
+import { CusLoading } from 'components/CusLoading';
+import { ROUTE_PATH } from 'utils/route-util';
 
 export type InventoryInput = {
-  id?: number;
+  id?: string;
   paidBy: string;
-  addStock?: boolean;
-  quantity: number;
   priceKh: number;
   priceUsd: number;
+  unitPrice: number;
   discount?: number;
-  expiryDate?: string;
   category?: number;
-  product: { id: number };
+  expiryDate?: string;
+  defaultUnitQty: number;
   currency?: { id: number } | '';
-  unit?: { id: number } | '';
   suppliers?: { id: number } | '';
-  pricing?: {
-    qty: number;
-    unit: string;
-    currency: number;
-    cost: number;
-  }[];
+  product: { id: number; name?: string; images?: string };
+  unit?: { id: number; name?: string } | '';
 };
 
 const InventoryForm = () => {
   // Hooks
   const [params] = useSearchParams();
   const navigate = useNavigate();
-
-  // Variables
-  const cateId = params.get('cateId');
-  const prodId = params.get('prodId');
+  const pathParams = useParams();
 
   const methods = useForm<InventoryInput>({
     defaultValues: {
-      category: +cateId!,
-      product: { id: +prodId! },
       discount: 0,
-      addStock: false,
       currency: { id: 2 },
       expiryDate: '',
       paidBy: '',
       priceKh: 0,
       priceUsd: 0,
-      quantity: 0,
+      defaultUnitQty: 0,
+      unitPrice: 0,
       suppliers: '',
       unit: '',
-      pricing: [
-        {
-          cost: 0,
-          currency: 2,
-          qty: 0,
-          unit: 'ដប',
-        },
-      ],
     },
   });
 
+  // Variables
+  const updateStockId = pathParams['id'];
+  const addStockId = params.get('stockId');
+  const isLoadingUpload = methods
+    .watch('product.images')
+    ?.includes('data:image/jpeg;base64');
+
   // Requests
-  const { loading: loadingCreateStock, run: runCreateStock } = useRequest(
-    STOCK_API.createStock,
+  const { loading: loadingStockAction, run: runStockAction } = useRequest(
+    STOCK_API.stockAction,
     {
-      onSuccess: () => navigate(-1),
+      onSuccess: () => navigate(ROUTE_PATH.inventories.root),
       manual: true,
+    }
+  );
+  const { loading: loadingProductAction, runAsync: runProductAction } =
+    useRequest(STOCK_PRODUCT_API.productAction, {
+      manual: true,
+    });
+  const { loading: loadingStockDetail } = useRequest(
+    () =>
+      STOCK_API.stockDetail({ id: addStockId ? addStockId : updateStockId! }),
+    {
+      onSuccess: (res) => {
+        methods.setValue('paidBy', res.paidBy);
+        methods.setValue('product.id', res.product.id);
+        methods.setValue('product.name', res.product.name);
+        methods.setValue('product.images', res.product.images);
+        methods.setValue('category', res.product.category.id);
+        res.unit && methods.setValue('unit.id', res.unit.id);
+        res.unit && methods.setValue('unit.name', res.unit.name);
+        res.suppliers && methods.setValue('suppliers.id', res.suppliers.id);
+
+        if (!!updateStockId) {
+          methods.setValue('id', updateStockId);
+          methods.setValue('currency.id', res.currency.id);
+          methods.setValue('unitPrice', res.unitPrice);
+          methods.setValue('defaultUnitQty', res.unitQty);
+          methods.setValue('priceKh', res.priceKh);
+          methods.setValue('priceUsd', res.priceUsd);
+        }
+      },
+      ready: !!addStockId || !!updateStockId,
     }
   );
 
   // Methods
-  const onSubmit = (data: InventoryInput) => {
-    runCreateStock({
+  const onSubmit = async (data: InventoryInput) => {
+    let res = await runProductAction({
+      id: data.product.id,
+      name: data.product.name ?? '',
+      images: data.product.images ?? '',
+      category: { id: data.category! },
+    });
+
+    runStockAction({
       ...data,
-      quantity: +data.quantity,
+      defaultUnitQty: +data.defaultUnitQty,
       priceUsd: +data.priceUsd,
       priceKh: +data.priceKh,
-      pricing: undefined,
-      addStock: undefined,
-      category: undefined,
-      discount: undefined,
+      product: { id: res.id! },
     });
   };
+
+  if (loadingStockDetail) {
+    return (
+      <Box height='80vh' sx={{ display: 'grid', placeItems: 'center' }}>
+        <CusLoading />
+      </Box>
+    );
+  }
 
   return (
     <>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <SecondaryPageHeader
           sticky
-          title='Add New Inventory'
+          title={
+            !updateStockId
+              ? !!addStockId
+                ? `Add stock for ${methods.watch('product.name')}`
+                : 'Add New Inventory'
+              : 'Update Inventory'
+          }
           appBarSx={{ bgcolor: 'background.paper' }}
           endComponent={
             <LoadingButton
               variant='contained'
               type='submit'
-              loading={loadingCreateStock}
+              loading={
+                loadingStockAction || loadingProductAction || isLoadingUpload
+              }
               sx={{ background: THEME_UTIL.goldGradientMain }}
             >
               Save

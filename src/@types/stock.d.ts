@@ -8,8 +8,11 @@ declare namespace IStock {
   }
 
   interface Stock {
-    id?: number;
-    quantity: number;
+    id?: string;
+    totalPrice: number;
+    unitPrice: number;
+    unitQty: number;
+    defaultUnitQty: number;
     priceKh?: any;
     priceUsd: number;
     defaultValueKh: number;
@@ -76,7 +79,8 @@ declare namespace IStock {
     productName: string;
     unitType: string;
     action: string;
-    quantity: number;
+    stockQty: number;
+    stockAvailable: number;
     priceKh: number;
     priceUsd: number;
     expiryDate?: number;

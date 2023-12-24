@@ -48,9 +48,9 @@ export default function InventoryReport() {
   const getTotalPrice = (index: number) => {
     if (!data) return '0';
     if (data[index].priceUsd)
-      return `${data[index].priceUsd * data[index].quantity}$`;
+      return `${data[index].priceUsd * data[index].stockQty}$`;
     if (data[index].priceKh)
-      return `${data[index].priceKh * data[index].quantity}៛`;
+      return `${data[index].priceKh * data[index].stockQty}៛`;
     return '0';
   };
   return (
@@ -98,9 +98,9 @@ export default function InventoryReport() {
             headers={[
               'ID',
               'Product name',
-              'Category',
               'Unit price',
               'Quantity',
+              'Available',
               'Total price',
               'User',
               'Action',
@@ -122,10 +122,13 @@ export default function InventoryReport() {
               >
                 <TableCell>{e.id}</TableCell>
                 <TableCell>{e.productName}</TableCell>
-                <TableCell>??</TableCell>
                 <TableCell>{getPrice(i)}</TableCell>
                 <TableCell>
-                  {e.quantity}
+                  {e.stockQty}
+                  {e.unitType}
+                </TableCell>
+                <TableCell>
+                  {e.stockAvailable}
                   {e.unitType}
                 </TableCell>
                 <TableCell>
