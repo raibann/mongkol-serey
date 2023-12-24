@@ -1,7 +1,7 @@
 declare namespace ICustomer {
   interface ICustomerRespone {
-    data: Customer[];
-    totalItem: number;
+    response: Customer[];
+    totalRecord: number;
     totalPage: number;
     message: string;
     status: number;

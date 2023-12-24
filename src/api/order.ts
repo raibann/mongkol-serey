@@ -30,7 +30,7 @@ const ORDER_API = {
         dateType: dateType,
       },
     });
-    return res.data;
+    return res.response;
   },
   orderAction: async (
     req: IOrder.IOrderActionReq,
