@@ -15,7 +15,7 @@ export default function EventTodayTable() {
             key={i}
             sx={{
               ...custStyle.bodyRow,
-              background: (theme) => alpha(theme.palette.info.main, 0.1),
+              background: (theme) => alpha(theme.palette.primary.light, 0.1),
             }}
           >
             <TableCell

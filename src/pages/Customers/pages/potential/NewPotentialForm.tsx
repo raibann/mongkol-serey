@@ -15,7 +15,7 @@ import CusTextField from 'components/CusTextField';
 import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
-import { useEffect, useState } from 'react';
+import useError from 'hook/useError';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -40,85 +40,93 @@ interface INewPotentialInput {
 
 export default function NewPotential() {
   // State
-  const [errorAlert, setErrorAlert] = useState(false);
-
   /* Hooks */
+  const { errorState, setErorrState } = useError();
   const { control, handleSubmit, setValue, reset, watch } =
     useForm<INewPotentialInput>();
   const navigate = useNavigate();
   const params = useParams();
-
+  const paramId = params && params.id;
   // Request APIs
-  const {
-    loading: isLoadingCreate,
-    run: fecthData,
-    error: errorCreate,
-  } = useRequest(CUSTOMER_API.postNewCustomer, {
-    manual: true,
-    onSuccess: (data) =>
-      data && navigate(ROUTE_PATH.customers.potentialCustomers),
-  });
 
-  const {
-    loading: isLoadingUpdate,
-    error: errorUpdate,
-    run: fetchUpdate,
-  } = useRequest(CUSTOMER_API.updateCustomer, {
-    manual: true,
-    onSuccess: () => {
-      navigate(ROUTE_PATH.customers.potentialCustomers);
-    },
-  });
+  // --- create
+  const { loading: isLoadingCreate, run: fecthData } = useRequest(
+    CUSTOMER_API.postNewCustomer,
+    {
+      manual: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: (data) =>
+        data && navigate(ROUTE_PATH.customers.potentialCustomers),
+    }
+  );
 
+  // --- update
+  const { loading: isLoadingUpdate, run: fetchUpdate } = useRequest(
+    CUSTOMER_API.updateCustomer,
+    {
+      manual: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: () => {
+        navigate(ROUTE_PATH.customers.potentialCustomers);
+      },
+    }
+  );
+
+  // --- detials
+  const { loading: isLoadingDetails } = useRequest(
+    async () =>
+      await CUSTOMER_API.getCustomerDetails({
+        id: (paramId && +paramId) || undefined,
+      }),
+    {
+      manual: false,
+      ready: paramId !== undefined,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: (data) => {
+        const social =
+          data.customer.telegram_name || data.customer.facebook_name;
+        const socialType = data.customer.telegram_name
+          ? EnumSocialType.TG
+          : EnumSocialType.FB;
+        setValue('customerName', data.customer.customer_name);
+        setValue('location', data.customer.location);
+        setValue('gender', data.customer.gender || EnumGenderType.OTHER);
+        setValue('phoneNumber', data.customer.contact_number);
+        setValue('socialType', socialType);
+        setValue('social', social);
+        setValue('images', data.customer.images);
+        setValue('note', data.customer.remarks || '');
+      },
+    }
+  );
+
+  // --- upload
   const { run: runUpload, loading: loadingUpload } = useRequest(
     TELEGRAM_API.uploadFile,
     {
       manual: true,
-      onError: () => console.log('error'),
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
       onSuccess: (res) => {
         setValue('images', res.path);
       },
     }
   );
-
-  const {
-    run: fetchDetails,
-    loading: isLoadingDetails,
-    error: errorDetails,
-    cancel: cancelFetchDetails,
-  } = useRequest(CUSTOMER_API.getCustomerDetails, {
-    manual: false,
-    onSuccess: (data) => {
-      const social = data.customer.telegram_name || data.customer.facebook_name;
-      const socialType = data.customer.telegram_name
-        ? EnumSocialType.TG
-        : EnumSocialType.FB;
-      setValue('customerName', data.customer.customer_name);
-      setValue('location', data.customer.location);
-      setValue('gender', data.customer.gender || EnumGenderType.OTHER);
-      setValue('phoneNumber', data.customer.contact_number);
-      setValue('socialType', socialType);
-      setValue('social', social);
-      setValue('images', data.customer.images);
-    },
-  });
-
-  // Effect;
-  useEffect(() => {
-    if (errorCreate || errorDetails || errorUpdate) {
-      setErrorAlert(!errorAlert);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errorCreate, errorDetails, errorUpdate]);
-
-  useEffect(() => {
-    if (params.id) {
-      fetchDetails({ id: +params.id });
-    } else {
-      cancelFetchDetails();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params]);
 
   /* Methods */
   const onSubmit = (data: INewPotentialInput) => {
@@ -182,9 +190,12 @@ export default function NewPotential() {
   return (
     <>
       <ErrorDialog
-        open={errorAlert}
+        open={errorState.error}
         onCloseDialog={() => {
-          setErrorAlert(!errorAlert);
+          setErorrState({
+            error: !errorState.error,
+            message: errorState.message,
+          });
         }}
         errorTitle='Failed Authentication'
         errorMessage={'Something went wrong!'}
@@ -377,6 +388,8 @@ export default function NewPotential() {
                         size='small'
                         fieldState={fieldState}
                         {...field}
+                        multiline
+                        rows={4}
                       />
                     );
                   }}

@@ -163,7 +163,20 @@ const navigationUtil: Navigation = [
     toUrl: ROUTE_PATH.setting.root,
     icon: <Setting3 size='18' />,
     selectedIcon: <Setting3 size='18' variant='Bold' />,
-    children: [],
+    children: [
+      {
+        title: 'Company Profile',
+        toUrl: ROUTE_PATH.setting.root,
+      },
+      {
+        title: 'Exchange Rate',
+        toUrl: ROUTE_PATH.setting.updateExchangeRate,
+      },
+      {
+        title: 'Customize Payment',
+        toUrl: ROUTE_PATH.setting.customizePayment,
+      },
+    ],
   },
 ];
 

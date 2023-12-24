@@ -9,7 +9,13 @@ import {
   Button,
 } from '@mui/material';
 import CusTable, { custStyle } from 'components/CusTable';
-import { User, MedalStar, NoteFavorite, Location } from 'iconsax-react';
+import {
+  User,
+  MedalStar,
+  NoteFavorite,
+  Location,
+  TickSquare,
+} from 'iconsax-react';
 
 export default function AnniversaryTable() {
   const theme = useTheme();
@@ -112,6 +118,7 @@ export default function AnniversaryTable() {
                   variant='contained'
                   color='secondary'
                   sx={{ whiteSpace: 'nowrap', textTransform: 'capitalize' }}
+                  startIcon={<TickSquare size='20' />}
                 >
                   Send Gift
                 </Button>

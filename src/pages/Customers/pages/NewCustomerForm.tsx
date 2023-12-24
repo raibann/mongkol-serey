@@ -43,8 +43,8 @@ export default function NewCustomerForm() {
   const { errorState, setErorrState } = useError();
   const navigate = useNavigate();
   const params = useParams();
-
   const paramId = params && params.id;
+
   const {
     control,
     handleSubmit,
@@ -111,6 +111,7 @@ export default function NewCustomerForm() {
         setValue('payment', data.customer.defaultPayment || '');
         setValue('socialType', socialType);
         setValue('social', social);
+        setValue('images', data.customer.images);
       },
     }
   );
@@ -145,7 +146,7 @@ export default function NewCustomerForm() {
     }
   );
 
-  // --upload
+  // --- upload
   const { run: runUpload, loading: loadingUpload } = useRequest(
     TELEGRAM_API.uploadFile,
     {
