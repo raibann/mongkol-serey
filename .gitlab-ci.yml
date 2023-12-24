@@ -1,16 +1,18 @@
-stages:
-  - build
-  - deploy
-
-build:
-  stage: build
-  image: node:16-alpine
+# The Docker image that will be used to build your app
+image: node:16-alpine
+# Functions that should be executed before the build script is run
+before_script:
+  - npm install
+  - npm run build
+pages:
   script:
-    - npm install
-    - npm run build
-
-deploy:
-  stage: deploy
-  image: ubuntu:latest
-  script:
-    - ssh -i /home/ubuntu/front/mongkol-serey-frontend/key/LightsailDefaultKey-ap-southeast-1.pem ubunto@13.213.53.227 "cd /home/ubuntu/front/mongkol-serey-frontend && git pull"
+    - deploy
+    - ubuntu:latest
+  artifacts:
+    paths:
+      # The folder that contains the files to be exposed at the Page URL
+      - public
+  rules:
+    # This ensures that only pushes to the default branch will trigger
+    # a pages deploy
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
