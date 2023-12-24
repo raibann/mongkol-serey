@@ -40,7 +40,7 @@ const ErrorDialog = (props: IErrorDialog) => {
             noWrap
             sx={{ fontWeight: (theme) => theme.typography.fontWeightBold }}
           >
-            {errorTitle || 'NOOB!'}
+            {errorTitle || 'OOP!'}
           </Typography>
           <Typography
             sx={{ color: (theme) => theme.palette.error.main }}

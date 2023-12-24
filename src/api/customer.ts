@@ -26,7 +26,7 @@ const CUSTOMER_API = {
     );
     return res;
   },
-  getCustomerDetails: async ({ id }: { id: number }) => {
+  getCustomerDetails: async ({ id }: { id?: number }) => {
     const res: ICustomer.ICustomerDetails = await HttpUtil.get(
       ROUTE_API.customerDetails.replace(':id', `${id}`)
     );

@@ -1,12 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import {
-  Paper,
-  Container,
-  Stack,
-  Button,
-  MenuItem,
-  Skeleton,
-} from '@mui/material';
+import { Paper, Container, Stack, Button, MenuItem } from '@mui/material';
 import { useRequest } from 'ahooks';
 import SUPPLIER_API from 'api/supplier';
 import ErrorDialog from 'components/CusDialog/ErrorDialog';
@@ -15,11 +8,13 @@ import LabelTextField from 'components/LabelTextField';
 import SecondaryPageHeader from 'components/PageHeader/SecondaryPageHeader';
 import UploadButton from 'components/UploadButton';
 import useGeography from 'hook/useGeography';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EnumGenderType, EnumSocialType } from 'utils/data-util';
 import { ROUTE_PATH } from 'utils/route-util';
+import FormSkeleton from '../../../components/CusSkeleton/FormSkeleton';
+import useError from 'hook/useError';
 interface INewSuplierInput {
   id?: string | number;
   firstName: string;
@@ -38,9 +33,9 @@ interface INewSuplierInput {
 
 const NewSupplierForm = () => {
   // State
-  const [errorAlert, setErrorAlert] = useState(false);
 
   /* Hooks */
+  const { errorState, setErorrState } = useError();
   const { control, handleSubmit, setValue, resetField, getValues } =
     useForm<INewSuplierInput>();
   const {
@@ -52,7 +47,7 @@ const NewSupplierForm = () => {
     communeLoading,
     districtLoading,
     provinceLoading,
-    errState,
+    errorGeo,
   } = useGeography({
     disName: getValues('district'),
     proName: getValues('province'),
@@ -63,12 +58,16 @@ const NewSupplierForm = () => {
 
   // Request APIs
 
+  // --- check error
+  useEffect(() => {
+    if (errorGeo) {
+      setErorrState(errorGeo);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errorGeo]);
+
   // --- fecth details
-  const {
-    // run: fetchDetails,
-    loading: isLoadingDetails,
-    error: errorDetails,
-  } = useRequest(
+  const { loading: isLoadingDetails } = useRequest(
     async () =>
       await SUPPLIER_API.getSupplierDetails({
         id: (paramId && +paramId) || undefined,
@@ -77,6 +76,11 @@ const NewSupplierForm = () => {
       manual: false,
       ready: paramId !== undefined,
       refreshDeps: [paramId],
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
       onSuccess: (data) => {
         const social = data.data.telegram || data.data.facebook;
         const socialType = data.data.telegram
@@ -100,33 +104,33 @@ const NewSupplierForm = () => {
     }
   );
 
-  const {
-    loading: isLoadingCreate,
-    error: errorCreate,
-    run: fecthCreate,
-  } = useRequest(SUPPLIER_API.postNewSupplier, {
-    manual: true,
-    onSuccess: (data) => data && navigate(ROUTE_PATH.suppliers.root),
-  });
-
-  const {
-    loading: isLoadingUpdate,
-    error: errorUpdate,
-    run: fetchUpdate,
-  } = useRequest(SUPPLIER_API.updateSupplier, {
-    manual: true,
-    onSuccess: () => {
-      navigate(ROUTE_PATH.suppliers.root);
-    },
-  });
-
-  // Effect
-  useEffect(() => {
-    if (errorCreate || errorDetails || errorUpdate || errState) {
-      setErrorAlert(!errorAlert);
+  const { loading: isLoadingCreate, run: fecthCreate } = useRequest(
+    SUPPLIER_API.postNewSupplier,
+    {
+      manual: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: (data) => data && navigate(ROUTE_PATH.suppliers.root),
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errorCreate, errorDetails, errorUpdate, errState]);
+  );
+
+  const { loading: isLoadingUpdate, run: fetchUpdate } = useRequest(
+    SUPPLIER_API.updateSupplier,
+    {
+      manual: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
+      onSuccess: () => {
+        navigate(ROUTE_PATH.suppliers.root);
+      },
+    }
+  );
 
   /* Methods */
   const onSubmit = (data: INewSuplierInput) => {
@@ -176,12 +180,14 @@ const NewSupplierForm = () => {
   return (
     <>
       <ErrorDialog
-        open={errorAlert}
+        open={errorState.error}
         onCloseDialog={() => {
-          setErrorAlert(!errorAlert);
+          setErorrState({
+            error: !errorState.error,
+            message: '',
+          });
         }}
-        errorTitle='Failed Authentication'
-        errorMessage={'Something went wrong!'}
+        errorMessage={errorState.message}
       />
       <SecondaryPageHeader
         title={params.id ? 'Update Supplier' : 'Create New Supplier'}
@@ -200,31 +206,7 @@ const NewSupplierForm = () => {
         >
           <Stack direction={'column'} spacing={2}>
             {isLoadingDetails ? (
-              <>
-                <Stack
-                  direction={'row'}
-                  alignItems={'center'}
-                  justifyContent={'center'}
-                >
-                  <Skeleton variant='circular' width={80} height={80} />
-                </Stack>
-                {Array(4)
-                  .fill('')
-                  .map((_, i) => (
-                    <Stack direction={'row'} spacing={2} key={i}>
-                      <Skeleton
-                        animation='wave'
-                        variant='text'
-                        sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
-                      />
-                      <Skeleton
-                        animation='wave'
-                        variant='text'
-                        sx={{ fontSize: '1rem', width: '50%', height: '50px' }}
-                      />
-                    </Stack>
-                  ))}
-              </>
+              <FormSkeleton />
             ) : (
               <>
                 <Stack direction={'row'} spacing={2}>

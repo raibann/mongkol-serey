@@ -1,6 +1,7 @@
 import { useRequest } from 'ahooks';
 import GEO_API from 'api/geography';
 import { useEffect, useState } from 'react';
+import useError from './useError';
 
 export default function useGeography({
   proName,
@@ -15,31 +16,45 @@ export default function useGeography({
   const [districts, setDistricts] = useState<IGeography.District[]>();
   const [communes, setCommunes] = useState<IGeography.Commune[]>();
 
-  const { loading: provinceLoading, error: errProvince } = useRequest(
-    GEO_API.getProvince,
-    {
-      manual: false,
-      refreshOnWindowFocus: true,
-      onSuccess: (data) => setProvinces(data),
-    }
-  );
+  //   Hooks
+  const { errorState, setErorrState } = useError();
+  //   Fetch Api
+  const { loading: provinceLoading } = useRequest(GEO_API.getProvince, {
+    manual: false,
+    refreshOnWindowFocus: true,
+    onError: (e: Error) =>
+      setErorrState({
+        error: true,
+        message: e.message,
+      }),
+    onSuccess: (data) => setProvinces(data),
+  });
 
-  const { loading: districtLoading, error: errDistrict } = useRequest(
+  const { loading: districtLoading } = useRequest(
     async () => await GEO_API.getDistrict(provinceId),
     {
       manual: false,
       ready: provinceId !== '' && provinces && provinces.length > 0,
       refreshDeps: [provinceId],
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
       onSuccess: (data) => setDistricts(data),
     }
   );
 
-  const { loading: communeLoading, error: errCommune } = useRequest(
+  const { loading: communeLoading } = useRequest(
     async () => await GEO_API.getCommune(districtId),
     {
       manual: false,
       ready: districtId !== '' && districts && districts.length > 0,
-      //   refreshOnWindowFocus: true,
+      onError: (e: Error) =>
+        setErorrState({
+          error: true,
+          message: e.message,
+        }),
       refreshDeps: [districtId],
       onSuccess: (data) => setCommunes(data),
     }
@@ -80,6 +95,6 @@ export default function useGeography({
     provinceLoading,
     districtLoading,
     communeLoading,
-    errState: errProvince || errCommune || errDistrict,
+    errorGeo: errorState,
   };
 }

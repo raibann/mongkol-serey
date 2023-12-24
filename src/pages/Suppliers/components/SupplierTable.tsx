@@ -19,7 +19,7 @@ import theme from 'theme/theme';
 import { ROUTE_PATH } from 'utils/route-util';
 import THEME_UTIL from 'utils/theme-util';
 
-const headers = ['No', 'Name', 'Phone Number', 'Address', ''];
+const headers = ['No', 'Name', 'Gender', 'Phone Number', 'Address', ''];
 
 export default function SupplierTable(props: {
   data: ISupplier.ResSupplier[] | undefined;
@@ -126,6 +126,7 @@ export default function SupplierTable(props: {
                   </Stack>
                 </Stack>
               </TableCell>
+              <TableCell align='left'>{item.gender}</TableCell>
               <TableCell align='left'>{item.phoneNumber}</TableCell>
               <TableCell align='left'>
                 <Stack direction={'row'} spacing={0.5} alignItems={'center'}>
