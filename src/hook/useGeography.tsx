@@ -3,8 +3,8 @@ import GEO_API from 'api/geography';
 import { useState } from 'react';
 
 export default function useGeography() {
-  const [provinceId, setProvinceId] = useState('1');
-  const [districtId, setDistrictId] = useState('102');
+  const [provinceId, setProvinceId] = useState('');
+  const [districtId, setDistrictId] = useState('');
   const [provinces, setProvinces] = useState<IGeography.Province[]>();
   const [districts, setDistricts] = useState<IGeography.District[]>();
   const [communes, setCommunes] = useState<IGeography.Commune[]>();
@@ -16,28 +16,27 @@ export default function useGeography() {
   });
 
   const { loading: districtLoading } = useRequest(
-    () => GEO_API.getDistrict(provinceId),
+    async () => await GEO_API.getDistrict(provinceId),
     {
       manual: false,
-      ready: provinceId !== '',
-      refreshOnWindowFocus: true,
+      ready: provinceId !== '' && provinces && provinces.length > 0,
       refreshDeps: [provinceId],
       onSuccess: (data) => setDistricts(data),
     }
   );
 
   const { loading: communeLoading } = useRequest(
-    () => GEO_API.getCommune(districtId),
+    async () => await GEO_API.getCommune(districtId),
     {
       manual: false,
-      ready: districtId !== '',
-      refreshOnWindowFocus: true,
+      ready: districtId !== '' && districts && districts.length > 0,
+      //   refreshOnWindowFocus: true,
       refreshDeps: [districtId],
       onSuccess: (data) => setCommunes(data),
     }
   );
-  console.log(provinceId);
-  console.log(districtId);
+  //   console.log('province', provinceId);
+  //   console.log('district', districtId);
 
   return {
     setProvinceId,

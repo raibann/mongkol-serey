@@ -67,10 +67,6 @@ const NewSupplierForm = () => {
   } = useRequest(SUPPLIER_API.getSupplierDetails, {
     manual: false,
     onSuccess: (data) => {
-      const getProvinceId = provinces?.find(
-        (p) => p.name === data.data.province
-      );
-
       const social = data.data.telegram || data.data.facebook;
       const socialType = data.data.telegram
         ? EnumSocialType.TG
@@ -89,8 +85,6 @@ const NewSupplierForm = () => {
       setValue('payment', data.data.defaultPayment);
       setValue('socialType', socialType);
       setValue('social', social || '');
-      // set to geo hooks
-      setProvinceId(`${getProvinceId?.id}`);
     },
   });
 
@@ -132,17 +126,33 @@ const NewSupplierForm = () => {
   }, [params]);
 
   useEffect(() => {
-    if (districts) {
-      const getDistrictId = districts?.find(
-        (d) => d.name === getValues('district')
-      );
-
-      if (getDistrictId) {
-        setDistrictId(`${getDistrictId?.id}`);
+    if (getValues('province') !== undefined) {
+      if (provinces && provinces.length > 0) {
+        const getProvinceId = provinces?.find(
+          (d) => d.name === getValues('province')
+        );
+        if (getProvinceId) {
+          setProvinceId(`${getProvinceId?.id}`);
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [districts]);
+  }, [getValues('province'), provinces]);
+
+  useEffect(() => {
+    if (getValues('district') !== undefined) {
+      if (districts && districts.length > 0) {
+        const getDistrictId = districts?.find(
+          (d) => d.name === getValues('district')
+        );
+        if (getDistrictId) {
+          setDistrictId(`${getDistrictId?.id}`);
+        }
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getValues('district'), districts]);
 
   /* Methods */
   const onSubmit = (data: INewSuplierInput) => {
