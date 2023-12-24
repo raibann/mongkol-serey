@@ -10,6 +10,7 @@
 
 # production
 /build
+/key
 
 # miscs
 .DS_Store
@@ -26,3 +27,4 @@ yarn-error.log*
 
 # Local Netlify folder
 .netlify
+.gitlab-ci.yml
