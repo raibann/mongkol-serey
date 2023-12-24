@@ -112,18 +112,18 @@ export default function Suppliers() {
           <ErrorResponse errorMessage={'Internal Server Error!'} />
         ) : (
           <>
-            {resSuppliers?.data.length === 0 ? (
+            {resSuppliers?.response.length === 0 ? (
               <EmptyResponse />
             ) : (
               <>
                 <SupplierTable
-                  data={resSuppliers?.data}
+                  data={resSuppliers?.response}
                   onSuccess={refreshSuppliers}
                 />
                 <TablePagination
                   rowsPerPageOptions={isSmDown ? [] : [10, 25, 100]}
                   component='div'
-                  count={resSuppliers?.totalItem || 0}
+                  count={resSuppliers?.totalRecord || 0}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}

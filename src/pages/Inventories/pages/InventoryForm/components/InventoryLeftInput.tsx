@@ -99,7 +99,7 @@ const InventoryLeftInput = () => {
               menutItems={
                 dataSuppliersList && [
                   <MenuItem key='-1' value='' disabled></MenuItem>,
-                  ...dataSuppliersList.data.map((e) => (
+                  ...dataSuppliersList.response.map((e) => (
                     <MenuItem key={e.id} value={e.id}>
                       {e.firstName} {e.lastName}
                     </MenuItem>
@@ -227,8 +227,12 @@ const InventoryLeftInput = () => {
                   label='Currency'
                   fieldState={fieldState}
                   menutItems={[
-                    <MenuItem value={1}>Riel</MenuItem>,
-                    <MenuItem value={2}>Dollar</MenuItem>,
+                    <MenuItem key={1} value={1}>
+                      Riel
+                    </MenuItem>,
+                    <MenuItem key={2} value={2}>
+                      Dollar
+                    </MenuItem>,
                   ]}
                   {...field}
                 />

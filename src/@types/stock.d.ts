@@ -7,6 +7,14 @@ declare namespace IStock {
     status: number;
   }
 
+  interface IStockReportResponse {
+    response: StockReport[];
+    totalRecords: number;
+    totalPage: number;
+    message: string;
+    status: number;
+  }
+
   interface Stock {
     id?: string;
     totalPrice: number;
