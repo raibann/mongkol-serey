@@ -13,7 +13,7 @@ import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTable, { custStyle } from 'components/CusTable';
 import { Edit2, Trash, Location, Send2, Facebook } from 'iconsax-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import theme from 'theme/theme';
 import { ROUTE_PATH } from 'utils/route-util';
@@ -35,14 +35,10 @@ export default function SupplierTable(props: {
   // Fetch Apis
   const { run, loading, error } = useRequest(SUPPLIER_API.deleteSupplier, {
     manual: true,
+    onError: () => setErrorAlert(!errorAlert),
     onSuccess: props.onSuccess,
   });
-  useEffect(() => {
-    if (error) {
-      setErrorAlert(!errorAlert);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error]);
+
   return (
     <>
       <ErrorDialog
@@ -83,7 +79,7 @@ export default function SupplierTable(props: {
                 <Stack direction={'row'} spacing={2} alignItems={'center'}>
                   <Avatar
                     alt='Remy Sharp'
-                    src={item.image}
+                    src={item.images}
                     variant='rounded'
                     sx={{
                       height: 40,

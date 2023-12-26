@@ -33,8 +33,8 @@ const OrderItem = ({
 }: {
   menuListReq: Result<
     {
-      resMenu: IMenuList.IMenuItem[];
-      resCategory: IMenuList.IMenuCategory[];
+      resMenu: IMenu.IMenuItem[];
+      resCategory: IMenu.IMenuCategory[];
     },
     []
   >;

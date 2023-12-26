@@ -5,12 +5,36 @@ import CusTextField from 'components/CusTextField';
 import { Add, SearchNormal1 } from 'iconsax-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
+import { useRequest } from 'ahooks';
+import useError from 'hook/useError';
+import MENU_API from 'api/menu';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 
 export default function Menus() {
   const navigate = useNavigate();
+  const { errorState, setErorrState } = useError();
 
+  const { data: resListMenu } = useRequest(MENU_API.getListMenu, {
+    manual: false,
+    onError: (e: Error) =>
+      setErorrState({
+        error: !errorState.error,
+        message: e.message,
+      }),
+    refreshOnWindowFocus: true,
+  });
   return (
     <>
+      <ErrorDialog
+        open={errorState.error}
+        onCloseDialog={() => {
+          setErorrState({
+            error: !errorState.error,
+            message: errorState.message,
+          });
+        }}
+        errorMessage={errorState.message}
+      />
       <PageHeader pageTitle='Menu'>
         <CusTextField
           placeholder='Search...'
@@ -40,13 +64,11 @@ export default function Menus() {
 
       <Container maxWidth='xl'>
         <Grid container spacing={3}>
-          {Array(12)
-            .fill(null)
-            .map((_, i) => (
-              <Grid key={i} item xs={3}>
-                <MenuCard />
-              </Grid>
-            ))}
+          {resListMenu?.map((menu, i) => (
+            <Grid key={menu.id} item xs={3}>
+              <MenuCard menu={menu} />
+            </Grid>
+          ))}
         </Grid>
       </Container>
     </>

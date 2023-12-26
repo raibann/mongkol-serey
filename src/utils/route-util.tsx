@@ -152,4 +152,10 @@ export const ROUTE_API = {
   province: '/api/geography/v1/provinces',
   district: '/api/geography/v1/districts/:id',
   commune: '/api/geography/v1/communes/:id',
+
+  // menu
+  listMenus: '/api/menus/v1/list',
+
+  // food
+  listFoods: '/api/foods/v1/list',
 };

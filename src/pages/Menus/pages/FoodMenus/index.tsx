@@ -1,19 +1,26 @@
 import {
   InputAdornment,
   Button,
-  Avatar,
   Container,
   Grid,
-  Stack,
   Typography,
   useTheme,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Card,
+  Stack,
+  Tooltip,
 } from '@mui/material';
+import { useRequest } from 'ahooks';
+import MENU_API from 'api/menu';
+import ErrorDialog from 'components/CusDialog/ErrorDialog';
 import { CusIconButton } from 'components/CusIconButton';
 import CusTextField from 'components/CusTextField';
 import PageHeader from 'components/PageHeader';
+import useError from 'hook/useError';
 import useResponsive from 'hook/useResponsive';
-import { SearchNormal1, Add } from 'iconsax-react';
-import { HiDotsHorizontal } from 'react-icons/hi';
+import { SearchNormal1, Add, Edit, Trash } from 'iconsax-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from 'utils/route-util';
 
@@ -22,9 +29,30 @@ export default function FoodMenus() {
   const { isSmDown } = useResponsive();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { errorState, setErorrState } = useError();
+
+  const { data: resListFoods } = useRequest(MENU_API.getListFoods, {
+    manual: false,
+    onError: (e: Error) =>
+      setErorrState({
+        error: !errorState.error,
+        message: e.message,
+      }),
+    refreshOnWindowFocus: true,
+  });
 
   return (
     <>
+      <ErrorDialog
+        open={errorState.error}
+        onCloseDialog={() => {
+          setErorrState({
+            error: !errorState.error,
+            message: errorState.message,
+          });
+        }}
+        errorMessage={errorState.message}
+      />
       <PageHeader pageTitle='Food Menu'>
         <CusTextField
           fullWidth={isSmDown ? true : false}
@@ -55,45 +83,55 @@ export default function FoodMenus() {
 
       <Container maxWidth='xl'>
         <Grid container spacing={2}>
-          {Array(12)
-            .fill(null)
-            .map((_, i) => {
-              return (
-                <Grid key={i} item xs={12} sm={4}>
-                  <Stack
-                    direction='row'
-                    alignItems='center'
-                    width='100%'
-                    justifyContent='space-between'
-                    bgcolor='common.white'
-                    p={2}
-                    borderRadius={2.5}
-                  >
-                    <Stack direction='row' spacing={2} alignItems='center'>
-                      <Avatar
-                        src='/static/images/avatar/1.jpg'
-                        variant='rounded'
-                        sx={{
-                          height: 40,
-                          width: 40,
-                          borderRadius: 2,
-                        }}
-                      />
+          {resListFoods?.map((food, i) => {
+            return (
+              <Grid key={food.id} item xs={12} sm={3}>
+                <Card>
+                  <CardMedia
+                    component='img'
+                    alt='green iguana'
+                    height='160'
+                    sx={{ aspectRatio: '4 / 3' }}
+                    image='https://api.telegram.org/file/bot5683327648:AAForuzEywsdCCXFlR04En_Gl7pD34poVl4/documents/file_39.jpg'
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant='h5' component='div'>
+                      {food.name}
+                    </Typography>
+                    <Tooltip title={food.description} arrow>
+                      <Typography
+                        variant='body2'
+                        noWrap
+                        color='text.secondary'
+                        overflow={'hidden'}
+                        textOverflow={'ellipsis'}
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        {food.description}
+                      </Typography>
+                    </Tooltip>
+                  </CardContent>
+                  <CardActions>
+                    <Stack direction={'row'} spacing={2}>
+                      <CusIconButton
+                        size='small'
+                        sx={{ textTransform: 'capitalize' }}
+                      >
+                        <Edit size='24' color={theme.palette.info.main} />
+                      </CusIconButton>
 
-                      <Typography variant='body2'>បាយឆាយ៉ាងចូវ</Typography>
+                      <CusIconButton
+                        size='small'
+                        sx={{ textTransform: 'capitalize' }}
+                      >
+                        <Trash size='24' color={theme.palette.error.main} />
+                      </CusIconButton>
                     </Stack>
-                    <CusIconButton
-                      sx={{
-                        boxShadow: 0,
-                        color: theme.palette.text.secondary,
-                      }}
-                    >
-                      <HiDotsHorizontal />
-                    </CusIconButton>
-                  </Stack>
-                </Grid>
-              );
-            })}
+                  </CardActions>
+                </Card>
+              </Grid>
+            );
+          })}
         </Grid>
       </Container>
     </>

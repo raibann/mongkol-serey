@@ -14,7 +14,7 @@ declare namespace ISupplier {
 
   interface ResSupplier {
     id: number;
-    image?: string;
+    images?: string;
     firstName: string;
     lastName: string;
     phoneNumber: string;

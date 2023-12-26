@@ -48,10 +48,8 @@ const ORDER_API = {
     return res;
   },
   getCategoryAndMenu: async () => {
-    const resMenu: IMenuList.IMenuItem[] = await HttpUtil.get(
-      ROUTE_API.menuList
-    );
-    const resCategory: IMenuList.IMenuCategory[] = await HttpUtil.get(
+    const resMenu: IMenu.IMenuItem[] = await HttpUtil.get(ROUTE_API.menuList);
+    const resCategory: IMenu.IMenuCategory[] = await HttpUtil.get(
       ROUTE_API.categoryList
     );
 

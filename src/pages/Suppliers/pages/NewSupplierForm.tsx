@@ -102,7 +102,7 @@ const NewSupplierForm = () => {
         setValue('payment', data.data.defaultPayment);
         setValue('socialType', socialType);
         setValue('social', social || '');
-        setValue('images', data.data.image || '');
+        setValue('images', data.data.images || '');
       },
     }
   );
@@ -174,7 +174,7 @@ const NewSupplierForm = () => {
           facebook: facebook,
           telegram: telegram,
           others: '',
-          images: '',
+          images: data.images,
         },
       });
     } else {
@@ -193,7 +193,7 @@ const NewSupplierForm = () => {
           facebook: facebook,
           telegram: telegram,
           others: '',
-          images: '',
+          images: data.images,
         },
       });
     }
