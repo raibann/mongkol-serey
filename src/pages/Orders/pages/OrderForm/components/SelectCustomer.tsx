@@ -95,7 +95,7 @@ const SelectCustomer = () => {
           }
         >
           <ListItemAvatar>
-            <Avatar variant='rounded' />
+            <Avatar variant='rounded' src={customer.images} />
           </ListItemAvatar>
           <ListItemText
             primary={customer.customer_name}

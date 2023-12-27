@@ -167,7 +167,10 @@ export default function PotentialTable(props: {
                           height: 40,
                           width: 40,
                         }}
-                      />
+                      >
+                        {data.customer_name.slice(0, 1)}
+                      </Avatar>
+
                       {/* Text item */}
                       <Stack direction={'column'}>
                         <Typography
@@ -293,8 +296,12 @@ export default function PotentialTable(props: {
                       p: 1,
                     }}
                   >
-                    <Typography whiteSpace={'pre-line'}>
-                      {data.remarks}
+                    <Typography
+                      whiteSpace='pre-line'
+                      variant='caption'
+                      color={!data.remarks ? 'text.secondary' : undefined}
+                    >
+                      {data.remarks ? data.remarks : 'មិនទាន់មានកត់ចំណាំ...'}
                     </Typography>
                   </Box>
                 </Stack>
