@@ -60,7 +60,7 @@ const InvoicePackage = () => {
           <Grid container rowSpacing={2} columnSpacing={1}>
             <Grid item xs={12} display='flex' alignItems='center'>
               <Typography variant='subtitle1' fontWeight='bold'>
-                Package {i + 1}
+                ឈុតទី {i + 1}
               </Typography>
               <Box flexGrow={1} />
               <Box id={`append-item-button-${i}`} />
